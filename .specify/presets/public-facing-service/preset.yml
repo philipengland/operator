@@ -1,0 +1,30 @@
+# public-facing-service overlay manifest.
+# Appends extra constitution principles for user-facing services.
+# Install at priority 20 alongside org-baseline. Keep `version` equal to VERSION.
+
+schema_version: "1.0"
+
+preset:
+  id: "public-facing-service"
+  name: "Public-Facing Service Overlay"
+  version: "2.0.0"
+  description: "Additional principles for citizen- or customer-facing services"
+  author: "Philip England"
+  repository: "https://github.com/philipengland/engineering-standards"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=1.0.0"
+
+provides:
+  templates:
+    - type: "template"
+      name: "constitution-template"
+      file: "templates/constitution-public-facing.md"
+      description: "Append public-facing service principles to the constitution template"
+      strategy: "append"
+
+tags:
+  - "governance"
+  - "overlay"
+  - "public-facing"

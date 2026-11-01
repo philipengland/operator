@@ -1,0 +1,14 @@
+# Executable specifications (acceptance Layers 1-2) define success. Changes
+# need approval from the spec owners. Turn on branch protection for main:
+#   'Require a pull request' + 'Require review from Code Owners'.
+
+# .NET — Layer 1 scenarios and steps, Layer 2 DSL
+/tests/*.AcceptanceTests/Features/           @philipengland
+/tests/*.AcceptanceTests/Steps/              @philipengland
+/tests/*.AcceptanceTests/Dsl/                @philipengland
+# NestJS — Layer 1 scenarios, Layer 2 DSL
+/test/acceptance/**/*.acceptance-spec.ts     @philipengland
+/test/acceptance/dsl/                        @philipengland
+# Approval records, and this file
+/specs/*/acceptance.md                       @philipengland
+/.github/CODEOWNERS                          @philipengland

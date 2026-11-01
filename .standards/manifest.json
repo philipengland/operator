@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "files": {
+    ".claude/rules/acceptance-tests.md": "2d888f8c356a41082b03475306d3b6d614aaccb5604ef7b6ac90852b03956055",
+    ".claude/rules/api-design.md": "7fd7432a9d5f0e656a241cb858cd566c73f4d24e3c7f1803cd702378ea54ff3a",
+    ".claude/rules/coding-principles.md": "34bebb8019c28442de4f6c78a4e91f2e634951081bff15b7b36a795cccf4cc0e",
+    ".claude/rules/dotnet.md": "a379ac58e794bffd52a5f2a3218c0ec920f1afa3756c37f803cb938e429fa69c",
+    ".claude/rules/nestjs.md": "115c0ce02d858295306264ddfb1e96cff6068040459997a2080f52e7c86ad565",
+    ".claude/rules/playwright.md": "a3c6665b646ea8492b261dfa0f2796631b9a48f9167e879a2b599d42badc80b2",
+    ".claude/rules/tdd.md": "12e25c63061b2387576b7315d6aea38da8067fb1f7e372f0f43063009d92498b",
+    ".claude/rules/testing-dotnet.md": "75506756f88a9f7baa2b448af5d46a05c7352109f6f152ac65f15e7b4496ff19",
+    ".claude/rules/testing-typescript.md": "d97abb23b945ed4cdc151d39405e61c3e3508c58137f4522c357699357bd6131",
+    ".editorconfig": "d2d56efe5e9a91eac725ca5753b962eb3a1602a73d50059db1b15f3db9244b51",
+    ".github/copilot-instructions.md": "84300e78f88f3fb58eb0a51d5ae3ddb5397e8145ee2476d9f28a4429baff2e8c",
+    ".github/instructions/acceptance-tests.instructions.md": "5cab460b9053974e5a26ef5419f6262f1668cd56b672fe03c400d79fd9432ca2",
+    ".github/instructions/api-design.instructions.md": "456e25d0e457e4a15d973cc0f0319c7df4dbf74c2da97c46a6f9808f3a5437b2",
+    ".github/instructions/coding-principles.instructions.md": "c0178d5c7367fab059a9a983e584f6381f0311a845ccb544007fa2f6c92c905c",
+    ".github/instructions/dotnet.instructions.md": "a73847374ad32abff6a5144c534037f7e6d80e907e4cca48418907350784181e",
+    ".github/instructions/nestjs.instructions.md": "cb682f7ede492fa37e6cd690cb3ff5c899c65c0e9cd0a2e815b451f280477cc5",
+    ".github/instructions/playwright.instructions.md": "cb526c75e2c2e3d40bb9571ff6749f1c8c3f68f864afd462602b7ab75461eea9",
+    ".github/instructions/tdd.instructions.md": "f5e3b9a94c3a7ec43321c7dbd8648cf050abb0bfb73774121dcb1f5b63e8d9c7",
+    ".github/instructions/testing-dotnet.instructions.md": "385a9081005a6ecab49affeb692ca89c11d8b96127fe1a85e15013428850eb27",
+    ".github/instructions/testing-typescript.instructions.md": "a8143a66517a2304e6d2ddecbfc821d8b7d3a242a5e47cbf4ae30abd4ae77a61",
+    ".github/pull_request_template.md": "e6902ee0491c2b813ee503a794514642a15843643a063573fd8d048164da1135",
+    "CLAUDE.md": "12d0d8ca319764e81a63db1c039584aee3c7b1fbf47f4f1c77f047e1b83a1fbb"
+  }
+}

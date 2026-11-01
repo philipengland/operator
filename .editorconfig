@@ -1,0 +1,21 @@
+# engineering-standards v2.0.0: managed file — do not edit in this repository.
+# Editor formatting only. Analyser and style rule severities ship in the
+# PhilipEngland.Engineering.Analyzers NuGet package; TypeScript formatting is Prettier.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{cs,csx}]
+indent_size = 4
+
+[*.{csproj,props,targets,xml}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

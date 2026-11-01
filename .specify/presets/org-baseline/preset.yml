@@ -1,0 +1,80 @@
+# org-baseline preset manifest.
+# Declares every template and command this preset provides and how each
+# composes with Spec Kit core (append / wrap). Keep `version` equal to VERSION.
+# See README.md in this folder and STRUCTURE.md at the repo root.
+
+schema_version: "1.0"
+
+preset:
+  id: "org-baseline"
+  name: "Engineering Baseline"
+  version: "2.0.0"
+  description: "Architecture principles, spec/plan/tasks additions and the /speckit.agents command for every project"
+  author: "Philip England"
+  repository: "https://github.com/philipengland/engineering-standards"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=1.0.0"
+
+provides:
+  templates:
+    - type: "template"
+      name: "constitution-template"
+      file: "templates/constitution-baseline.md"
+      description: "Append organisation architecture principles to the constitution"
+      strategy: "append"
+
+    - type: "template"
+      name: "spec-template"
+      file: "templates/spec-additions.md"
+      description: "Append NFR, contract impact, data impact and out-of-scope sections"
+      strategy: "append"
+
+    - type: "template"
+      name: "plan-template"
+      file: "templates/plan-additions.md"
+      description: "Append architecture, rollback, threat model, observability and test strategy sections"
+      strategy: "append"
+
+    - type: "template"
+      name: "tasks-template"
+      file: "templates/tasks-additions.md"
+      description: "Append the mandatory acceptance-first testing rule"
+      strategy: "append"
+
+    - type: "template"
+      name: "acceptance-template"
+      file: "templates/acceptance-template.md"
+      description: "Template for specs/NNN/acceptance.md — the approval record of the executable specifications"
+
+    - type: "template"
+      name: "agents-template"
+      file: "templates/agents-template.md"
+      description: "Template for repository AGENTS.md files"
+
+    - type: "template"
+      name: "tdd-log-template"
+      file: "templates/tdd-log-template.md"
+      description: "Template for the per-feature TDD log written by /speckit.implement"
+
+    - type: "command"
+      name: "speckit.implement"
+      file: "commands/speckit.implement.md"
+      description: "Wrap /speckit.implement with the ATDD outer loop and red-green-refactor inner loop"
+      strategy: "wrap"
+
+    - type: "command"
+      name: "speckit.acceptance"
+      file: "commands/speckit.acceptance.md"
+      description: "Draft Layer 1 scenarios and Layer 2 DSL from acceptance criteria for human approval"
+
+    - type: "command"
+      name: "speckit.agents"
+      file: "commands/speckit.agents.md"
+      description: "Draft or refresh AGENTS.md from the codebase"
+
+tags:
+  - "governance"
+  - "baseline"
+  - "architecture"

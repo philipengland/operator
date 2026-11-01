@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "presets": {
+    "org-baseline": {
+      "version": "2.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:b30ea1f6a7126a2a69eaf32648f8e54941f39921114884394d8f0468a1800c13",
+      "enabled": true,
+      "priority": 30,
+      "registered_commands": {
+        "claude": [
+          "speckit.implement",
+          "speckit.acceptance",
+          "speckit.agents"
+        ]
+      },
+      "registered_skills": {
+        "claude": [
+          "speckit-implement",
+          "speckit-acceptance",
+          "speckit-agents"
+        ]
+      },
+      "installed_at": "2026-11-01T21:22:18.161832+00:00"
+    },
+    "public-facing-service": {
+      "version": "2.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:5cd6df5414aa209234f90164b42b5f0292386a1d4de59665e3c5c98f8306edf5",
+      "enabled": true,
+      "priority": 20,
+      "registered_commands": {},
+      "registered_skills": {},
+      "installed_at": "2026-11-01T21:22:18.885031+00:00"
+    }
+  }
+}
