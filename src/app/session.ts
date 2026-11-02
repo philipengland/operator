@@ -4,6 +4,7 @@
 import {
   emptyEntry,
   isGiven,
+  lineSpec,
   nextCellValue,
   nextOperator,
   workedExample,
@@ -67,6 +68,9 @@ function tapCell(state: SessionState, tapped: CellPosition): SessionState {
 }
 
 function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
+  if (lineSpec(state.puzzle, tapped)?.operator !== 'open') {
+    return state;
+  }
   const step = (operators: readonly (Operator | null)[]) =>
     operators.map((operator, index) => (index === tapped.index ? nextOperator(operator) : operator));
   const { entry } = state;

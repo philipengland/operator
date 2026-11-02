@@ -45,5 +45,16 @@ describe('applyAction', () => {
 
       expect(read(state)).toBe('+');
     });
+
+    it.each([
+      { line: { axis: 'row', index: 0 } },
+      { line: { axis: 'column', index: 1 } },
+    ] as const)('ignores a tap on the shown operator of $line.axis $line.index', ({ line }) => {
+      const before = startSession();
+
+      const after = applyAction(before, { type: 'tapOperator', line });
+
+      expect(after).toEqual(before);
+    });
   });
 });
