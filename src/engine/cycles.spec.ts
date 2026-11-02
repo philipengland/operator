@@ -19,4 +19,13 @@ describe('nextOperator', () => {
   it('steps an operator that is not chosen to +', () => {
     expect(nextOperator(null)).toBe('+');
   });
+
+  it.each([
+    ['+', '−'],
+    ['−', '×'],
+    ['×', '÷'],
+    ['÷', '+'],
+  ] as const)('steps %s to %s', (operator, next) => {
+    expect(nextOperator(operator)).toBe(next);
+  });
 });
