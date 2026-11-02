@@ -104,9 +104,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-3 Clearing a cell
 
-- [ ] T020 [US1] AC-3 RED: no new driver methods expected. Run the scenario and confirm it fails because 9 does not step to empty. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T021 [US1] AC-3 TDD cycles. Engine: `nextCellValue(9)` is `null` ("empty → 1 → … → 9 → empty", data-model "Cell value cycle"). Files: `src/engine/cycles.ts` (tests in `src/engine/cycles.spec.ts`).
-- [ ] T022 [US1] AC-3 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T020 [US1] AC-3 RED: no new driver methods expected. Run the scenario and confirm it fails because 9 does not step to empty. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T021 [US1] AC-3 TDD cycles. Engine: `nextCellValue(9)` is `null` ("empty → 1 → … → 9 → empty", data-model "Cell value cycle"). Files: `src/engine/cycles.ts` (tests in `src/engine/cycles.spec.ts`).
+- [X] T022 [US1] AC-3 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-4 The given cell
 

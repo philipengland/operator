@@ -170,3 +170,23 @@
   scenarios: operator tapping is not built yet. Both small-screen scenarios: real passes.
 - **Slice refactor**: none beyond the cycle refactors.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-3: Given the bottom-left cell shows 9, when the player taps it, then the cell is empty again
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "tapping a cell that shows 9 empties it" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: engine `Error: bottom-left cell — Expected: "empty", Received: 10`; iphone and android `Received: "10"`.
+
+### Cycle 1 — 9 steps back to empty
+
+- **RED**: `nextCellValue › steps 9 back to empty` in `src/engine/cycles.spec.ts` — failed: `AssertionError: expected 10 to be null`
+- **GREEN**: 9 (`HIGHEST_DIGIT`) returns `null` — commit `aa98c7f`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-3 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  32 unit tests pass (lines 97.0%, branches 96.4%); lint, type checks and build clean.
+- **Now passing early**: AC-5 (all runs). Its rule (only 1 to 9 or empty, in order) is fully
+  delivered by AC-2 and AC-3's cycles. To be reported at AC-5's RED step.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
