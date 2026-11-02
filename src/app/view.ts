@@ -1,7 +1,7 @@
 // The play screen (contracts/play-screen.md): builds the grid once, then writes each session
 // state into it. Wording and names come from labels.ts; rules come from the engine.
 
-import { isGiven, lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
+import { isGiven, lineOperator, lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
 import { cellName, lineName, operatorName } from './labels';
 import { counterText, type SessionAction, type SessionState } from './session';
 
@@ -35,6 +35,9 @@ export function createPlayScreen(
   const parts = build(root, initial.puzzle);
   for (const { position, button } of parts.cells) {
     button.addEventListener('click', () => onAction({ type: 'tapCell', ...position }));
+  }
+  for (const { line, button } of parts.operators) {
+    button.addEventListener('click', () => onAction({ type: 'tapOperator', line }));
   }
   const screen = { update: (state: SessionState) => render(parts, state) };
   screen.update(initial);
@@ -82,12 +85,11 @@ function renderCell({ position, button }: CellPart, { puzzle, entry }: SessionSt
 }
 
 function renderOperator({ line, button }: OperatorPart, { puzzle, entry }: SessionState): void {
-  const spec = lineSpec(puzzle, line);
-  const shown = spec && spec.operator !== 'open' ? spec.operator : null;
+  const isOpen = lineSpec(puzzle, line)?.operator === 'open';
   button.setAttribute('aria-label', operatorName(puzzle, entry, line));
-  button.textContent = shown ?? NOT_CHOSEN_MARK;
-  button.classList.toggle('open', shown === null);
-  if (shown) {
+  button.textContent = lineOperator(puzzle, entry, line) ?? NOT_CHOSEN_MARK;
+  button.classList.toggle('open', isOpen);
+  if (!isOpen) {
     button.setAttribute('aria-disabled', 'true');
   }
 }
