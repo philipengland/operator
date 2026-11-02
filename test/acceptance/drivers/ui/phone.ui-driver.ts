@@ -34,8 +34,9 @@ export class UiPhoneDriver implements PhoneDriver {
     return true;
   }
 
+  // Until this is built it reports an unknown count, so AC-18 cannot pass vacuously.
   async networkRequestsSinceOpening(): Promise<number> {
-    return 0;
+    return Number.NaN;
   }
 
   async look(cell: Cell): Promise<CellLook> {
