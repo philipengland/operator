@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { emptyEntry, workedExample, type Entry } from '../engine';
+import { emptyEntry, workedExample, type Entry, type SolutionKey } from '../engine';
 import { applyAction, counterText, startSession, type SessionState } from './session';
 
 describe('startSession', () => {
@@ -85,6 +85,17 @@ describe('applyAction', () => {
 
       expect(state.found).toEqual(new Set(['2,2,3|×|÷']));
       expect(state.message).toBe('new-solution');
+    });
+
+    it('says every solution has been found when a new solution completes the set', () => {
+      // Solution B from spec-001's examples, after Solution A has been found.
+      const solutionB: Entry = { cells: [[null, 2], [3, 3]], rowOperators: [null, '+'], columnOperators: ['−', null] };
+      const afterA: SessionState = { ...startSession(), entry: solutionB, found: new Set(['2,2,3|×|÷' as SolutionKey]) };
+
+      const state = applyAction(afterA, { type: 'submit' });
+
+      expect(state.found.size).toBe(2);
+      expect(state.message).toBe('all-found');
     });
 
     it('says the grid is not solved, and records nothing, when a line misses', () => {
