@@ -39,6 +39,7 @@ export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): 
 const MESSAGES: Partial<Readonly<Record<MessageKind, string>>> = {
   'new-solution': 'New solution found!',
   'all-found': "New solution found! You've found every solution.",
+  'already-found': "You've already found this solution.",
   'not-solved': 'Not solved yet.',
   incomplete: 'Fill every cell and choose every operator before checking.',
 };

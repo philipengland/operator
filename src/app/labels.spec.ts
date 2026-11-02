@@ -61,6 +61,10 @@ describe('messageText', () => {
     expect(messageText('all-found')).toBe("New solution found! You've found every solution.");
   });
 
+  it('says a solution checked again has already been found', () => {
+    expect(messageText('already-found')).toBe("You've already found this solution.");
+  });
+
   it('says "Not solved yet." when a line misses', () => {
     expect(messageText('not-solved')).toBe('Not solved yet.');
   });
