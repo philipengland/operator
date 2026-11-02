@@ -1,7 +1,7 @@
 // What the play screen says, as plain functions: visible wording and accessible names
 // (contracts/play-screen.md). No DOM access.
 
-import type { CellPosition, Entry, LinePosition, Operator, Puzzle } from '../engine';
+import { lineSpec, type CellPosition, type Entry, type LinePosition, type Operator, type Puzzle } from '../engine';
 
 const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
   '+': 'plus',
@@ -29,7 +29,7 @@ export function lineName(line: LinePosition): string {
 
 export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
   void entry;
-  const spec = (line.axis === 'row' ? puzzle.rowLines : puzzle.columnLines)[line.index];
+  const spec = lineSpec(puzzle, line);
   const choice = !spec || spec.operator === 'open' ? 'not chosen' : OPERATOR_WORDS[spec.operator];
   return `${lineName(line)} operator, ${choice}`;
 }
