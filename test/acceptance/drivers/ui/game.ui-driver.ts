@@ -31,7 +31,9 @@ export class UiGameDriver implements GameDriver {
     await tapLikeAFinger(this.cellButton(cell));
   }
 
-  async tapOperator(): Promise<void> {}
+  async tapOperator(line: Line): Promise<void> {
+    await tapLikeAFinger(this.operatorButton(line));
+  }
 
   async check(): Promise<void> {}
 

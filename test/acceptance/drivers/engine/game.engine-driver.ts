@@ -17,7 +17,9 @@ export class EngineGameDriver implements GameDriver {
     this.dispatch({ type: 'tapCell', ...CELL_POSITIONS[cell] });
   }
 
-  async tapOperator(): Promise<void> {}
+  async tapOperator(line: Line): Promise<void> {
+    this.dispatch({ type: 'tapOperator', line: LINE_POSITIONS[line] });
+  }
 
   async check(): Promise<void> {}
 
