@@ -26,9 +26,9 @@ export function startSession(): SessionState {
   };
 }
 
+/** "Found N of M" (FR-013). */
 export function counterText(state: SessionState): string {
-  void state;
-  return '';
+  return `Found ${state.found.size} of ${state.puzzle.solutionCount}`;
 }
 
 export function applyAction(state: SessionState): SessionState {
