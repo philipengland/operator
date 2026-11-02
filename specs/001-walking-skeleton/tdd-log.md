@@ -126,7 +126,7 @@
 ## AC-2: Given the top-right cell is empty, when the player taps it once, then it shows 1; when they tap it 6 more times, then it shows 7
 
 - **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "one tap shows 1, and six more show 7" (engine, iphone, android)
-- **Drivers added** (`b0b5a7e`, see git log "drivers tap cells for AC-2"): engine `tapCell` dispatches a `tapCell` action; UI `tapCell` taps the cell's button by accessible name. The session reducer gained its `action` parameter (still returning the state unchanged).
+- **Drivers added** (`3baae25`): engine `tapCell` dispatches a `tapCell` action; UI `tapCell` taps the cell's button by accessible name. The session reducer gained its `action` parameter (still returning the state unchanged).
 - **Acceptance RED** (engine, iphone, android): `Error: top-right cell — Expected: 1, Received: "empty"`
 
 ### Cycle 1 — an empty cell steps to 1
@@ -164,8 +164,7 @@
 - **False pass found and fixed**: the UI driver read any cell value outside 1 to 9 as "empty",
   so a cell showing "10" (9 + 1, not yet AC-3's rule) made AC-3 and AC-5 pass on both phones
   while failing in-process. The driver now reports unrecognised cell and operator values as
-  shown; AC-3 and AC-5 fail on the phones with `Received: "10"` — commit (see git log
-  "report unrecognised cell and operator values as shown").
+  shown; AC-3 and AC-5 fail on the phones with `Received: "10"` — commit `5f13e8e`.
 - **Still passing early**: AC-4 "tapping the given 6 leaves it showing 6" (all runs): a tap on the
   given cell does change the hidden entry, but the given digit always wins on screen. Both AC-7
   scenarios: operator tapping is not built yet. Both small-screen scenarios: real passes.
