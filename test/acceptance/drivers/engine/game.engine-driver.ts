@@ -1,6 +1,6 @@
 // Layer 3 — drives the play session in-process, with no browser.
 
-import { counterText, startSession, type SessionState } from '../../../../src/app/session';
+import { applyAction, counterText, startSession, type SessionAction, type SessionState } from '../../../../src/app/session';
 import type { Cell, CellValue, Line, OperatorChoice } from '../../dsl/vocabulary';
 import { DEFAULT_VIEW } from '../default-view';
 import type { CellView, GameDriver, GameView, OperatorView } from '../game.driver';
@@ -13,7 +13,9 @@ export class EngineGameDriver implements GameDriver {
     this.session = startSession();
   }
 
-  async tapCell(): Promise<void> {}
+  async tapCell(cell: Cell): Promise<void> {
+    this.dispatch({ type: 'tapCell', ...CELL_POSITIONS[cell] });
+  }
 
   async tapOperator(): Promise<void> {}
 
@@ -35,6 +37,12 @@ export class EngineGameDriver implements GameDriver {
 
   async announcementCount(): Promise<number> {
     return 0;
+  }
+
+  private dispatch(action: SessionAction): void {
+    if (this.session) {
+      this.session = applyAction(this.session, action);
+    }
   }
 }
 

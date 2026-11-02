@@ -27,7 +27,9 @@ export class UiGameDriver implements GameDriver {
     await scanForAccessibilityProblems(this.page);
   }
 
-  async tapCell(): Promise<void> {}
+  async tapCell(cell: Cell): Promise<void> {
+    await this.cellButton(cell).tap();
+  }
 
   async tapOperator(): Promise<void> {}
 

@@ -31,6 +31,7 @@ export function counterText(state: SessionState): string {
   return `Found ${state.found.size} of ${state.puzzle.solutionCount}`;
 }
 
-export function applyAction(state: SessionState): SessionState {
+export function applyAction(state: SessionState, action: SessionAction): SessionState {
+  void action;
   return state;
 }
