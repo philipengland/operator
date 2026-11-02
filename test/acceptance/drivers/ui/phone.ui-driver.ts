@@ -38,8 +38,20 @@ export class UiPhoneDriver implements PhoneDriver {
     return 0;
   }
 
-  async look(): Promise<CellLook> {
-    return { colours: '', markings: '' };
+  async look(cell: Cell): Promise<CellLook> {
+    const button = this.page.getByRole('group', { name: 'Puzzle' }).getByRole('button', { name: cellNamePattern(cell) });
+    return button.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        colours: [style.color, style.backgroundColor, style.borderTopColor].join(' | '),
+        markings: [
+          `border ${style.borderTopStyle} ${style.borderTopWidth}`,
+          `font ${style.fontWeight} ${style.fontStyle}`,
+          `pattern ${style.backgroundImage}`,
+          `decoration ${style.textDecorationLine}`,
+        ].join(' | '),
+      };
+    });
   }
 
   async layout(): Promise<ScreenLayout> {
