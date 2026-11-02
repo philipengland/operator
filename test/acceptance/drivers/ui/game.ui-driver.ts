@@ -41,7 +41,7 @@ export class UiGameDriver implements GameDriver {
     const targets = {} as Record<Line, number>;
     const operators = {} as Record<Line, OperatorView>;
     for (const line of LINES) {
-      targets[line] = readTargetText(await this.target(line).innerText());
+      targets[line] = readTargetText((await this.target(line).textContent()) ?? '');
       operators[line] = await this.operatorView(line);
     }
     const counter = (await this.status().innerText()).match(COUNTER_PATTERN)?.[0] ?? '';

@@ -47,7 +47,7 @@ export function readOperatorName(line: Line, name: string): OperatorChoice {
 
 /** "Row 1 target 8" → 8. */
 export function readTargetText(text: string): number {
-  return Number(text.trim().split(' ').at(-1));
+  return Number(text.match(/(\d+)\s*$/)?.[1] ?? Number.NaN);
 }
 
 export const COUNTER_PATTERN = /Found \d+ of \d+/;
