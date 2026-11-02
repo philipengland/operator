@@ -17,4 +17,8 @@ describe('evaluateLine', () => {
   it('fails a line at the step that goes below zero: 6 − 9', () => {
     expect(evaluateLine([6, 9], '−', defaultRules)).toEqual({ ok: false, reason: 'below-zero', step: 1 });
   });
+
+  it('fails a line at the step that does not divide exactly: 6 ÷ 4', () => {
+    expect(evaluateLine([6, 4], '÷', defaultRules)).toEqual({ ok: false, reason: 'inexact-division', step: 1 });
+  });
 });
