@@ -9,4 +9,8 @@ describe('nextCellValue', () => {
   it.each([1, 2, 3, 4, 5, 6, 7, 8] as const)('steps %i to the next digit', (digit) => {
     expect(nextCellValue(digit)).toBe(digit + 1);
   });
+
+  it('steps 9 back to empty', () => {
+    expect(nextCellValue(9)).toBeNull();
+  });
 });
