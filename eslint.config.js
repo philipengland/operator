@@ -15,8 +15,17 @@ export default tseslint.config(
       complexity: ['error', 10],
       'max-params': ['error', 6],
       'max-depth': ['error', 3],
-      'no-magic-numbers': ['error', { ignore: [0, 1, -1, 2], ignoreArrayIndexes: true, ignoreDefaultValues: true }],
+      'no-magic-numbers': 'off',
+      '@typescript-eslint/no-magic-numbers': [
+        'error',
+        { ignore: [0, 1, -1, 2], ignoreArrayIndexes: true, ignoreDefaultValues: true, ignoreNumericLiteralTypes: true },
+      ],
     },
+  },
+  {
+    // Plain JavaScript tools and config files run in Node.
+    files: ['**/*.{js,mjs}'],
+    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
   },
   {
     // Playwright fixtures must take an object pattern first, even when they need nothing.
@@ -26,7 +35,7 @@ export default tseslint.config(
     // Tests state concrete examples and config files state limits, so literal numbers are
     // expected there.
     files: ['**/*.spec.ts', 'test/**/*.ts', '*.config.{js,ts}'],
-    rules: { 'no-magic-numbers': 'off' },
+    rules: { '@typescript-eslint/no-magic-numbers': 'off' },
   },
   {
     // Constitution II and III: the engine imports nothing outside itself, uses no browser

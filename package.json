@@ -14,8 +14,10 @@
     "lint": "eslint .",
     "typecheck": "tsc --project tsconfig.json && tsc --project src/engine/tsconfig.json && tsc --project test/acceptance/tsconfig.json",
     "test": "vitest run --coverage",
-    "test:acceptance": "playwright test",
-    "typecheck:acceptance": "tsc --project test/acceptance/tsconfig.json"
+    "test:acceptance": "npm run test:acceptance:engine && npm run test:acceptance:ui",
+    "typecheck:acceptance": "tsc --project test/acceptance/tsconfig.json",
+    "test:acceptance:engine": "node tools/run-acceptance.mjs engine",
+    "test:acceptance:ui": "node tools/run-acceptance.mjs ui"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

@@ -1,0 +1,54 @@
+// The engine's data shapes (contracts/engine-api.md, data-model.md "Engine").
+
+export type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+export type Operator = '+' | '−' | '×' | '÷';
+
+export interface LineSpec {
+  readonly target: number;
+  readonly operator: Operator | 'open';
+}
+
+export interface Puzzle {
+  readonly rows: number;
+  readonly columns: number;
+  readonly givens: readonly (readonly (Digit | null)[])[];
+  readonly rowLines: readonly LineSpec[];
+  readonly columnLines: readonly LineSpec[];
+  readonly solutionCount: number;
+}
+
+export interface Entry {
+  readonly cells: readonly (readonly (Digit | null)[])[];
+  readonly rowOperators: readonly (Operator | null)[];
+  readonly columnOperators: readonly (Operator | null)[];
+}
+
+export interface Rules {
+  readonly operatorOrder: 'left-to-right';
+}
+
+export type LineResult =
+  | { readonly ok: true; readonly value: number }
+  | { readonly ok: false; readonly reason: 'below-zero' | 'inexact-division'; readonly step: number };
+
+export type SolutionKey = string & { readonly __brand: 'SolutionKey' };
+
+export interface CellPosition {
+  readonly row: number;
+  readonly column: number;
+}
+
+export interface LinePosition {
+  readonly axis: 'row' | 'column';
+  readonly index: number;
+}
+
+export type CheckResult =
+  | {
+      readonly kind: 'incomplete';
+      readonly missingCells: readonly CellPosition[];
+      readonly missingOperators: readonly LinePosition[];
+    }
+  | { readonly kind: 'not-solved' }
+  | { readonly kind: 'solved'; readonly key: SolutionKey };
