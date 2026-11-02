@@ -81,5 +81,12 @@ describe('applyAction', () => {
       expect(state.message).toBe('not-solved');
       expect(state.found).toEqual(new Set());
     });
+
+    it('asks for everything to be filled first, and records nothing, when the grid has a gap', () => {
+      const state = applyAction(startSession(), { type: 'submit' });
+
+      expect(state.message).toBe('incomplete');
+      expect(state.found).toEqual(new Set());
+    });
   });
 });

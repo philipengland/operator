@@ -88,7 +88,7 @@ function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
 function submit(state: SessionState): SessionState {
   const result = checkEntry(state.puzzle, state.entry, defaultRules);
   if (result.kind !== 'solved') {
-    return { ...state, message: 'not-solved' };
+    return { ...state, message: result.kind };
   }
   return { ...state, found: new Set([...state.found, result.key]), message: 'new-solution' };
 }
