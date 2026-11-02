@@ -25,7 +25,11 @@ export class UiPhoneDriver implements PhoneDriver {
 
   async useReferencePhoneOn4G(): Promise<void> {}
 
-  async loseConnection(): Promise<void> {}
+  // Built ahead of AC-18: an empty placeholder let the offline scenario pass without ever
+  // going offline.
+  async loseConnection(): Promise<void> {
+    await this.page.context().setOffline(true);
+  }
 
   async reload(): Promise<void> {}
 
