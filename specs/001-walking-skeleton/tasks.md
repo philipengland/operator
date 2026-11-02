@@ -98,9 +98,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-2 Tapping an empty cell
 
-- [ ] T017 [US1] AC-2 RED: engine driver `tapCell(cell)` dispatches `tapCell(row, column)` to the session. UI driver `tapCell(cell)` taps the cell button by its accessible name, waits for its name to change, and runs axe. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T018 [US1] AC-2 TDD cycles. Engine: `nextCellValue(null)` is `1`; `nextCellValue(n)` is `n + 1` for 1 to 8. App: session `tapCell` on a changeable cell moves its value one step; `view.ts` re-renders the cell's text and accessible name; `main.ts` turns a tap on a cell into `tapCell`.
-- [ ] T019 [US1] AC-2 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T017 [US1] AC-2 RED: engine driver `tapCell(cell)` dispatches `tapCell(row, column)` to the session. UI driver `tapCell(cell)` taps the cell button by its accessible name, waits for its name to change, and runs axe. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T018 [US1] AC-2 TDD cycles. Engine: `nextCellValue(null)` is `1`; `nextCellValue(n)` is `n + 1` for 1 to 8. App: session `tapCell` on a changeable cell moves its value one step; `view.ts` re-renders the cell's text and accessible name; `main.ts` turns a tap on a cell into `tapCell`.
+- [X] T019 [US1] AC-2 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-3 Clearing a cell
 

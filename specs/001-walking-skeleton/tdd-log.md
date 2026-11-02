@@ -121,3 +121,53 @@
 - **Slice refactor**: `lineSpec(puzzle, line)` moved into the engine and used by the labels and
   the view — commit `33f9619`; `view.ts` `build` split into named steps (in `9a0bc5a`).
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-2: Given the top-right cell is empty, when the player taps it once, then it shows 1; when they tap it 6 more times, then it shows 7
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "one tap shows 1, and six more show 7" (engine, iphone, android)
+- **Drivers added** (`b0b5a7e`, see git log "drivers tap cells for AC-2"): engine `tapCell` dispatches a `tapCell` action; UI `tapCell` taps the cell's button by accessible name. The session reducer gained its `action` parameter (still returning the state unchanged).
+- **Acceptance RED** (engine, iphone, android): `Error: top-right cell — Expected: 1, Received: "empty"`
+
+### Cycle 1 — an empty cell steps to 1
+
+- **RED**: `nextCellValue › steps an empty cell to 1` in `src/engine/cycles.spec.ts` — failed: `AssertionError: expected null to be 1`
+- **GREEN**: returns 1 (hard-coded; the next test forces the rule) — commit `89d4cb2`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — each digit from 1 to 8 steps to the next
+
+- **RED**: `nextCellValue › steps %i to the next digit` (8 rows) — failed: `expected 1 to be 2` … `expected 1 to be 9`
+- **GREEN**: `(value ?? 0) + 1`; 9 → empty is AC-3's rule — commit `bb651b9`
+- **REFACTOR**: none needed.
+
+### Cycle 3 — tapping a changeable cell in a session steps its value
+
+- **RED**: `applyAction › tapCell › steps an empty changeable cell to 1` in `src/app/session.spec.ts` — failed: `AssertionError: expected null to be 1`
+- **GREEN**: the reducer steps the tapped cell with `nextCellValue` — commit `12e65ee`. The engine AC-2 scenario now passes.
+- **REFACTOR**: named the step `tapCell(state, position)` behind a `switch` on the action — commit `9fbb4a3`
+
+### Cycle 4 — a cell's name includes the digit entered
+
+- **RED**: `cellName › names a cell by the digit the player entered` in `src/app/labels.spec.ts` — failed: `AssertionError: expected 'Top-right cell, empty' to be 'Top-right cell, 7'`
+- **GREEN**: given digit first, then the entered digit, else "empty" — commit `dea0630`
+- **REFACTOR**: none needed.
+
+### View — taps reach the session
+
+- `view.ts` reports each cell tap as an action and shows entered digits; `main.ts` runs actions
+  through the session and re-renders. `render` was split into cell and operator steps when the
+  complexity limit (10) caught it — commit `a356903`. Phone AC-2 now passes.
+
+- **Acceptance GREEN**: AC-2 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  31 unit tests pass (lines 96.7%, branches 96.2%); lint, type checks and build clean.
+- **False pass found and fixed**: the UI driver read any cell value outside 1 to 9 as "empty",
+  so a cell showing "10" (9 + 1, not yet AC-3's rule) made AC-3 and AC-5 pass on both phones
+  while failing in-process. The driver now reports unrecognised cell and operator values as
+  shown; AC-3 and AC-5 fail on the phones with `Received: "10"` — commit (see git log
+  "report unrecognised cell and operator values as shown").
+- **Still passing early**: AC-4 "tapping the given 6 leaves it showing 6" (all runs): a tap on the
+  given cell does change the hidden entry, but the given digit always wins on screen. Both AC-7
+  scenarios: operator tapping is not built yet. Both small-screen scenarios: real passes.
+- **Slice refactor**: none beyond the cycle refactors.
+- **Checkpoint**: awaiting approval from Philip England.
