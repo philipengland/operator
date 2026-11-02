@@ -29,20 +29,33 @@ export function targetTextPattern(line: Line): RegExp {
   return new RegExp(`^${line} target \\d+$`);
 }
 
-/** "Top-left cell, given 6" → { value: 6, isGiven: true }; "Top-right cell, empty" → empty. */
+/**
+ * "Top-left cell, given 6" → { value: 6, isGiven: true }; "Top-right cell, empty" → empty.
+ * Anything else is reported exactly as shown, so a wrong value such as "10" fails the
+ * scenario instead of being read as a valid one.
+ */
 export function readCellName(cell: Cell, name: string): { value: CellValue; isGiven: boolean } {
   const description = name.slice(CELL_NAME_PREFIX[cell].length);
   const isGiven = description.startsWith('given ');
   const shown = isGiven ? description.slice('given '.length) : description;
-  const digit = Number(shown);
-  const value: CellValue = Number.isInteger(digit) && digit >= 1 && digit <= 9 ? (digit as Digit) : 'empty';
-  return { value, isGiven };
+  return { value: readCellValue(shown), isGiven };
 }
 
-/** "Row 2 operator, not chosen" → "not chosen"; "Row 1 operator, plus" → "+". */
+function readCellValue(shown: string): CellValue {
+  if (shown === 'empty') {
+    return 'empty';
+  }
+  const digit = Number(shown);
+  return Number.isInteger(digit) && digit >= 1 && digit <= 9 ? (digit as Digit) : (shown as unknown as CellValue);
+}
+
+/** "Row 2 operator, not chosen" → "not chosen"; "Row 1 operator, plus" → "+"; anything else as shown. */
 export function readOperatorName(line: Line, name: string): OperatorChoice {
   const word = name.slice(`${line} operator, `.length);
-  return OPERATOR_WORDS[word] ?? 'not chosen';
+  if (word === 'not chosen') {
+    return 'not chosen';
+  }
+  return OPERATOR_WORDS[word] ?? (word as unknown as OperatorChoice);
 }
 
 /** "Row 1 target 8" → 8. */
