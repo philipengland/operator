@@ -60,4 +60,8 @@ describe('messageText', () => {
   it('says "Not solved yet." when a line misses', () => {
     expect(messageText('not-solved')).toBe('Not solved yet.');
   });
+
+  it('asks for every cell and operator to be filled when the grid has a gap', () => {
+    expect(messageText('incomplete')).toBe('Fill every cell and choose every operator before checking.');
+  });
 });
