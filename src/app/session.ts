@@ -82,6 +82,7 @@ function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
       tapped.axis === 'row'
         ? { ...entry, rowOperators: step(entry.rowOperators) }
         : { ...entry, columnOperators: step(entry.columnOperators) },
+    message: null,
   };
 }
 

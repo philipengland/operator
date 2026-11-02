@@ -54,6 +54,14 @@ describe('applyAction', () => {
       expect(read(state)).toBe('+');
     });
 
+    it('clears the message when an open operator changes', () => {
+      const afterCheck: SessionState = { ...startSession(), message: 'not-solved' };
+
+      const state = applyAction(afterCheck, { type: 'tapOperator', line: { axis: 'row', index: 1 } });
+
+      expect(state.message).toBeNull();
+    });
+
     it.each([
       { line: { axis: 'row', index: 0 } },
       { line: { axis: 'column', index: 1 } },
