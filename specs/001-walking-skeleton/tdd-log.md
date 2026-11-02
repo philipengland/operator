@@ -533,3 +533,27 @@
   solutions are found, so B then A also finds every solution. Already passing: AC-14, AC-16.
 - **Slice refactor**: none needed.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-13: Given the counter reads "Found 1 of 2" after Solution A, when the player submits Solution A again, then the game says this solution has already been found and the counter still reads "Found 1 of 2"
+
+- **Acceptance test**: `test/acceptance/play/find-solutions.acceptance-spec.ts` — "Solution A again is already found and the counter stays at "Found 1 of 2"" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED** (engine, iphone, android): `Error: what the game says — Expected: "already found", Received: "new solution"`
+
+### Cycle 1 — checking a found solution again says so and records nothing new
+
+- **RED**: `applyAction › submit › says a solution has already been found, and records nothing new, when it is checked again` in `src/app/session.spec.ts` — failed: `expected 'new-solution' to be 'already-found'`
+- **GREEN**: a solved key already in `found` gives message `already-found` and leaves `found` alone — commit `1f3d083`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — the already-found message reads "You've already found this solution."
+
+- **RED**: `messageText › says a solution checked again has already been found` in `src/app/labels.spec.ts` — failed: `expected '' to be 'You've already found this solution.'`
+- **GREEN**: commit `6015aa1`
+- **REFACTOR**: with all five message kinds worded, the table is now a complete `Record`, so the compiler requires wording for any new kind — commit `4e26258`
+
+- **Acceptance GREEN**: AC-13 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  67 unit tests pass; lint, type checks and build clean.
+- **Slice refactor**: none beyond cycle 2's.
+- **Checkpoint**: awaiting approval from Philip England.

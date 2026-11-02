@@ -186,9 +186,9 @@ and the count stays at 2.
 
 ### AC-13 Checking the same solution twice
 
-- [ ] T054 [US2] AC-13 RED: drivers map the `already-found` message kind to "already found". Confirm the scenario fails. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
-- [ ] T055 [US2] AC-13 TDD cycles. App: session `submit` with a key already in `found` sets `message: already-found` and does not grow `found`; `labels.ts` gives the already-found wording.
-- [ ] T056 [US2] AC-13 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T054 [US2] AC-13 RED: drivers map the `already-found` message kind to "already found". Confirm the scenario fails. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T055 [US2] AC-13 TDD cycles. App: session `submit` with a key already in `found` sets `message: already-found` and does not grow `found`; `labels.ts` gives the already-found wording.
+- [X] T056 [US2] AC-13 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
 
 ### AC-14 Checking a found solution after all are found ⚠️
 
