@@ -20,7 +20,10 @@ export class PipelineDeliveryDriver implements DeliveryDriver {
       return 'no public address given (ACCEPTANCE_PUBLIC_URL)';
     }
     try {
-      const response = await fetch(publicAddress, { cache: 'no-store' });
+      // A query the CDN has never seen, so it fetches the page as published, not a cached copy.
+      const freshAddress = new URL(publicAddress);
+      freshAddress.searchParams.set('check', String(Date.now()));
+      const response = await fetch(freshAddress, { cache: 'no-store' });
       if (!response.ok) {
         return `nothing published (HTTP ${response.status} from ${publicAddress})`;
       }
