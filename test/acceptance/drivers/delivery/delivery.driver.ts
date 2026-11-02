@@ -1,15 +1,16 @@
 // Layer 3 — reads the pipeline's publishing rules and the version at the public address.
-//   GITHUB_SHA              the merged commit (set by GitHub Actions); locally, the checked-out commit
 //   ACCEPTANCE_PUBLIC_URL   the public address to read, e.g. the Pages deployment URL
+// The expected version is found the same way the build labels itself (tools/build-version.ts).
 
 import { execSync } from 'node:child_process';
+import { buildVersion } from '../../../../tools/build-version';
 import type { DeliveryDriver, PublishingRoute } from '../delivery.driver';
 
 const VERSION_META = /<meta\s+name="version"\s+content="([^"]*)"/;
 
 export class PipelineDeliveryDriver implements DeliveryDriver {
   async mergedVersion(): Promise<string> {
-    return process.env.GITHUB_SHA ?? execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+    return buildVersion(process.env, () => execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim());
   }
 
   // Failures are reported as the version seen, so the scenario says what was found instead.
