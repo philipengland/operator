@@ -120,7 +120,7 @@
     375 × 667 (T080).
 - **Slice refactor**: `lineSpec(puzzle, line)` moved into the engine and used by the labels and
   the view — commit `33f9619`; `view.ts` `build` split into named steps (in `9a0bc5a`).
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-2: Given the top-right cell is empty, when the player taps it once, then it shows 1; when they tap it 6 more times, then it shows 7
@@ -169,7 +169,7 @@
   given cell does change the hidden entry, but the given digit always wins on screen. Both AC-7
   scenarios: operator tapping is not built yet. Both small-screen scenarios: real passes.
 - **Slice refactor**: none beyond the cycle refactors.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-3: Given the bottom-left cell shows 9, when the player taps it, then the cell is empty again
@@ -189,7 +189,7 @@
 - **Now passing early**: AC-5 (all runs). Its rule (only 1 to 9 or empty, in order) is fully
   delivered by AC-2 and AC-3's cycles. To be reported at AC-5's RED step.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-4: Given the top-left cell holds the given 6, when the player taps it, then it still shows 6 and looks visibly different from cells the player can change
@@ -227,7 +227,7 @@
 - **Still passing early**: AC-5 (all runs, delivered by AC-2 and AC-3); both AC-7 scenarios
   (operator tapping not built yet); both small-screen scenarios (real passes).
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-5: Given an empty cell, when the player taps it ten times, then it shows 1, 2, 3, 4, 5, 6, 7, 8, 9 and then is empty again, and never shows 0 or any other character
@@ -284,7 +284,7 @@
   a hidden entry value, but `lineOperator` always returns the shown operator, so nothing
   visible changes — the same situation as AC-4. To be reported at AC-7.
 - **Slice refactor**: none beyond the cycle refactor.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-7: Given the player taps Row 1's + or Column 2's ×, then the operator does not change
@@ -307,7 +307,7 @@
   Every scenario now passing is either a criterion completed so far (AC-1 to AC-7) or a real
   small-screen pass; no vacuous passes remain.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-8: Given the player has entered top-right 2, bottom-left 2, bottom-right 3, Row 2 × and Column 1 ÷ (Solution A), when they submit, then the game says the puzzle is solved and the counter reads "Found 1 of 2"
@@ -363,7 +363,7 @@
 - **Now passing early, genuinely**: AC-14 (the found set never counts a solution twice) and AC-16
   (Check never clears the grid), all runs. To be reported at their RED steps.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-9: Given the player has entered top-right 2, bottom-left 9, bottom-right 3, Row 2 − and Column 1 − (Row 2 gives 9 − 3 = 6, but Column 1 gives 6 − 9, which goes below zero), when they submit, then the game says the puzzle is not solved yet and the counter still reads "Found 0 of 2"
@@ -402,7 +402,7 @@
   - AC-20 "tapping the given 6 after "not solved yet" leaves the message in place" (all runs):
     messages never clear yet. The other AC-20 scenario (a changeable tap clears it) is still red.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-10: Given the player has entered top-right 2, bottom-left 4, bottom-right 3, Row 2 + and Column 1 ÷ (Column 1 gives 6 ÷ 4, which is not a whole number), when they submit, then the game says the puzzle is not solved yet and the counter does not change
@@ -423,7 +423,7 @@
 - **Acceptance GREEN**: AC-10 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
   57 unit tests pass; lint, type checks and build clean. No new early passes.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-11: Given the bottom-right cell is empty, or Column 1's operator is not yet chosen, when the player submits, then the game says every cell and every open operator must be filled before checking, and the counter does not change
@@ -461,7 +461,7 @@
   61 unit tests pass (lines 99.0%, branches 95.1%); lint, type checks and build clean. No new
   early passes.
 - **Slice refactor**: none beyond cycle 2's.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-20: Given the game has just said the puzzle is not solved yet, when the player taps the bottom-left cell, then the message disappears without anything being announced and the counter does not change; when they instead tap the given 6, then the message stays
@@ -532,7 +532,7 @@
 - **Now passing early, genuinely**: AC-15 (all runs): `all-found` depends only on how many
   solutions are found, so B then A also finds every solution. Already passing: AC-14, AC-16.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
 - **Checkpoint**: approved by Philip England on 2026-11-02.
 
 ## AC-13: Given the counter reads "Found 1 of 2" after Solution A, when the player submits Solution A again, then the game says this solution has already been found and the counter still reads "Found 1 of 2"
@@ -556,4 +556,40 @@
 - **Acceptance GREEN**: AC-13 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
   67 unit tests pass; lint, type checks and build clean.
 - **Slice refactor**: none beyond cycle 2's.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-14: Given the counter reads "Found 2 of 2", when the player submits Solution B again, then the counter still reads "Found 2 of 2"
+
+- **Acceptance test**: `test/acceptance/play/find-solutions.acceptance-spec.ts` — "Solution B again leaves the counter at "Found 2 of 2"" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 1 of 1, iphone 1 of 1, android 1 of 1). Reported to the owner at the AC-13 checkpoint. Delivered by AC-13: a key already in `found` gives `already-found` and leaves `found` unchanged, so the count cannot pass `solutionCount`.
+- **Decision**: owner chose option (a) on 2026-11-02 — record AC-14 as delivered by AC-13, write no new code. T058 (cycles only if red) was skipped.
+- **Acceptance GREEN**: AC-14 passes in all runs; no code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-02 (option a).
+
+## AC-15: Given the player has submitted Solution B first, when they then submit Solution A, then the game says every solution has been found and the counter reads "Found 2 of 2"
+
+- **Acceptance test**: `test/acceptance/play/find-solutions.acceptance-spec.ts` — "Solution A after Solution B finds every solution and the counter reads "Found 2 of 2"" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 1 of 1, iphone 1 of 1, android 1 of 1). Reported to the owner at the AC-12 and AC-13 checkpoints. Delivered by AC-12: `all-found` depends only on the size of `found`, not on which solution came first.
+- **Decision**: owner chose option (a) on 2026-11-02 — record AC-15 as delivered by AC-12, write no new code. T061 was skipped.
+- **Acceptance GREEN**: AC-15 passes in all runs; no code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-02 (option a).
+
+## AC-16: Given a solution has just been accepted, when the player looks at the grid, then their digits and operators are still in place for them to change
+
+- **Acceptance test**: `test/acceptance/play/find-solutions.acceptance-spec.ts` — "after Solution A is accepted, the player's digits and operators are still in place" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 1 of 1, iphone 1 of 1, android 1 of 1). Reported to the owner at the AC-13 checkpoint. Delivered by AC-8: `submit` has never changed the entry; it only sets `found` and `message` (FR-015).
+- **Decision**: owner chose option (a) on 2026-11-02 — record AC-16 as delivered by AC-8, write no new code. T064 was skipped.
+- **Acceptance GREEN**: AC-16 passes in all runs; no code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-02 (option a).
+
+## User Story 2 complete (T066)
+
+- Every US1 and US2 scenario run through all three projects on 2026-11-02:
+  engine 20 of 20, iphone and android 44 of 44 (`solve-puzzle` and `find-solutions`), with
+  the axe scan (wcag2a, wcag2aa, wcag22aa) after opening and after each Check clean in every
+  phone run.
+- Remaining failures belong to User Story 3 and Polish, not yet started: AC-19 (engine);
+  AC-18 network requests, AC-21 offline reload and the Android speed budget (phones).

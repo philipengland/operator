@@ -192,25 +192,25 @@ and the count stays at 2.
 
 ### AC-14 Checking a found solution after all are found ⚠️
 
-- [ ] T057 [US2] AC-14 RED: no new driver methods expected. ⚠️ Likely to pass already after AC-12 and AC-13. If so, stop and report. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
-- [ ] T058 [US2] AC-14 TDD cycles: only if red. App: `found` never grows past `puzzle.solutionCount`.
-- [ ] T059 [US2] AC-14 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T057 [US2] AC-14 RED: no new driver methods expected. ⚠️ Likely to pass already after AC-12 and AC-13. If so, stop and report. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T058 [US2] AC-14 TDD cycles: only if red. App: `found` never grows past `puzzle.solutionCount`.
+- [X] T059 [US2] AC-14 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
 
 ### AC-15 The order solutions are found in does not matter ⚠️
 
-- [ ] T060 [US2] AC-15 RED: no new driver methods expected. ⚠️ May already pass after AC-12. If so, stop and report. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
-- [ ] T061 [US2] AC-15 TDD cycles: only if red. App: `all-found` depends only on the size of `found`, not on which solution came first. Files: `src/app/session.ts` (tests in `src/app/session.spec.ts`).
-- [ ] T062 [US2] AC-15 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T060 [US2] AC-15 RED: no new driver methods expected. ⚠️ May already pass after AC-12. If so, stop and report. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T061 [US2] AC-15 TDD cycles: only if red. App: `all-found` depends only on the size of `found`, not on which solution came first. Files: `src/app/session.ts` (tests in `src/app/session.spec.ts`).
+- [X] T062 [US2] AC-15 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
 
 ### AC-16 The grid stays filled after a solution is accepted ⚠️
 
-- [ ] T063 [US2] AC-16 RED: no new driver methods expected. ⚠️ Likely to pass already, because `submit` has never changed the entry. If so, stop and report. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
-- [ ] T064 [US2] AC-16 TDD cycles: only if red. App: session `submit` returns the same `entry` in every case (FR-015). Files: `src/app/session.ts` (tests in `src/app/session.spec.ts`).
-- [ ] T065 [US2] AC-16 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T063 [US2] AC-16 RED: no new driver methods expected. ⚠️ Likely to pass already, because `submit` has never changed the entry. If so, stop and report. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T064 [US2] AC-16 TDD cycles: only if red. App: session `submit` returns the same `entry` in every case (FR-015). Files: `src/app/session.ts` (tests in `src/app/session.spec.ts`).
+- [X] T065 [US2] AC-16 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
 
 ### US2 through the UI
 
-- [ ] T066 [US2] Run every US1 and US2 scenario through all three projects; all pass with axe clean. Record this in the TDD log. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`, `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T066 [US2] Run every US1 and US2 scenario through all three projects; all pass with axe clean. Record this in the TDD log. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`, `test/acceptance/play/find-solutions.acceptance-spec.ts`.
 
 **Checkpoint**: User Stories 1 and 2 both work.
 
