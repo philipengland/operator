@@ -424,3 +424,41 @@
   57 unit tests pass; lint, type checks and build clean. No new early passes.
 - **Slice refactor**: none needed.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-11: Given the bottom-right cell is empty, or Column 1's operator is not yet chosen, when the player submits, then the game says every cell and every open operator must be filled before checking, and the counter does not change
+
+- **Acceptance tests**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "with the bottom-right cell empty, …" and "with Column 1's operator not chosen, …" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED** (engine 2, iphone 2, android 2): `Error: what the game says — Expected: "fill everything first", Received: "not solved yet"`
+
+### Cycle 1 — an empty changeable cell makes the check incomplete, naming the cell
+
+- **RED**: `checkEntry › is incomplete, naming the cell, when a changeable cell is empty` in `src/engine/check-entry.spec.ts` — failed: `expected { kind: 'not-solved' } to deeply equal { kind: 'incomplete', …(2) }`
+- **GREEN**: empty changeable cells are listed before any line is worked out — commit `5de6741`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — an unchosen open operator makes the check incomplete, naming the line
+
+- **RED**: `checkEntry › is incomplete, naming the line, when an open operator is not chosen` — failed: `expected { kind: 'not-solved' } to deeply equal { kind: 'incomplete', …(2) }`
+- **GREEN**: lines whose operator is still `null` are listed too — commit `937ef51`
+- **REFACTOR**: the AC-8 "a gap misses its target" rule can no longer be reached; its guard
+  now only narrows the types, and its comment says so — commit `54aa121`
+
+### Cycle 3 — a session asks for everything to be filled first, and records nothing
+
+- **RED**: `applyAction › submit › asks for everything to be filled first, and records nothing, when the grid has a gap` in `src/app/session.spec.ts` — failed: `expected 'not-solved' to be 'incomplete'`
+- **GREEN**: an unsolved check's kind (`incomplete` or `not-solved`) becomes the message — commit `e12c505`
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the incomplete message reads "Fill every cell and choose every operator before checking."
+
+- **RED**: `messageText › asks for every cell and operator to be filled when the grid has a gap` — failed: `expected '' to be 'Fill every cell and choose every oper…'`
+- **GREEN**: commit `49b3c5a`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-11 passes — engine 2 of 2, iphone 2 of 2, android 2 of 2. Full suite:
+  61 unit tests pass (lines 99.0%, branches 95.1%); lint, type checks and build clean. No new
+  early passes.
+- **Slice refactor**: none beyond cycle 2's.
+- **Checkpoint**: awaiting approval from Philip England.

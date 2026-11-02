@@ -152,9 +152,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-11 Checking before everything is filled
 
-- [ ] T044 [US1] AC-11 RED: no new driver methods expected. Confirm both scenarios fail. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T045 [US1] AC-11 TDD cycles. Engine: `checkEntry` returns `incomplete` with `missingCells` listing an empty changeable cell, and with `missingOperators` listing an open line whose operator is `null`; it returns `incomplete` before evaluating any line (FR-010). App: session `submit` on `incomplete` sets `message: incomplete` and leaves `found` unchanged; `labels.ts` gives the "fill everything first" wording.
-- [ ] T046 [US1] AC-11 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T044 [US1] AC-11 RED: no new driver methods expected. Confirm both scenarios fail. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T045 [US1] AC-11 TDD cycles. Engine: `checkEntry` returns `incomplete` with `missingCells` listing an empty changeable cell, and with `missingOperators` listing an open line whose operator is `null`; it returns `incomplete` before evaluating any line (FR-010). App: session `submit` on `incomplete` sets `message: incomplete` and leaves `found` unchanged; `labels.ts` gives the "fill everything first" wording.
+- [X] T046 [US1] AC-11 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-20 The message goes once the grid changes
 
