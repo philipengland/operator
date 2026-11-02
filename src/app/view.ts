@@ -2,7 +2,7 @@
 // state into it. Wording and names come from labels.ts; rules come from the engine.
 
 import { isGiven, lineOperator, lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
-import { cellName, lineName, operatorName } from './labels';
+import { cellName, lineName, messageText, operatorName } from './labels';
 import { counterText, type SessionAction, type SessionState } from './session';
 
 const NOT_CHOSEN_MARK = '?';
@@ -24,7 +24,9 @@ interface OperatorPart {
 interface ScreenParts {
   readonly cells: readonly CellPart[];
   readonly operators: readonly OperatorPart[];
+  readonly message: HTMLElement;
   readonly counter: HTMLElement;
+  readonly check: HTMLButtonElement;
 }
 
 export function createPlayScreen(
@@ -39,6 +41,7 @@ export function createPlayScreen(
   for (const { line, button } of parts.operators) {
     button.addEventListener('click', () => onAction({ type: 'tapOperator', line }));
   }
+  parts.check.addEventListener('click', () => onAction({ type: 'submit' }));
   const screen = { update: (state: SessionState) => render(parts, state) };
   screen.update(initial);
   return screen;
@@ -62,14 +65,17 @@ function build(root: HTMLElement, puzzle: Puzzle): ScreenParts {
     }
   });
 
+  const message = element('p', 'message');
   const counter = element('p', 'counter');
-  root.replaceChildren(grid, statusRegion(counter), checkButton());
-  return { cells, operators, counter };
+  const check = checkButton();
+  root.replaceChildren(grid, statusRegion(message, counter), check);
+  return { cells, operators, message, counter, check };
 }
 
 function render(parts: ScreenParts, state: SessionState): void {
   parts.cells.forEach((cell) => renderCell(cell, state));
   parts.operators.forEach((operator) => renderOperator(operator, state));
+  parts.message.textContent = state.message ? messageText(state.message) : '';
   parts.counter.textContent = counterText(state);
 }
 
@@ -119,10 +125,11 @@ function targetElement(line: LinePosition, target: number): HTMLElement {
   return wrapper;
 }
 
-function statusRegion(counter: HTMLElement): HTMLElement {
+/** One polite live region, so a new message and the counter are announced together. */
+function statusRegion(message: HTMLElement, counter: HTMLElement): HTMLElement {
   const status = element('div', 'status');
   status.setAttribute('role', 'status');
-  status.append(counter);
+  status.append(message, counter);
   return status;
 }
 
