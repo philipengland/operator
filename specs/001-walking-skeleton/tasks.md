@@ -140,9 +140,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-9 A line that goes below zero
 
-- [ ] T038 [US1] AC-9 RED: no new driver methods expected. Confirm the scenario fails because the below-zero line is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T039 [US1] AC-9 TDD cycles. Engine: `evaluateLine([6, 9], '−')` is `{ ok: false, reason: 'below-zero', step: 1 }`; a line fails on the first such step even if a later step would reach the target (spec Edge Cases); `checkEntry` returns `not-solved` for the below-zero example. App: session `submit` on `not-solved` sets `message: not-solved` and leaves `found` unchanged. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each), `src/app/session.ts` (tests in `src/app/session.spec.ts`).
-- [ ] T040 [US1] AC-9 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T038 [US1] AC-9 RED: no new driver methods expected. Confirm the scenario fails because the below-zero line is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T039 [US1] AC-9 TDD cycles. Engine: `evaluateLine([6, 9], '−')` is `{ ok: false, reason: 'below-zero', step: 1 }`; a line fails on the first such step even if a later step would reach the target (spec Edge Cases); `checkEntry` returns `not-solved` for the below-zero example. App: session `submit` on `not-solved` sets `message: not-solved` and leaves `found` unchanged. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each), `src/app/session.ts` (tests in `src/app/session.spec.ts`).
+- [X] T040 [US1] AC-9 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-10 A line that does not divide exactly
 

@@ -364,3 +364,42 @@
   (Check never clears the grid), all runs. To be reported at their RED steps.
 - **Slice refactor**: none needed.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-9: Given the player has entered top-right 2, bottom-left 9, bottom-right 3, Row 2 − and Column 1 − (Row 2 gives 9 − 3 = 6, but Column 1 gives 6 − 9, which goes below zero), when they submit, then the game says the puzzle is not solved yet and the counter still reads "Found 0 of 2"
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "bottom-left 9 meets Row 2 but Column 1 goes below zero, so the puzzle is not solved" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED** (engine, iphone, android): `Error: what the game says — Expected: "not solved yet", Received: null`
+- **Note**: 6 − 9 = −3 already misses Column 1's target of 3, so the grid was already "not solved"
+  without a below-zero rule; the scenario's gap was the session's message. The below-zero rule is
+  still the spec's (FR-008, edge case "going below zero"), so cycle 1 test-drives it in the engine.
+
+### Cycle 1 — a step that goes below zero fails its line
+
+- **RED**: `evaluateLine › fails a line at the step that goes below zero: 6 − 9` in `src/engine/evaluate-line.spec.ts` — failed: `expected { ok: true, value: -3 } to deeply equal { ok: false, …(2) }`
+- **GREEN**: the line is worked one step at a time and stops at the first step below zero, returning `{ ok: false, reason: 'below-zero', step }` — commit `c550c6e`
+- **REFACTOR**: none needed.
+- **Not written**: a `checkEntry` test for the below-zero example would pass on first run (the grid was already "not solved"), so it would not be a valid red.
+
+### Cycle 2 — a session says "not solved" and records nothing when a line misses
+
+- **RED**: `applyAction › submit › says the grid is not solved, and records nothing, when a line misses` in `src/app/session.spec.ts` — failed: `expected null to be 'not-solved'`
+- **GREEN**: an unsolved check sets message `not-solved` and leaves `found` alone — commit `c081f9a`
+- **REFACTOR**: none needed.
+
+### Cycle 3 — the not-solved message reads "Not solved yet."
+
+- **RED**: `messageText › says "Not solved yet." when a line misses` — failed: `expected '' to be 'Not solved yet.'`
+- **GREEN**: messages moved into a table keyed by message kind — commit `405524f`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-9 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  56 unit tests pass (lines 98.9%, branches 94.2%); lint, type checks and build clean.
+- **Now passing early, genuinely**:
+  - AC-10 (all runs): 6 ÷ 4 = 1.5 already misses its target, so the grid is "not solved". The
+    inexact-division rule itself still needs its engine cycle at AC-10.
+  - AC-20 "tapping the given 6 after "not solved yet" leaves the message in place" (all runs):
+    messages never clear yet. The other AC-20 scenario (a changeable tap clears it) is still red.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
