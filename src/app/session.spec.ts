@@ -27,6 +27,14 @@ describe('applyAction', () => {
       expect(state.entry.cells[0]?.[1]).toBe(1);
     });
 
+    it('clears the message, because the grid it described has changed', () => {
+      const afterCheck: SessionState = { ...startSession(), message: 'not-solved' };
+
+      const state = applyAction(afterCheck, { type: 'tapCell', row: 1, column: 0 });
+
+      expect(state.message).toBeNull();
+    });
+
     it('ignores a tap on the given cell', () => {
       const before = startSession();
 

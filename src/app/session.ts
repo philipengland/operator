@@ -66,7 +66,7 @@ function tapCell(state: SessionState, tapped: CellPosition): SessionState {
       row === tapped.row && column === tapped.column ? nextCellValue(value) : value,
     ),
   );
-  return { ...state, entry: { ...state.entry, cells } };
+  return { ...state, entry: { ...state.entry, cells }, message: null };
 }
 
 function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
