@@ -70,5 +70,16 @@ describe('applyAction', () => {
       expect(state.found).toEqual(new Set(['2,2,3|×|÷']));
       expect(state.message).toBe('new-solution');
     });
+
+    it('says the grid is not solved, and records nothing, when a line misses', () => {
+      // spec-001 "Below zero": Column 1 gives 6 − 9.
+      const belowZero: Entry = { cells: [[null, 2], [9, 3]], rowOperators: [null, '−'], columnOperators: ['−', null] };
+      const filledIn: SessionState = { ...startSession(), entry: belowZero };
+
+      const state = applyAction(filledIn, { type: 'submit' });
+
+      expect(state.message).toBe('not-solved');
+      expect(state.found).toEqual(new Set());
+    });
   });
 });
