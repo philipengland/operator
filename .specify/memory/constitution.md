@@ -1,54 +1,184 @@
 # Operator Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Client-Side and Offline
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Operator is a client-side web game. The same build is packaged for iOS and Android with
+Capacitor.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- The packaged apps MUST be fully playable with no network connection.
+- The web build is served as static files. After it has loaded, gameplay MUST NOT need the
+  network.
+- The MVP MUST NOT make any runtime server calls: no APIs, analytics, telemetry, remote
+  configuration, fonts or other third-party requests. Every asset ships in the bundle.
+- Adding a network call is a behaviour change. It needs a spec and an ADR. The brief puts
+  the first backend in Phase 3 (solution rarity).
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+*Rationale: the game needs no server. Seeds stand in for stored puzzles, so staying offline
+keeps the product simple, private and always available.*
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### II. Pure Puzzle Engine
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+All puzzle rules live in a pure TypeScript library, the puzzle engine. The rules are line
+evaluation, the whole-number rule, checking, solution counting, puzzle generation and
+difficulty scoring.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- The engine MUST NOT import or reference UI frameworks, the DOM, browser or Web APIs,
+  Capacitor, storage or timers. It MUST run unchanged in Node.
+- Engine functions take data and return data. Side effects stay outside the engine.
+- The UI depends on the engine; the engine never depends on the UI. The UI MUST NOT
+  reimplement any rule the engine owns.
+- A solution is checked by calculating each line against its target. It is never compared
+  with a stored answer.
+- Rule settings, such as the operator-order rule, are parameters to the engine. They are
+  not hard-coded.
+- This boundary MUST be enforced automatically in the build, for example with lint import
+  rules or a separate package that has no DOM type library.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+*Rationale: the rules are the product. Keeping them pure makes them fast to test, reusable
+for a future backend or daily puzzle, and independent of any UI choice.*
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### III. Deterministic, Seeded Generation
+
+All randomness comes from a seeded pseudo-random generator that is implemented in, or
+injected into, the engine.
+
+- The same seed and generation parameters (grid size, preset) MUST always produce the same
+  puzzle, on every device and platform.
+- The engine MUST NOT use `Math.random`, `crypto`, the clock or any other source of
+  non-determinism.
+- Search limits, such as the generator's time-box on solution counting, MUST be expressed
+  as deterministic work budgets (for example, a count of search steps). They MUST NOT use
+  wall-clock time, which would let a slow device produce a different puzzle from the same
+  seed.
+- Golden-seed tests pin the output for a fixed set of seeds.
+- A change that alters the puzzle for an existing seed is a breaking change. It MUST be
+  deliberate, versioned and called out in the pull request.
+
+*Rationale: seeds replace a puzzle backend. A daily puzzle and share-by-seed (Phase 3) only
+work if a seed means the same puzzle everywhere and for good.*
+
+### IV. Mobile-First, Touch-First and Accessible
+
+Operator is designed for a phone held in the hand first. Larger screens are an adaptation.
+
+- Every interaction MUST work by touch alone. Nothing may depend on hover, a keyboard or
+  a mouse. Keyboard and screen-reader access MUST still be supported.
+- Touch targets MUST be at least 44 × 44 CSS pixels.
+- Layouts MUST respect device safe areas (notches, home indicators, rounded corners) on iOS
+  and Android.
+- The packaged apps MUST NOT show browser behaviour: no pinch or double-tap zoom, no
+  pull-to-refresh, no text-selection callouts and no overscroll bounce on the game surface.
+- The game MUST meet WCAG 2.2 AA (Overlay P2). Line states (correct, invalid, unsolved) MUST
+  NOT rely on colour alone. Every cell, target and operator has an accessible name. The game
+  MUST honour the reduced-motion setting.
+
+*Rationale: the audience plays on phones. A grid game that fights the touch screen, hides
+under a notch or excludes screen-reader users fails its players.*
+
+### V. Test-First (NON-NEGOTIABLE)
+
+Every behaviour change, including bug fixes, follows red-green-refactor, as set out in the
+TDD standard (`.claude/rules/tdd.md`):
+
+1. Write one failing test.
+2. Write the smallest code that makes it pass.
+3. Refactor while the tests stay green.
+
+- Engine behaviour is unit-tested in Node, with no browser.
+- UI behaviour is tested at the lowest level of the test pyramid that can prove it.
+- A failing test is never weakened or deleted to get a green build.
+- `/speckit.implement` records each cycle in `specs/<feature>/tdd-log.md`.
+
+*Rationale: tests written first state the intended behaviour before the code exists, so the
+code is shaped by the rules, not the other way round.*
+
+### VI. Executable Specifications Define Success
+
+Acceptance criteria become executable specifications in four layers, as set out in the
+acceptance-tests standard (`.claude/rules/acceptance-tests.md`). A human approves them before
+implementation starts.
+
+- Approved Layer 1 scenarios and the Layer 2 DSL are listed in `specs/<feature>/acceptance.md`
+  and locked. AI agents MUST NOT create, edit, skip or delete them. A specification that looks
+  wrong is raised with a human.
+- Scenarios are written in the game's own language: lines, targets, operators, seeds,
+  solutions found.
+- Puzzle-rule scenarios SHOULD run through an in-process engine driver. Play scenarios run
+  through a UI driver on a phone-sized viewport.
+
+*Rationale: executable specifications define success independently of the code, so success
+cannot be quietly redefined to match what was built (Baseline principle 1).*
+
+## Platform Constraints
+
+- **Language:** TypeScript in strict mode for the engine and the app.
+- **Shell:** Capacitor packages the web build for iOS and Android. Native code is used only
+  where Capacitor plugins cannot meet a spec. Every native addition needs an ADR.
+- **Data:** the device is the only data store in the MVP. It holds the solution log,
+  settings and progress. Under Baseline principle 6, each stored item needs a classification
+  and defined deletion behaviour (cleared when the player resets or uninstalls). Stored
+  formats MUST stay readable after an app update.
+- **Privacy:** the MVP collects no personal data (Overlay P4). Store privacy declarations
+  MUST say that no data is collected, and stay true.
+- **Performance:** specs declare on-device budgets for critical journeys, such as cold
+  start, puzzle generation per preset and input response (Overlay P3). Budgets are checked
+  in automated tests against a stated reference device class.
+
+## Baseline Applicability
+
+Operator is an offline client app with no server in the MVP. The Organisation Baseline and
+the Public-Facing Service Overlay below stay in force unchanged. This section records how
+each of them meets the product.
+
+**Applies in full:** Baseline 1 (spec-first), 2 (boundaries and ownership: the engine and
+the app are separate components; owner Philip England, solo developer, as this is a
+personal project), 8 (proven technology) and 9 (recorded
+exceptions). Overlay P1 (user needs), P2 (accessibility) and P4 (privacy).
+
+**No subject in the MVP, so no exception needed.** These apply as soon as a backend arrives
+(Phase 3):
+
+- Baseline 3 (contract-first integration): there are no HTTP APIs or events. The engine's
+  TypeScript API is a boundary inside one product, not a published contract.
+- Baseline 5, database clause: there is no server database.
+- Baseline 6, central identity clause: there are no accounts or identity. Threat modelling
+  and data classification still apply.
+
+**Exceptions to record.** A human MUST record each of these in `docs/exceptions/`, using the
+organisation template, before the work it covers starts (Baseline Scope and principle 9):
+
+| ID | Deviates from | Deviation | Record before |
+| --- | --- | --- | --- |
+| EXC-001 | Baseline 7 (observable) | The offline MVP sends no logs, metrics, traces or health checks from devices. | Implementation starts |
+| EXC-002 | Overlay P3 (budgets) | There is no service to monitor, so availability targets cannot be alerted on. Performance budgets still apply. | Implementation starts |
+| EXC-005 | Overlay P5 (design system) | A personal project has no shared design system. Operator keeps its own design values and accessibility checks instead. | Implementation starts |
+| EXC-006 | Baseline 4 (platform) | The web build is hosted on GitHub Pages and built by GitHub Actions (ADR 0001). | Implementation starts |
+| EXC-003 | Baseline 4 (platform) | Apps are distributed through Apple App Store Connect and Google Play Console, with native build tooling (Xcode on macOS) where the platform does not provide it. | Store packaging (F13) starts |
+| EXC-004 | Baseline 5 (reversible) | A released store binary cannot be rolled back. Rollback means halting a phased rollout and shipping a fixed build. | Store packaging (F13) starts |
+
+The store signing secrets MUST use platform capabilities (Baseline 4); the exceptions above
+do not cover them. The web build's hosting and pipelines are covered by EXC-006.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution governs Operator alongside the Organisation Baseline and overlay below.
+Where they conflict, the stricter rule wins. Project principles MAY add to the baseline but
+MUST NOT weaken it.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- **Amendments:** made by pull request through `/speckit-constitution`, approved by a code
+  owner, and recorded with a Sync Impact Report during review.
+- **Versioning:** semantic versioning. MAJOR means a principle is removed or redefined in a
+  backward-incompatible way. MINOR means a principle or section is added, or guidance is
+  materially expanded. PATCH means a clarification or wording fix.
+- **Compliance:** every plan includes a Constitution Check against Principles I–VI and the
+  baseline. Every pull request review confirms it. The build enforces the engine boundary
+  (II), golden seeds (III), accessibility checks (IV) and the expiry of exceptions
+  (Baseline 9).
+- **Runtime guidance:** `AGENTS.md` and `.github/copilot-instructions.md`.
 
+**Version**: 1.0.1 | **Ratified**: 2026-11-01 | **Last Amended**: 2026-11-02
 
 <!-- org-baseline: v2.0.0 -->
 ## Organisation Baseline (v2.0.0) — Architecture Principles
