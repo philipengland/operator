@@ -110,9 +110,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-4 The given cell
 
-- [ ] T023 [US1] AC-4 RED: phone driver `look(cell)` returns `colours` (computed colour and background colour) and `markings` (every visible non-colour feature: border style and width, font weight, background image or pattern, text decoration, and any visible "given" text). UI driver taps on an `aria-disabled` button still go through. Files: `test/acceptance/drivers/ui/phone.ui-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T024 [US1] AC-4 TDD cycles. App: session `tapCell` on a given cell leaves the state unchanged (FR-004). `view.ts` and `styles.css` mark the given cell with `aria-disabled="true"` and a non-colour pattern or border, not colour alone (constitution IV).
-- [ ] T025 [US1] AC-4 scenarios GREEN (the look scenario runs in the UI projects only); slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T023 [US1] AC-4 RED: phone driver `look(cell)` returns `colours` (computed colour and background colour) and `markings` (every visible non-colour feature: border style and width, font weight, background image or pattern, text decoration, and any visible "given" text). UI driver taps on an `aria-disabled` button still go through. Files: `test/acceptance/drivers/ui/phone.ui-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T024 [US1] AC-4 TDD cycles. App: session `tapCell` on a given cell leaves the state unchanged (FR-004). `view.ts` and `styles.css` mark the given cell with `aria-disabled="true"` and a non-colour pattern or border, not colour alone (constitution IV).
+- [X] T025 [US1] AC-4 scenarios GREEN (the look scenario runs in the UI projects only); slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-5 A cell only ever holds 1 to 9 or nothing ⚠️
 

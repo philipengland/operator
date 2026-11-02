@@ -190,3 +190,41 @@
   delivered by AC-2 and AC-3's cycles. To be reported at AC-5's RED step.
 - **Slice refactor**: none needed.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-4: Given the top-left cell holds the given 6, when the player taps it, then it still shows 6 and looks visibly different from cells the player can change
+
+- **Acceptance tests**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`
+  - "tapping the given 6 leaves it showing 6" (engine, iphone, android)
+  - "the given 6 looks different from a cell the player can change, not by colour alone" (`@ui`: iphone, android)
+- **Drivers added** (`84440fd`): phone `look(cell)` reads colours (text, background, border) apart
+  from non-colour markings (border style and width, font weight and style, background pattern,
+  text decoration).
+- **Acceptance RED**:
+  - "tapping the given 6 leaves it showing 6" **passed at RED** in all runs (reported to the owner
+    at AC-2 and again here): the screen always shows the given digit. Underneath, the tap still
+    stepped a hidden entry value, so cycle 1 below test-drives the session to ignore it (FR-004),
+    as agreed with the owner.
+  - look scenario, iphone and android: `Error: top-left cell should be marked differently from top-right, not by colour alone — Expected: not "border solid 2px | font 400 normal | pattern none | decoration none"`
+
+### Cycle 1 — a session ignores taps on a given cell
+
+- **RED**: `applyAction › tapCell › ignores a tap on the given cell` in `src/app/session.spec.ts` — failed: the hidden entry under the given 6 changed (`- null` / `+ 1` in `entry.cells[0][0]`)
+- **GREEN**: `tapCell` returns the state unchanged when `isGiven` — commit `b93d295`
+- **REFACTOR**: none needed.
+
+### View — the given cell stands out
+
+- The given cell is `aria-disabled="true"` and styled with a bold digit, a 4 px border and a
+  hatched background: three non-colour differences — commit `404bad5`. The look scenario now
+  passes on both phones.
+- Driver: Playwright refuses to tap an `aria-disabled` element unless forced, though a finger
+  can. The UI driver now forces the tap for such elements — commit `a32a8eb`.
+
+- **Acceptance GREEN**: AC-4 passes — engine 1 of 1, iphone 2 of 2, android 2 of 2, axe clean.
+  Full suite: 33 unit tests pass (lines 97.1%, branches 96.7%); lint, type checks and build
+  clean (2.7 KB gzipped).
+- **Still passing early**: AC-5 (all runs, delivered by AC-2 and AC-3); both AC-7 scenarios
+  (operator tapping not built yet); both small-screen scenarios (real passes).
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
