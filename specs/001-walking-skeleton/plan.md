@@ -156,7 +156,7 @@ test/acceptance/                   # Four layers (acceptance-tests standard)
 ├── play/
 │   ├── solve-puzzle.acceptance-spec.ts      # Layer 1, US1, AC-1–AC-11, AC-20 (locked)
 │   ├── find-solutions.acceptance-spec.ts    # Layer 1, US2, AC-12–AC-16 (locked)
-│   └── play-offline.acceptance-spec.ts      # Layer 1, AC-18, AC-21, small screen, budgets (locked)
+│   └── play-on-a-phone.acceptance-spec.ts   # Layer 1, AC-18, AC-21, small screen, budgets (locked)
 ├── delivery/
 │   └── publish.acceptance-spec.ts           # Layer 1, AC-17, AC-19 (locked; see R8)
 ├── dsl/
@@ -266,11 +266,11 @@ The unit tests (Vitest) also cover every rule underneath these scenarios:
 | AC-20 Message clears on the next change | Acceptance, both drivers; the UI driver also checks the status region announces nothing new | `test/acceptance/play/solve-puzzle.acceptance-spec.ts` |
 | AC-12 to AC-16 Distinct solutions | Acceptance, both drivers | `test/acceptance/play/find-solutions.acceptance-spec.ts` |
 | AC-17 Published on merge | Acceptance against the pipeline: post-deploy version smoke check | `test/acceptance/delivery/publish.acceptance-spec.ts`, run by `ci-deploy.yml` |
-| AC-18 Offline after load | Acceptance, UI driver (`@ui`), `setOffline` and request recording; plus a manual phone check | `test/acceptance/play/play-offline.acceptance-spec.ts` |
+| AC-18 Offline after load | Acceptance, UI driver (`@ui`), `setOffline` and request recording; plus a manual phone check | `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` |
 | AC-19 Failed build keeps the old version | Pipeline-structure check, plus a manual confirmation in the TDD log (R8; settled at `/speckit-acceptance`) | `test/acceptance/delivery/publish.acceptance-spec.ts` |
-| AC-21 No offline reload | Acceptance, UI driver (`@ui`): load, `setOffline`, reload, and the grid is absent | `test/acceptance/play/play-offline.acceptance-spec.ts` |
-| Small screens and safe areas (edge case) | Acceptance, UI driver at 320 px and 375 × 667 | `test/acceptance/play/play-offline.acceptance-spec.ts` |
-| SC-003, SC-004 Budgets | Acceptance, UI driver (Chromium, 4G and 4× CPU) | `test/acceptance/play/play-offline.acceptance-spec.ts` |
+| AC-21 No offline reload | Acceptance, UI driver (`@ui`): load, `setOffline`, reload, and the grid is absent | `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` |
+| Small screens and safe areas (edge case) | Acceptance, UI driver at 320 px and 375 × 667 | `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` |
+| SC-003, SC-004 Budgets | Acceptance, UI driver (Chromium, 4G and 4× CPU) | `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` |
 | SC-006 Accessibility | axe in every UI-driver page (automated); VoiceOver and TalkBack (manual) | `test/acceptance/support/axe.ts`; [quickstart.md](quickstart.md) section 6 |
 | SC-001, SC-002 Playtests and real devices | Manual | [quickstart.md](quickstart.md) section 6 |
 
