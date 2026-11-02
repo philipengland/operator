@@ -13,4 +13,8 @@ describe('evaluateLine', () => {
   ] as const)('works out $digits.0 $operator $digits.1 as $value', ({ digits, operator, value }) => {
     expect(evaluateLine(digits, operator, defaultRules)).toEqual({ ok: true, value });
   });
+
+  it('fails a line at the step that goes below zero: 6 − 9', () => {
+    expect(evaluateLine([6, 9], '−', defaultRules)).toEqual({ ok: false, reason: 'below-zero', step: 1 });
+  });
 });
