@@ -1,4 +1,4 @@
-import type { Digit } from './types';
+import type { Digit, Operator } from './types';
 
 const HIGHEST_DIGIT: Digit = 9;
 
@@ -8,4 +8,9 @@ export function nextCellValue(value: Digit | null): Digit | null {
     return null;
   }
   return ((value ?? 0) + 1) as Digit;
+}
+
+export function nextOperator(operator: Operator | null): Operator {
+  void operator;
+  return '+';
 }
