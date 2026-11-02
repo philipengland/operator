@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample } from '../engine';
-import { cellName, lineName } from './labels';
+import { cellName, lineName, operatorName } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -21,5 +21,16 @@ describe('lineName', () => {
     { axis: 'column', index: 1, name: 'Column 2' },
   ] as const)('names $axis $index "$name"', ({ axis, index, name }) => {
     expect(lineName({ axis, index })).toBe(name);
+  });
+});
+
+describe('operatorName', () => {
+  it.each([
+    { axis: 'row', index: 0, name: 'Row 1 operator, plus' },
+    { axis: 'row', index: 1, name: 'Row 2 operator, not chosen' },
+    { axis: 'column', index: 0, name: 'Column 1 operator, not chosen' },
+    { axis: 'column', index: 1, name: 'Column 2 operator, times' },
+  ] as const)('names $axis $index "$name" when the game opens', ({ axis, index, name }) => {
+    expect(operatorName(workedExample, emptyEntry(workedExample), { axis, index })).toBe(name);
   });
 });
