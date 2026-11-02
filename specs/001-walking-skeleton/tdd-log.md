@@ -462,3 +462,47 @@
   early passes.
 - **Slice refactor**: none beyond cycle 2's.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-20: Given the game has just said the puzzle is not solved yet, when the player taps the bottom-left cell, then the message disappears without anything being announced and the counter does not change; when they instead tap the given 6, then the message stays
+
+- **Acceptance tests**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "tapping bottom-left after "not solved yet" removes the message silently" and "tapping the given 6 after "not solved yet" leaves the message in place" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**:
+  - "removes the message silently" (all runs): `Error: what the game says — Expected: null, Received: "not solved yet"`
+  - "leaves the message in place" **passed at RED** (all runs), as reported at the AC-9 and AC-11
+    checkpoints: messages never cleared, and the session already ignores taps on the given cell.
+
+### Cycle 1 — a tap on a changeable cell clears the message
+
+- **RED**: `applyAction › tapCell › clears the message, because the grid it described has changed` in `src/app/session.spec.ts` — failed: `expected 'not-solved' to be null`
+- **GREEN**: `tapCell` sets `message: null`; the given-cell guard comes first, so the given 6 keeps the message — commit `b6eef67`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — changing an open operator clears the message
+
+- **RED**: `applyAction › tapOperator › clears the message when an open operator changes` — failed: `expected 'not-solved' to be null`
+- **GREEN**: `tapOperator` sets `message: null` after its shown-line guard — commit `67dac3a`. The engine AC-20 scenarios now pass.
+- **REFACTOR**: none needed.
+
+### View — clearing is silent
+
+- The phone runs then failed: `Error: announcements to screen-reader users — Expected: 19, Received: 20`.
+  The view rewrote the unchanged counter on every render, replacing text inside the polite live
+  region, which screen readers may announce again; the count of 19 before the tap shows it
+  happened on every tap. The view now writes status text only when it changes — commit `24bb809`
+  (`fix:`). Phone AC-20 now passes.
+
+- **Acceptance GREEN**: AC-20 passes — engine 2 of 2, iphone 2 of 2, android 2 of 2. Full suite:
+  63 unit tests pass (lines 99.0%, branches 95.1%); lint, type checks and build clean.
+- **Slice refactor**: none needed.
+
+## US1 through the UI (T050)
+
+- Every US1 scenario (AC-1 to AC-11, AC-20): engine 15 of 15, iphone 17 of 17, android 17 of 17,
+  axe clean on every page visited.
+- Layout guarantees measured with Playwright (WebKit iPhone SE and Chromium Pixel 5, at 375 × 667
+  and 320 × 568, reduced motion on): 9 buttons, smallest 48 px; `touch-action: manipulation` on
+  the game; all four `env(safe-area-inset-*)` insets used; 0 animated or transitioning elements;
+  no page scroll. Real-device safe-area checks remain manual (quickstart section 6).
+- **Checkpoint**: User Story 1 (the MVP) complete; awaiting approval from Philip England.

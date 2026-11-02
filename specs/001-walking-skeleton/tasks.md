@@ -158,13 +158,13 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-20 The message goes once the grid changes
 
-- [ ] T047 [US1] AC-20 RED: no new driver methods expected. Confirm the first scenario fails because the message stays after a changeable tap. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T048 [US1] AC-20 TDD cycles. App: session `tapCell` and `tapOperator` on a changeable target set `message: null`; on a given cell or shown line they leave `message` unchanged (data-model "Actions and transitions"); `view.ts` clears the message text without adding anything new to the status region, so screen readers announce nothing (FR-014).
-- [ ] T049 [US1] AC-20 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T047 [US1] AC-20 RED: no new driver methods expected. Confirm the first scenario fails because the message stays after a changeable tap. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T048 [US1] AC-20 TDD cycles. App: session `tapCell` and `tapOperator` on a changeable target set `message: null`; on a given cell or shown line they leave `message` unchanged (data-model "Actions and transitions"); `view.ts` clears the message text without adding anything new to the status region, so screen readers announce nothing (FR-014).
+- [X] T049 [US1] AC-20 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### US1 through the UI
 
-- [ ] T050 [US1] Run every US1 scenario (AC-1 to AC-11, AC-20) through the `engine`, `iphone` and `android` projects with `npm run test:acceptance`. All pass, with axe clean on every page. Check by hand at 375 × 667 that every button is at least 48 × 48 CSS px, content sits inside `env(safe-area-inset-*)`, `touch-action: manipulation` is set, and transitions are off under `prefers-reduced-motion` ([contracts/play-screen.md](contracts/play-screen.md) Layout guarantees). Record this in the TDD log.
+- [X] T050 [US1] Run every US1 scenario (AC-1 to AC-11, AC-20) through the `engine`, `iphone` and `android` projects with `npm run test:acceptance`. All pass, with axe clean on every page. Check by hand at 375 × 667 that every button is at least 48 × 48 CSS px, content sits inside `env(safe-area-inset-*)`, `touch-action: manipulation` is set, and transitions are off under `prefers-reduced-motion` ([contracts/play-screen.md](contracts/play-screen.md) Layout guarantees). Record this in the TDD log.
 
 **Checkpoint**: User Story 1 works on its own. This is the MVP.
 
