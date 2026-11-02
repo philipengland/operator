@@ -2,6 +2,8 @@
 // message (data-model.md "Session"). No DOM access.
 
 import {
+  checkEntry,
+  defaultRules,
   emptyEntry,
   isGiven,
   lineSpec,
@@ -50,8 +52,8 @@ export function applyAction(state: SessionState, action: SessionAction): Session
       return tapCell(state, action);
     case 'tapOperator':
       return tapOperator(state, action.line);
-    default:
-      return state;
+    case 'submit':
+      return submit(state);
   }
 }
 
@@ -81,4 +83,12 @@ function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
         ? { ...entry, rowOperators: step(entry.rowOperators) }
         : { ...entry, columnOperators: step(entry.columnOperators) },
   };
+}
+
+function submit(state: SessionState): SessionState {
+  const result = checkEntry(state.puzzle, state.entry, defaultRules);
+  if (result.kind !== 'solved') {
+    return state;
+  }
+  return { ...state, found: new Set([...state.found, result.key]), message: 'new-solution' };
 }

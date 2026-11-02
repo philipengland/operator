@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { emptyEntry, workedExample } from '../engine';
+import { emptyEntry, workedExample, type Entry } from '../engine';
 import { applyAction, counterText, startSession, type SessionState } from './session';
 
 describe('startSession', () => {
@@ -55,6 +55,20 @@ describe('applyAction', () => {
       const after = applyAction(before, { type: 'tapOperator', line });
 
       expect(after).toEqual(before);
+    });
+  });
+
+  describe('submit', () => {
+    // Solution A from spec-001's examples.
+    const solutionA: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+
+    it('records a new solution and says so', () => {
+      const filledIn: SessionState = { ...startSession(), entry: solutionA };
+
+      const state = applyAction(filledIn, { type: 'submit' });
+
+      expect(state.found).toEqual(new Set(['2,2,3|×|÷']));
+      expect(state.message).toBe('new-solution');
     });
   });
 });
