@@ -238,3 +238,50 @@
 - **Decision**: owner chose option (a) on 2026-11-02 — record AC-5 as delivered by AC-2 and AC-3, write no new code, and move to AC-6. T027 (cycles only if red) was skipped.
 - **Acceptance GREEN**: AC-5 passes in all runs; no code changed.
 - **Checkpoint**: approved by Philip England on 2026-11-02 (option a).
+
+## AC-6: Given Row 2's operator is not yet chosen, when the player taps it five times, then it shows +, then −, then ×, then ÷, then + again
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "five taps on Row 2 show +, −, ×, ÷ and then + again" (engine, iphone, android)
+- **Drivers added** (`007ed82`): engine `tapOperator` dispatches a `tapOperator` action; UI `tapOperator` taps the operator's button by accessible name (forcing the tap on `aria-disabled` buttons, as a finger can).
+- **Acceptance RED** (engine, iphone, android): `Error: Row 2 operator after each tap` — expected `["+", "−", "×", "÷", "+"]`, received `["not chosen", "not chosen", "not chosen", "not chosen", "not chosen"]`
+
+### Cycle 1 — the first tap on an operator not yet chosen gives +
+
+- **RED**: `nextOperator › steps an operator that is not chosen to +` in `src/engine/cycles.spec.ts` — failed: `AssertionError: expected '÷' to be '+'`. The return type has no empty value, so the stub returned `÷`, chosen so the test could not pass falsely.
+- **GREEN**: returns `+` (hard-coded; the next test forces the cycle) — commit `cb54451`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — operators cycle + → − → × → ÷ → +
+
+- **RED**: `nextOperator › steps %s to %s` (4 rows) — failed: `expected '+' to be '−'`, `'×'`, `'÷'` (the `÷ → +` row passed against the hard-coded `+`)
+- **GREEN**: `OPERATOR_CYCLE` in order, wrapping after `÷` — commit `8e0122e`
+- **REFACTOR**: none needed.
+
+### Cycle 3 — tapping an open line's operator in a session steps it
+
+- **RED**: `applyAction › tapOperator › chooses + on the open row 1` and `… column 0` in `src/app/session.spec.ts` — failed: `expected null to be '+'` (both)
+- **GREEN**: the reducer steps the tapped line's operator with `nextOperator` — commit `8b7515b`. The engine AC-6 scenario now passes.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — an open operator is named by the player's choice
+
+- **RED**: `operatorName › names an open operator by the choice %s as "%s"` (4 rows) in `src/app/labels.spec.ts` — failed: `expected 'Row 2 operator, not chosen' to be 'Row 2 operator, plus'` (and minus, times, divide)
+- **GREEN**: the shown operator, else the entry's choice — commit `54053ac`
+- **REFACTOR**: "the operator a line works with" moved into the engine as `lineOperator(puzzle, entry, line)`, used by the labels and then the view — commit `319bd89`
+
+### View — operator taps reach the session
+
+- Operator buttons report taps as actions; an open operator shows the chosen symbol in place
+  of "?" — commit `e02d045`. Phone AC-6 now passes.
+
+- **Acceptance GREEN**: AC-6 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  44 unit tests pass (lines 97.9%, branches 95.6%); lint, type checks and build clean.
+- **False pass found and fixed**: once Solution A could be filled in, the AC-18 "no network
+  requests" scenario passed on both phones because the phone driver's
+  `networkRequestsSinceOpening()` stub returned 0. It now reports an unknown count (NaN) until
+  AC-18 builds it — commit `6c5bff0`.
+- **Still passing early**: both AC-7 scenarios (all runs). A tap on a shown operator still steps
+  a hidden entry value, but `lineOperator` always returns the shown operator, so nothing
+  visible changes — the same situation as AC-4. To be reported at AC-7.
+- **Slice refactor**: none beyond the cycle refactor.
+- **Checkpoint**: awaiting approval from Philip England.

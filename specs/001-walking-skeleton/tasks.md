@@ -122,9 +122,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-6 Choosing an open operator
 
-- [ ] T029 [US1] AC-6 RED: engine driver `tapOperator(line)` dispatches `tapOperator` with the line's axis and index. UI driver `tapOperator(line)` taps the operator button by name, waits for its name to change, and runs axe. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T030 [US1] AC-6 TDD cycles. Engine: `nextOperator(null)` is `+`; then `+ → −`, `− → ×`, `× → ÷`, `÷ → +` ("There is no step back to not chosen", data-model "Operator"). App: session `tapOperator` on an open line moves one step; `labels.ts` names operators "plus", "minus", "times", "divide"; `view.ts` and `main.ts` wire operator taps.
-- [ ] T031 [US1] AC-6 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T029 [US1] AC-6 RED: engine driver `tapOperator(line)` dispatches `tapOperator` with the line's axis and index. UI driver `tapOperator(line)` taps the operator button by name, waits for its name to change, and runs axe. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T030 [US1] AC-6 TDD cycles. Engine: `nextOperator(null)` is `+`; then `+ → −`, `− → ×`, `× → ÷`, `÷ → +` ("There is no step back to not chosen", data-model "Operator"). App: session `tapOperator` on an open line moves one step; `labels.ts` names operators "plus", "minus", "times", "divide"; `view.ts` and `main.ts` wire operator taps.
+- [X] T031 [US1] AC-6 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-7 Shown operators cannot change ⚠️
 
