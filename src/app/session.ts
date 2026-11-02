@@ -1,7 +1,7 @@
 // The play session: a pure reducer over the current entry, the found solutions and the last
 // message (data-model.md "Session"). No DOM access.
 
-import { emptyEntry, nextCellValue, workedExample, type CellPosition, type Entry, type LinePosition, type Puzzle, type SolutionKey } from '../engine';
+import { emptyEntry, isGiven, nextCellValue, workedExample, type CellPosition, type Entry, type LinePosition, type Puzzle, type SolutionKey } from '../engine';
 
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
@@ -41,6 +41,9 @@ export function applyAction(state: SessionState, action: SessionAction): Session
 }
 
 function tapCell(state: SessionState, tapped: CellPosition): SessionState {
+  if (isGiven(state.puzzle, tapped)) {
+    return state;
+  }
   const cells = state.entry.cells.map((cellsInRow, row) =>
     cellsInRow.map((value, column) =>
       row === tapped.row && column === tapped.column ? nextCellValue(value) : value,

@@ -26,5 +26,13 @@ describe('applyAction', () => {
 
       expect(state.entry.cells[0]?.[1]).toBe(1);
     });
+
+    it('ignores a tap on the given cell', () => {
+      const before = startSession();
+
+      const after = applyAction(before, { type: 'tapCell', row: 0, column: 0 });
+
+      expect(after).toEqual(before);
+    });
   });
 });
