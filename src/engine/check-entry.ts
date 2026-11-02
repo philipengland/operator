@@ -9,8 +9,9 @@ import type { CellPosition, CheckResult, Digit, Entry, LinePosition, Puzzle, Rul
  */
 export function checkEntry(puzzle: Puzzle, entry: Entry, rules: Rules): CheckResult {
   const missingCells = emptyCells(puzzle, entry);
-  if (missingCells.length > 0) {
-    return { kind: 'incomplete', missingCells, missingOperators: [] };
+  const missingOperators = unchosenOperators(puzzle, entry);
+  if (missingCells.length > 0 || missingOperators.length > 0) {
+    return { kind: 'incomplete', missingCells, missingOperators };
   }
   const everyLineReachesTarget = allLines(puzzle).every((line) => reachesTarget(puzzle, entry, line, rules));
   return everyLineReachesTarget ? { kind: 'solved', key: solutionKey(puzzle, entry) } : { kind: 'not-solved' };
@@ -22,6 +23,10 @@ function emptyCells(puzzle: Puzzle, entry: Entry): CellPosition[] {
       value === null && !isGiven(puzzle, { row, column }) ? [{ row, column }] : [],
     ),
   );
+}
+
+function unchosenOperators(puzzle: Puzzle, entry: Entry): LinePosition[] {
+  return allLines(puzzle).filter((line) => lineOperator(puzzle, entry, line) === null);
 }
 
 function allLines(puzzle: Puzzle): LinePosition[] {

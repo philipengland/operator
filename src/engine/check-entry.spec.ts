@@ -28,4 +28,14 @@ describe('checkEntry', () => {
       missingOperators: [],
     });
   });
+
+  it('is incomplete, naming the line, when an open operator is not chosen', () => {
+    const column1NotChosen: Entry = { ...solutionA, columnOperators: [null, null] };
+
+    expect(checkEntry(workedExample, column1NotChosen, defaultRules)).toEqual({
+      kind: 'incomplete',
+      missingCells: [],
+      missingOperators: [{ axis: 'column', index: 0 }],
+    });
+  });
 });
