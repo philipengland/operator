@@ -17,6 +17,20 @@ export type SessionAction =
   | { readonly type: 'tapOperator'; readonly line: LinePosition }
   | { readonly type: 'submit' };
 
+export function startSession(): SessionState {
+  return {
+    puzzle: { rows: 0, columns: 0, givens: [], rowLines: [], columnLines: [], solutionCount: 0 },
+    entry: { cells: [], rowOperators: [], columnOperators: [] },
+    found: new Set(),
+    message: null,
+  };
+}
+
+export function counterText(state: SessionState): string {
+  void state;
+  return '';
+}
+
 export function applyAction(state: SessionState): SessionState {
   return state;
 }
