@@ -1,7 +1,7 @@
 // The play session: a pure reducer over the current entry, the found solutions and the last
 // message (data-model.md "Session"). No DOM access.
 
-import { emptyEntry, workedExample, type Entry, type LinePosition, type Puzzle, type SolutionKey } from '../engine';
+import { emptyEntry, nextCellValue, workedExample, type Entry, type LinePosition, type Puzzle, type SolutionKey } from '../engine';
 
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
@@ -32,6 +32,13 @@ export function counterText(state: SessionState): string {
 }
 
 export function applyAction(state: SessionState, action: SessionAction): SessionState {
-  void action;
-  return state;
+  if (action.type !== 'tapCell') {
+    return state;
+  }
+  const cells = state.entry.cells.map((cellsInRow, row) =>
+    cellsInRow.map((value, column) =>
+      row === action.row && column === action.column ? nextCellValue(value) : value,
+    ),
+  );
+  return { ...state, entry: { ...state.entry, cells } };
 }
