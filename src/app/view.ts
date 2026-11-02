@@ -3,7 +3,7 @@
 
 import { lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
 import { cellName, lineName, operatorName } from './labels';
-import { counterText, type SessionState } from './session';
+import { counterText, type SessionAction, type SessionState } from './session';
 
 const NOT_CHOSEN_MARK = '?';
 
@@ -27,8 +27,15 @@ interface ScreenParts {
   readonly counter: HTMLElement;
 }
 
-export function createPlayScreen(root: HTMLElement, initial: SessionState): PlayScreen {
+export function createPlayScreen(
+  root: HTMLElement,
+  initial: SessionState,
+  onAction: (action: SessionAction) => void,
+): PlayScreen {
   const parts = build(root, initial.puzzle);
+  for (const { position, button } of parts.cells) {
+    button.addEventListener('click', () => onAction({ type: 'tapCell', ...position }));
+  }
   const screen = { update: (state: SessionState) => render(parts, state) };
   screen.update(initial);
   return screen;
@@ -58,22 +65,26 @@ function build(root: HTMLElement, puzzle: Puzzle): ScreenParts {
 }
 
 function render(parts: ScreenParts, state: SessionState): void {
-  const { puzzle, entry } = state;
-  for (const { position, button } of parts.cells) {
-    button.setAttribute('aria-label', cellName(puzzle, entry, position));
-    button.textContent = String(puzzle.givens[position.row]?.[position.column] ?? '');
-  }
-  for (const { line, button } of parts.operators) {
-    const spec = lineSpec(puzzle, line);
-    const shown = spec && spec.operator !== 'open' ? spec.operator : null;
-    button.setAttribute('aria-label', operatorName(puzzle, entry, line));
-    button.textContent = shown ?? NOT_CHOSEN_MARK;
-    button.classList.toggle('open', shown === null);
-    if (shown) {
-      button.setAttribute('aria-disabled', 'true');
-    }
-  }
+  parts.cells.forEach((cell) => renderCell(cell, state));
+  parts.operators.forEach((operator) => renderOperator(operator, state));
   parts.counter.textContent = counterText(state);
+}
+
+function renderCell({ position, button }: CellPart, { puzzle, entry }: SessionState): void {
+  const { row, column } = position;
+  button.setAttribute('aria-label', cellName(puzzle, entry, position));
+  button.textContent = String(puzzle.givens[row]?.[column] ?? entry.cells[row]?.[column] ?? '');
+}
+
+function renderOperator({ line, button }: OperatorPart, { puzzle, entry }: SessionState): void {
+  const spec = lineSpec(puzzle, line);
+  const shown = spec && spec.operator !== 'open' ? spec.operator : null;
+  button.setAttribute('aria-label', operatorName(puzzle, entry, line));
+  button.textContent = shown ?? NOT_CHOSEN_MARK;
+  button.classList.toggle('open', shown === null);
+  if (shown) {
+    button.setAttribute('aria-disabled', 'true');
+  }
 }
 
 function puzzleGroup(puzzle: Puzzle): HTMLElement {
