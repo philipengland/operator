@@ -2,6 +2,7 @@
 // (contracts/play-screen.md). No DOM access.
 
 import { lineOperator, type CellPosition, type Entry, type LinePosition, type Operator, type Puzzle } from '../engine';
+import type { MessageKind } from './session';
 
 const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
   '+': 'plus',
@@ -33,4 +34,9 @@ export function lineName(line: LinePosition): string {
 export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
   const operator = lineOperator(puzzle, entry, line);
   return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
+}
+
+/** What the game says after Check (FR-014). */
+export function messageText(kind: MessageKind): string {
+  return kind === 'new-solution' ? 'New solution found!' : '';
 }

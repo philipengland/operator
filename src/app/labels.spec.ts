@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample } from '../engine';
-import { cellName, lineName, operatorName } from './labels';
+import { cellName, lineName, messageText, operatorName } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -49,5 +49,11 @@ describe('operatorName', () => {
     const entry = { ...emptyEntry(workedExample), rowOperators: [null, choice] };
 
     expect(operatorName(workedExample, entry, { axis: 'row', index: 1 })).toBe(`Row 2 operator, ${word}`);
+  });
+});
+
+describe('messageText', () => {
+  it('says "New solution found!" for a new solution', () => {
+    expect(messageText('new-solution')).toBe('New solution found!');
   });
 });
