@@ -1,7 +1,7 @@
 // Layer 3 — the accessible names on the play screen (contracts/play-screen.md), and how to
 // read the scenarios' values back out of them.
 
-import type { Cell, CellValue, Digit, Line, Operator, OperatorChoice } from '../../dsl/vocabulary';
+import type { Cell, CellValue, Digit, Line, Operator, OperatorChoice, Result } from '../../dsl/vocabulary';
 
 const CELL_NAME_PREFIX: Readonly<Record<Cell, string>> = {
   'top-left': 'Top-left cell, ',
@@ -64,3 +64,18 @@ export function readTargetText(text: string): number {
 }
 
 export const COUNTER_PATTERN = /Found \d+ of \d+/;
+
+// The visible messages (labels.ts), longest first so "every solution" wins over "new solution".
+const MESSAGES: readonly (readonly [string, Result])[] = [
+  ["New solution found! You've found every solution.", 'new solution, every solution found'],
+  ['New solution found!', 'new solution'],
+  ["You've already found this solution.", 'already found'],
+  ['Not solved yet.', 'not solved yet'],
+  ['Fill every cell and choose every operator before checking.', 'fill everything first'],
+];
+
+/** Which result the status region is showing, or null when it shows no message. */
+export function readResult(statusText: string): Result | null {
+  const shown = MESSAGES.find(([text]) => statusText.includes(text));
+  return shown ? shown[1] : null;
+}

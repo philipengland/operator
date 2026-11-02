@@ -12,11 +12,16 @@ import {
   operatorNamePattern,
   readCellName,
   readOperatorName,
+  readResult,
   readTargetText,
   targetTextPattern,
 } from './screen-names';
 
 const GAME_READY_TIMEOUT_MS = 5_000;
+
+interface AnnouncementCounter {
+  operatorAnnouncements?: number;
+}
 
 export class UiGameDriver implements GameDriver {
   constructor(private readonly page: Page) {}
@@ -24,6 +29,7 @@ export class UiGameDriver implements GameDriver {
   async open(): Promise<void> {
     await this.page.goto('./');
     await this.puzzle().waitFor({ state: 'visible', timeout: GAME_READY_TIMEOUT_MS });
+    await this.listenForAnnouncements();
     await scanForAccessibilityProblems(this.page);
   }
 
@@ -35,7 +41,10 @@ export class UiGameDriver implements GameDriver {
     await tapLikeAFinger(this.operatorButton(line));
   }
 
-  async check(): Promise<void> {}
+  async check(): Promise<void> {
+    await this.page.getByRole('button', { name: 'Check' }).tap();
+    await scanForAccessibilityProblems(this.page);
+  }
 
   async view(): Promise<GameView> {
     const cells = {} as Record<Cell, CellView>;
@@ -48,12 +57,34 @@ export class UiGameDriver implements GameDriver {
       targets[line] = readTargetText((await this.target(line).textContent()) ?? '');
       operators[line] = await this.operatorView(line);
     }
-    const counter = (await this.status().innerText()).match(COUNTER_PATTERN)?.[0] ?? '';
-    return { cells, targets, operators, counter, result: null };
+    const statusText = await this.status().innerText();
+    const counter = statusText.match(COUNTER_PATTERN)?.[0] ?? '';
+    return { cells, targets, operators, counter, result: readResult(statusText) };
   }
 
   async announcementCount(): Promise<number> {
-    return 0;
+    return this.page.evaluate(() => (window as unknown as AnnouncementCounter).operatorAnnouncements ?? 0);
+  }
+
+  /**
+   * Screen readers announce text added to a polite status region, not text removed from it.
+   * Count each batch of changes that adds text.
+   */
+  private async listenForAnnouncements(): Promise<void> {
+    await this.status().evaluate((region) => {
+      const counter = window as unknown as AnnouncementCounter;
+      counter.operatorAnnouncements = 0;
+      new MutationObserver((changes) => {
+        const addsText = changes.some((change) =>
+          change.type === 'characterData'
+            ? (change.target.textContent ?? '') !== ''
+            : [...change.addedNodes].some((node) => (node.textContent ?? '') !== ''),
+        );
+        if (addsText) {
+          counter.operatorAnnouncements = (counter.operatorAnnouncements ?? 0) + 1;
+        }
+      }).observe(region, { childList: true, characterData: true, subtree: true });
+    });
   }
 
   private puzzle(): Locator {
