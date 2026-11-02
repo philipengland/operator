@@ -1,12 +1,27 @@
 import { lineOperator } from './entry';
 import { evaluateLine } from './evaluate-line';
 import { isGiven, lineSpec } from './puzzle';
-import type { CheckResult, Digit, Entry, LinePosition, Puzzle, Rules, SolutionKey } from './types';
+import type { CellPosition, CheckResult, Digit, Entry, LinePosition, Puzzle, Rules, SolutionKey } from './types';
 
-/** Checks an entry by working out every line against its target (FR-008, FR-009). */
+/**
+ * Checks an entry by working out every line against its target (FR-008, FR-009). An entry with
+ * a gap is incomplete and no line is worked out (FR-010).
+ */
 export function checkEntry(puzzle: Puzzle, entry: Entry, rules: Rules): CheckResult {
+  const missingCells = emptyCells(puzzle, entry);
+  if (missingCells.length > 0) {
+    return { kind: 'incomplete', missingCells, missingOperators: [] };
+  }
   const everyLineReachesTarget = allLines(puzzle).every((line) => reachesTarget(puzzle, entry, line, rules));
   return everyLineReachesTarget ? { kind: 'solved', key: solutionKey(puzzle, entry) } : { kind: 'not-solved' };
+}
+
+function emptyCells(puzzle: Puzzle, entry: Entry): CellPosition[] {
+  return entry.cells.flatMap((cellsInRow, row) =>
+    cellsInRow.flatMap((value, column) =>
+      value === null && !isGiven(puzzle, { row, column }) ? [{ row, column }] : [],
+    ),
+  );
 }
 
 function allLines(puzzle: Puzzle): LinePosition[] {

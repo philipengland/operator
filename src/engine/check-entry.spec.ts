@@ -18,4 +18,14 @@ describe('checkEntry', () => {
   it('finds Solution A solved, keyed by its entered digits and chosen operators', () => {
     expect(checkEntry(workedExample, solutionA, defaultRules)).toEqual({ kind: 'solved', key: '2,2,3|×|÷' });
   });
+
+  it('is incomplete, naming the cell, when a changeable cell is empty', () => {
+    const bottomRightEmpty: Entry = { ...solutionA, cells: [[null, 2], [2, null]] };
+
+    expect(checkEntry(workedExample, bottomRightEmpty, defaultRules)).toEqual({
+      kind: 'incomplete',
+      missingCells: [{ row: 1, column: 1 }],
+      missingOperators: [],
+    });
+  });
 });
