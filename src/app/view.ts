@@ -1,7 +1,7 @@
 // The play screen (contracts/play-screen.md): builds the grid once, then writes each session
 // state into it. Wording and names come from labels.ts; rules come from the engine.
 
-import { lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
+import { isGiven, lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
 import { cellName, lineName, operatorName } from './labels';
 import { counterText, type SessionAction, type SessionState } from './session';
 
@@ -72,6 +72,11 @@ function render(parts: ScreenParts, state: SessionState): void {
 
 function renderCell({ position, button }: CellPart, { puzzle, entry }: SessionState): void {
   const { row, column } = position;
+  const given = isGiven(puzzle, position);
+  button.classList.toggle('given', given);
+  if (given) {
+    button.setAttribute('aria-disabled', 'true');
+  }
   button.setAttribute('aria-label', cellName(puzzle, entry, position));
   button.textContent = String(puzzle.givens[row]?.[column] ?? entry.cells[row]?.[column] ?? '');
 }

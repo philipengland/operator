@@ -8,6 +8,7 @@
   --colour-line: #4a4a4a;
   --colour-accent: #1f4e8c;
   --colour-accent-text: #ffffff;
+  --colour-given-hatch: #e2e2e2;
   --touch-target: 48px; /* Above the 44 × 44 CSS px minimum (constitution IV). */
   --gap: 8px;
   --cell-font: 1.75rem;
@@ -79,6 +80,17 @@ button {
   background: var(--colour-cell);
   border: 2px solid var(--colour-line);
   border-radius: 6px;
+}
+
+/* Given digits differ by weight, border and pattern, never by colour alone (constitution IV). */
+.cell.given {
+  font-weight: 700;
+  border-width: 4px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 6px,
+    var(--colour-given-hatch) 6px 8px
+  );
 }
 
 .operator {
