@@ -39,4 +39,15 @@ describe('operatorName', () => {
   ] as const)('names $axis $index "$name" when the game opens', ({ axis, index, name }) => {
     expect(operatorName(workedExample, emptyEntry(workedExample), { axis, index })).toBe(name);
   });
+
+  it.each([
+    ['+', 'plus'],
+    ['−', 'minus'],
+    ['×', 'times'],
+    ['÷', 'divide'],
+  ] as const)('names an open operator by the choice %s as "%s"', (choice, word) => {
+    const entry = { ...emptyEntry(workedExample), rowOperators: [null, choice] };
+
+    expect(operatorName(workedExample, entry, { axis: 'row', index: 1 })).toBe(`Row 2 operator, ${word}`);
+  });
 });

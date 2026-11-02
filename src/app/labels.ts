@@ -31,8 +31,8 @@ export function lineName(line: LinePosition): string {
 }
 
 export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
-  void entry;
   const spec = lineSpec(puzzle, line);
-  const choice = !spec || spec.operator === 'open' ? 'not chosen' : OPERATOR_WORDS[spec.operator];
-  return `${lineName(line)} operator, ${choice}`;
+  const chosen = (line.axis === 'row' ? entry.rowOperators : entry.columnOperators)[line.index] ?? null;
+  const operator = spec && spec.operator !== 'open' ? spec.operator : chosen;
+  return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
 }
