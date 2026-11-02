@@ -36,7 +36,12 @@ export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): 
   return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
 }
 
+const MESSAGES: Partial<Readonly<Record<MessageKind, string>>> = {
+  'new-solution': 'New solution found!',
+  'not-solved': 'Not solved yet.',
+};
+
 /** What the game says after Check (FR-014). */
 export function messageText(kind: MessageKind): string {
-  return kind === 'new-solution' ? 'New solution found!' : '';
+  return MESSAGES[kind] ?? '';
 }

@@ -56,4 +56,8 @@ describe('messageText', () => {
   it('says "New solution found!" for a new solution', () => {
     expect(messageText('new-solution')).toBe('New solution found!');
   });
+
+  it('says "Not solved yet." when a line misses', () => {
+    expect(messageText('not-solved')).toBe('Not solved yet.');
+  });
 });
