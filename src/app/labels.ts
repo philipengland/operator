@@ -36,7 +36,8 @@ export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): 
   return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
 }
 
-const MESSAGES: Partial<Readonly<Record<MessageKind, string>>> = {
+// Every message kind must have wording; the compiler enforces it.
+const MESSAGES: Readonly<Record<MessageKind, string>> = {
   'new-solution': 'New solution found!',
   'all-found': "New solution found! You've found every solution.",
   'already-found': "You've already found this solution.",
@@ -46,5 +47,5 @@ const MESSAGES: Partial<Readonly<Record<MessageKind, string>>> = {
 
 /** What the game says after Check (FR-014). */
 export function messageText(kind: MessageKind): string {
-  return MESSAGES[kind] ?? '';
+  return MESSAGES[kind];
 }
