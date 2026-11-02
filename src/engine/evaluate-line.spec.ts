@@ -5,4 +5,12 @@ describe('evaluateLine', () => {
   it('adds the digits of a + line: 6 + 2 is 8', () => {
     expect(evaluateLine([6, 2], '+', defaultRules)).toEqual({ ok: true, value: 8 });
   });
+
+  it.each([
+    { digits: [6, 3], operator: '−', value: 3 },
+    { digits: [2, 3], operator: '×', value: 6 },
+    { digits: [6, 2], operator: '÷', value: 3 },
+  ] as const)('works out $digits.0 $operator $digits.1 as $value', ({ digits, operator, value }) => {
+    expect(evaluateLine(digits, operator, defaultRules)).toEqual({ ok: true, value });
+  });
 });
