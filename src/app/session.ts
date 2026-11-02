@@ -91,6 +91,9 @@ function submit(state: SessionState): SessionState {
   if (result.kind !== 'solved') {
     return { ...state, message: result.kind };
   }
+  if (state.found.has(result.key)) {
+    return { ...state, message: 'already-found' };
+  }
   const found = new Set([...state.found, result.key]);
   const isEverySolutionFound = found.size >= state.puzzle.solutionCount;
   return { ...state, found, message: isEverySolutionFound ? 'all-found' : 'new-solution' };

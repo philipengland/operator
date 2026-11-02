@@ -98,6 +98,16 @@ describe('applyAction', () => {
       expect(state.message).toBe('all-found');
     });
 
+    it('says a solution has already been found, and records nothing new, when it is checked again', () => {
+      const solutionA: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+      const afterA: SessionState = { ...startSession(), entry: solutionA, found: new Set(['2,2,3|×|÷' as SolutionKey]) };
+
+      const state = applyAction(afterA, { type: 'submit' });
+
+      expect(state.message).toBe('already-found');
+      expect(state.found.size).toBe(1);
+    });
+
     it('says the grid is not solved, and records nothing, when a line misses', () => {
       // spec-001 "Below zero": Column 1 gives 6 − 9.
       const belowZero: Entry = { cells: [[null, 2], [9, 3]], rowOperators: [null, '−'], columnOperators: ['−', null] };
