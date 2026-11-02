@@ -1,25 +1,15 @@
 import { execSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { defineConfig, type Plugin } from 'vite';
+import { buildVersion } from './tools/build-version';
 
 // Research R9: JavaScript and CSS together stay under 30 KB gzipped, protecting the
 // 3-second ready-to-play budget (SC-004).
 const BUNDLE_BUDGET_BYTES = 30 * 1024;
 
-function buildVersion(): string {
-  if (process.env.GITHUB_SHA) {
-    return process.env.GITHUB_SHA;
-  }
-  try {
-    return execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
-  } catch {
-    return 'unknown';
-  }
-}
-
 /** Writes the commit into <meta name="version"> so the post-deploy check can read it (AC-17). */
 function versionMeta(): Plugin {
-  const version = buildVersion();
+  const version = buildVersion(process.env, () => execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim());
   return {
     name: 'operator-version-meta',
     transformIndexHtml: (html) => html.replace('%OPERATOR_VERSION%', version),
