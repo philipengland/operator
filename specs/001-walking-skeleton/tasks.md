@@ -116,9 +116,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-5 A cell only ever holds 1 to 9 or nothing ⚠️
 
-- [ ] T026 [US1] AC-5 RED: no new driver methods expected. ⚠️ This scenario may already pass after AC-2 and AC-3. If it does, stop and report it to the owner before going on. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T027 [US1] AC-5 TDD cycles: only if the scenario is red. Engine: `nextCellValue` never returns 0 or anything outside `Digit | null` (data-model: "Zero and anything else are unrepresentable"). Files: `src/engine/cycles.ts` (tests in `src/engine/cycles.spec.ts`).
-- [ ] T028 [US1] AC-5 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T026 [US1] AC-5 RED: no new driver methods expected. ⚠️ This scenario may already pass after AC-2 and AC-3. If it does, stop and report it to the owner before going on. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T027 [US1] AC-5 TDD cycles: only if the scenario is red. Engine: `nextCellValue` never returns 0 or anything outside `Digit | null` (data-model: "Zero and anything else are unrepresentable"). Files: `src/engine/cycles.ts` (tests in `src/engine/cycles.spec.ts`).
+- [X] T028 [US1] AC-5 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-6 Choosing an open operator
 

@@ -228,3 +228,13 @@
   (operator tapping not built yet); both small-screen scenarios (real passes).
 - **Slice refactor**: none needed.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-5: Given an empty cell, when the player taps it ten times, then it shows 1, 2, 3, 4, 5, 6, 7, 8, 9 and then is empty again, and never shows 0 or any other character
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "ten taps show 1 to 9 in order and then empty, never 0" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 1 of 1, iphone 1 of 1, android 1 of 1). Reported to the owner at the AC-4 checkpoint. The rule is fully delivered by AC-2 (empty → 1, each digit → the next) and AC-3 (9 → empty); `nextCellValue` returns only `Digit | null`, so 0 cannot appear.
+- **Decision**: owner chose option (a) on 2026-11-02 — record AC-5 as delivered by AC-2 and AC-3, write no new code, and move to AC-6. T027 (cycles only if red) was skipped.
+- **Acceptance GREEN**: AC-5 passes in all runs; no code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-02 (option a).
