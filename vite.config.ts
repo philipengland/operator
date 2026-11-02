@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { defineConfig, type Plugin } from 'vite';
-import { buildVersion } from './tools/build-version';
+import { buildVersion } from './tools/build-version.ts';
 
 // Research R9: JavaScript and CSS together stay under 30 KB gzipped, protecting the
 // 3-second ready-to-play budget (SC-004).
