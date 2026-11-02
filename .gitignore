@@ -3,3 +3,10 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# Node and test output
+node_modules/
+test-results/
+playwright-report/
+dist/
+coverage/
