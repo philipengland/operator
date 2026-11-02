@@ -70,5 +70,8 @@ client-side game.
   log), plain DOM rendering may become costly to maintain. Adopting a framework would then
   need its own ADR. The pure session and engine layers keep that change confined to the
   view.
+- **TypeScript 6, not 7.** TypeScript is pinned to 6.0.3 because `typescript-eslint`, which
+  enforces the engine boundary and the coding-standard limits, supports TypeScript below 6.1
+  only (checked 2026-11-02). Move to TypeScript 7 once `typescript-eslint` supports it.
 - **Repository visibility.** GitHub Pages on a private repository needs a paid GitHub plan.
   The repository has no remote yet, so this must be settled when it is created.

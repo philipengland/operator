@@ -1,0 +1,11 @@
+{
+  // The engine must run unchanged in Node with no DOM, browser, Node or timer globals
+  // (constitution II). No DOM library and no ambient types means any such use fails here.
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": []
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["./**/*.spec.ts"]
+}
