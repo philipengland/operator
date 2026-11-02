@@ -75,8 +75,19 @@ function build(root: HTMLElement, puzzle: Puzzle): ScreenParts {
 function render(parts: ScreenParts, state: SessionState): void {
   parts.cells.forEach((cell) => renderCell(cell, state));
   parts.operators.forEach((operator) => renderOperator(operator, state));
-  parts.message.textContent = state.message ? messageText(state.message) : '';
-  parts.counter.textContent = counterText(state);
+  writeText(parts.message, state.message ? messageText(state.message) : '');
+  writeText(parts.counter, counterText(state));
+}
+
+/**
+ * Rewriting unchanged text in a live region can make screen readers announce it again, so
+ * text is only written when it changes. Clearing a message removes text, which is not
+ * announced (FR-014).
+ */
+function writeText(target: HTMLElement, text: string): void {
+  if (target.textContent !== text) {
+    target.textContent = text;
+  }
 }
 
 function renderCell({ position, button }: CellPart, { puzzle, entry }: SessionState): void {
