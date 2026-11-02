@@ -1,7 +1,19 @@
 // The play session: a pure reducer over the current entry, the found solutions and the last
 // message (data-model.md "Session"). No DOM access.
 
-import { emptyEntry, isGiven, nextCellValue, workedExample, type CellPosition, type Entry, type LinePosition, type Puzzle, type SolutionKey } from '../engine';
+import {
+  emptyEntry,
+  isGiven,
+  nextCellValue,
+  nextOperator,
+  workedExample,
+  type CellPosition,
+  type Entry,
+  type LinePosition,
+  type Operator,
+  type Puzzle,
+  type SolutionKey,
+} from '../engine';
 
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
@@ -35,6 +47,8 @@ export function applyAction(state: SessionState, action: SessionAction): Session
   switch (action.type) {
     case 'tapCell':
       return tapCell(state, action);
+    case 'tapOperator':
+      return tapOperator(state, action.line);
     default:
       return state;
   }
@@ -50,4 +64,17 @@ function tapCell(state: SessionState, tapped: CellPosition): SessionState {
     ),
   );
   return { ...state, entry: { ...state.entry, cells } };
+}
+
+function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
+  const step = (operators: readonly (Operator | null)[]) =>
+    operators.map((operator, index) => (index === tapped.index ? nextOperator(operator) : operator));
+  const { entry } = state;
+  return {
+    ...state,
+    entry:
+      tapped.axis === 'row'
+        ? { ...entry, rowOperators: step(entry.rowOperators) }
+        : { ...entry, columnOperators: step(entry.columnOperators) },
+  };
 }

@@ -1,6 +1,6 @@
 // The puzzle engine's public API (contracts/engine-api.md). Nothing else in src/engine is
 // imported from outside it.
-export { nextCellValue } from './cycles';
+export { nextCellValue, nextOperator } from './cycles';
 export { emptyEntry } from './entry';
 export { isGiven, lineSpec } from './puzzle';
 export { workedExample } from './puzzles/worked-example';
