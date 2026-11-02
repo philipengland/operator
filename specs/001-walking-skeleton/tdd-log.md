@@ -506,3 +506,30 @@
   the game; all four `env(safe-area-inset-*)` insets used; 0 animated or transitioning elements;
   no page scroll. Real-device safe-area checks remain manual (quickstart section 6).
 - **Checkpoint**: User Story 1 (the MVP) complete; awaiting approval from Philip England.
+- **Checkpoint**: User Story 1 approved by Philip England on 2026-11-02.
+
+## AC-12: Given the counter reads "Found 1 of 2" after Solution A, when the player changes bottom-left to 3, Row 2 to + and Column 1 to − (Solution B) and submits, then the game says this is a new solution and that every solution has been found, and the counter reads "Found 2 of 2"
+
+- **Acceptance test**: `test/acceptance/play/find-solutions.acceptance-spec.ts` — "Solution B after Solution A is new, every solution is found, and the counter reads "Found 2 of 2"" (engine, iphone, android)
+- **Drivers added**: none (both drivers already map the `all-found` message).
+- **Acceptance RED** (engine, iphone, android): `Error: what the game says — Expected: "new solution, every solution found", Received: "new solution"`
+- **Not written**: the planned test that Solution B's key is `"2,3,3|+|−"` would pass on first run, because `checkEntry` is already general, so it would not be a valid red.
+
+### Cycle 1 — a new solution that completes the set says every solution is found
+
+- **RED**: `applyAction › submit › says every solution has been found when a new solution completes the set` in `src/app/session.spec.ts` — failed: `expected 'new-solution' to be 'all-found'`
+- **GREEN**: when the found set reaches the puzzle's `solutionCount`, the message is `all-found` — commit `c2f9e49`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — the all-found message reads "New solution found! You've found every solution."
+
+- **RED**: `messageText › says every solution has been found when the last new one is found` in `src/app/labels.spec.ts` — failed: `expected '' to be 'New solution found! You've found eve…'`
+- **GREEN**: commit `0022972`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-12 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  65 unit tests pass (lines 99.0%, branches 95.2%); lint, type checks and build clean.
+- **Now passing early, genuinely**: AC-15 (all runs): `all-found` depends only on how many
+  solutions are found, so B then A also finds every solution. Already passing: AC-14, AC-16.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.

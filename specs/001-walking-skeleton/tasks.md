@@ -180,9 +180,9 @@ and the count stays at 2.
 
 ### AC-12 Finding a second, different solution
 
-- [ ] T051 [US2] AC-12 RED: engine and UI drivers map the `all-found` message kind to "new solution, every solution found". Confirm the scenario fails. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
-- [ ] T052 [US2] AC-12 TDD cycles. Engine: Solution B's key is `"2,3,3|+|−"` and differs from Solution A's (FR-012). App: session `submit` with a new key that brings `found.size` to `puzzle.solutionCount` sets `message: all-found`; `labels.ts` gives the all-found wording; the grid stays editable (FR-014).
-- [ ] T053 [US2] AC-12 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T051 [US2] AC-12 RED: engine and UI drivers map the `all-found` message kind to "new solution, every solution found". Confirm the scenario fails. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
+- [X] T052 [US2] AC-12 TDD cycles. Engine: Solution B's key is `"2,3,3|+|−"` and differs from Solution A's (FR-012). App: session `submit` with a new key that brings `found.size` to `puzzle.solutionCount` sets `message: all-found`; `labels.ts` gives the all-found wording; the grid stays editable (FR-014).
+- [X] T053 [US2] AC-12 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/find-solutions.acceptance-spec.ts`.
 
 ### AC-13 Checking the same solution twice
 
