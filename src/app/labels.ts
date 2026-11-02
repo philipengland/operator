@@ -17,10 +17,13 @@ const CORNER_NAMES: readonly (readonly string[])[] = [
 ];
 
 export function cellName(puzzle: Puzzle, entry: Entry, position: CellPosition): string {
-  void entry;
   const corner = CORNER_NAMES[position.row]?.[position.column];
   const given = puzzle.givens[position.row]?.[position.column] ?? null;
-  return `${corner} cell, ${given === null ? 'empty' : `given ${given}`}`;
+  if (given !== null) {
+    return `${corner} cell, given ${given}`;
+  }
+  const entered = entry.cells[position.row]?.[position.column] ?? null;
+  return `${corner} cell, ${entered ?? 'empty'}`;
 }
 
 export function lineName(line: LinePosition): string {

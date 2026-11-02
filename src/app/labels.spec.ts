@@ -11,6 +11,12 @@ describe('cellName', () => {
   ])('names the cell at row $row, column $column "$name" when the game opens', ({ row, column, name }) => {
     expect(cellName(workedExample, emptyEntry(workedExample), { row, column })).toBe(name);
   });
+
+  it('names a cell by the digit the player entered', () => {
+    const entry = { ...emptyEntry(workedExample), cells: [[null, 7], [null, null]] as const };
+
+    expect(cellName(workedExample, entry, { row: 0, column: 1 })).toBe('Top-right cell, 7');
+  });
 });
 
 describe('lineName', () => {
