@@ -593,3 +593,30 @@
   phone run.
 - Remaining failures belong to User Story 3 and Polish, not yet started: AC-19 (engine);
   AC-18 network requests, AC-21 offline reload and the Android speed budget (phones).
+
+## AC-17: Given a change has been merged to main, when the pipeline finishes, then the public address serves the new version without anyone deploying by hand
+
+- **Acceptance test**: `test/acceptance/delivery/publish.acceptance-spec.ts` — "once the pipeline finishes, the public address serves the merged version" (`after-publish` project, no browser; runs only when `ACCEPTANCE_PUBLIC_URL` is set)
+- **Drivers added** (`12963ac`, `a84c13f`): delivery `mergedVersion` (the commit the build is labelled with, found the same way as the build) and `versionAtPublicAddress` (fetches the address with a cache-busting query and reads `<meta name="version">`; failures are reported as the version seen).
+- **Acceptance RED** (2026-11-02, `ACCEPTANCE_PUBLIC_URL=https://philipengland.github.io/operator/`): `Error: version at the public address — Expected: "9c9b490…", Received: "nothing published (HTTP 404 from https://philipengland.github.io/operator/)"`. Nothing is published: the GitHub repository does not exist yet.
+
+### Preparation — move the version lookup where it can be tested
+
+- **REFACTOR**: the lookup moved from `vite.config.ts` to `tools/build-version.ts` with no behaviour change; added `tools/tsconfig.json` to the type check — commit `757ad06`
+- **Tests written after the code** (`5661657`): Setup T004 wrote the lookup untested. Three tests (GitHub's commit wins, git commit otherwise, "unknown" without git) **passed on first run**; each was shown to fail when its branch of the lookup was broken, then the code was restored.
+
+### Cycle 1 — label the build with the checked-out commit
+
+- **Decision**: owner chose on 2026-11-02 that the checked-out git commit wins, with `GITHUB_SHA` as the fallback. A rollback run (`workflow_dispatch` with `ref`) checks out an older commit, but GitHub does not let a workflow change `GITHUB_SHA`, so the old order labelled rolled-back pages with the wrong version. This changes T068's stated order.
+- **Guard first**: `uses the commit GitHub Actions names when git cannot be read` — passed on first run (the old order already gave this); it keeps the fallback through the change.
+- **RED**: `buildVersion › uses the checked-out commit even when GitHub Actions names a different one` in `tools/build-version.spec.ts` — failed: `expected 'a1b2c3d4e5f60718293a4b5c6d7e8f9012345…' to be '0f9e8d7c6b5a49382716f5e4d3c2b1a098765…'`
+- **GREEN**: read git first, fall back to `GITHUB_SHA`, then "unknown" — commit `9c9b490`
+- **REFACTOR**: none needed. The delivery driver now uses the same lookup (`a84c13f`).
+
+### Pipeline
+
+- `.github/workflows/ci-deploy.yml` (`e5d03b3`; authorised by T068): `verify` on every pull request and push to `main` (lint, type checks, unit tests with coverage, build, cached Playwright browsers, both acceptance drivers, upload `dist/`); `deploy` needs `verify`, runs only on `main`, publishes with `actions/deploy-pages`, then runs the `after-publish` project against the deployment URL. Workflow permissions `contents: read`; `deploy` adds only `pages: write` and `id-token: write`. Every action is pinned to a commit SHA resolved from its release tag. The exceptions check is added with T075.
+- `2cc4936`: the config imports the lookup with its `.ts` extension, clearing a new Vite warning.
+- Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
+- **Acceptance GREEN**: **blocked** — needs the GitHub repository, Pages set to "GitHub Actions", and a merge to `main` (T069).
+- **Checkpoint**: awaiting approval from Philip England.
