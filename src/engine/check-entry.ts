@@ -39,7 +39,7 @@ function allLines(puzzle: Puzzle): LinePosition[] {
 function reachesTarget(puzzle: Puzzle, entry: Entry, line: LinePosition, rules: Rules): boolean {
   const digits = lineDigits(puzzle, entry, line);
   const operator = lineOperator(puzzle, entry, line);
-  // A gap is treated as missing the target here; AC-11 makes it its own result.
+  // checkEntry has already returned incomplete for any gap; this only narrows the types.
   if (operator === null || digits.some((digit) => digit === null)) {
     return false;
   }
