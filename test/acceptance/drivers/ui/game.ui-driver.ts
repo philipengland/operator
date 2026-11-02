@@ -28,7 +28,7 @@ export class UiGameDriver implements GameDriver {
   }
 
   async tapCell(cell: Cell): Promise<void> {
-    await this.cellButton(cell).tap();
+    await tapLikeAFinger(this.cellButton(cell));
   }
 
   async tapOperator(): Promise<void> {}
@@ -80,6 +80,12 @@ export class UiGameDriver implements GameDriver {
     const isOpen = (await button.getAttribute('aria-disabled')) !== 'true';
     return { choice, isOpen };
   }
+}
+
+/** A finger can tap an aria-disabled button; Playwright only does so when forced. */
+async function tapLikeAFinger(button: Locator): Promise<void> {
+  const isMarkedDisabled = (await button.getAttribute('aria-disabled')) === 'true';
+  await button.tap({ force: isMarkedDisabled });
 }
 
 async function accessibleName(element: Locator): Promise<string> {
