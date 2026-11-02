@@ -146,9 +146,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-10 A line that does not divide exactly
 
-- [ ] T041 [US1] AC-10 RED: no new driver methods expected. Confirm the scenario fails because inexact division is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T042 [US1] AC-10 TDD cycles. Engine: `evaluateLine([6, 4], '÷')` is `{ ok: false, reason: 'inexact-division', step: 1 }`; `checkEntry` returns `not-solved` for the inexact-division example. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each).
-- [ ] T043 [US1] AC-10 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T041 [US1] AC-10 RED: no new driver methods expected. Confirm the scenario fails because inexact division is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T042 [US1] AC-10 TDD cycles. Engine: `evaluateLine([6, 4], '÷')` is `{ ok: false, reason: 'inexact-division', step: 1 }`; `checkEntry` returns `not-solved` for the inexact-division example. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each).
+- [X] T043 [US1] AC-10 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-11 Checking before everything is filled
 

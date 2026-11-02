@@ -403,3 +403,24 @@
     messages never clear yet. The other AC-20 scenario (a changeable tap clears it) is still red.
 - **Slice refactor**: none needed.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-10: Given the player has entered top-right 2, bottom-left 4, bottom-right 3, Row 2 + and Column 1 ÷ (Column 1 gives 6 ÷ 4, which is not a whole number), when they submit, then the game says the puzzle is not solved yet and the counter does not change
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "Column 1 gives 6 ÷ 4, so the puzzle is not solved" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 1 of 1, iphone 1 of 1, android 1 of 1), as
+  reported at the AC-9 checkpoint: 6 ÷ 4 = 1.5 already misses Column 1's target of 3. As agreed
+  with the owner, the inexact-division rule (FR-008, edge case "inexact division") is still
+  test-driven in the engine.
+
+### Cycle 1 — a step that does not divide exactly fails its line
+
+- **RED**: `evaluateLine › fails a line at the step that does not divide exactly: 6 ÷ 4` in `src/engine/evaluate-line.spec.ts` — failed: `expected { ok: true, value: 1.5 } to deeply equal { ok: false, …(2) }`
+- **GREEN**: a ÷ step with a remainder returns `{ ok: false, reason: 'inexact-division', step }` — commit `eec9262`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-10 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  57 unit tests pass; lint, type checks and build clean. No new early passes.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
