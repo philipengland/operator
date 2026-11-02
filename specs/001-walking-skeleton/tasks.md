@@ -128,9 +128,9 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-7 Shown operators cannot change ⚠️
 
-- [ ] T032 [US1] AC-7 RED: no new driver methods expected. ⚠️ This may already pass if AC-6 only cycles open lines. If so, stop and report. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T033 [US1] AC-7 TDD cycles: only if red. App: session `tapOperator` on a shown line leaves the state unchanged (FR-005); `view.ts` renders shown operators as `aria-disabled="true"` buttons.
-- [ ] T034 [US1] AC-7 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T032 [US1] AC-7 RED: no new driver methods expected. ⚠️ This may already pass if AC-6 only cycles open lines. If so, stop and report. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T033 [US1] AC-7 TDD cycles: only if red. App: session `tapOperator` on a shown line leaves the state unchanged (FR-005); `view.ts` renders shown operators as `aria-disabled="true"` buttons.
+- [X] T034 [US1] AC-7 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-8 Checking a correct grid
 

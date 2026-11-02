@@ -285,3 +285,26 @@
   visible changes — the same situation as AC-4. To be reported at AC-7.
 - **Slice refactor**: none beyond the cycle refactor.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-7: Given the player taps Row 1's + or Column 2's ×, then the operator does not change
+
+- **Acceptance tests**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "tapping Row 1's + leaves it as +" and "tapping Column 2's × leaves it as ×" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 2 of 2, iphone 2 of 2, android 2 of 2),
+  as reported at the AC-6 checkpoint: `lineOperator` always returns a shown operator, so nothing
+  visible changes. Underneath, a tap still recorded a hidden choice. As agreed with the owner,
+  cycle 1 test-drives the session to ignore it (FR-005).
+
+### Cycle 1 — a session ignores taps on a shown operator
+
+- **RED**: `applyAction › tapOperator › ignores a tap on the shown operator of row 0` and `… column 1` in `src/app/session.spec.ts` — failed: a hidden choice was recorded (`- null` / `+ "+"` in `rowOperators[0]`; likewise `columnOperators[1]`)
+- **GREEN**: `tapOperator` returns the state unchanged unless the line is open — commit `fc0a66d`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-7 passes — engine 2 of 2, iphone 2 of 2, android 2 of 2. Full suite:
+  46 unit tests pass (lines 98.0%, branches 95.7%); lint, type checks and build clean.
+  Every scenario now passing is either a criterion completed so far (AC-1 to AC-7) or a real
+  small-screen pass; no vacuous passes remain.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
