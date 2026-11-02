@@ -3,7 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 // Driver choice is configuration only (acceptance-tests standard "Choosing the Driver"):
 //   npm run test:acceptance:engine   in-process, no browser
 //   npm run test:acceptance:ui       iPhone (WebKit) and Android (Chromium) at 375 × 667
+//   ACCEPTANCE_PUBLIC_URL=… npm run test:acceptance:engine   the published game (AC-17)
 const isUiRun = process.env.ACCEPTANCE_DRIVER === 'ui';
+const isAfterPublishRun = !!process.env.ACCEPTANCE_PUBLIC_URL;
 const isCi = !!process.env.CI;
 const PREVIEW_PORT = 4173;
 const baseURL = process.env.ACCEPTANCE_BASE_URL ?? `http://localhost:${PREVIEW_PORT}`;
@@ -36,12 +38,20 @@ export default defineConfig({
           use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN },
         },
       ]
-    : [
-        {
-          name: 'engine',
-          grepInvert: /@ui|@after-publish/,
-        },
-      ],
+    : isAfterPublishRun
+      ? [
+          {
+            // AC-17: reads the public address after deployment; no browser needed.
+            name: 'after-publish',
+            grep: /@after-publish/,
+          },
+        ]
+      : [
+          {
+            name: 'engine',
+            grepInvert: /@ui|@after-publish/,
+          },
+        ],
   webServer:
     isUiRun && !process.env.ACCEPTANCE_BASE_URL
       ? {
