@@ -1,7 +1,7 @@
 // The play session: a pure reducer over the current entry, the found solutions and the last
 // message (data-model.md "Session"). No DOM access.
 
-import type { Entry, LinePosition, Puzzle, SolutionKey } from '../engine';
+import { emptyEntry, workedExample, type Entry, type LinePosition, type Puzzle, type SolutionKey } from '../engine';
 
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
@@ -19,8 +19,8 @@ export type SessionAction =
 
 export function startSession(): SessionState {
   return {
-    puzzle: { rows: 0, columns: 0, givens: [], rowLines: [], columnLines: [], solutionCount: 0 },
-    entry: { cells: [], rowOperators: [], columnOperators: [] },
+    puzzle: workedExample,
+    entry: emptyEntry(workedExample),
     found: new Set(),
     message: null,
   };
