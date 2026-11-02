@@ -308,3 +308,59 @@
   small-screen pass; no vacuous passes remain.
 - **Slice refactor**: none needed.
 - **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-8: Given the player has entered top-right 2, bottom-left 2, bottom-right 3, Row 2 × and Column 1 ÷ (Solution A), when they submit, then the game says the puzzle is solved and the counter reads "Found 1 of 2"
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "Solution A is accepted and the counter reads "Found 1 of 2"" (engine, iphone, android)
+- **Drivers added** (`161bc8a`): engine `check()` dispatches `submit`, `view().result` maps the session's message kind, `announcementCount()` counts messages shown; UI `check()` taps "Check" and runs axe, `view().result` reads the message from the status region, `announcementCount()` counts batches of text added to the polite status region (MutationObserver installed at open).
+- **Message wording** (drafted for the owner's content review, EXC-005): "New solution found!", "New solution found! You've found every solution.", "You've already found this solution.", "Not solved yet.", "Fill every cell and choose every operator before checking."
+- **Acceptance RED** (engine, iphone, android): `Error: what the game says — Expected: "new solution", Received: null`
+
+### Cycle 1 — a + line adds its digits: 6 + 2 is 8
+
+- **RED**: `evaluateLine › adds the digits of a + line: 6 + 2 is 8` in `src/engine/evaluate-line.spec.ts` — failed: `expected { ok: true, value: +0 } to deeply equal { ok: true, value: 8 }`
+- **GREEN**: sums the digits — commit `47ee746`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — −, × and ÷ lines are worked out step by step in reading order
+
+- **RED**: `evaluateLine › works out 6 − 3 as 3`, `2 × 3 as 6`, `6 ÷ 2 as 3` — failed: `value: 9 … 3`, `5 … 6`, `8 … 3` (the stub still added)
+- **GREEN**: each step applies the line's operator to the running result, first digit onward — commit `f67b37b`
+- **REFACTOR**: none needed.
+- **Not written**: a separate test for a longer line (the brief's 8 − 3 − 2 = 3) would have passed on first run against the step-by-step working, so it would not be a valid red.
+
+### Cycle 3 — Solution A is solved, keyed "2,2,3|×|÷"
+
+- **RED**: `checkEntry › finds Solution A solved, keyed by its entered digits and chosen operators` in `src/engine/check-entry.spec.ts` — failed: `expected { kind: 'not-solved' } to deeply equal { kind: 'solved', key: '2,2,3|×|÷' }`
+- **GREEN**: every row and column is worked out against its target; the key is the entered digits in reading order, then the open rows' operators, then the open columns' (data-model "SolutionKey"). A line with a gap is treated as missing its target until AC-11 — commit `9b63891`
+- **REFACTOR**: none needed.
+
+### Cycle 4 — a session records a new solution and says so
+
+- **RED**: `applyAction › submit › records a new solution and says so` in `src/app/session.spec.ts` — failed: `expected Set{} to deeply equal Set{ '2,2,3|×|÷' }`
+- **GREEN**: a solved check adds its key to `found` with message `new-solution` — commit `be83fd1`. The engine AC-8 scenario now passes; "Found 1 of 2" follows from `found.size`.
+- **REFACTOR**: none needed.
+
+### Cycle 5 — the new-solution message reads "New solution found!"
+
+- **RED**: `messageText › says "New solution found!" for a new solution` in `src/app/labels.spec.ts` — failed: `expected '' to be 'New solution found!'`
+- **GREEN**: commit `d40a5ec`
+- **REFACTOR**: none needed.
+
+### View — Check shows the result
+
+- The status region holds a message line and the counter in one polite live region; Check
+  dispatches `submit` — commit `eb374c2`. Phone AC-8 now passes, axe clean after Check.
+
+- **Acceptance GREEN**: AC-8 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  53 unit tests pass (lines 97.6%, branches 91.0%); lint, type checks and build clean.
+- **Vacuous pass found and fixed**: AC-18 "with no connection, Solution A is still accepted" passed
+  on both phones because the phone driver's `loseConnection()` was an empty placeholder. It is an
+  action, so it cannot report "unknown"; it was built ahead of AC-18 instead
+  (`context.setOffline(true)`) — commit `8bca0d1`. The scenario still passes with the connection
+  really cut: a genuine early pass (⚠️ in tasks.md).
+- **Now passing early, genuinely**: AC-14 (the found set never counts a solution twice) and AC-16
+  (Check never clears the grid), all runs. To be reported at their RED steps.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
