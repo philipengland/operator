@@ -94,6 +94,12 @@ describe('resultText', () => {
   it('shows "= ?" in the result slot while a line is unfinished', () => {
     expect(resultText(ROW_1_ON_OPENING)).toBe('= ?');
   });
+
+  it('shows the result of a line that misses its target: "= 9"', () => {
+    const missing: LineWorking = { ...ROW_1_ON_OPENING, digits: [6, 3], outcome: { kind: 'result', value: 9, reachesTarget: false } };
+
+    expect(resultText(missing)).toBe('= 9');
+  });
 });
 
 describe('messageText', () => {

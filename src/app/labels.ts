@@ -60,9 +60,8 @@ export function workingName(working: LineWorking): string {
 }
 
 /** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
-export function resultText(working: LineWorking): string {
-  void working;
-  return `= ${GAP_MARK}`;
+export function resultText({ outcome }: LineWorking): string {
+  return outcome.kind === 'result' ? `= ${outcome.value}` : `= ${GAP_MARK}`;
 }
 
 // Every message kind must have wording; the compiler enforces it.
