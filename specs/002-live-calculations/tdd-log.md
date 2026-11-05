@@ -252,4 +252,17 @@ gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples �
   yet say ", target reached" (AC-6's planned cycle). So for marks, only the UI driver tests the
   app's wording.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting the owner.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-3: after top-right 2 and bottom-right 3, Column 2 reads "2 × 3 = 6" ⚠️ passed at RED
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "top-right 2 and bottom-right
+  3 make Column 2 "2 × 3 = 6"".
+- **Acceptance RED**: **passed on its first run**, on the engine and both phones, as
+  `tasks.md` predicted: AC-1 and AC-2 build every line's working the same way, columns
+  included.
+- **Driver proof**: a deliberate break, `workingText` adding the result for rows only, made it
+  fail on the engine and both phones: `Error: Column 2 working … Expected: "2 × 3 = 6"
+  Received: "2 × 3"`. Reverted with `git checkout`, rebuilt; passes again.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record AC-3 as delivered.
