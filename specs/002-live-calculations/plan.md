@@ -172,6 +172,12 @@ Two pull requests, each under 30 minutes to review, each leaving `main` deployab
 2. **Workings on screen** (US1, AC-8 to AC-10 display): `lineWorking`, session, labels, view,
    styles, drivers, and the current-state play-screen contract.
 
+*Changed 2026-11-05, owner's decision*: part 1 cannot pass `verify` on its own, because
+`verify` runs every approved acceptance scenario and `main` requires it, and the spec-002
+scenarios need part 2. Part 1 is opened as draft pull request #7 for review; part 2 is
+built on the same branch, and the pull request is merged once, when every spec-002
+scenario passes. Each part is still reviewed separately.
+
 ## Open Items for a Human
 
 1. **Where the current contracts live** — *decided 2026-11-05*: move them from

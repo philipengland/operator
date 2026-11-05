@@ -89,3 +89,16 @@ workings are on screen. The rule is driven by unit tests.
 - `npm run test:acceptance:ui -- --grep-invert "spec-002"`: 55 passed (both phones, speed
   budgets on Android).
 - **Checkpoint**: approved by Philip England on 2026-11-05, including cycle 2 as delivered (passed at RED, proven by a reverted break).
+
+### T008 — pull request 1, as a draft
+
+- Pushed `002-live-calculations` and opened **draft** pull request #7, "spec-002 part 1 of 2:
+  results below zero".
+- **Gap found and decided**: `main` requires `verify`, which runs every approved acceptance
+  scenario. The 13 spec-002 scenarios cannot pass until part 2, so part 1 cannot merge on its
+  own. The owner chose (2026-11-05): keep #7 as a draft for review, build part 2 on the same
+  branch, and merge once when every spec-002 scenario passes. No scenario is skipped and the
+  pipeline is unchanged. Recorded in `plan.md` (Delivery) and `tasks.md` (T008, T045).
+- **Lesson for later features**: a feature whose approved scenarios need more than one pull
+  request cannot merge its early parts while `verify` runs them all. Plan the split around
+  that, or decide up front how undelivered scenarios are handled.

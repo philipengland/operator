@@ -78,9 +78,9 @@ blocks User Story 1 too: AC-4 expects "2 − 3 = −1". No screen change in this
   - `src/engine/check-entry.spec.ts`: the worked example's below-zero entry is still `not-solved` (6 − 9 = −3, target 3); on a test puzzle with one row (target −3, operator −, given 6 then an empty cell) and single-cell columns whose targets are 6 and 9, entering 9 is `solved` (the row reaches −3). The "6 − 8 misses −3" case is AC-12's, in T040, where the line is tested on its own.
   - `src/app/session.spec.ts`: the below-zero test's comment gives the new reason; its assertion ("not solved yet") is unchanged.
 - [X] T007 Run the full suite: unit tests, lint, type checks, engine and both phone projects. Every spec-001 scenario passes, including the reworded AC-9. Record in the TDD log ("FR-208 and AC-12's rule") and stop at a checkpoint for the owner.
-- [ ] T008 Pull request 1: push `002-live-calculations` and open the pull request "spec-002 part 1 of 2: results below zero" with what changed, why (FR-208, the owner's 2026-11-05 decision), how it was tested (the rewritten tests by name), and rollback (re-run `ci-deploy.yml` with `ref` = `85ee990`, or revert the merge). End with the attribution line. The owner merges it with a merge commit.
+- [X] T008 *(Done 2026-11-05 as **draft** pull request #7, by the owner's decision: `verify` runs every approved scenario, so it can only pass once part 2 is on the branch. Merged once, after T045.)* Pull request 1: push `002-live-calculations` and open the pull request "spec-002 part 1 of 2: results below zero" with what changed, why (FR-208, the owner's 2026-11-05 decision), how it was tested (the rewritten tests by name), and rollback (re-run `ci-deploy.yml` with `ref` = `85ee990`, or revert the merge). End with the attribution line. The owner merges it with a merge commit.
 
-**Checkpoint**: pull request 1 merged; `main` deploys the new rule with no visible change.
+**Checkpoint**: pull request 1 open as a draft (#7) for review; it is merged with part 2.
 
 ---
 
@@ -193,7 +193,7 @@ and no result. The rule itself shipped in Phase 2.
 - [ ] T042 [P] Update `AGENTS.md` where spec-002 changes it: the purpose paragraph (each line shows its working; results below zero), the contracts location (if T001 did not already), and any new convention learned during implementation.
 - [ ] T043 [P] Run [quickstart.md](quickstart.md) sections 1 to 3 and record the results in the TDD log.
 - [ ] T044 Owner's manual checks ([quickstart.md](quickstart.md) section 4): VoiceOver and TalkBack read each working sensibly ("?", "minus 3", "target reached"); five hallway playtests for SC-201 and SC-202. Results in the TDD log; raise a work item for any failure.
-- [ ] T045 Pull request 2: push and open "spec-002 part 2 of 2: line workings on screen" with what changed, why, how it was tested, and rollback (re-run `ci-deploy.yml` with `ref` = the merge commit of pull request 1, or revert). End with the attribution line. The owner merges it with a merge commit.
+- [ ] T045 Pull request 2 (*now: mark draft #7 ready for review, retitle it "spec-002: live line calculations" and update its description to cover both parts*): push and open "spec-002 part 2 of 2: line workings on screen" with what changed, why, how it was tested, and rollback (re-run `ci-deploy.yml` with `ref` = the merge commit of pull request 1, or revert). End with the attribution line. The owner merges it with a merge commit.
 - [ ] T046 Owner decision, not done without it: add `/test/acceptance/play/examples.ts @philipengland` to `.github/CODEOWNERS`, so the locked examples file needs the owner's review (both approval records list it as locked; the current patterns do not cover it).
 
 ---
