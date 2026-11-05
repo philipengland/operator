@@ -4,7 +4,7 @@ import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
 import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern } from './screen-names';
-import type { Box, CellLook, PhoneDriver, ScreenLayout } from '../phone.driver';
+import type { Box, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
 
 // Set on the page before a reload; a page that really reloads no longer has it.
 const PAGE_BEFORE_RELOAD = 'operatorPageBeforeReload';
@@ -33,7 +33,9 @@ export class UiPhoneDriver implements PhoneDriver {
     });
   }
 
-  async useScreen(): Promise<void> {}
+  async useScreen(size: ScreenSize): Promise<void> {
+    await this.page.setViewportSize(size);
+  }
 
   async useReferencePhoneOn4G(): Promise<void> {}
 
