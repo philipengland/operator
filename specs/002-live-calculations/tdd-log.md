@@ -394,4 +394,24 @@ spec-002 30 passed, 2 failed (AC-9).
   made it fail on the engine and both phones: `Error: Row 1 should carry no mark … Expected:
   "none" Received: "target reached"`. Reverted with `git checkout`, rebuilt; passes again.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record AC-11 as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## T030: edge case "a cell cleared again" and accessibility "the working is not announced" ⚠️ both passed at RED
+
+- **Acceptance tests**: `see-line-working.acceptance-spec.ts` — "tapping top-right from 2
+  round to empty returns Row 1 to "6 + ?"" and "a tap that changes Row 1's working announces
+  nothing to screen-reader users".
+- **Acceptance RED**: **both passed on their first run**, on the engine and both phones, as
+  `tasks.md` predicted: an empty cell is always written "?", and the working is outside the
+  live status region.
+- **Proof, cleared cell**: a deliberate break, writing an empty cell as "_" in the working,
+  made it fail on the engine and both phones: `Error: Row 1 working … Expected: "6 + ?"
+  Received: "6 + _"`. Reverted, rebuilt; passes again.
+- **Proof, not announced**: a deliberate break, writing Row 1's result slot into the status
+  region alongside the counter, made it fail on both phones: `Error: announcements to
+  screen-reader users … Expected: 0 Received: 2`. Reverted, rebuilt; passes again.
+  **The engine driver still passed**: it counts an announcement itself whenever Check shows a
+  message (spec-001 design), so no change in the app can make it fail there. Only the phones,
+  which watch the page's live region, test this scenario.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record both as delivered.

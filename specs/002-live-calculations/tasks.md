@@ -140,8 +140,8 @@ with ✓ when it reaches its target.
 
 ### AC-11: wrong, then right ⚠️
 
-- [ ] T028 [US1] AC-11 RED: likely passes. Same handling as T016.
-- [ ] T029 [US1] AC-11 GREEN, checkpoint.
+- [X] T028 [US1] AC-11 RED: likely passes. Same handling as T016.
+- [X] T029 [US1] AC-11 GREEN, checkpoint.
 
 ### Edge cases and accessibility ⚠️
 
