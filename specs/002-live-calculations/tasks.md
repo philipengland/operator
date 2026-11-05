@@ -146,11 +146,11 @@ with ✓ when it reaches its target.
 ### Edge cases and accessibility ⚠️
 
 - [X] T030 [US1] Run "[spec-002 edge case] a cell cleared again" and "[spec-002 accessibility] the working is not announced". Both are likely to pass by construction; report, prove each driver with a reverted break (e.g. put the working inside the status region), and ask the owner.
-- [ ] T031 [US1] Run "[spec-002 edge case] small screens" (`@ui`) at 320 × 568 and 375 × 667. Fix layout in `src/app/styles.css` only if a working is off screen; record measurements in the TDD log.
+- [X] T031 [US1] Run "[spec-002 edge case] small screens" (`@ui`) at 320 × 568 and 375 × 667. Fix layout in `src/app/styles.css` only if a working is off screen; record measurements in the TDD log.
 
 ### Slice refactor for User Story 1
 
-- [ ] T032 [US1] Re-express `checkEntry` through `lineWorking` (research R3, contract guarantee: solved exactly when every outcome is a `result` that reaches its target). `refactor(engine): …`, with `check-entry.spec.ts` green before and after.
+- [X] T032 [US1] Re-express `checkEntry` through `lineWorking` (research R3, contract guarantee: solved exactly when every outcome is a `result` that reaches its target). `refactor(engine): …`, with `check-entry.spec.ts` green before and after.
 
 **Checkpoint**: User Story 1 works on its own; every spec-001 scenario still passes.
 

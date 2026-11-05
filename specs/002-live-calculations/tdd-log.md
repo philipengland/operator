@@ -437,4 +437,23 @@ spec-002 30 passed, 2 failed (AC-9).
   4 runs fail: `Error: Row 1 working is on screen without scrolling … Expected: true Received:
   false`. Reverted, rebuilt; all 4 pass again.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record it as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## T032: Check through `lineWorking` (slice refactor for User Story 1)
+
+- **Before**: 95 unit tests pass; engine 34 passed, 1 failed (AC-9); phones 85 passed, 2
+  failed (AC-9).
+- **Change**: `checkEntry`'s `reachesTarget` now asks `lineWorking` and accepts only a
+  `result` that reaches its target, so Check and the screen cannot disagree (engine
+  contract guarantee, research R3). `lineDigits` is private to `line-working.ts` again; the
+  type-narrowing guard in `check-entry.ts` is gone — commit `2806d4d` (`refactor:`).
+- **After**: identical. 95 unit tests (coverage 100% statements, 97.24% branches, up from
+  99.37% because the unreachable guard has gone); type checks and lint clean; engine 34
+  passed, 1 failed (AC-9); phones 85 passed, 2 failed (AC-9).
+- **Left as it is**: listing every line is written in both `session.ts` and
+  `check-entry.ts`. Sharing it would mean a new engine export, a contract change for six
+  lines; not worth it now.
+- **User Story 1 complete**: AC-1 to AC-7, AC-11, both edge cases, the not-announced check
+  and the small screens all pass on the engine and both phones, and every spec-001 scenario
+  still passes.
+- **Checkpoint**: awaiting the owner.
