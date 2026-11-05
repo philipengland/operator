@@ -691,3 +691,14 @@
 - No product code changed, so there were no unit cycles.
 - Full suite: 76 unit tests pass; lint and type checks clean; engine 22 of 22; **phones 55 of 55**. Every approved scenario that runs before publishing now passes.
 - **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## T085 — quickstart sections 1 to 5 on a clean clone
+
+- **Clone**: fresh `git clone` of `001-walking-skeleton` from GitHub into an empty folder, at `24d836b`. The later local commits change documents only. Node 22.17, Windows 11.
+- **Prerequisites**: `npm ci` added 147 packages; `npx playwright install webkit chromium` succeeded.
+- **Section 1**: lint clean, type checks clean, **76 of 76** unit tests pass; coverage 99.2% lines, 95.6% branches (threshold enforced).
+- **Section 2**: engine driver **22 of 22**; one criterion (`-g "spec-001 AC-8]"`) runs 1 scenario.
+- **Section 3**: build 2.78 KB JS + 0.90 KB CSS gzipped; phones **55 of 55** (iPhone WebKit and Android Chromium), including axe scans, no requests after load, and the speed budgets.
+- **Section 4**: followed step by step at 375 × 667 against `npm run dev`, scripted with Playwright. Every expected result was seen: "Top-left cell, given 6", "Found 0 of 2"; cells 2, 2, 3; Row 2 times and Column 1 divide → "New solution found! Found 1 of 2"; changing bottom-left cleared the message; Row 2 plus and Column 1 minus → "New solution found! You've found every solution. Found 2 of 2". The four targets were confirmed by the AC-1 phone scenarios, not by the script.
+- **Section 5**: run 42048739409 (merge of PR #5): `verify` passed, then `deploy`, whose AC-17 check passed; the public address serves `3197161`. Merge to live 4 min 36 s (SC-005, under 15 min).
+- **Quickstart corrected**: sections 2 and 3 named commands that predate the launcher. `npm run test:acceptance` now runs both drivers, and `ACCEPTANCE_DRIVER=ui npm run …` fails in Windows `cmd`. They now name `test:acceptance:engine` and `test:acceptance:ui`.

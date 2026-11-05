@@ -266,7 +266,7 @@ Open Items 1). AC-17 cannot go green without it.
 - [X] T082 [P] Run `/speckit-agents` to create `AGENTS.md`, which `CLAUDE.md` imports. It covers the stack, commands, folder layout, the engine boundary and the locked acceptance files.
 - [X] T083 [P] Update `README.md`: the stack is chosen (link ADR 0001), plus how to run, test and play, linking [quickstart.md](quickstart.md).
 - [ ] T084 Run the manual checks in [quickstart.md](quickstart.md) section 6 (real iPhone and Android phone, VoiceOver, TalkBack, airplane mode, five hallway playtests for SC-001) and record the results in the TDD log. Raise a work item for anything that fails. Results in `specs/001-walking-skeleton/tdd-log.md`.
-- [ ] T085 Run [quickstart.md](quickstart.md) sections 1 to 5 end to end on a clean clone and confirm every expected result. Results in `specs/001-walking-skeleton/tdd-log.md`.
+- [X] T085 Run [quickstart.md](quickstart.md) sections 1 to 5 end to end on a clean clone and confirm every expected result. Results in `specs/001-walking-skeleton/tdd-log.md`.
 - [ ] T086 Write each pull request description: what changed, why, how it was tested, and rollback (plan "Deployment and Rollback": re-run `ci-deploy.yml` with `ref` set to the last good commit, or revert the merge). End with the attribution line.
 
 ---

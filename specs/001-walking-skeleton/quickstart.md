@@ -23,8 +23,8 @@ npm test                # Vitest unit tests with coverage
 ## 2. Acceptance through the engine driver (Node, seconds)
 
 ```sh
-npm run test:acceptance                       # ACCEPTANCE_DRIVER=engine is the default
-npm run test:acceptance -- -g "spec-001 AC-8" # one criterion
+npm run test:acceptance:engine                          # ACCEPTANCE_DRIVER=engine
+npm run test:acceptance:engine -- -g "spec-001 AC-8]"   # one criterion
 ```
 
 **Expected**: every scenario not tagged `@ui` passes. These cover AC-2, AC-3, AC-5 to
@@ -34,8 +34,10 @@ AC-16, and AC-20.
 
 ```sh
 npm run build
-ACCEPTANCE_DRIVER=ui npm run test:acceptance
+npm run test:acceptance:ui                    # ACCEPTANCE_DRIVER=ui, on any shell
 ```
+
+`npm run test:acceptance` runs section 2 and then this section, as the pipeline does.
 
 Playwright starts `vite preview` on `dist/` and runs every scenario in two projects:
 WebKit with iPhone emulation and Chromium with Android emulation, at 375 × 667.
