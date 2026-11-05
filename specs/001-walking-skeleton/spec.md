@@ -188,6 +188,9 @@ narrative, why this priority, and the independent test).
 - **FR-008**: The game MUST work out each line from its own digits and operator, rows left to
   right and columns top to bottom. A line fails if any step goes below zero or does not divide
   exactly.
+  *Below-zero clause superseded on 2026-11-05 by [spec-002](../002-live-calculations/spec.md)
+  FR-208: results below zero count, and targets may be negative. Inexact division still
+  fails.*
 - **FR-009**: A submitted grid MUST be accepted as a solution when every row and every column
   reaches its target. The game MUST NOT compare the grid with a stored answer.
 - **FR-010**: Submitting with an empty cell or an unchosen open operator MUST NOT count as a
