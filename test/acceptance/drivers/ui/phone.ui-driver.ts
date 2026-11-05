@@ -30,6 +30,7 @@ const EMPTY_LAYOUT: ScreenLayout = {
   cells: { 'top-left': NO_BOX, 'top-right': NO_BOX, 'bottom-left': NO_BOX, 'bottom-right': NO_BOX },
   targets: { 'Row 1': NO_BOX, 'Row 2': NO_BOX, 'Column 1': NO_BOX, 'Column 2': NO_BOX },
   operators: { 'Row 1': NO_BOX, 'Row 2': NO_BOX, 'Column 1': NO_BOX, 'Column 2': NO_BOX },
+  workings: { 'Row 1': NO_BOX, 'Row 2': NO_BOX, 'Column 1': NO_BOX, 'Column 2': NO_BOX },
   counter: NO_BOX,
   checkButton: NO_BOX,
 };
@@ -129,6 +130,7 @@ export class UiPhoneDriver implements PhoneDriver {
       cells,
       targets,
       operators,
+      workings: EMPTY_LAYOUT.workings,
       counter: await boxOf(this.page.getByRole('status').getByText(COUNTER_PATTERN)),
       checkButton: await boxOf(this.page.getByRole('button', { name: 'Check' })),
     };

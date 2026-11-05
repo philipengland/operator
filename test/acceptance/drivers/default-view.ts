@@ -2,7 +2,7 @@
 // operator not chosen, no targets, no counter and no message.
 
 import type { Cell, Line } from '../dsl/vocabulary';
-import type { CellView, GameView, OperatorView } from './game.driver';
+import type { CellView, GameView, OperatorView, WorkingView } from './game.driver';
 
 const CELLS: readonly Cell[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 const LINES: readonly Line[] = ['Row 1', 'Row 2', 'Column 1', 'Column 2'];
@@ -17,4 +17,5 @@ export const DEFAULT_VIEW: GameView = {
   operators: forEach<Line, OperatorView>(LINES, { choice: 'not chosen', isOpen: false }),
   counter: '',
   result: null,
+  workings: forEach<Line, WorkingView>(LINES, { working: '', mark: 'none' }),
 };

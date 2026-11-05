@@ -56,6 +56,7 @@ export class EngineGameDriver implements GameDriver {
       operators: mapEach(LINES, (line) => operatorView(session, line)),
       counter: counterText(session),
       result: session.message ? RESULTS[session.message] : null,
+      workings: DEFAULT_VIEW.workings,
     };
   }
 

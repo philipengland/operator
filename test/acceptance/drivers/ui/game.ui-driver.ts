@@ -4,6 +4,7 @@
 import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { scanForAccessibilityProblems } from '../../support/axe';
+import { DEFAULT_VIEW } from '../default-view';
 import type { CellView, GameDriver, GameView, OperatorView } from '../game.driver';
 import { CELLS, LINES } from '../positions';
 import {
@@ -59,7 +60,7 @@ export class UiGameDriver implements GameDriver {
     }
     const statusText = await this.status().innerText();
     const counter = statusText.match(COUNTER_PATTERN)?.[0] ?? '';
-    return { cells, targets, operators, counter, result: readResult(statusText) };
+    return { cells, targets, operators, counter, result: readResult(statusText), workings: DEFAULT_VIEW.workings };
   }
 
   async announcementCount(): Promise<number> {
