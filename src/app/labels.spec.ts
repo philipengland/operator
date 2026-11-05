@@ -52,6 +52,14 @@ describe('operatorName', () => {
   });
 });
 
+// Row 1 when the game opens: the given 6, an empty cell, and its shown +.
+const ROW_1_ON_OPENING: LineWorking = {
+  line: { axis: 'row', index: 0 },
+  digits: [6, null],
+  operator: '+',
+  outcome: { kind: 'incomplete' },
+};
+
 describe('workingText', () => {
   it.each([
     { digits: [6, null], operator: '+', text: '6 + ?' },
@@ -67,17 +75,13 @@ describe('workingText', () => {
 
 describe('workingName', () => {
   it('names a working by its line, then the working: "Row 1 working, 6 + ?"', () => {
-    const working: LineWorking = { line: { axis: 'row', index: 0 }, digits: [6, null], operator: '+', outcome: { kind: 'incomplete' } };
-
-    expect(workingName(working)).toBe('Row 1 working, 6 + ?');
+    expect(workingName(ROW_1_ON_OPENING)).toBe('Row 1 working, 6 + ?');
   });
 });
 
 describe('resultText', () => {
   it('shows "= ?" in the result slot while a line is unfinished', () => {
-    const working: LineWorking = { line: { axis: 'row', index: 0 }, digits: [6, null], operator: '+', outcome: { kind: 'incomplete' } };
-
-    expect(resultText(working)).toBe('= ?');
+    expect(resultText(ROW_1_ON_OPENING)).toBe('= ?');
   });
 });
 
