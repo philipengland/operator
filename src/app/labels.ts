@@ -1,7 +1,8 @@
 // What the play screen says, as plain functions: visible wording and accessible names
 // (contracts/play-screen.md). No DOM access.
 
-import { lineSpec, type CellPosition, type Entry, type LinePosition, type Operator, type Puzzle } from '../engine';
+import { lineOperator, type CellPosition, type Entry, type LinePosition, type Operator, type Puzzle } from '../engine';
+import type { MessageKind } from './session';
 
 const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
   '+': 'plus',
@@ -31,8 +32,17 @@ export function lineName(line: LinePosition): string {
 }
 
 export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
-  void entry;
-  const spec = lineSpec(puzzle, line);
-  const choice = !spec || spec.operator === 'open' ? 'not chosen' : OPERATOR_WORDS[spec.operator];
-  return `${lineName(line)} operator, ${choice}`;
+  const operator = lineOperator(puzzle, entry, line);
+  return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
+}
+
+const MESSAGES: Partial<Readonly<Record<MessageKind, string>>> = {
+  'new-solution': 'New solution found!',
+  'not-solved': 'Not solved yet.',
+  incomplete: 'Fill every cell and choose every operator before checking.',
+};
+
+/** What the game says after Check (FR-014). */
+export function messageText(kind: MessageKind): string {
+  return MESSAGES[kind] ?? '';
 }

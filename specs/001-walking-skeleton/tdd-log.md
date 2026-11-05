@@ -238,3 +238,271 @@
 - **Decision**: owner chose option (a) on 2026-11-02 — record AC-5 as delivered by AC-2 and AC-3, write no new code, and move to AC-6. T027 (cycles only if red) was skipped.
 - **Acceptance GREEN**: AC-5 passes in all runs; no code changed.
 - **Checkpoint**: approved by Philip England on 2026-11-02 (option a).
+
+## AC-6: Given Row 2's operator is not yet chosen, when the player taps it five times, then it shows +, then −, then ×, then ÷, then + again
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "five taps on Row 2 show +, −, ×, ÷ and then + again" (engine, iphone, android)
+- **Drivers added** (`007ed82`): engine `tapOperator` dispatches a `tapOperator` action; UI `tapOperator` taps the operator's button by accessible name (forcing the tap on `aria-disabled` buttons, as a finger can).
+- **Acceptance RED** (engine, iphone, android): `Error: Row 2 operator after each tap` — expected `["+", "−", "×", "÷", "+"]`, received `["not chosen", "not chosen", "not chosen", "not chosen", "not chosen"]`
+
+### Cycle 1 — the first tap on an operator not yet chosen gives +
+
+- **RED**: `nextOperator › steps an operator that is not chosen to +` in `src/engine/cycles.spec.ts` — failed: `AssertionError: expected '÷' to be '+'`. The return type has no empty value, so the stub returned `÷`, chosen so the test could not pass falsely.
+- **GREEN**: returns `+` (hard-coded; the next test forces the cycle) — commit `cb54451`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — operators cycle + → − → × → ÷ → +
+
+- **RED**: `nextOperator › steps %s to %s` (4 rows) — failed: `expected '+' to be '−'`, `'×'`, `'÷'` (the `÷ → +` row passed against the hard-coded `+`)
+- **GREEN**: `OPERATOR_CYCLE` in order, wrapping after `÷` — commit `8e0122e`
+- **REFACTOR**: none needed.
+
+### Cycle 3 — tapping an open line's operator in a session steps it
+
+- **RED**: `applyAction › tapOperator › chooses + on the open row 1` and `… column 0` in `src/app/session.spec.ts` — failed: `expected null to be '+'` (both)
+- **GREEN**: the reducer steps the tapped line's operator with `nextOperator` — commit `8b7515b`. The engine AC-6 scenario now passes.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — an open operator is named by the player's choice
+
+- **RED**: `operatorName › names an open operator by the choice %s as "%s"` (4 rows) in `src/app/labels.spec.ts` — failed: `expected 'Row 2 operator, not chosen' to be 'Row 2 operator, plus'` (and minus, times, divide)
+- **GREEN**: the shown operator, else the entry's choice — commit `54053ac`
+- **REFACTOR**: "the operator a line works with" moved into the engine as `lineOperator(puzzle, entry, line)`, used by the labels and then the view — commit `319bd89`
+
+### View — operator taps reach the session
+
+- Operator buttons report taps as actions; an open operator shows the chosen symbol in place
+  of "?" — commit `e02d045`. Phone AC-6 now passes.
+
+- **Acceptance GREEN**: AC-6 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  44 unit tests pass (lines 97.9%, branches 95.6%); lint, type checks and build clean.
+- **False pass found and fixed**: once Solution A could be filled in, the AC-18 "no network
+  requests" scenario passed on both phones because the phone driver's
+  `networkRequestsSinceOpening()` stub returned 0. It now reports an unknown count (NaN) until
+  AC-18 builds it — commit `6c5bff0`.
+- **Still passing early**: both AC-7 scenarios (all runs). A tap on a shown operator still steps
+  a hidden entry value, but `lineOperator` always returns the shown operator, so nothing
+  visible changes — the same situation as AC-4. To be reported at AC-7.
+- **Slice refactor**: none beyond the cycle refactor.
+- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-7: Given the player taps Row 1's + or Column 2's ×, then the operator does not change
+
+- **Acceptance tests**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "tapping Row 1's + leaves it as +" and "tapping Column 2's × leaves it as ×" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 2 of 2, iphone 2 of 2, android 2 of 2),
+  as reported at the AC-6 checkpoint: `lineOperator` always returns a shown operator, so nothing
+  visible changes. Underneath, a tap still recorded a hidden choice. As agreed with the owner,
+  cycle 1 test-drives the session to ignore it (FR-005).
+
+### Cycle 1 — a session ignores taps on a shown operator
+
+- **RED**: `applyAction › tapOperator › ignores a tap on the shown operator of row 0` and `… column 1` in `src/app/session.spec.ts` — failed: a hidden choice was recorded (`- null` / `+ "+"` in `rowOperators[0]`; likewise `columnOperators[1]`)
+- **GREEN**: `tapOperator` returns the state unchanged unless the line is open — commit `fc0a66d`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-7 passes — engine 2 of 2, iphone 2 of 2, android 2 of 2. Full suite:
+  46 unit tests pass (lines 98.0%, branches 95.7%); lint, type checks and build clean.
+  Every scenario now passing is either a criterion completed so far (AC-1 to AC-7) or a real
+  small-screen pass; no vacuous passes remain.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-8: Given the player has entered top-right 2, bottom-left 2, bottom-right 3, Row 2 × and Column 1 ÷ (Solution A), when they submit, then the game says the puzzle is solved and the counter reads "Found 1 of 2"
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "Solution A is accepted and the counter reads "Found 1 of 2"" (engine, iphone, android)
+- **Drivers added** (`161bc8a`): engine `check()` dispatches `submit`, `view().result` maps the session's message kind, `announcementCount()` counts messages shown; UI `check()` taps "Check" and runs axe, `view().result` reads the message from the status region, `announcementCount()` counts batches of text added to the polite status region (MutationObserver installed at open).
+- **Message wording** (drafted for the owner's content review, EXC-005): "New solution found!", "New solution found! You've found every solution.", "You've already found this solution.", "Not solved yet.", "Fill every cell and choose every operator before checking."
+- **Acceptance RED** (engine, iphone, android): `Error: what the game says — Expected: "new solution", Received: null`
+
+### Cycle 1 — a + line adds its digits: 6 + 2 is 8
+
+- **RED**: `evaluateLine › adds the digits of a + line: 6 + 2 is 8` in `src/engine/evaluate-line.spec.ts` — failed: `expected { ok: true, value: +0 } to deeply equal { ok: true, value: 8 }`
+- **GREEN**: sums the digits — commit `47ee746`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — −, × and ÷ lines are worked out step by step in reading order
+
+- **RED**: `evaluateLine › works out 6 − 3 as 3`, `2 × 3 as 6`, `6 ÷ 2 as 3` — failed: `value: 9 … 3`, `5 … 6`, `8 … 3` (the stub still added)
+- **GREEN**: each step applies the line's operator to the running result, first digit onward — commit `f67b37b`
+- **REFACTOR**: none needed.
+- **Not written**: a separate test for a longer line (the brief's 8 − 3 − 2 = 3) would have passed on first run against the step-by-step working, so it would not be a valid red.
+
+### Cycle 3 — Solution A is solved, keyed "2,2,3|×|÷"
+
+- **RED**: `checkEntry › finds Solution A solved, keyed by its entered digits and chosen operators` in `src/engine/check-entry.spec.ts` — failed: `expected { kind: 'not-solved' } to deeply equal { kind: 'solved', key: '2,2,3|×|÷' }`
+- **GREEN**: every row and column is worked out against its target; the key is the entered digits in reading order, then the open rows' operators, then the open columns' (data-model "SolutionKey"). A line with a gap is treated as missing its target until AC-11 — commit `9b63891`
+- **REFACTOR**: none needed.
+
+### Cycle 4 — a session records a new solution and says so
+
+- **RED**: `applyAction › submit › records a new solution and says so` in `src/app/session.spec.ts` — failed: `expected Set{} to deeply equal Set{ '2,2,3|×|÷' }`
+- **GREEN**: a solved check adds its key to `found` with message `new-solution` — commit `be83fd1`. The engine AC-8 scenario now passes; "Found 1 of 2" follows from `found.size`.
+- **REFACTOR**: none needed.
+
+### Cycle 5 — the new-solution message reads "New solution found!"
+
+- **RED**: `messageText › says "New solution found!" for a new solution` in `src/app/labels.spec.ts` — failed: `expected '' to be 'New solution found!'`
+- **GREEN**: commit `d40a5ec`
+- **REFACTOR**: none needed.
+
+### View — Check shows the result
+
+- The status region holds a message line and the counter in one polite live region; Check
+  dispatches `submit` — commit `eb374c2`. Phone AC-8 now passes, axe clean after Check.
+
+- **Acceptance GREEN**: AC-8 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  53 unit tests pass (lines 97.6%, branches 91.0%); lint, type checks and build clean.
+- **Vacuous pass found and fixed**: AC-18 "with no connection, Solution A is still accepted" passed
+  on both phones because the phone driver's `loseConnection()` was an empty placeholder. It is an
+  action, so it cannot report "unknown"; it was built ahead of AC-18 instead
+  (`context.setOffline(true)`) — commit `8bca0d1`. The scenario still passes with the connection
+  really cut: a genuine early pass (⚠️ in tasks.md).
+- **Now passing early, genuinely**: AC-14 (the found set never counts a solution twice) and AC-16
+  (Check never clears the grid), all runs. To be reported at their RED steps.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-9: Given the player has entered top-right 2, bottom-left 9, bottom-right 3, Row 2 − and Column 1 − (Row 2 gives 9 − 3 = 6, but Column 1 gives 6 − 9, which goes below zero), when they submit, then the game says the puzzle is not solved yet and the counter still reads "Found 0 of 2"
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "bottom-left 9 meets Row 2 but Column 1 goes below zero, so the puzzle is not solved" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED** (engine, iphone, android): `Error: what the game says — Expected: "not solved yet", Received: null`
+- **Note**: 6 − 9 = −3 already misses Column 1's target of 3, so the grid was already "not solved"
+  without a below-zero rule; the scenario's gap was the session's message. The below-zero rule is
+  still the spec's (FR-008, edge case "going below zero"), so cycle 1 test-drives it in the engine.
+
+### Cycle 1 — a step that goes below zero fails its line
+
+- **RED**: `evaluateLine › fails a line at the step that goes below zero: 6 − 9` in `src/engine/evaluate-line.spec.ts` — failed: `expected { ok: true, value: -3 } to deeply equal { ok: false, …(2) }`
+- **GREEN**: the line is worked one step at a time and stops at the first step below zero, returning `{ ok: false, reason: 'below-zero', step }` — commit `c550c6e`
+- **REFACTOR**: none needed.
+- **Not written**: a `checkEntry` test for the below-zero example would pass on first run (the grid was already "not solved"), so it would not be a valid red.
+
+### Cycle 2 — a session says "not solved" and records nothing when a line misses
+
+- **RED**: `applyAction › submit › says the grid is not solved, and records nothing, when a line misses` in `src/app/session.spec.ts` — failed: `expected null to be 'not-solved'`
+- **GREEN**: an unsolved check sets message `not-solved` and leaves `found` alone — commit `c081f9a`
+- **REFACTOR**: none needed.
+
+### Cycle 3 — the not-solved message reads "Not solved yet."
+
+- **RED**: `messageText › says "Not solved yet." when a line misses` — failed: `expected '' to be 'Not solved yet.'`
+- **GREEN**: messages moved into a table keyed by message kind — commit `405524f`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-9 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  56 unit tests pass (lines 98.9%, branches 94.2%); lint, type checks and build clean.
+- **Now passing early, genuinely**:
+  - AC-10 (all runs): 6 ÷ 4 = 1.5 already misses its target, so the grid is "not solved". The
+    inexact-division rule itself still needs its engine cycle at AC-10.
+  - AC-20 "tapping the given 6 after "not solved yet" leaves the message in place" (all runs):
+    messages never clear yet. The other AC-20 scenario (a changeable tap clears it) is still red.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-10: Given the player has entered top-right 2, bottom-left 4, bottom-right 3, Row 2 + and Column 1 ÷ (Column 1 gives 6 ÷ 4, which is not a whole number), when they submit, then the game says the puzzle is not solved yet and the counter does not change
+
+- **Acceptance test**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "Column 1 gives 6 ÷ 4, so the puzzle is not solved" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**: **passed at RED** in all runs (engine 1 of 1, iphone 1 of 1, android 1 of 1), as
+  reported at the AC-9 checkpoint: 6 ÷ 4 = 1.5 already misses Column 1's target of 3. As agreed
+  with the owner, the inexact-division rule (FR-008, edge case "inexact division") is still
+  test-driven in the engine.
+
+### Cycle 1 — a step that does not divide exactly fails its line
+
+- **RED**: `evaluateLine › fails a line at the step that does not divide exactly: 6 ÷ 4` in `src/engine/evaluate-line.spec.ts` — failed: `expected { ok: true, value: 1.5 } to deeply equal { ok: false, …(2) }`
+- **GREEN**: a ÷ step with a remainder returns `{ ok: false, reason: 'inexact-division', step }` — commit `eec9262`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-10 passes — engine 1 of 1, iphone 1 of 1, android 1 of 1. Full suite:
+  57 unit tests pass; lint, type checks and build clean. No new early passes.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-11: Given the bottom-right cell is empty, or Column 1's operator is not yet chosen, when the player submits, then the game says every cell and every open operator must be filled before checking, and the counter does not change
+
+- **Acceptance tests**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "with the bottom-right cell empty, …" and "with Column 1's operator not chosen, …" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED** (engine 2, iphone 2, android 2): `Error: what the game says — Expected: "fill everything first", Received: "not solved yet"`
+
+### Cycle 1 — an empty changeable cell makes the check incomplete, naming the cell
+
+- **RED**: `checkEntry › is incomplete, naming the cell, when a changeable cell is empty` in `src/engine/check-entry.spec.ts` — failed: `expected { kind: 'not-solved' } to deeply equal { kind: 'incomplete', …(2) }`
+- **GREEN**: empty changeable cells are listed before any line is worked out — commit `5de6741`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — an unchosen open operator makes the check incomplete, naming the line
+
+- **RED**: `checkEntry › is incomplete, naming the line, when an open operator is not chosen` — failed: `expected { kind: 'not-solved' } to deeply equal { kind: 'incomplete', …(2) }`
+- **GREEN**: lines whose operator is still `null` are listed too — commit `937ef51`
+- **REFACTOR**: the AC-8 "a gap misses its target" rule can no longer be reached; its guard
+  now only narrows the types, and its comment says so — commit `54aa121`
+
+### Cycle 3 — a session asks for everything to be filled first, and records nothing
+
+- **RED**: `applyAction › submit › asks for everything to be filled first, and records nothing, when the grid has a gap` in `src/app/session.spec.ts` — failed: `expected 'not-solved' to be 'incomplete'`
+- **GREEN**: an unsolved check's kind (`incomplete` or `not-solved`) becomes the message — commit `e12c505`
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the incomplete message reads "Fill every cell and choose every operator before checking."
+
+- **RED**: `messageText › asks for every cell and operator to be filled when the grid has a gap` — failed: `expected '' to be 'Fill every cell and choose every oper…'`
+- **GREEN**: commit `49b3c5a`
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: AC-11 passes — engine 2 of 2, iphone 2 of 2, android 2 of 2. Full suite:
+  61 unit tests pass (lines 99.0%, branches 95.1%); lint, type checks and build clean. No new
+  early passes.
+- **Slice refactor**: none beyond cycle 2's.
+- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-02.
+
+## AC-20: Given the game has just said the puzzle is not solved yet, when the player taps the bottom-left cell, then the message disappears without anything being announced and the counter does not change; when they instead tap the given 6, then the message stays
+
+- **Acceptance tests**: `test/acceptance/play/solve-puzzle.acceptance-spec.ts` — "tapping bottom-left after "not solved yet" removes the message silently" and "tapping the given 6 after "not solved yet" leaves the message in place" (engine, iphone, android)
+- **Drivers added**: none.
+- **Acceptance RED**:
+  - "removes the message silently" (all runs): `Error: what the game says — Expected: null, Received: "not solved yet"`
+  - "leaves the message in place" **passed at RED** (all runs), as reported at the AC-9 and AC-11
+    checkpoints: messages never cleared, and the session already ignores taps on the given cell.
+
+### Cycle 1 — a tap on a changeable cell clears the message
+
+- **RED**: `applyAction › tapCell › clears the message, because the grid it described has changed` in `src/app/session.spec.ts` — failed: `expected 'not-solved' to be null`
+- **GREEN**: `tapCell` sets `message: null`; the given-cell guard comes first, so the given 6 keeps the message — commit `b6eef67`
+- **REFACTOR**: none needed.
+
+### Cycle 2 — changing an open operator clears the message
+
+- **RED**: `applyAction › tapOperator › clears the message when an open operator changes` — failed: `expected 'not-solved' to be null`
+- **GREEN**: `tapOperator` sets `message: null` after its shown-line guard — commit `67dac3a`. The engine AC-20 scenarios now pass.
+- **REFACTOR**: none needed.
+
+### View — clearing is silent
+
+- The phone runs then failed: `Error: announcements to screen-reader users — Expected: 19, Received: 20`.
+  The view rewrote the unchanged counter on every render, replacing text inside the polite live
+  region, which screen readers may announce again; the count of 19 before the tap shows it
+  happened on every tap. The view now writes status text only when it changes — commit `24bb809`
+  (`fix:`). Phone AC-20 now passes.
+
+- **Acceptance GREEN**: AC-20 passes — engine 2 of 2, iphone 2 of 2, android 2 of 2. Full suite:
+  63 unit tests pass (lines 99.0%, branches 95.1%); lint, type checks and build clean.
+- **Slice refactor**: none needed.
+
+## US1 through the UI (T050)
+
+- Every US1 scenario (AC-1 to AC-11, AC-20): engine 15 of 15, iphone 17 of 17, android 17 of 17,
+  axe clean on every page visited.
+- Layout guarantees measured with Playwright (WebKit iPhone SE and Chromium Pixel 5, at 375 × 667
+  and 320 × 568, reduced motion on): 9 buttons, smallest 48 px; `touch-action: manipulation` on
+  the game; all four `env(safe-area-inset-*)` insets used; 0 animated or transitioning elements;
+  no page scroll. Real-device safe-area checks remain manual (quickstart section 6).
+- **Checkpoint**: User Story 1 (the MVP) complete; awaiting approval from Philip England.

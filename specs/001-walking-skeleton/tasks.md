@@ -122,49 +122,49 @@ tapping and checks the grid. See [stories/us1-solve-the-puzzle.md](stories/us1-s
 
 ### AC-6 Choosing an open operator
 
-- [ ] T029 [US1] AC-6 RED: engine driver `tapOperator(line)` dispatches `tapOperator` with the line's axis and index. UI driver `tapOperator(line)` taps the operator button by name, waits for its name to change, and runs axe. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T030 [US1] AC-6 TDD cycles. Engine: `nextOperator(null)` is `+`; then `+ → −`, `− → ×`, `× → ÷`, `÷ → +` ("There is no step back to not chosen", data-model "Operator"). App: session `tapOperator` on an open line moves one step; `labels.ts` names operators "plus", "minus", "times", "divide"; `view.ts` and `main.ts` wire operator taps.
-- [ ] T031 [US1] AC-6 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T029 [US1] AC-6 RED: engine driver `tapOperator(line)` dispatches `tapOperator` with the line's axis and index. UI driver `tapOperator(line)` taps the operator button by name, waits for its name to change, and runs axe. Files: `test/acceptance/drivers/engine/game.engine-driver.ts`, `test/acceptance/drivers/ui/game.ui-driver.ts`. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T030 [US1] AC-6 TDD cycles. Engine: `nextOperator(null)` is `+`; then `+ → −`, `− → ×`, `× → ÷`, `÷ → +` ("There is no step back to not chosen", data-model "Operator"). App: session `tapOperator` on an open line moves one step; `labels.ts` names operators "plus", "minus", "times", "divide"; `view.ts` and `main.ts` wire operator taps.
+- [X] T031 [US1] AC-6 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-7 Shown operators cannot change ⚠️
 
-- [ ] T032 [US1] AC-7 RED: no new driver methods expected. ⚠️ This may already pass if AC-6 only cycles open lines. If so, stop and report. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T033 [US1] AC-7 TDD cycles: only if red. App: session `tapOperator` on a shown line leaves the state unchanged (FR-005); `view.ts` renders shown operators as `aria-disabled="true"` buttons.
-- [ ] T034 [US1] AC-7 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T032 [US1] AC-7 RED: no new driver methods expected. ⚠️ This may already pass if AC-6 only cycles open lines. If so, stop and report. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T033 [US1] AC-7 TDD cycles: only if red. App: session `tapOperator` on a shown line leaves the state unchanged (FR-005); `view.ts` renders shown operators as `aria-disabled="true"` buttons.
+- [X] T034 [US1] AC-7 scenarios GREEN; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-8 Checking a correct grid
 
-- [ ] T035 [US1] AC-8 RED: engine driver `check()` dispatches `submit`; `view().result` maps the session `Message` kind to `Result` ("new-solution" → "new solution", and so on); `announcementCount()` counts the messages set since opening. UI driver `check()` taps the "Check" button and waits for the status region to change; `view().result` maps the visible message to a `Result`; `announcementCount()` counts text additions to the `role="status"` region (a MutationObserver installed at open).
-- [ ] T036 [US1] AC-8 TDD cycles. Engine: `evaluateLine([6, 2], '+')` is `{ ok: true, value: 8 }`; `evaluateLine([2, 3], '×')` is 6; `evaluateLine([6, 2], '÷')` is 3; `evaluateLine([3, 3], '+')` is 6; `evaluateLine([6, 3], '−')` is 3; lines are worked in reading order. `checkEntry` returns `solved` with key `"2,2,3|×|÷"` for Solution A (data-model "SolutionKey") and uses the given digit in place of the entry's value at a given position. `defaultRules.operatorOrder` is `'left-to-right'`. App: session `submit` on a solved, new key adds it to `found` and sets `message: new-solution`; `labels.ts` gives the result wording; `view.ts` writes the message and counter into the `role="status"` region; `main.ts` wires Check.
-- [ ] T037 [US1] AC-8 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T035 [US1] AC-8 RED: engine driver `check()` dispatches `submit`; `view().result` maps the session `Message` kind to `Result` ("new-solution" → "new solution", and so on); `announcementCount()` counts the messages set since opening. UI driver `check()` taps the "Check" button and waits for the status region to change; `view().result` maps the visible message to a `Result`; `announcementCount()` counts text additions to the `role="status"` region (a MutationObserver installed at open).
+- [X] T036 [US1] AC-8 TDD cycles. Engine: `evaluateLine([6, 2], '+')` is `{ ok: true, value: 8 }`; `evaluateLine([2, 3], '×')` is 6; `evaluateLine([6, 2], '÷')` is 3; `evaluateLine([3, 3], '+')` is 6; `evaluateLine([6, 3], '−')` is 3; lines are worked in reading order. `checkEntry` returns `solved` with key `"2,2,3|×|÷"` for Solution A (data-model "SolutionKey") and uses the given digit in place of the entry's value at a given position. `defaultRules.operatorOrder` is `'left-to-right'`. App: session `submit` on a solved, new key adds it to `found` and sets `message: new-solution`; `labels.ts` gives the result wording; `view.ts` writes the message and counter into the `role="status"` region; `main.ts` wires Check.
+- [X] T037 [US1] AC-8 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-9 A line that goes below zero
 
-- [ ] T038 [US1] AC-9 RED: no new driver methods expected. Confirm the scenario fails because the below-zero line is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T039 [US1] AC-9 TDD cycles. Engine: `evaluateLine([6, 9], '−')` is `{ ok: false, reason: 'below-zero', step: 1 }`; a line fails on the first such step even if a later step would reach the target (spec Edge Cases); `checkEntry` returns `not-solved` for the below-zero example. App: session `submit` on `not-solved` sets `message: not-solved` and leaves `found` unchanged. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each), `src/app/session.ts` (tests in `src/app/session.spec.ts`).
-- [ ] T040 [US1] AC-9 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T038 [US1] AC-9 RED: no new driver methods expected. Confirm the scenario fails because the below-zero line is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T039 [US1] AC-9 TDD cycles. Engine: `evaluateLine([6, 9], '−')` is `{ ok: false, reason: 'below-zero', step: 1 }`; a line fails on the first such step even if a later step would reach the target (spec Edge Cases); `checkEntry` returns `not-solved` for the below-zero example. App: session `submit` on `not-solved` sets `message: not-solved` and leaves `found` unchanged. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each), `src/app/session.ts` (tests in `src/app/session.spec.ts`).
+- [X] T040 [US1] AC-9 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-10 A line that does not divide exactly
 
-- [ ] T041 [US1] AC-10 RED: no new driver methods expected. Confirm the scenario fails because inexact division is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T042 [US1] AC-10 TDD cycles. Engine: `evaluateLine([6, 4], '÷')` is `{ ok: false, reason: 'inexact-division', step: 1 }`; `checkEntry` returns `not-solved` for the inexact-division example. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each).
-- [ ] T043 [US1] AC-10 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T041 [US1] AC-10 RED: no new driver methods expected. Confirm the scenario fails because inexact division is not rejected. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T042 [US1] AC-10 TDD cycles. Engine: `evaluateLine([6, 4], '÷')` is `{ ok: false, reason: 'inexact-division', step: 1 }`; `checkEntry` returns `not-solved` for the inexact-division example. Files: `src/engine/evaluate-line.ts`, `src/engine/check-entry.ts` (tests next to each).
+- [X] T043 [US1] AC-10 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-11 Checking before everything is filled
 
-- [ ] T044 [US1] AC-11 RED: no new driver methods expected. Confirm both scenarios fail. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T045 [US1] AC-11 TDD cycles. Engine: `checkEntry` returns `incomplete` with `missingCells` listing an empty changeable cell, and with `missingOperators` listing an open line whose operator is `null`; it returns `incomplete` before evaluating any line (FR-010). App: session `submit` on `incomplete` sets `message: incomplete` and leaves `found` unchanged; `labels.ts` gives the "fill everything first" wording.
-- [ ] T046 [US1] AC-11 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T044 [US1] AC-11 RED: no new driver methods expected. Confirm both scenarios fail. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T045 [US1] AC-11 TDD cycles. Engine: `checkEntry` returns `incomplete` with `missingCells` listing an empty changeable cell, and with `missingOperators` listing an open line whose operator is `null`; it returns `incomplete` before evaluating any line (FR-010). App: session `submit` on `incomplete` sets `message: incomplete` and leaves `found` unchanged; `labels.ts` gives the "fill everything first" wording.
+- [X] T046 [US1] AC-11 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### AC-20 The message goes once the grid changes
 
-- [ ] T047 [US1] AC-20 RED: no new driver methods expected. Confirm the first scenario fails because the message stays after a changeable tap. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
-- [ ] T048 [US1] AC-20 TDD cycles. App: session `tapCell` and `tapOperator` on a changeable target set `message: null`; on a given cell or shown line they leave `message` unchanged (data-model "Actions and transitions"); `view.ts` clears the message text without adding anything new to the status region, so screen readers announce nothing (FR-014).
-- [ ] T049 [US1] AC-20 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T047 [US1] AC-20 RED: no new driver methods expected. Confirm the first scenario fails because the message stays after a changeable tap. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
+- [X] T048 [US1] AC-20 TDD cycles. App: session `tapCell` and `tapOperator` on a changeable target set `message: null`; on a given cell or shown line they leave `message` unchanged (data-model "Actions and transitions"); `view.ts` clears the message text without adding anything new to the status region, so screen readers announce nothing (FR-014).
+- [X] T049 [US1] AC-20 scenarios GREEN; slice refactor; TDD log; checkpoint. Scenarios: `test/acceptance/play/solve-puzzle.acceptance-spec.ts`.
 
 ### US1 through the UI
 
-- [ ] T050 [US1] Run every US1 scenario (AC-1 to AC-11, AC-20) through the `engine`, `iphone` and `android` projects with `npm run test:acceptance`. All pass, with axe clean on every page. Check by hand at 375 × 667 that every button is at least 48 × 48 CSS px, content sits inside `env(safe-area-inset-*)`, `touch-action: manipulation` is set, and transitions are off under `prefers-reduced-motion` ([contracts/play-screen.md](contracts/play-screen.md) Layout guarantees). Record this in the TDD log.
+- [X] T050 [US1] Run every US1 scenario (AC-1 to AC-11, AC-20) through the `engine`, `iphone` and `android` projects with `npm run test:acceptance`. All pass, with axe clean on every page. Check by hand at 375 × 667 that every button is at least 48 × 48 CSS px, content sits inside `env(safe-area-inset-*)`, `touch-action: manipulation` is set, and transitions are off under `prefers-reduced-motion` ([contracts/play-screen.md](contracts/play-screen.md) Layout guarantees). Record this in the TDD log.
 
 **Checkpoint**: User Story 1 works on its own. This is the MVP.
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { nextCellValue } from './cycles';
+import { nextCellValue, nextOperator } from './cycles';
 
 describe('nextCellValue', () => {
   it('steps an empty cell to 1', () => {
@@ -12,5 +12,20 @@ describe('nextCellValue', () => {
 
   it('steps 9 back to empty', () => {
     expect(nextCellValue(9)).toBeNull();
+  });
+});
+
+describe('nextOperator', () => {
+  it('steps an operator that is not chosen to +', () => {
+    expect(nextOperator(null)).toBe('+');
+  });
+
+  it.each([
+    ['+', '−'],
+    ['−', '×'],
+    ['×', '÷'],
+    ['÷', '+'],
+  ] as const)('steps %s to %s', (operator, next) => {
+    expect(nextOperator(operator)).toBe(next);
   });
 });

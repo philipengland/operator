@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample } from '../engine';
-import { cellName, lineName, operatorName } from './labels';
+import { cellName, lineName, messageText, operatorName } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -38,5 +38,30 @@ describe('operatorName', () => {
     { axis: 'column', index: 1, name: 'Column 2 operator, times' },
   ] as const)('names $axis $index "$name" when the game opens', ({ axis, index, name }) => {
     expect(operatorName(workedExample, emptyEntry(workedExample), { axis, index })).toBe(name);
+  });
+
+  it.each([
+    ['+', 'plus'],
+    ['−', 'minus'],
+    ['×', 'times'],
+    ['÷', 'divide'],
+  ] as const)('names an open operator by the choice %s as "%s"', (choice, word) => {
+    const entry = { ...emptyEntry(workedExample), rowOperators: [null, choice] };
+
+    expect(operatorName(workedExample, entry, { axis: 'row', index: 1 })).toBe(`Row 2 operator, ${word}`);
+  });
+});
+
+describe('messageText', () => {
+  it('says "New solution found!" for a new solution', () => {
+    expect(messageText('new-solution')).toBe('New solution found!');
+  });
+
+  it('says "Not solved yet." when a line misses', () => {
+    expect(messageText('not-solved')).toBe('Not solved yet.');
+  });
+
+  it('asks for every cell and operator to be filled when the grid has a gap', () => {
+    expect(messageText('incomplete')).toBe('Fill every cell and choose every operator before checking.');
   });
 });

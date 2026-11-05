@@ -1,7 +1,22 @@
 // The play session: a pure reducer over the current entry, the found solutions and the last
 // message (data-model.md "Session"). No DOM access.
 
-import { emptyEntry, isGiven, nextCellValue, workedExample, type CellPosition, type Entry, type LinePosition, type Puzzle, type SolutionKey } from '../engine';
+import {
+  checkEntry,
+  defaultRules,
+  emptyEntry,
+  isGiven,
+  lineSpec,
+  nextCellValue,
+  nextOperator,
+  workedExample,
+  type CellPosition,
+  type Entry,
+  type LinePosition,
+  type Operator,
+  type Puzzle,
+  type SolutionKey,
+} from '../engine';
 
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
@@ -35,8 +50,10 @@ export function applyAction(state: SessionState, action: SessionAction): Session
   switch (action.type) {
     case 'tapCell':
       return tapCell(state, action);
-    default:
-      return state;
+    case 'tapOperator':
+      return tapOperator(state, action.line);
+    case 'submit':
+      return submit(state);
   }
 }
 
@@ -49,5 +66,30 @@ function tapCell(state: SessionState, tapped: CellPosition): SessionState {
       row === tapped.row && column === tapped.column ? nextCellValue(value) : value,
     ),
   );
-  return { ...state, entry: { ...state.entry, cells } };
+  return { ...state, entry: { ...state.entry, cells }, message: null };
+}
+
+function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
+  if (lineSpec(state.puzzle, tapped)?.operator !== 'open') {
+    return state;
+  }
+  const step = (operators: readonly (Operator | null)[]) =>
+    operators.map((operator, index) => (index === tapped.index ? nextOperator(operator) : operator));
+  const { entry } = state;
+  return {
+    ...state,
+    entry:
+      tapped.axis === 'row'
+        ? { ...entry, rowOperators: step(entry.rowOperators) }
+        : { ...entry, columnOperators: step(entry.columnOperators) },
+    message: null,
+  };
+}
+
+function submit(state: SessionState): SessionState {
+  const result = checkEntry(state.puzzle, state.entry, defaultRules);
+  if (result.kind !== 'solved') {
+    return { ...state, message: result.kind };
+  }
+  return { ...state, found: new Set([...state.found, result.key]), message: 'new-solution' };
 }

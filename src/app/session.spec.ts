@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { emptyEntry, workedExample } from '../engine';
-import { applyAction, counterText, startSession } from './session';
+import { emptyEntry, workedExample, type Entry } from '../engine';
+import { applyAction, counterText, startSession, type SessionState } from './session';
 
 describe('startSession', () => {
   it('starts on the worked example with an empty entry, nothing found and no message', () => {
@@ -27,12 +27,82 @@ describe('applyAction', () => {
       expect(state.entry.cells[0]?.[1]).toBe(1);
     });
 
+    it('clears the message, because the grid it described has changed', () => {
+      const afterCheck: SessionState = { ...startSession(), message: 'not-solved' };
+
+      const state = applyAction(afterCheck, { type: 'tapCell', row: 1, column: 0 });
+
+      expect(state.message).toBeNull();
+    });
+
     it('ignores a tap on the given cell', () => {
       const before = startSession();
 
       const after = applyAction(before, { type: 'tapCell', row: 0, column: 0 });
 
       expect(after).toEqual(before);
+    });
+  });
+
+  describe('tapOperator', () => {
+    it.each([
+      { line: { axis: 'row', index: 1 }, read: (state: SessionState) => state.entry.rowOperators[1] },
+      { line: { axis: 'column', index: 0 }, read: (state: SessionState) => state.entry.columnOperators[0] },
+    ] as const)('chooses + on the open $line.axis $line.index', ({ line, read }) => {
+      const state = applyAction(startSession(), { type: 'tapOperator', line });
+
+      expect(read(state)).toBe('+');
+    });
+
+    it('clears the message when an open operator changes', () => {
+      const afterCheck: SessionState = { ...startSession(), message: 'not-solved' };
+
+      const state = applyAction(afterCheck, { type: 'tapOperator', line: { axis: 'row', index: 1 } });
+
+      expect(state.message).toBeNull();
+    });
+
+    it.each([
+      { line: { axis: 'row', index: 0 } },
+      { line: { axis: 'column', index: 1 } },
+    ] as const)('ignores a tap on the shown operator of $line.axis $line.index', ({ line }) => {
+      const before = startSession();
+
+      const after = applyAction(before, { type: 'tapOperator', line });
+
+      expect(after).toEqual(before);
+    });
+  });
+
+  describe('submit', () => {
+    // Solution A from spec-001's examples.
+    const solutionA: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+
+    it('records a new solution and says so', () => {
+      const filledIn: SessionState = { ...startSession(), entry: solutionA };
+
+      const state = applyAction(filledIn, { type: 'submit' });
+
+      expect(state.found).toEqual(new Set(['2,2,3|×|÷']));
+      expect(state.message).toBe('new-solution');
+    });
+
+    it('says the grid is not solved, and records nothing, when a line misses', () => {
+      // spec-001 "Below zero": Column 1 gives 6 − 9.
+      const belowZero: Entry = { cells: [[null, 2], [9, 3]], rowOperators: [null, '−'], columnOperators: ['−', null] };
+      const filledIn: SessionState = { ...startSession(), entry: belowZero };
+
+      const state = applyAction(filledIn, { type: 'submit' });
+
+      expect(state.message).toBe('not-solved');
+      expect(state.found).toEqual(new Set());
+    });
+
+    it('asks for everything to be filled first, and records nothing, when the grid has a gap', () => {
+      const state = applyAction(startSession(), { type: 'submit' });
+
+      expect(state.message).toBe('incomplete');
+      expect(state.found).toEqual(new Set());
     });
   });
 });

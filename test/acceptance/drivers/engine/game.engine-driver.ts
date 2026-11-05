@@ -1,13 +1,29 @@
 // Layer 3 — drives the play session in-process, with no browser.
 
-import { applyAction, counterText, startSession, type SessionAction, type SessionState } from '../../../../src/app/session';
-import type { Cell, CellValue, Line, OperatorChoice } from '../../dsl/vocabulary';
+import {
+  applyAction,
+  counterText,
+  startSession,
+  type MessageKind,
+  type SessionAction,
+  type SessionState,
+} from '../../../../src/app/session';
+import type { Cell, CellValue, Line, OperatorChoice, Result } from '../../dsl/vocabulary';
 import { DEFAULT_VIEW } from '../default-view';
 import type { CellView, GameDriver, GameView, OperatorView } from '../game.driver';
 import { CELL_POSITIONS, CELLS, LINE_POSITIONS, LINES } from '../positions';
 
+const RESULTS: Readonly<Record<MessageKind, Result>> = {
+  'new-solution': 'new solution',
+  'all-found': 'new solution, every solution found',
+  'already-found': 'already found',
+  'not-solved': 'not solved yet',
+  incomplete: 'fill everything first',
+};
+
 export class EngineGameDriver implements GameDriver {
   private session: SessionState | null = null;
+  private announcements = 0;
 
   async open(): Promise<void> {
     this.session = startSession();
@@ -17,9 +33,17 @@ export class EngineGameDriver implements GameDriver {
     this.dispatch({ type: 'tapCell', ...CELL_POSITIONS[cell] });
   }
 
-  async tapOperator(): Promise<void> {}
+  async tapOperator(line: Line): Promise<void> {
+    this.dispatch({ type: 'tapOperator', line: LINE_POSITIONS[line] });
+  }
 
-  async check(): Promise<void> {}
+  async check(): Promise<void> {
+    this.dispatch({ type: 'submit' });
+    // Screen readers hear the status region whenever a message appears in it.
+    if (this.session?.message) {
+      this.announcements++;
+    }
+  }
 
   async view(): Promise<GameView> {
     const session = this.session;
@@ -31,12 +55,12 @@ export class EngineGameDriver implements GameDriver {
       targets: mapEach(LINES, (line) => lineSpec(session, line)?.target ?? 0),
       operators: mapEach(LINES, (line) => operatorView(session, line)),
       counter: counterText(session),
-      result: null,
+      result: session.message ? RESULTS[session.message] : null,
     };
   }
 
   async announcementCount(): Promise<number> {
-    return 0;
+    return this.announcements;
   }
 
   private dispatch(action: SessionAction): void {
