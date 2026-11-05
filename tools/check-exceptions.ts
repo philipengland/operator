@@ -18,10 +18,13 @@ export interface ExceptionRecord {
 export function readExceptions(folder: string): readonly ExceptionRecord[] {
   return readdirSync(folder)
     .filter((file) => EXCEPTION_FILE.test(file))
-    .map((file) => {
-      const frontMatter = parse(readFileSync(join(folder, file), 'utf8').match(FRONT_MATTER)?.[1] ?? '') as Record<string, unknown>;
-      return { id: String(frontMatter.id), reviewBy: String(frontMatter.review_by), expires: String(frontMatter.expires) };
-    });
+    .map((file) => readRecord(join(folder, file)));
+}
+
+function readRecord(path: string): ExceptionRecord {
+  const frontMatter = readFileSync(path, 'utf8').match(FRONT_MATTER)?.[1] ?? '';
+  const fields = parse(frontMatter) as Readonly<Record<string, unknown>>;
+  return { id: String(fields.id), reviewBy: String(fields.review_by), expires: String(fields.expires) };
 }
 
 /** What is wrong with the recorded exceptions on the given day (YYYY-MM-DD); empty when none. */
