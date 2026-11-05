@@ -630,3 +630,27 @@
 - **Decision**: owner chose option (a) on 2026-11-05 — record AC-18 as delivered by construction (no request after load; CSP `connect-src 'none'`), write no new code. T071 (cycles only if red) was skipped.
 - **Acceptance GREEN**: AC-18 passes on both phones; no product code changed.
 - **Checkpoint**: approved by Philip England on 2026-11-05 (option a).
+
+## AC-19: Given a change fails the build, unit tests or acceptance tests, when the pipeline runs, then nothing is published and the public address keeps serving the previous version
+
+- **Acceptance tests**: `test/acceptance/delivery/publish.acceptance-spec.ts` — "only changes merged to main are published" and "publishing happens only after the build, unit tests and acceptance tests succeed" (engine)
+- **Acceptance RED** (stub driver): `branches that can publish — Expected ["main"], Received []` and `"build" must succeed before publishing — Received array: []`.
+- **Driver added** (`38be746`): `publishingRoute` parses `.github/workflows/ci-deploy.yml`. It finds the job that runs `actions/deploy-pages`; `publishesFrom` comes from that job's `github.ref == 'refs/heads/…'` condition (with no condition, from whatever starts the pipeline; a condition with `||` is reported as unclear); `mustSucceedFirst` names the steps of every job it `needs`, directly or indirectly, mapping `npm run build`, `npm test` and `npm run test:acceptance` to "build", "unit tests" and "acceptance tests". Only steps that always run and stop the job on failure count.
+- **With the real driver both scenarios passed**, because the pipeline was written during AC-17 (T068). Each break was then tried and reverted (T073):
+  - `needs: verify` removed → `"build" must succeed before publishing — Received array: []`
+  - the `main` condition removed → `Received: "any branch (pull_request)", "any branch (workflow_dispatch)"` added
+  - the unit test step removed → `Expected value: "unit tests" — Received array: ["build", "acceptance tests"]`
+  - `continue-on-error: true` on the acceptance step → `Expected value: "acceptance tests" — Received array: ["unit tests", "build"]`
+
+### Supporting check — exceptions expiry (Baseline 9, T075)
+
+- **Cycle 1 RED**: `findExpiryProblems › fails an exception whose expiry date has passed, naming it` in `tools/check-exceptions.spec.ts` — failed: `expected [] to deeply equal [ 'EXC-002 expired on 2027-11-01' ]`. **GREEN**: every exception reported as expired (a later test forces the comparison) — `ddbec9f`.
+- **Cycle 2 RED**: `passes an exception that expires on 2027-11-02 / 2028-01-01, today or later` — failed: `expected [ 'EXC-001 expired on 2027-11-02' ] to deeply equal []`. **GREEN**: compare ISO dates as text — `b2fe606`.
+- **Cycle 3 RED**: `fails an exception whose review date is after its expiry date` — failed: `expected [] to deeply equal [ Array(1) ]`. **GREEN**: a second rule per exception — `f8ff947`.
+- **Cycle 4 RED**: `readExceptions › reads the dates from every exception record, skipping the template` — first run did not compile (a scripted edit put line breaks inside two strings; not a valid red, fixed), then failed: `expected [] to deeply equal [ { id: 'EXC-007', …(2) } ]`. **GREEN**: parse the front matter of each `EXC-*.md` with `yaml` — `aef1fb2`. **REFACTOR**: named the step that reads one record — `037a780`.
+- `npm run exceptions:check` (`862bf9a`) passes today's date to the check and exits 1 on any problem; it is excluded from coverage as glue. With EXC-002's expiry temporarily set to 2026-01-01 it printed `EXC-002 expired on 2026-01-01` and exited 1; restored. It runs first in `verify` (`0b95c3f`).
+
+- **Acceptance GREEN**: AC-19 passes (engine 2 of 2). Full suite: 76 unit tests pass (lines 99.2%, branches 95.6%); lint, type checks and build clean; engine 22 of 22; phones 52 passed, failing only AC-21 (next) and the Android speed budget (Polish).
+- **Slice refactor**: none beyond cycle 4's.
+- **Manual part (outstanding)**: after the first failing `verify` run on `main`, confirm the public address still serves the previous version (acceptance.md). Needs the pipeline live (pull request 5).
+- **Checkpoint**: awaiting approval from Philip England.
