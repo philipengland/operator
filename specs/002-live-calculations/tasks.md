@@ -92,7 +92,7 @@ with ✓ when it reaches its target.
 **Independent Test**: open the game, tap cells and operators, and read each result slot
 ([quickstart.md](quickstart.md) section 3, steps 1, 2 and 5).
 
-- [ ] T009 [US1] Update `docs/contracts/play-screen.md` (the working elements, the layout and its guarantees, what the UI driver reads) and add `lineWorking` to `docs/contracts/engine-api.md`, both from `specs/002-live-calculations/contracts/`, before the code.
+- [X] T009 [US1] Update `docs/contracts/play-screen.md` (the working elements, the layout and its guarantees, what the UI driver reads) and add `lineWorking` to `docs/contracts/engine-api.md`, both from `specs/002-live-calculations/contracts/`, before the code.
 
 ### AC-1: the working on opening
 

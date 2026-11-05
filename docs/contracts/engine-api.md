@@ -53,6 +53,19 @@ export type CheckResult =
 export interface CellPosition { readonly row: number; readonly column: number }
 export interface LinePosition { readonly axis: 'row' | 'column'; readonly index: number }
 
+/** What one line currently works out to (spec-002). */
+export type LineOutcome =
+  | { readonly kind: 'incomplete' }
+  | { readonly kind: 'result'; readonly value: number; readonly reachesTarget: boolean }
+  | { readonly kind: 'not-whole'; readonly step: number };
+
+export interface LineWorking {
+  readonly line: LinePosition;
+  readonly digits: readonly (Digit | null)[];   // reading order, givens included
+  readonly operator: Operator | null;
+  readonly outcome: LineOutcome;
+}
+
 /** The worked example from the project brief: the only puzzle in F0. */
 export const workedExample: Puzzle;
 
@@ -64,6 +77,9 @@ export function evaluateLine(digits: readonly Digit[], operator: Operator, rules
 
 /** Checks a whole entry against a puzzle by calculation. Never compares with a stored answer. */
 export function checkEntry(puzzle: Puzzle, entry: Entry, rules: Rules): CheckResult;
+
+/** What one line works out to now: incomplete, a result (and whether it reaches the target), or not whole. */
+export function lineWorking(puzzle: Puzzle, entry: Entry, line: LinePosition, rules: Rules): LineWorking;
 
 /** An entry with every changeable cell empty and every open operator not chosen. */
 export function emptyEntry(puzzle: Puzzle): Entry;
@@ -88,6 +104,8 @@ export function nextOperator(operator: Operator | null): Operator;
   targets may be negative (spec-002 FR-208).
 - `checkEntry` returns `incomplete` before evaluating any line, so an incomplete grid is
   never marked wrong (FR-010).
+- For a complete entry, `checkEntry` returns `solved` exactly when every `lineWorking`
+  outcome is a `result` with `reachesTarget` true (spec-002).
 - Two `solved` results have the same `key` exactly when every entered digit and chosen
   open operator is the same (FR-012).
 
@@ -108,3 +126,16 @@ export function nextOperator(operator: Operator | null): Operator;
 | 6, 9 | − | `{ ok: true, value: -3 }` (before spec-002: `{ ok: false, reason: 'below-zero', step: 1 }`) |
 | 6, 4 | ÷ | `{ ok: false, reason: 'inexact-division', step: 1 }` |
 | 6, 2 | ÷ | `{ ok: true, value: 3 }` |
+
+## `lineWorking` examples (spec-002)
+
+| Worked-example entry | Line | Outcome |
+| --- | --- | --- |
+| Just opened | Row 1 | `incomplete`, digits [6, null], operator + |
+| Top-right 2 | Row 1 | `result`, value 8, reachesTarget true |
+| Top-right 3 | Row 1 | `result`, value 9, reachesTarget false |
+| Bottom-left 9, Column 1 − | Column 1 | `result`, value −3, reachesTarget false |
+| Bottom-left 4, Column 1 ÷ | Column 1 | `not-whole`, step 1 |
+| Solution A | every line | `result`, reachesTarget true |
+| Test puzzle, Row 1 target −3, operator −: 6 then 9 | Row 1 | `result`, value −3, reachesTarget true (AC-12) |
+| Same test puzzle: 6 then 8 | Row 1 | `result`, value −2, reachesTarget false (AC-12) |
