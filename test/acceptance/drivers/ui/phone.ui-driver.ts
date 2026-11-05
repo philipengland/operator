@@ -1,6 +1,9 @@
 // Layer 3 — the phone around the game: screen, connection, looks and speed.
 
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import type { Cell, Line } from '../../dsl/vocabulary';
+import { CELLS, LINES } from '../positions';
+import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern } from './screen-names';
 import type { Box, CellLook, PhoneDriver, ScreenLayout } from '../phone.driver';
 
 // Unknown positions: NaN compares false, so nothing unread can count as on screen.
@@ -35,12 +38,43 @@ export class UiPhoneDriver implements PhoneDriver {
     return 0;
   }
 
-  async look(): Promise<CellLook> {
-    return { colours: '', markings: '' };
+  async look(cell: Cell): Promise<CellLook> {
+    const button = this.page.getByRole('group', { name: 'Puzzle' }).getByRole('button', { name: cellNamePattern(cell) });
+    return button.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        colours: [style.color, style.backgroundColor, style.borderTopColor].join(' | '),
+        markings: [
+          `border ${style.borderTopStyle} ${style.borderTopWidth}`,
+          `font ${style.fontWeight} ${style.fontStyle}`,
+          `pattern ${style.backgroundImage}`,
+          `decoration ${style.textDecorationLine}`,
+        ].join(' | '),
+      };
+    });
   }
 
   async layout(): Promise<ScreenLayout> {
-    return EMPTY_LAYOUT;
+    const screen = this.page.viewportSize() ?? EMPTY_LAYOUT.screen;
+    const puzzle = this.page.getByRole('group', { name: 'Puzzle' });
+    const cells = {} as Record<Cell, Box>;
+    for (const cell of CELLS) {
+      cells[cell] = await boxOf(puzzle.getByRole('button', { name: cellNamePattern(cell) }));
+    }
+    const targets = {} as Record<Line, Box>;
+    const operators = {} as Record<Line, Box>;
+    for (const line of LINES) {
+      targets[line] = await boxOf(puzzle.getByText(targetTextPattern(line)));
+      operators[line] = await boxOf(puzzle.getByRole('button', { name: operatorNamePattern(line) }));
+    }
+    return {
+      screen,
+      cells,
+      targets,
+      operators,
+      counter: await boxOf(this.page.getByRole('status').getByText(COUNTER_PATTERN)),
+      checkButton: await boxOf(this.page.getByRole('button', { name: 'Check' })),
+    };
   }
 
   async secondsUntilReadyToPlay(): Promise<number> {
@@ -50,4 +84,13 @@ export class UiPhoneDriver implements PhoneDriver {
   async tapResponseTimesInMilliseconds(): Promise<readonly number[]> {
     return [];
   }
+}
+
+/** Where an element sits; an element that is missing or hidden has an unknown position. */
+async function boxOf(element: Locator): Promise<Box> {
+  const box = (await element.count()) === 1 ? await element.boundingBox() : null;
+  if (!box) {
+    return NO_BOX;
+  }
+  return { left: box.x, top: box.y, right: box.x + box.width, bottom: box.y + box.height };
 }

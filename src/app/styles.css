@@ -1,8 +1,139 @@
+/* Design values (EXC-005): one place for colours, spacing and sizes. */
 :root {
   color-scheme: light;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --colour-text: #1a1a1a;
+  --colour-page: #ffffff;
+  --colour-cell: #ffffff;
+  --colour-line: #4a4a4a;
+  --colour-accent: #1f4e8c;
+  --colour-accent-text: #ffffff;
+  --colour-given-hatch: #e2e2e2;
+  --touch-target: 48px; /* Above the 44 × 44 CSS px minimum (constitution IV). */
+  --gap: 8px;
+  --cell-font: 1.75rem;
+  --target-font: 1.25rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--colour-page);
+  color: var(--colour-text);
 }
 
 body {
+  /* Keep content clear of notches, rounded corners and home indicators. */
+  padding: max(var(--gap), env(safe-area-inset-top)) max(var(--gap), env(safe-area-inset-right))
+    max(var(--gap), env(safe-area-inset-bottom)) max(var(--gap), env(safe-area-inset-left));
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--gap) * 2);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+button {
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto repeat(var(--columns), minmax(var(--touch-target), 4.5rem));
+  gap: var(--gap);
+  align-items: center;
+}
+
+.line-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--gap) / 2);
+}
+
+.column-header {
+  flex-direction: column;
+}
+
+.target {
+  font-size: var(--target-font);
+  font-weight: 700;
+}
+
+.cell {
+  aspect-ratio: 1;
+  font-size: var(--cell-font);
+  background: var(--colour-cell);
+  border: 2px solid var(--colour-line);
+  border-radius: 6px;
+}
+
+/* Given digits differ by weight, border and pattern, never by colour alone (constitution IV). */
+.cell.given {
+  font-weight: 700;
+  border-width: 4px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 6px,
+    var(--colour-given-hatch) 6px 8px
+  );
+}
+
+.operator {
+  font-size: var(--target-font);
+  background: var(--colour-cell);
+  border: 2px solid var(--colour-line);
+  border-radius: 50%;
+}
+
+.operator.open {
+  border-style: dashed;
+}
+
+.status {
+  text-align: center;
+  min-height: 3em;
+}
+
+.status p {
   margin: 0;
+}
+
+.check {
+  padding: 0 calc(var(--gap) * 4);
+  background: var(--colour-accent);
+  color: var(--colour-accent-text);
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
 }

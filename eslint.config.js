@@ -2,6 +2,27 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 const ENGINE_FILES = ['src/engine/**/*.ts'];
+const NO_PACKAGES = { regex: '^(?!\\.{1,2}/)', message: 'The engine imports no packages (constitution II).' };
+
+// A file may climb with ../ only as far as src/engine, so the limit depends on its depth.
+function engineFolderLimit(depth) {
+  const files = depth === 0 ? ['src/engine/*.ts'] : [`src/engine/${'*/'.repeat(depth)}*.ts`];
+  return {
+    files,
+    ignores: ['src/engine/**/*.spec.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            NO_PACKAGES,
+            { regex: `^(\\.\\./){${depth + 1},}`, message: 'The engine imports nothing outside src/engine (constitution II).' },
+          ],
+        },
+      ],
+    },
+  };
+}
 
 export default tseslint.config(
   {
@@ -32,9 +53,9 @@ export default tseslint.config(
     rules: { 'no-empty-pattern': ['error', { allowObjectPatternsAsParameters: true }] },
   },
   {
-    // Tests state concrete examples and config files state limits, so literal numbers are
-    // expected there.
-    files: ['**/*.spec.ts', 'test/**/*.ts', '*.config.{js,ts}'],
+    // Tests state concrete examples, config files state limits and puzzle files state puzzle
+    // data, so literal numbers are expected there.
+    files: ['**/*.spec.ts', 'test/**/*.ts', '*.config.{js,ts}', 'src/engine/puzzles/**/*.ts'],
     rules: { '@typescript-eslint/no-magic-numbers': 'off' },
   },
   {
@@ -43,16 +64,7 @@ export default tseslint.config(
     files: ENGINE_FILES,
     ignores: ['src/engine/**/*.spec.ts'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            { regex: '^(?!\\.{1,2}/)', message: 'The engine imports no packages (constitution II).' },
-            { regex: '^\\.\\./\\.\\./', message: 'The engine imports nothing outside src/engine (constitution II).' },
-            { regex: '^\\.\\./(?!engine/)', message: 'The engine imports nothing outside src/engine (constitution II).' },
-          ],
-        },
-      ],
+      'no-restricted-imports': ['error', { patterns: [NO_PACKAGES] }],
       'no-restricted-globals': [
         'error',
         ...['window', 'document', 'navigator', 'localStorage', 'sessionStorage', 'fetch', 'setTimeout', 'setInterval', 'Date', 'performance', 'crypto', 'process'].map(
@@ -65,4 +77,7 @@ export default tseslint.config(
       ],
     },
   },
+  engineFolderLimit(0),
+  engineFolderLimit(1),
+  engineFolderLimit(2),
 );
