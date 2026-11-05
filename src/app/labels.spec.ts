@@ -75,6 +75,14 @@ const ROW_2_GOING_BELOW_ZERO: LineWorking = {
   outcome: { kind: 'result', value: -1, reachesTarget: false },
 };
 
+// Column 1 with bottom-left 4 and ÷ chosen: 6 ÷ 4 is not a whole number at step 1.
+const COLUMN_1_NOT_WHOLE: LineWorking = {
+  line: { axis: 'column', index: 0 },
+  digits: [6, 4],
+  operator: '÷',
+  outcome: { kind: 'not-whole', step: 1 },
+};
+
 describe('workingText', () => {
   it.each([
     { digits: [6, null], operator: '+', text: '6 + ?' },
@@ -107,6 +115,10 @@ describe('workingName', () => {
 
   it('says when the line reaches its target: "Row 1 working, 6 + 2 = 8, target reached"', () => {
     expect(workingName(ROW_1_WITH_TOP_RIGHT_2)).toBe('Row 1 working, 6 + 2 = 8, target reached');
+  });
+
+  it('says when a division is not whole: "Column 1 working, 6 ÷ 4, not a whole number"', () => {
+    expect(workingName(COLUMN_1_NOT_WHOLE)).toBe('Column 1 working, 6 ÷ 4, not a whole number');
   });
 });
 

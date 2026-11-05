@@ -5,6 +5,7 @@ import {
   lineOperator,
   type CellPosition,
   type Entry,
+  type LineOutcome,
   type LinePosition,
   type LineWorking,
   type Operator,
@@ -70,9 +71,15 @@ function shownNumber(value: number): string {
 
 /** The working's accessible name, read by screen readers: "Row 1 working, 6 + ?" (spec-002 FR-206). */
 export function workingName(working: LineWorking): string {
-  const name = `${lineName(working.line)} working, ${describeWorking(working, spokenNumber)}`;
-  const { outcome } = working;
-  return outcome.kind === 'result' && outcome.reachesTarget ? `${name}, target reached` : name;
+  return `${lineName(working.line)} working, ${describeWorking(working, spokenNumber)}${spokenMark(working.outcome)}`;
+}
+
+/** How a screen reader hears the ✓ or the ✗ (spec-002 FR-204, FR-205). */
+function spokenMark(outcome: LineOutcome): string {
+  if (outcome.kind === 'not-whole') {
+    return ', not a whole number';
+  }
+  return outcome.kind === 'result' && outcome.reachesTarget ? ', target reached' : '';
 }
 
 /** A number as a screen reader should say it: "minus 3". Some skip or misread U+2212 before a number (research R2). */
