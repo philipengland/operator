@@ -31,6 +31,9 @@
 
 ## Notes
 
-- All three clarifications answered on 2026-11-05 (target mark, every line updated in real
-  time, no announcement after a tap). Recorded in the spec's Clarifications section.
+- 2026-11-05 clarifications: target mark; every line updated in real time; no announcement after
+  a tap. Recorded in the spec's Clarifications section.
+- 2026-11-05 update to User Story 2 (owner): results below zero are calculated and can meet a
+  target; a division that is not whole shows a cross. Negative targets are allowed by the rules
+  and proved by unit tests (AC-12, option A); F0's puzzle is unchanged.
 - All items pass. Ready for `/speckit-plan`.

@@ -28,13 +28,17 @@ towards the targets rather than guessing and checking.
 | spec-001 item | Change |
 | --- | --- |
 | Assumption "Checking on submit only" (lines are not checked as the player types) | **Superseded.** Each line's working is shown as the grid changes. Accepting a solution and counting it still happen only on Check (FR-007, FR-009, FR-012 unchanged). |
-| Out of Scope "Naming which line or step failed (F2)" | **Partly superseded.** The working shows a step that goes below zero or does not divide exactly (FR-205). The Check message itself still says only "not solved yet" (spec-001 FR-011 unchanged). |
+| FR-008 "A line fails if any step goes below zero", and the edge case "Going below zero" | **Superseded.** Results below zero are calculated and shown ("6 − 9 = −3"), and a line can meet a negative target (FR-205, FR-208). A division that is not a whole number still fails the line. |
+| AC-9 (Row 2 − with bottom-left 9: "not solved yet") | **Still holds, for a new reason.** Column 1 now works out as 6 − 9 = −3, which is not its target of 3. The locked scenario is unchanged. |
+| Brief, core rule "subtraction may not go below zero", agreed default "a step cannot go below zero", and Phase 3 "optional negative-number variant" | **Superseded.** Negative numbers become the standard rule, brought forward from Phase 3. The brief is updated in this feature's pull request. Generating puzzles with negative targets stays with F7. |
+| Out of Scope "Naming which line or step failed (F2)" | **Partly superseded.** The working marks a division that is not a whole number with a cross (FR-205). The Check message itself still says only "not solved yet" (spec-001 FR-011 unchanged). |
 | Brief, open question "Instant line feedback could turn Open mode into trial and error" | **Answered for this puzzle**: show the working, and mark each line that reaches its target (FR-204). This accepts the brief's risk on purpose; SC-202 measures whether players still deduce rather than guess. |
 | Brief F2 "a line is marked correct when its result equals its target" | **Brought forward** from F2 (FR-204). F2's naming of the failing step in the Check message stays out of scope. |
 | AC-20 and FR-014: a cleared message disappears "without anything being announced" | **Not affected.** The working is not announced after a tap. It is part of each line's name, read when the player moves to that line (owner decision 2026-11-05). |
 
-**Relies on spec-001**: lines are worked left to right and top to bottom; a step that goes below
-zero or does not divide exactly fails the line (FR-008); digits are 1–9 only (FR-003).
+**Relies on spec-001**: lines are worked left to right and top to bottom, and a step that does
+not divide exactly fails the line (FR-008, apart from its below-zero clause); digits are 1–9
+only (FR-003).
 
 ## Clarifications
 
@@ -43,6 +47,8 @@ zero or does not divide exactly fails the line (FR-008); digits are 1–9 only (
 - Q: Should a line say when it reaches its target, or only show its result? → A: Show the result and mark each line that reaches its target (FR-204).
 - Q: Does every line show its working, or only the lines through the cell just tapped? → A: When any cell or operator the player can change is tapped, the working is updated in real time. Every line shows its working all the time.
 - Q: Should screen readers announce the working after each tap? → A: No. The working is part of each line's name, read when the player moves to that line. spec-001 AC-20 is unchanged.
+- Update (owner): results below zero are calculated and can meet a target, and targets may be negative. A division that is not a whole number shows a cross.
+- Q: F0's puzzle has no negative target. Add a puzzle with one, or only allow it in the rules? → A: The rules allow it, proved by unit tests (AC-12). F0's puzzle stays as it is; generated puzzles (F7) bring negative targets to players.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -84,28 +90,33 @@ beside the grid. It delivers value on its own, before any change to checking.
 
 ---
 
-### User Story 2 - See when a step is impossible (Priority: P2)
+### User Story 2 - Negative results, and a cross for division that isn't whole (Priority: P2)
 
 > **As a** player exploring the grid,
-> **I want to** see when a line cannot be worked out with the numbers I have chosen,
-> **So that** I understand why that choice cannot be part of a solution.
+> **I want to** see a result even when it goes below zero, and see at once when a division
+> does not give a whole number,
+> **So that** every choice tells me something, and I can rule out the ones that cannot work.
 
-**Why this priority**: the rules forbid going below zero and inexact division (spec-001 FR-008).
-Without this, a line in that state would show nothing useful.
+**Why this priority**: without it, a line that goes below zero or divides unevenly would show
+nothing useful. Negative numbers widen what a line can reach.
 
 **Independent Test**: enter the "below zero" and "inexact division" examples and read the
-working for the failing line.
+working for Column 1.
 
 **Acceptance Scenarios**:
 
 1. **AC-8** — **Given** bottom-left 9 is entered and Column 1's operator is −, **When** the
-   player looks at Column 1, **Then** it shows "6 − 9" and says the step goes below zero, with
-   no result.
+   player looks at Column 1, **Then** it shows "6 − 9 = −3" and is not marked, since its
+   target is 3.
 2. **AC-9** — **Given** bottom-left 4 is entered and Column 1's operator is ÷, **When** the
-   player looks at Column 1, **Then** it shows "6 ÷ 4" and says it does not divide exactly,
-   with no result.
-3. **AC-10** — **Given** Column 1 shows "6 − 9" below zero, **When** the player taps
-   bottom-left until it shows 5, **Then** Column 1 shows "6 − 5 = 1".
+   player looks at Column 1, **Then** it shows "6 ÷ 4" with a cross, and no result.
+3. **AC-10** — **Given** Column 1 shows "6 ÷ 4" with a cross, **When** the player taps
+   bottom-left twice (6), **Then** Column 1 shows "6 ÷ 6 = 1", with no cross.
+4. **AC-12** — **Given** a line whose target is −3, with digits 6 and 9 and operator −,
+   **When** it is worked out, **Then** it meets its target; with digits 6 and 8 (6 − 8 = −2) it
+   does not. F0's puzzle has no negative target, so this rule is proved by unit tests on the
+   rules alone, not on the play screen. Players first meet a negative target in generated
+   puzzles (F7).
 
 ---
 
@@ -118,9 +129,15 @@ working for the failing line.
 - **Shown operators and the given cell**: tapping them changes nothing, so the working does
   not change.
 - **Cell cycled back to empty**: the working returns to ? for that cell and loses its result.
-- **Checking is unchanged**: Check, the result messages and the counter behave exactly as in
-  spec-001. A grid whose every line shows its target is only counted once the player taps
-  Check.
+- **Below zero**: a result below zero is shown with a minus sign and is not a failure. It is
+  marked only if it equals the line's target (AC-8).
+- **Division that is not whole**: the line shows a cross and no result. It cannot be marked or
+  meet its target (AC-9).
+- **Same solutions**: with negatives allowed, F0's puzzle still has exactly Solutions A and B,
+  so the counter still reads "of 2".
+- **Checking**: Check, the result messages and the counter behave as in spec-001, except that
+  results below zero now count (FR-208). A grid whose every line shows its target is only
+  counted once the player taps Check.
 - **Small screens**: the working for all four lines fits on a 320-pixel-wide screen with
   everything spec-001 requires, without scrolling or zooming.
 
@@ -139,18 +156,25 @@ working for the failing line.
   line that is incomplete, cannot continue, or has a different result MUST NOT be marked. The
   mark MUST NOT rely on colour alone and MUST be part of what a screen reader reads for the
   line. Marking a line accepts nothing: only Check does (FR-207).
-- **FR-205**: When a step goes below zero or does not divide exactly, the working MUST show
-  that step and say, in plain words, why it cannot continue. It MUST NOT show a result.
+- **FR-205**: A step that goes below zero MUST be calculated, and its result shown with a minus
+  sign ("6 − 9 = −3"). A step that does not divide exactly MUST show the working up to that
+  step with a cross and no result ("6 ÷ 4 ✗"). The cross MUST NOT rely on colour alone, and a
+  screen reader MUST hear that the division is not a whole number.
 - **FR-206**: The working MUST update after every tap on a cell or an open operator, with no
   other action needed.
 - **FR-207**: Showing the working MUST NOT accept, reject or count anything. Only Check does
-  that (spec-001 FR-007 to FR-015 unchanged).
+  that (spec-001 FR-007 and FR-009 to FR-015 unchanged).
+- **FR-208**: When the player checks, a line MUST meet its target when its result equals the
+  target, including when either is below zero. A line with a division that is not a whole
+  number MUST NOT meet its target. This replaces spec-001 FR-008's below-zero clause. Targets
+  MAY be negative.
 
 ### Key Entities
 
 - **Line working**: for one line, the sequence of its digits and operator (or ? for each
-  missing part), and then either its result, the reason a step cannot continue, or nothing
-  while incomplete. It is derived entirely from the current entry and is never stored.
+  missing part), and then either its result (which may be below zero), a cross for a division
+  that is not whole, or nothing while incomplete. It is derived entirely from the current
+  entry and is never stored.
 
 ## Success Criteria *(mandatory)*
 
@@ -176,8 +200,11 @@ working for the failing line.
   2026-11-05). A tap changes at most one row and one column.
 - **Operator taps count**: the description names cells, but an operator change also changes a
   line's result, so operator taps update the working too.
-- **Checking is unchanged**: Check still decides what is a solution, and the counter still
-  counts. This keeps the game's goal of finding every solution.
+- **Check still decides**: Check still decides what is a solution, and the counter still
+  counts. This keeps the game's goal of finding every solution. Only its rule for numbers
+  below zero changes (FR-208).
+- **Minus sign**: a negative result is written with a true minus sign, "−3", as the minus
+  operator is.
 - **Same puzzle**: F0's fixed 2 × 2 puzzle. No new puzzles, grid sizes or mixed operators.
 
 ## Acceptance Criteria as Examples *(org baseline)*
@@ -191,8 +218,9 @@ All criteria use spec-001's fixed puzzle. These are the examples:
 | Solution A | 2 | 2 | 3 | × | ÷ | 8, 6, 3, 6; all four marked | AC-6 |
 | One change from A | 2 | 3 | 3 | × | ÷ | Row 2 3 × 3 = 9 and Column 1 6 ÷ 3 = 2, not marked; Row 1 and Column 2 marked | AC-7 |
 | Wrong then right | 3, then 2 | empty | empty | ? | ? | Row 1 6 + 3 = 9 not marked, then 6 + 2 = 8 marked | AC-11 |
-| Below zero | – | 9 | – | – | − | Column 1 6 − 9, below zero | AC-8 |
-| Inexact division | – | 4 | – | – | ÷ | Column 1 6 ÷ 4, not exact | AC-9 |
+| Below zero | – | 9 | – | – | − | Column 1 6 − 9 = −3, not marked | AC-8 |
+| Inexact division | – | 4 | – | – | ÷ | Column 1 6 ÷ 4 with a cross | AC-9 |
+| Division made whole | – | 6 | – | – | ÷ | Column 1 6 ÷ 6 = 1, no cross | AC-10 |
 
 ## Non-Functional Requirements *(mandatory — org baseline)*
 
@@ -215,8 +243,12 @@ updated in the plan.
 
 ## Out of Scope *(mandatory — org baseline)*
 
-- Changing how Check works, the result messages or the counter.
+- Changing Check's messages or the counter. Check's only change is allowing results below zero
+  (FR-208).
 - Saying which line failed in the Check message (spec-001 FR-011 stays).
 - Hints, scoring or limits on checks (F8).
 - The visual redesign from the mockups, beyond placing the working. That is a separate feature.
 - New puzzles, grid sizes and mixed operators (F7, F9).
+- Generating puzzles with negative targets (F7). The brief's generator step "a whole,
+  non-negative result" is revisited there.
+- Fractions and decimals as answers. A division that is not whole is still never correct.
