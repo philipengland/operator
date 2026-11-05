@@ -676,3 +676,17 @@
 - **Check proven**: at 320 × 400 it still passed, correctly (the game fits in 375 px); at 320 × 250 it failed with `counter is on screen without scrolling — Expected: true, Received: false`. Restored.
 - No CSS change and no sizing logic were needed, so there were no unit cycles.
 - Ordering: T080 and T081 were brought forward into pull request 5 by owner decision on 2026-11-05, so the first deploy goes out with every scenario passing.
+
+## SC-003 and SC-004 — speed (T081): ready to play within 3 seconds, and every tap answered within 0.1 seconds, on the reference phone on 4G
+
+- **Acceptance test**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — "ready to play within 3 seconds, and every tap answered within 0.1 seconds" (android only: the throttling needs Chromium's DevTools protocol)
+- **Acceptance RED** (stubs): failed on the readiness stub, which reported an unknown time as infinitely slow.
+- **Drivers added** (`b844ff8`): `useReferencePhoneOn4G` (CDP: latency 170 ms, 9 Mbps down, 4× CPU slowdown, per research R9; upload 3 Mbps is an assumption, as R9 gives none and the game uploads nothing) installs `speed-timing.ts` in the page before it loads. That script records when the "Puzzle" group appears (the game attaches its tap handlers in the same task), and for each tap the time from the tap to the first frame after an accessible name or the status text changes. Unrecorded or unanswered timings read as infinitely slow.
+- **A measurement fault, found and fixed**: the first version timed taps with the animation-frame callback's frame time. A deliberate 30 ms delay in every tap changed nothing (about 28 ms either way): Chromium handles input at the start of a frame, so that frame time can come before the tap's handler runs. Timing with `performance.now()` inside the callback fixed it; the same 30 ms delay then raised taps from about 30 ms to about 49 ms.
+- **Measured** (local, as built): ready to play at 0.42 s; taps answered in 28–32 ms. Both budgets passed on first run with the corrected driver: **passed at RED** (the bundle is about 3 KB gzipped).
+- **Budgets proven**, each with a temporary busy-wait in `src/app/main.ts`, then restored:
+  - 3 s before the game starts → `seconds until ready to play — Expected: <= 3, Received: 3.42`
+  - 90 ms in every tap → `slowest tap, in milliseconds — Expected: <= 100, Received: 113.8`
+- No product code changed, so there were no unit cycles.
+- Full suite: 76 unit tests pass; lint and type checks clean; engine 22 of 22; **phones 55 of 55**. Every approved scenario that runs before publishing now passes.
+- **Checkpoint**: awaiting approval from Philip England.
