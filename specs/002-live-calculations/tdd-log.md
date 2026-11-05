@@ -192,4 +192,64 @@ gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples �
   reverted break, at T030 and T031 as planned.
 - **Slice refactor**: the three label tests share one named `ROW_1_ON_OPENING` working —
   commit `a9d0efa`.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-2: after top-right becomes 2, Row 1 reads "6 + 2 = 8" and Column 2 reads "2 × ?"
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "top-right 2 makes Row 1
+  "6 + 2 = 8" and Column 2 "2 × ?"".
+- **Acceptance RED** (no new driver code): engine and both phones `Error: Row 1 working …
+  Expected: "6 + 2 = 8" Received: "6 + 2"`.
+
+### Cycle 1 — a complete line's working gives its result
+
+- **RED**: `lineWorking › works out Row 1 as 6 + 2 = 8 once top-right is 2, reaching its
+  target of 8` — failed: `expected { kind: 'incomplete' } to deeply equal { kind: 'result',
+  value: 8, …(1) }`.
+- **GREEN**: a line with every digit and an operator is worked out with `evaluateLine`;
+  `reachesTarget` hard-coded true for now. A division that is not whole stays `incomplete`
+  until AC-9 drives `not-whole` — commit `786b3b7`.
+- **REFACTOR**: none needed.
+
+### Cycle 2 — the working says whether the line reaches its target
+
+- **RED**: `lineWorking › works out Row 1 as 6 + 3 = 9 once top-right is 3, missing its target
+  of 8` — failed: received `reachesTarget: true`, expected `false`.
+- **GREEN**: compares the result with the line's target (`lineSpec`), passed in as one
+  `LineParts` object — commit `f102312`.
+- **REFACTOR**: none needed.
+
+### Cycle 3 — a complete line's working ends with its result
+
+- **RED**: `workingText › adds the result once the line is complete: "6 + 2 = 8"` — failed:
+  `expected '6 + 2' to be '6 + 2 = 8'`.
+- **GREEN**: appends ` = <value>` for a `result` — commit `ce68dd8`. AC-2 passes on the
+  engine driver.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the slot shows a result that misses its target
+
+- **RED**: `resultText › shows the result of a line that misses its target: "= 9"` — failed:
+  `expected '= ?' to be '= 9'`.
+- **GREEN**: `= <value>` for a `result` — commit `539d3c9`.
+- **REFACTOR**: none needed.
+
+### Cycle 5 — the slot ticks a line that reaches its target
+
+- **RED**: `resultText › marks a line that reaches its target with a tick: "= 8 ✓"` — failed:
+  `expected '= 8' to be '= 8 ✓'`.
+- **GREEN**: appends `✓` (`TARGET_REACHED_MARK`) when `reachesTarget` — commit `6bfdf58`.
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: lint and type checks clean; 90 unit tests (99.34% statements, 96.19%
+  branches); build 4.1 KB gzipped. Engine 32 passed, 3 failed (AC-4, AC-8, AC-9). Phones 75
+  passed, 12 failed (AC-4, AC-6, AC-7, AC-8, AC-9, AC-11 on each).
+- **Passing early, reported at their own RED**: on the engine driver AC-3, AC-5, AC-6, AC-7,
+  AC-10, AC-11, the cleared-cell edge case and the not-announced check; on the phones AC-3,
+  AC-5, AC-10, the edge cases and the not-announced check.
+  **AC-6, AC-7 and AC-11 pass on the engine but not on the phones**: the engine driver takes
+  the mark from the outcome itself, while the UI driver reads it from the name, which does not
+  yet say ", target reached" (AC-6's planned cycle). So for marks, only the UI driver tests the
+  app's wording.
+- **Slice refactor**: none needed.
 - **Checkpoint**: awaiting the owner.

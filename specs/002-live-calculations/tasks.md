@@ -107,9 +107,9 @@ with ✓ when it reaches its target.
 
 ### AC-2: the first digit
 
-- [ ] T013 [US1] AC-2 RED: no new driver code. Expected failure: `Row 1 working — Expected: "6 + 2 = 8", Received: "6 + 2"`.
-- [ ] T014 [US1] AC-2 TDD cycles: `lineWorking` outcome `result` with `value` (from `evaluateLine`) and `reachesTarget` (`value === target`) once nothing is `null`; `workingText` appends " = 8"; `resultText` gives "= 8 ✓" when `reachesTarget`, "= 9" otherwise.
-- [ ] T015 [US1] AC-2 GREEN, slice refactor, checkpoint.
+- [X] T013 [US1] AC-2 RED: no new driver code. Expected failure: `Row 1 working — Expected: "6 + 2 = 8", Received: "6 + 2"`.
+- [X] T014 [US1] AC-2 TDD cycles: `lineWorking` outcome `result` with `value` (from `evaluateLine`) and `reachesTarget` (`value === target`) once nothing is `null`; `workingText` appends " = 8"; `resultText` gives "= 8 ✓" when `reachesTarget`, "= 9" otherwise.
+- [X] T015 [US1] AC-2 GREEN, slice refactor, checkpoint.
 
 ### AC-3: a column with both digits ⚠️
 
