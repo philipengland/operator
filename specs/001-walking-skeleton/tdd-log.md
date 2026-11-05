@@ -618,8 +618,9 @@
 - `.github/workflows/ci-deploy.yml` (`e5d03b3`; authorised by T068): `verify` on every pull request and push to `main` (lint, type checks, unit tests with coverage, build, cached Playwright browsers, both acceptance drivers, upload `dist/`); `deploy` needs `verify`, runs only on `main`, publishes with `actions/deploy-pages`, then runs the `after-publish` project against the deployment URL. Workflow permissions `contents: read`; `deploy` adds only `pages: write` and `id-token: write`. Every action is pinned to a commit SHA resolved from its release tag. The exceptions check is added with T075.
 - `2cc4936`: the config imports the lookup with its `.ts` extension, clearing a new Vite warning.
 - Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
-- **Acceptance GREEN**: **blocked** — needs the GitHub repository, Pages set to "GitHub Actions", and a merge to `main` (T069).
-- **Checkpoint**: work up to the pipeline shown to the owner on 2026-11-02; approval waits for AC-17 to pass after the first deploy (T069). (Corrected 2026-11-05: an earlier bulk edit had marked this approved.)
+- **Acceptance GREEN** (2026-11-05): pull request 5 merged as `3197161`; run 42048739409 on `main`: `verify` passed (14:49:29–14:53:16 UTC), then `deploy` published and its after-publish check passed: `✓ [after-publish] › [spec-001 AC-17] a merged change goes live › once the pipeline finishes, the public address serves the merged version — 1 passed`. The public address serves `<meta name="version" content="3197161b2f53d4a6931dc31abe09d39128ab36c4">`.
+- **SC-005**: merge to live in 4 min 36 s (run created 14:49:26, deploy finished 14:54:02), inside the 15-minute budget.
+- **Checkpoint**: awaiting approval from Philip England (AC-17 now passes after the first deploy).
 
 ## AC-18: Given the game has loaded, when the device loses its connection, then the player can still fill in, check and find solutions, and the game makes no network requests after it has loaded
 
