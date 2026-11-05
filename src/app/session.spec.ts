@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type Entry, type SolutionKey } from '../engine';
-import { applyAction, counterText, lineWorkings, startSession, type SessionState } from './session';
+import { applyAction, counterText, lineWorkings, startSession, type SessionAction, type SessionState } from './session';
 
 describe('startSession', () => {
   it('starts on the worked example with an empty entry, nothing found and no message', () => {
@@ -16,6 +16,22 @@ describe('startSession', () => {
 describe('counterText', () => {
   it('reads "Found 0 of 2" when nothing has been found in the worked example', () => {
     expect(counterText(startSession())).toBe('Found 0 of 2');
+  });
+
+  it('still reads "Found 0 of 2" once every line reaches its target, until Check (spec-002 AC-6)', () => {
+    const taps: SessionAction[] = [
+      { type: 'tapCell', row: 0, column: 1 },
+      { type: 'tapCell', row: 0, column: 1 },
+      { type: 'tapCell', row: 1, column: 0 },
+      { type: 'tapCell', row: 1, column: 0 },
+      ...Array.from({ length: 3 }, (): SessionAction => ({ type: 'tapCell', row: 1, column: 1 })),
+      ...Array.from({ length: 3 }, (): SessionAction => ({ type: 'tapOperator', line: { axis: 'row', index: 1 } })),
+      ...Array.from({ length: 4 }, (): SessionAction => ({ type: 'tapOperator', line: { axis: 'column', index: 0 } })),
+    ];
+    const solutionAFilledIn = taps.reduce(applyAction, startSession());
+
+    expect(lineWorkings(solutionAFilledIn).every(({ outcome }) => outcome.kind === 'result' && outcome.reachesTarget)).toBe(true);
+    expect(counterText(solutionAFilledIn)).toBe('Found 0 of 2');
   });
 });
 
