@@ -45,6 +45,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Check no recorded exception has expired (Baseline 9)
+        run: npm run exceptions:check
+
       - name: Lint
         run: npm run lint
 
