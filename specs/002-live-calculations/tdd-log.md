@@ -102,3 +102,94 @@ workings are on screen. The rule is driven by unit tests.
 - **Lesson for later features**: a feature whose approved scenarios need more than one pull
   request cannot merge its early parts while `verify` runs them all. Plan the split around
   that, or decide up front how undelivered scenarios are handled.
+
+## T009 — contracts before the code
+
+`docs/contracts/play-screen.md` gains the row and column workings (name format, not a live
+region, layout, what the UI driver reads, the 320 × 568 guarantee); `docs/contracts/engine-api.md`
+gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples — commit
+`65a194d`.
+
+## AC-1: when the game has just opened, each line shows its working with ? for each gap, a row's on its right and a column's below it, and none is marked
+
+- **Acceptance tests**: `test/acceptance/play/see-line-working.acceptance-spec.ts` —
+  "each line shows its given digits and operators, with ? for everything not yet filled in"
+  (engine and both phones) and "each row's working is on its right and each column's is
+  underneath" (`@ui`).
+- **Driver work (T010)** — commit `a1cfdf1`: the engine driver reports `lineWorkings(session)`
+  through `workingText` and maps each outcome to its mark; the UI driver reads the text named
+  `/^<Line> working, /` inside "Puzzle" and splits off ", target reached" or ", not a whole
+  number"; the phone driver reads the box of the element around each name (the slot on
+  screen). Stubs: `lineWorkings` returns `[]`, `workingText` returns `''`; the engine gains the
+  `LineOutcome` and `LineWorking` types.
+- **Acceptance RED**: engine `Error: Row 1 working … Expected: "6 + ?" Received: ""`; both
+  phones the same, and the layout scenario `Row 1 working is right of the top-left cell …
+  Expected: true Received: false`.
+
+### Cycle 1 — a line's working lists its digits and operator
+
+- **RED**: `lineWorking › gives Row 1 on opening as 6, an empty cell and +, with no result
+  yet` in `src/engine/line-working.spec.ts` — failed: received `"digits": []`,
+  `"operator": null` from the stub, expected `[6, null]` and `"+"`.
+- **GREEN**: `lineWorking` reads the line's digits in reading order and its operator; outcome
+  `incomplete`. "A line's digits in reading order" moved from `check-entry.ts` into
+  `line-working.ts`, and `check-entry.ts` imports it — commit `af8b97d`.
+- **REFACTOR**: none needed.
+
+### Cycle 2 — the session gives every line's working, rows then columns
+
+- **RED**: `lineWorkings › gives every line's working on opening, rows then columns` in
+  `src/app/session.spec.ts` — failed: `expected [] to deeply equal [ { …(3) }, … ]`. (A
+  first run failed to compile on a quote in the test name; fixed before the real red.)
+- **GREEN**: `lineWorking` exported from the engine; `lineWorkings` works out each row, then
+  each column — commit `0837ea5`.
+- **REFACTOR**: none now. Listing every line is now in both `session.ts` and
+  `check-entry.ts`; left for T032, which moves `checkEntry` onto `lineWorking`.
+
+### Cycle 3 — a working is written with ? for each gap
+
+- **RED**: `workingText › writes $text for an unfinished line, with ? for each gap`
+  (`it.each`: "6 + ?", "? ? ?", "6 ? ?", "? × ?") in `src/app/labels.spec.ts` — failed:
+  `expected '' to be '6 + ?'` and likewise for each.
+- **GREEN**: digits joined by the operator, "?" for each gap (`GAP_MARK`) — commit
+  `d780580`. AC-1's first scenario now passes on the engine driver.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — each working has an accessible name
+
+- **RED**: `workingName › names a working by its line, then the working: "Row 1 working,
+  6 + ?"` — failed: `expected '' to be 'Row 1 working, 6 + ?'`.
+- **GREEN**: `<line name> working, <working text>` — commit `3853b2b`.
+- **REFACTOR**: none needed.
+
+### Cycle 5 — the result slot of an unfinished line shows "= ?"
+
+- **RED**: `resultText › shows "= ?" in the result slot while a line is unfinished` — failed:
+  `expected '' to be '= ?'`.
+- **GREEN**: returns `= ?` for now; AC-2 forces results — commit `bf8b5ea`.
+- **REFACTOR**: none needed.
+
+### Cycle 6 — the screen shows each working (view, no unit test)
+
+- **RED**: the AC-1 UI scenarios above (`Row 1 working … Received: ""`; `… right of the
+  top-left cell … false`). `view.ts` is DOM code without unit tests, as in spec-001.
+- **GREEN**: `view.ts` adds a slot right of each row and below each column: a visually hidden
+  name and visible text marked `aria-hidden="true"`, not in a live region, both written with
+  `writeText`. `styles.css`: one more grid column (`auto`) and row; the slot wraps
+  (`overflow-wrap: anywhere`) — commit `c0b6f06`. All four AC-1 UI runs pass, axe clean.
+- **Note**: the first UI run after the change still failed, because the UI driver serves the
+  built `dist/` and it was stale. **Run `npm run build` before `npm run test:acceptance:ui`**
+  (CI builds first). The RED at T010 was unaffected: neither build had workings.
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: lint and type checks clean; 85 unit tests pass (99.29% statements,
+  96.77% branches); engine 24 passed (22 spec-001, AC-1, and the "cell cleared again" edge
+  case); phones 65 passed (55 spec-001 including their layout and small-screen checks, AC-1
+  ×4, the edge case ×2, the spec-002 small-screen scenarios ×4). Failing: only the spec-002
+  criteria not started yet.
+- **Passing early, to be proven later**: "[spec-002 edge case] a cell cleared again" and
+  "[spec-002 edge case] small screens" now pass. They are handled, each driver proven by a
+  reverted break, at T030 and T031 as planned.
+- **Slice refactor**: the three label tests share one named `ROW_1_ON_OPENING` working —
+  commit `a9d0efa`.
+- **Checkpoint**: awaiting the owner.
