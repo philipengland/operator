@@ -79,9 +79,14 @@ export function readWorkingName(line: Line, name: string): { working: Working; m
   const described = name.slice(`${line} working, `.length);
   const marked = WORKING_MARKS.find(([ending]) => described.endsWith(ending));
   if (!marked) {
-    return { working: described, mark: 'none' };
+    return { working: asShown(described), mark: 'none' };
   }
-  return { working: described.slice(0, -marked[0].length), mark: marked[1] };
+  return { working: asShown(described.slice(0, -marked[0].length)), mark: marked[1] };
+}
+
+/** The name speaks a negative result, "= minus 1"; the player sees "= −1" (U+2212). */
+function asShown(spoken: string): Working {
+  return spoken.replace(/= minus (\d+)$/, '= −$1');
 }
 
 export const COUNTER_PATTERN = /Found \d+ of \d+/;

@@ -265,4 +265,4 @@ gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples �
   fail on the engine and both phones: `Error: Column 2 working … Expected: "2 × 3 = 6"
   Received: "2 × 3"`. Reverted with `git checkout`, rebuilt; passes again.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record AC-3 as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).

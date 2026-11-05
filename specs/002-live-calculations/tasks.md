@@ -113,8 +113,8 @@ with ✓ when it reaches its target.
 
 ### AC-3: a column with both digits ⚠️
 
-- [ ] T016 [US1] AC-3 RED: likely passes once AC-2 is delivered (Column 2's working is built the same way). If it passes, report it, prove the driver with a reverted break (e.g. `workingText` drops the result for columns), and ask the owner whether to record it as delivered.
-- [ ] T017 [US1] AC-3 GREEN, checkpoint.
+- [X] T016 [US1] AC-3 RED: likely passes once AC-2 is delivered (Column 2's working is built the same way). If it passes, report it, prove the driver with a reverted break (e.g. `workingText` drops the result for columns), and ask the owner whether to record it as delivered.
+- [X] T017 [US1] AC-3 GREEN, checkpoint.
 
 ### AC-4: choosing an operator changes the working
 
