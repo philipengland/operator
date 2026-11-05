@@ -516,4 +516,17 @@ spec-002 30 passed, 2 failed (AC-9).
   speed budgets included).
 - **Passing early**: AC-10 now passes everywhere; reported at its own RED.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting the owner.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-10: from "6 ÷ 4" with a cross, two taps on bottom-left (6) make Column 1 "6 ÷ 6 = 1" with no cross ⚠️ passed at RED
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "from "6 ÷ 4" with a cross,
+  two taps on bottom-left (6) make Column 1 "6 ÷ 6 = 1" with no cross".
+- **Acceptance RED**: **passed on its first run**, on the engine and both phones, as
+  `tasks.md` predicted: workings are worked out afresh on every tap (AC-7), so the cross goes
+  when the division becomes whole.
+- **Driver proof**: a deliberate break, `evaluateLine` treating a number divided by itself as
+  not whole, made it fail on the engine and both phones: `Error: Column 1 working … Expected:
+  "6 ÷ 6 = 1" Received: "6 ÷ 6"`. Reverted with `git checkout`, rebuilt; passes again.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record AC-10 as delivered.
