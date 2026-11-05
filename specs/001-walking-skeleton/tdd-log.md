@@ -618,8 +618,9 @@
 - `.github/workflows/ci-deploy.yml` (`e5d03b3`; authorised by T068): `verify` on every pull request and push to `main` (lint, type checks, unit tests with coverage, build, cached Playwright browsers, both acceptance drivers, upload `dist/`); `deploy` needs `verify`, runs only on `main`, publishes with `actions/deploy-pages`, then runs the `after-publish` project against the deployment URL. Workflow permissions `contents: read`; `deploy` adds only `pages: write` and `id-token: write`. Every action is pinned to a commit SHA resolved from its release tag. The exceptions check is added with T075.
 - `2cc4936`: the config imports the lookup with its `.ts` extension, clearing a new Vite warning.
 - Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
-- **Acceptance GREEN**: **blocked** — needs the GitHub repository, Pages set to "GitHub Actions", and a merge to `main` (T069).
-- **Checkpoint**: work up to the pipeline shown to the owner on 2026-11-02; approval waits for AC-17 to pass after the first deploy (T069). (Corrected 2026-11-05: an earlier bulk edit had marked this approved.)
+- **Acceptance GREEN** (2026-11-05): pull request 5 merged as `3197161`; run 42048739409 on `main`: `verify` passed (14:49:29–14:53:16 UTC), then `deploy` published and its after-publish check passed: `✓ [after-publish] › [spec-001 AC-17] a merged change goes live › once the pipeline finishes, the public address serves the merged version — 1 passed`. The public address serves `<meta name="version" content="3197161b2f53d4a6931dc31abe09d39128ab36c4">`.
+- **SC-005**: merge to live in 4 min 36 s (run created 14:49:26, deploy finished 14:54:02), inside the 15-minute budget.
+- **Checkpoint**: approved by Philip England on 2026-11-05 ("Let's continue", after the game went live).
 
 ## AC-18: Given the game has loaded, when the device loses its connection, then the player can still fill in, check and find solutions, and the game makes no network requests after it has loaded
 
@@ -652,7 +653,7 @@
 
 - **Acceptance GREEN**: AC-19 passes (engine 2 of 2). Full suite: 76 unit tests pass (lines 99.2%, branches 95.6%); lint, type checks and build clean; engine 22 of 22; phones 52 passed, failing only AC-21 (next) and the Android speed budget (Polish).
 - **Slice refactor**: none beyond cycle 4's.
-- **Manual part (outstanding)**: after the first failing `verify` run on `main`, confirm the public address still serves the previous version (acceptance.md). Needs the pipeline live (pull request 5).
+- **Manual part** (2026-11-05): with `main` protected by the required `verify` check, a failing change cannot be merged, so the pipeline was started manually on `main` (`workflow_dispatch`, run 42056589007) with `ref` set to a throwaway commit (`2955bdd`, branch `chore/ac19-failing-check`) that adds an exception expired on 2026-01-01. `verify` failed at its first step (`EXC-999 expired on 2026-01-01`), `deploy` was skipped, and the public address served `3197161b2f53d4a6931dc31abe09d39128ab36c4` before and after. The branch was deleted; the commit was never merged.
 - **Checkpoint**: approved by Philip England on 2026-11-05.
 
 ## AC-21: Given the player has opened the game once, when they reload it with no connection, then the game does not load (no offline reload in F0)
@@ -690,3 +691,14 @@
 - No product code changed, so there were no unit cycles.
 - Full suite: 76 unit tests pass; lint and type checks clean; engine 22 of 22; **phones 55 of 55**. Every approved scenario that runs before publishing now passes.
 - **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## T085 — quickstart sections 1 to 5 on a clean clone
+
+- **Clone**: fresh `git clone` of `001-walking-skeleton` from GitHub into an empty folder, at `24d836b`. The later local commits change documents only. Node 22.17, Windows 11.
+- **Prerequisites**: `npm ci` added 147 packages; `npx playwright install webkit chromium` succeeded.
+- **Section 1**: lint clean, type checks clean, **76 of 76** unit tests pass; coverage 99.2% lines, 95.6% branches (threshold enforced).
+- **Section 2**: engine driver **22 of 22**; one criterion (`-g "spec-001 AC-8]"`) runs 1 scenario.
+- **Section 3**: build 2.78 KB JS + 0.90 KB CSS gzipped; phones **55 of 55** (iPhone WebKit and Android Chromium), including axe scans, no requests after load, and the speed budgets.
+- **Section 4**: followed step by step at 375 × 667 against `npm run dev`, scripted with Playwright. Every expected result was seen: "Top-left cell, given 6", "Found 0 of 2"; cells 2, 2, 3; Row 2 times and Column 1 divide → "New solution found! Found 1 of 2"; changing bottom-left cleared the message; Row 2 plus and Column 1 minus → "New solution found! You've found every solution. Found 2 of 2". The four targets were confirmed by the AC-1 phone scenarios, not by the script.
+- **Section 5**: run 42048739409 (merge of PR #5): `verify` passed, then `deploy`, whose AC-17 check passed; the public address serves `3197161`. Merge to live 4 min 36 s (SC-005, under 15 min).
+- **Quickstart corrected**: sections 2 and 3 named commands that predate the launcher. `npm run test:acceptance` now runs both drivers, and `ACCEPTANCE_DRIVER=ui npm run …` fails in Windows `cmd`. They now name `test:acceptance:engine` and `test:acceptance:ui`.
