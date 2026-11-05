@@ -653,7 +653,7 @@
 
 - **Acceptance GREEN**: AC-19 passes (engine 2 of 2). Full suite: 76 unit tests pass (lines 99.2%, branches 95.6%); lint, type checks and build clean; engine 22 of 22; phones 52 passed, failing only AC-21 (next) and the Android speed budget (Polish).
 - **Slice refactor**: none beyond cycle 4's.
-- **Manual part (outstanding)**: after the first failing `verify` run on `main`, confirm the public address still serves the previous version (acceptance.md). Needs the pipeline live (pull request 5).
+- **Manual part** (2026-11-05): with `main` protected by the required `verify` check, a failing change cannot be merged, so the pipeline was started manually on `main` (`workflow_dispatch`, run 42056589007) with `ref` set to a throwaway commit (`2955bdd`, branch `chore/ac19-failing-check`) that adds an exception expired on 2026-01-01. `verify` failed at its first step (`EXC-999 expired on 2026-01-01`), `deploy` was skipped, and the public address served `3197161b2f53d4a6931dc31abe09d39128ab36c4` before and after. The branch was deleted; the commit was never merged.
 - **Checkpoint**: approved by Philip England on 2026-11-05.
 
 ## AC-21: Given the player has opened the game once, when they reload it with no connection, then the game does not load (no offline reload in F0)
