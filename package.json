@@ -12,10 +12,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "typecheck": "tsc --project tsconfig.json && tsc --project src/engine/tsconfig.json && tsc --project test/acceptance/tsconfig.json",
+    "typecheck": "tsc --project tsconfig.json && tsc --project src/engine/tsconfig.json && tsc --project test/acceptance/tsconfig.json && tsc --project tools/tsconfig.json",
     "test": "vitest run --coverage",
+    "exceptions:check": "node --experimental-strip-types --disable-warning=ExperimentalWarning tools/run-exceptions-check.ts",
     "test:acceptance": "npm run test:acceptance:engine && npm run test:acceptance:ui",
-    "typecheck:acceptance": "tsc --project test/acceptance/tsconfig.json",
+    "typecheck:acceptance": "tsc --project test/acceptance/tsconfig.json && tsc --project tools/tsconfig.json",
     "test:acceptance:engine": "node tools/run-acceptance.mjs engine",
     "test:acceptance:ui": "node tools/run-acceptance.mjs ui"
   },

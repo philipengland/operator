@@ -593,3 +593,100 @@
   phone run.
 - Remaining failures belong to User Story 3 and Polish, not yet started: AC-19 (engine);
   AC-18 network requests, AC-21 offline reload and the Android speed budget (phones).
+
+## AC-17: Given a change has been merged to main, when the pipeline finishes, then the public address serves the new version without anyone deploying by hand
+
+- **Acceptance test**: `test/acceptance/delivery/publish.acceptance-spec.ts` — "once the pipeline finishes, the public address serves the merged version" (`after-publish` project, no browser; runs only when `ACCEPTANCE_PUBLIC_URL` is set)
+- **Drivers added** (`12963ac`, `a84c13f`): delivery `mergedVersion` (the commit the build is labelled with, found the same way as the build) and `versionAtPublicAddress` (fetches the address with a cache-busting query and reads `<meta name="version">`; failures are reported as the version seen).
+- **Acceptance RED** (2026-11-02, `ACCEPTANCE_PUBLIC_URL=https://philipengland.github.io/operator/`): `Error: version at the public address — Expected: "9c9b490…", Received: "nothing published (HTTP 404 from https://philipengland.github.io/operator/)"`. Nothing is published: the GitHub repository does not exist yet.
+
+### Preparation — move the version lookup where it can be tested
+
+- **REFACTOR**: the lookup moved from `vite.config.ts` to `tools/build-version.ts` with no behaviour change; added `tools/tsconfig.json` to the type check — commit `757ad06`
+- **Tests written after the code** (`5661657`): Setup T004 wrote the lookup untested. Three tests (GitHub's commit wins, git commit otherwise, "unknown" without git) **passed on first run**; each was shown to fail when its branch of the lookup was broken, then the code was restored.
+
+### Cycle 1 — label the build with the checked-out commit
+
+- **Decision**: owner chose on 2026-11-02 that the checked-out git commit wins, with `GITHUB_SHA` as the fallback. A rollback run (`workflow_dispatch` with `ref`) checks out an older commit, but GitHub does not let a workflow change `GITHUB_SHA`, so the old order labelled rolled-back pages with the wrong version. This changes T068's stated order.
+- **Guard first**: `uses the commit GitHub Actions names when git cannot be read` — passed on first run (the old order already gave this); it keeps the fallback through the change.
+- **RED**: `buildVersion › uses the checked-out commit even when GitHub Actions names a different one` in `tools/build-version.spec.ts` — failed: `expected 'a1b2c3d4e5f60718293a4b5c6d7e8f9012345…' to be '0f9e8d7c6b5a49382716f5e4d3c2b1a098765…'`
+- **GREEN**: read git first, fall back to `GITHUB_SHA`, then "unknown" — commit `9c9b490`
+- **REFACTOR**: none needed. The delivery driver now uses the same lookup (`a84c13f`).
+
+### Pipeline
+
+- `.github/workflows/ci-deploy.yml` (`e5d03b3`; authorised by T068): `verify` on every pull request and push to `main` (lint, type checks, unit tests with coverage, build, cached Playwright browsers, both acceptance drivers, upload `dist/`); `deploy` needs `verify`, runs only on `main`, publishes with `actions/deploy-pages`, then runs the `after-publish` project against the deployment URL. Workflow permissions `contents: read`; `deploy` adds only `pages: write` and `id-token: write`. Every action is pinned to a commit SHA resolved from its release tag. The exceptions check is added with T075.
+- `2cc4936`: the config imports the lookup with its `.ts` extension, clearing a new Vite warning.
+- Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
+- **Acceptance GREEN**: **blocked** — needs the GitHub repository, Pages set to "GitHub Actions", and a merge to `main` (T069).
+- **Checkpoint**: work up to the pipeline shown to the owner on 2026-11-02; approval waits for AC-17 to pass after the first deploy (T069). (Corrected 2026-11-05: an earlier bulk edit had marked this approved.)
+
+## AC-18: Given the game has loaded, when the device loses its connection, then the player can still fill in, check and find solutions, and the game makes no network requests after it has loaded
+
+- **Acceptance tests**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — "with no connection, Solution A is still accepted and the counter reads "Found 1 of 2"" and "playing to a solution makes no network requests after the game opens" (iphone, android)
+- **Drivers added**: `loseConnection` (`context.setOffline(true)`, built earlier because a placeholder let the offline scenario pass without going offline); `networkRequestsSinceOpening` (records every page request and counts those after the page's last `load` event) — commit `38e0bde`.
+- **Acceptance RED**: **passed at RED** on both phones (4 of 4), as T070 predicted. Nothing in the game uses the network after loading, and the CSP sets `connect-src 'none'`.
+- **Counter proven**: with a temporary image request on every tap added to `src/app/main.ts` and the game rebuilt, the scenario failed on both phones: `network requests after opening — Expected: 0, Received: 15`. The change was reverted and the game rebuilt; no product code changed.
+- **Decision**: owner chose option (a) on 2026-11-05 — record AC-18 as delivered by construction (no request after load; CSP `connect-src 'none'`), write no new code. T071 (cycles only if red) was skipped.
+- **Acceptance GREEN**: AC-18 passes on both phones; no product code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-05 (option a).
+
+## AC-19: Given a change fails the build, unit tests or acceptance tests, when the pipeline runs, then nothing is published and the public address keeps serving the previous version
+
+- **Acceptance tests**: `test/acceptance/delivery/publish.acceptance-spec.ts` — "only changes merged to main are published" and "publishing happens only after the build, unit tests and acceptance tests succeed" (engine)
+- **Acceptance RED** (stub driver): `branches that can publish — Expected ["main"], Received []` and `"build" must succeed before publishing — Received array: []`.
+- **Driver added** (`38be746`): `publishingRoute` parses `.github/workflows/ci-deploy.yml`. It finds the job that runs `actions/deploy-pages`; `publishesFrom` comes from that job's `github.ref == 'refs/heads/…'` condition (with no condition, from whatever starts the pipeline; a condition with `||` is reported as unclear); `mustSucceedFirst` names the steps of every job it `needs`, directly or indirectly, mapping `npm run build`, `npm test` and `npm run test:acceptance` to "build", "unit tests" and "acceptance tests". Only steps that always run and stop the job on failure count.
+- **With the real driver both scenarios passed**, because the pipeline was written during AC-17 (T068). Each break was then tried and reverted (T073):
+  - `needs: verify` removed → `"build" must succeed before publishing — Received array: []`
+  - the `main` condition removed → `Received: "any branch (pull_request)", "any branch (workflow_dispatch)"` added
+  - the unit test step removed → `Expected value: "unit tests" — Received array: ["build", "acceptance tests"]`
+  - `continue-on-error: true` on the acceptance step → `Expected value: "acceptance tests" — Received array: ["unit tests", "build"]`
+
+### Supporting check — exceptions expiry (Baseline 9, T075)
+
+- **Cycle 1 RED**: `findExpiryProblems › fails an exception whose expiry date has passed, naming it` in `tools/check-exceptions.spec.ts` — failed: `expected [] to deeply equal [ 'EXC-002 expired on 2027-11-01' ]`. **GREEN**: every exception reported as expired (a later test forces the comparison) — `ddbec9f`.
+- **Cycle 2 RED**: `passes an exception that expires on 2027-11-02 / 2028-01-01, today or later` — failed: `expected [ 'EXC-001 expired on 2027-11-02' ] to deeply equal []`. **GREEN**: compare ISO dates as text — `b2fe606`.
+- **Cycle 3 RED**: `fails an exception whose review date is after its expiry date` — failed: `expected [] to deeply equal [ Array(1) ]`. **GREEN**: a second rule per exception — `f8ff947`.
+- **Cycle 4 RED**: `readExceptions › reads the dates from every exception record, skipping the template` — first run did not compile (a scripted edit put line breaks inside two strings; not a valid red, fixed), then failed: `expected [] to deeply equal [ { id: 'EXC-007', …(2) } ]`. **GREEN**: parse the front matter of each `EXC-*.md` with `yaml` — `aef1fb2`. **REFACTOR**: named the step that reads one record — `037a780`.
+- `npm run exceptions:check` (`862bf9a`) passes today's date to the check and exits 1 on any problem; it is excluded from coverage as glue. With EXC-002's expiry temporarily set to 2026-01-01 it printed `EXC-002 expired on 2026-01-01` and exited 1; restored. It runs first in `verify` (`0b95c3f`).
+
+- **Acceptance GREEN**: AC-19 passes (engine 2 of 2). Full suite: 76 unit tests pass (lines 99.2%, branches 95.6%); lint, type checks and build clean; engine 22 of 22; phones 52 passed, failing only AC-21 (next) and the Android speed budget (Polish).
+- **Slice refactor**: none beyond cycle 4's.
+- **Manual part (outstanding)**: after the first failing `verify` run on `main`, confirm the public address still serves the previous version (acceptance.md). Needs the pipeline live (pull request 5).
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-21: Given the player has opened the game once, when they reload it with no connection, then the game does not load (no offline reload in F0)
+
+- **Acceptance test**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — "after opening the game once, reloading with no connection does not load it" (iphone, android)
+- **Drivers added** (`6615d5a`): `reload` (`page.reload()`, treating the offline navigation failure as the expected outcome) and `isGameShowing`.
+- **First driver, by visibility alone**: Android passed; iPhone failed with `the game is showing — Expected: false, Received: true`. A probe showed why: Chromium fails the reload with `net::ERR_INTERNET_DISCONNECTED` and shows its error page, but Playwright's WebKit fails it with "WebKit encountered an internal error" and leaves the **old page in place** (its navigation entry was still the first load). The game had not loaded again; real Safari shows "Safari Can't Open the Page". This was a driver problem, not product behaviour.
+- **Driver corrected**: the page is marked before the reload, and the game counts as showing only on a page that really loaded with the puzzle visible.
+- **Acceptance RED**: with the corrected driver, **passed at RED** on both phones, as T077 predicted. The game has no service worker or offline cache (FR-016).
+- **Driver proven**: with `loseConnection` temporarily left online, the reload loaded the game and both phones failed with `Expected: false, Received: true`; restored.
+- Full suite: 76 unit tests pass; engine 22 of 22; phones 54 passed, failing only the Android speed budget (Polish, T080–T081).
+- **Decision**: owner chose option (a) on 2026-11-05 — record AC-21 as delivered by construction (no service worker or offline cache), write no new code. T078 (cycles only if red) was skipped.
+- **Acceptance GREEN**: AC-21 passes on both phones; no product code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-05 (option a).
+
+## Edge case — small screens (T080): on 320 × 568 and 375 × 667 screens, everything needed to play is visible without scrolling
+
+- **Acceptance tests**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — both small-screen scenarios (iphone, android)
+- **Driver added** (`5ec43e9`): `useScreen` sets the viewport before the game opens. Until now it was a stub, so the 320 × 568 scenario actually ran at the projects' 375 × 667: its earlier passes did not test the smaller screen.
+- **Acceptance RED**: **passed at RED** on both phones (4 of 4). The layout was measured at 320 × 568 during User Story 1; the game ends 375 px down the screen.
+- **Check proven**: at 320 × 400 it still passed, correctly (the game fits in 375 px); at 320 × 250 it failed with `counter is on screen without scrolling — Expected: true, Received: false`. Restored.
+- No CSS change and no sizing logic were needed, so there were no unit cycles.
+- Ordering: T080 and T081 were brought forward into pull request 5 by owner decision on 2026-11-05, so the first deploy goes out with every scenario passing.
+
+## SC-003 and SC-004 — speed (T081): ready to play within 3 seconds, and every tap answered within 0.1 seconds, on the reference phone on 4G
+
+- **Acceptance test**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — "ready to play within 3 seconds, and every tap answered within 0.1 seconds" (android only: the throttling needs Chromium's DevTools protocol)
+- **Acceptance RED** (stubs): failed on the readiness stub, which reported an unknown time as infinitely slow.
+- **Drivers added** (`b844ff8`): `useReferencePhoneOn4G` (CDP: latency 170 ms, 9 Mbps down, 4× CPU slowdown, per research R9; upload 3 Mbps is an assumption, as R9 gives none and the game uploads nothing) installs `speed-timing.ts` in the page before it loads. That script records when the "Puzzle" group appears (the game attaches its tap handlers in the same task), and for each tap the time from the tap to the first frame after an accessible name or the status text changes. Unrecorded or unanswered timings read as infinitely slow.
+- **A measurement fault, found and fixed**: the first version timed taps with the animation-frame callback's frame time. A deliberate 30 ms delay in every tap changed nothing (about 28 ms either way): Chromium handles input at the start of a frame, so that frame time can come before the tap's handler runs. Timing with `performance.now()` inside the callback fixed it; the same 30 ms delay then raised taps from about 30 ms to about 49 ms.
+- **Measured** (local, as built): ready to play at 0.42 s; taps answered in 28–32 ms. Both budgets passed on first run with the corrected driver: **passed at RED** (the bundle is about 3 KB gzipped).
+- **Budgets proven**, each with a temporary busy-wait in `src/app/main.ts`, then restored:
+  - 3 s before the game starts → `seconds until ready to play — Expected: <= 3, Received: 3.42`
+  - 90 ms in every tap → `slowest tap, in milliseconds — Expected: <= 100, Received: 113.8`
+- No product code changed, so there were no unit cycles.
+- Full suite: 76 unit tests pass; lint and type checks clean; engine 22 of 22; **phones 55 of 55**. Every approved scenario that runs before publishing now passes.
+- **Checkpoint**: approved by Philip England on 2026-11-05.

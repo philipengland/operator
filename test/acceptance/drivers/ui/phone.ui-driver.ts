@@ -4,7 +4,23 @@ import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
 import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern } from './screen-names';
-import type { Box, CellLook, PhoneDriver, ScreenLayout } from '../phone.driver';
+import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
+import type { Box, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
+
+// Set on the page before a reload; a page that really reloads no longer has it.
+const PAGE_BEFORE_RELOAD = 'operatorPageBeforeReload';
+
+const MILLISECONDS_PER_SECOND = 1000;
+const BITS_PER_BYTE = 8;
+
+// Plan research R9: about 9 Mbps down, 170 ms latency, and a CPU four times slower than the
+// test machine. Upload speed is assumed to be a third of download, typical for 4G.
+const REFERENCE_4G = {
+  latencyMilliseconds: 170,
+  downloadBytesPerSecond: (9 * 1_000_000) / BITS_PER_BYTE,
+  uploadBytesPerSecond: (3 * 1_000_000) / BITS_PER_BYTE,
+  cpuSlowdown: 4,
+} as const;
 
 // Unknown positions: NaN compares false, so nothing unread can count as on screen.
 const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
@@ -19,11 +35,38 @@ const EMPTY_LAYOUT: ScreenLayout = {
 };
 
 export class UiPhoneDriver implements PhoneDriver {
-  constructor(private readonly page: Page) {}
+  // Every request the page makes, and how many had been made when it last finished loading.
+  private readonly requests: string[] = [];
+  private requestsWhenOpened = 0;
 
-  async useScreen(): Promise<void> {}
+  constructor(private readonly page: Page) {
+    page.on('request', (request) => this.requests.push(request.url()));
+    page.on('load', () => {
+      this.requestsWhenOpened = this.requests.length;
+    });
+  }
 
-  async useReferencePhoneOn4G(): Promise<void> {}
+  async useScreen(size: ScreenSize): Promise<void> {
+    await this.page.setViewportSize(size);
+  }
+
+  /**
+   * Plan research R9: a mid-range phone on 4G. The throttling needs Chromium's DevTools
+   * protocol, so the speed budget runs in the android project only. Speed is recorded from
+   * here on, so call this before the game opens.
+   */
+  async useReferencePhoneOn4G(): Promise<void> {
+    await this.page.addInitScript(recordSpeedTimings, SPEED_TIMINGS);
+    const devTools = await this.page.context().newCDPSession(this.page);
+    await devTools.send('Network.enable');
+    await devTools.send('Network.emulateNetworkConditions', {
+      offline: false,
+      latency: REFERENCE_4G.latencyMilliseconds,
+      downloadThroughput: REFERENCE_4G.downloadBytesPerSecond,
+      uploadThroughput: REFERENCE_4G.uploadBytesPerSecond,
+    });
+    await devTools.send('Emulation.setCPUThrottlingRate', { rate: REFERENCE_4G.cpuSlowdown });
+  }
 
   // Built ahead of AC-18: an empty placeholder let the offline scenario pass without ever
   // going offline.
@@ -31,16 +74,25 @@ export class UiPhoneDriver implements PhoneDriver {
     await this.page.context().setOffline(true);
   }
 
-  async reload(): Promise<void> {}
-
-  // Until this is built it reports the game as showing, so AC-21 cannot pass vacuously.
-  async isGameShowing(): Promise<boolean> {
-    return true;
+  // With no connection the reload fails; that is the expected outcome, not a driver error.
+  // Chromium then shows its error page, but Playwright's WebKit leaves the old page in place
+  // (real Safari shows "Safari Can't Open the Page"), so the old page is marked first and a
+  // marked page never counts as the game having loaded again.
+  async reload(): Promise<void> {
+    await this.page.evaluate((marker) => Object.assign(window, { [marker]: true }), PAGE_BEFORE_RELOAD).catch(() => undefined);
+    await this.page.reload().catch(() => undefined);
   }
 
-  // Until this is built it reports an unknown count, so AC-18 cannot pass vacuously.
+  /** Whether the game is on screen in a page that actually loaded, not one left behind by a failed reload. */
+  async isGameShowing(): Promise<boolean> {
+    const isOldPage = await this.page
+      .evaluate((marker) => marker in window, PAGE_BEFORE_RELOAD)
+      .catch(() => false);
+    return !isOldPage && (await this.page.getByRole('group', { name: 'Puzzle' }).isVisible());
+  }
+
   async networkRequestsSinceOpening(): Promise<number> {
-    return Number.NaN;
+    return this.requests.length - this.requestsWhenOpened;
   }
 
   async look(cell: Cell): Promise<CellLook> {
@@ -82,12 +134,21 @@ export class UiPhoneDriver implements PhoneDriver {
     };
   }
 
+  // Unrecorded or unanswered timings read as infinitely slow, so they can never meet a budget.
   async secondsUntilReadyToPlay(): Promise<number> {
-    return Number.POSITIVE_INFINITY;
+    const timings = await this.speedTimings();
+    return timings?.readyAt == null ? Number.POSITIVE_INFINITY : timings.readyAt / MILLISECONDS_PER_SECOND;
   }
 
   async tapResponseTimesInMilliseconds(): Promise<readonly number[]> {
-    return [];
+    const timings = await this.speedTimings();
+    return (timings?.tapResponses ?? []).map((response) => response ?? Number.POSITIVE_INFINITY);
+  }
+
+  private async speedTimings(): Promise<SpeedTimings | undefined> {
+    // The last tap's frame may still be pending.
+    await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+    return this.page.evaluate((name) => (window as unknown as Record<string, SpeedTimings | undefined>)[name], SPEED_TIMINGS);
   }
 }
 
