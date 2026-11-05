@@ -620,3 +620,11 @@
 - Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
 - **Acceptance GREEN**: **blocked** — needs the GitHub repository, Pages set to "GitHub Actions", and a merge to `main` (T069).
 - **Checkpoint**: awaiting approval from Philip England.
+
+## AC-18: Given the game has loaded, when the device loses its connection, then the player can still fill in, check and find solutions, and the game makes no network requests after it has loaded
+
+- **Acceptance tests**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — "with no connection, Solution A is still accepted and the counter reads "Found 1 of 2"" and "playing to a solution makes no network requests after the game opens" (iphone, android)
+- **Drivers added**: `loseConnection` (`context.setOffline(true)`, built earlier because a placeholder let the offline scenario pass without going offline); `networkRequestsSinceOpening` (records every page request and counts those after the page's last `load` event) — commit `38e0bde`.
+- **Acceptance RED**: **passed at RED** on both phones (4 of 4), as T070 predicted. Nothing in the game uses the network after loading, and the CSP sets `connect-src 'none'`.
+- **Counter proven**: with a temporary image request on every tap added to `src/app/main.ts` and the game rebuilt, the scenario failed on both phones: `network requests after opening — Expected: 0, Received: 15`. The change was reverted and the game rebuilt; no product code changed.
+- **Checkpoint**: awaiting the owner's decision (record as delivered by construction, as for AC-5).
