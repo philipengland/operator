@@ -109,8 +109,8 @@ test.describe('[spec-001 AC-8] checking a correct grid', () => {
   });
 });
 
-test.describe('[spec-001 AC-9] a line that goes below zero', () => {
-  test('bottom-left 9 meets Row 2 but Column 1 goes below zero, so the puzzle is not solved', async ({ game }) => {
+test.describe('[spec-001 AC-9] right row, wrong column', () => {
+  test('bottom-left 9 meets Row 2 but Column 1 gives 6 − 9 = −3, not its target of 3, so the puzzle is not solved', async ({ game }) => {
     await game.open();
 
     await game.fillInAndCheck(belowZero);

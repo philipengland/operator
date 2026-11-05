@@ -23,6 +23,8 @@ export interface ScreenLayout {
   readonly operators: Readonly<Record<Line, Box>>;
   readonly counter: Box;
   readonly checkButton: Box;
+  /** spec-002: where each line's working is. */
+  readonly workings: Readonly<Record<Line, Box>>;
 }
 
 /** How a cell looks: its colours, and every visible marking that is not a colour. */

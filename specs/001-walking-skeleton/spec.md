@@ -84,6 +84,9 @@ narrative, why this priority, and the independent test).
    Row 2 − and Column 1 − (Row 2 gives 9 − 3 = 6, but Column 1 gives 6 − 9, which goes below
    zero), **When** they submit, **Then** the game says the puzzle is not solved yet and the
    counter still reads "Found 0 of 2".
+   *Reason amended on 2026-11-05 by [spec-002](../002-live-calculations/spec.md): going below
+   zero is allowed, and Column 1 gives 6 − 9 = −3, which is not its target of 3. The outcome
+   is unchanged.*
 10. **AC-10** — **Given** the player has entered top-right 2, bottom-left 4, bottom-right 3,
     Row 2 + and Column 1 ÷ (Column 1 gives 6 ÷ 4, which is not a whole number), **When** they
     submit, **Then** the game says the puzzle is not solved yet and the counter does not change.

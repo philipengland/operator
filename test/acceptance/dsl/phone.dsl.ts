@@ -77,6 +77,36 @@ export class PhoneDsl {
     }
   }
 
+  /** spec-002: each row's working is to the right of, and level with, its cells. */
+  async expectRowWorkingsOnTheRight(): Promise<void> {
+    const layout = await this.driver().layout();
+    for (const [row, cells] of Object.entries(ROWS) as [Line, readonly Cell[]][]) {
+      for (const cell of cells) {
+        expect(isLeftOf(layout.cells[cell], layout.workings[row]), `${row} working is right of the ${cell} cell`).toBe(true);
+        expect(isLevelWith(layout.workings[row], layout.cells[cell]), `${row} working is level with the ${cell} cell`).toBe(true);
+      }
+    }
+  }
+
+  /** spec-002: each column's working is below, and in line with, its cells. */
+  async expectColumnWorkingsBelow(): Promise<void> {
+    const layout = await this.driver().layout();
+    for (const [column, cells] of Object.entries(COLUMNS) as [Line, readonly Cell[]][]) {
+      for (const cell of cells) {
+        expect(isAbove(layout.cells[cell], layout.workings[column]), `${column} working is below the ${cell} cell`).toBe(true);
+        expect(isInLineWith(layout.workings[column], layout.cells[cell]), `${column} working is under the ${cell} cell`).toBe(true);
+      }
+    }
+  }
+
+  /** spec-002: all four line workings are on screen without scrolling. */
+  async expectLineWorkingsOnScreen(): Promise<void> {
+    const layout = await this.driver().layout();
+    for (const [line, box] of Object.entries(layout.workings) as [Line, Box][]) {
+      expect(isOnScreen(box, layout), `${line} working is on screen without scrolling`).toBe(true);
+    }
+  }
+
   async expectReadyToPlayWithin(seconds: number): Promise<void> {
     expect(await this.driver().secondsUntilReadyToPlay(), 'seconds until ready to play').toBeLessThanOrEqual(seconds);
   }

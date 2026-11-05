@@ -74,8 +74,8 @@ beside the grid. It delivers value on its own, before any change to checking.
    at Column 2, **Then** it shows "2 × 3 = 6".
 4. **AC-4** — **Given** bottom-left 2 and bottom-right 3 are entered and Row 2's operator is
    not chosen, **When** the player taps Row 2's operator three times (×), **Then** Row 2's
-   working changes from "2 ? 3" to "2 + 3 = 5", then "2 − 3", then "2 × 3 = 6", one change
-   per tap.
+   working changes from "2 ? 3" to "2 + 3 = 5", then "2 − 3 = −1", then "2 × 3 = 6", one
+   change per tap.
 5. **AC-5** — **Given** bottom-left 2 is entered, **When** the player taps Column 1's
    operator four times (÷), **Then** Column 1 shows "6 ÷ 2 = 3".
 6. **AC-6** — **Given** Solution A is entered (top-right 2, bottom-left 2, bottom-right 3,
@@ -192,9 +192,10 @@ working for Column 1.
 
 - **Format**: the working uses the line's own symbols (+ − × ÷), with digits in reading order.
   For example "6 + 2 = 8".
-- **Where it appears**: the working is shown beside each line, next to its target, so the
-  player can compare result and target at a glance. The exact layout follows the mockups and
-  is settled in the plan.
+- **Where it appears** (owner decision 2026-11-05): targets stay on the left of each row and
+  above each column. Each line's calculated value appears at the other end of the same line:
+  to the right of each row and below each column, so the player compares result and target
+  along the line.
 - **Which lines**: every line shows its working all the time, and the working updates in real
   time whenever the player taps any cell or operator they can change (owner decision
   2026-11-05). A tap changes at most one row and one column.

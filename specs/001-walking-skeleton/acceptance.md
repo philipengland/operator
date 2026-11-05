@@ -148,3 +148,10 @@ Layer 3 contracts, signatures only. `/speckit-implement` builds the drivers.
 
 Not locked (Layer 3, built and changed by `/speckit-implement`): `test/acceptance/drivers/`,
 `test/acceptance/support/`.
+
+## Amendments
+
+- **2026-11-05, AC-9 wording** — approved by Philip England with spec-002's executable
+  specifications ([spec-002 acceptance.md](../002-live-calculations/acceptance.md)). The test
+  title and the `belowZero` comment now give the reason as "6 − 9 = −3, not its target of 3",
+  since spec-002 FR-208 allows results below zero. Steps and assertions unchanged.

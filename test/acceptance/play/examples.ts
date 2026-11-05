@@ -6,7 +6,7 @@ export const solutionA: Entry = { topRight: 2, bottomLeft: 2, bottomRight: 3, ro
 
 export const solutionB: Entry = { topRight: 2, bottomLeft: 3, bottomRight: 3, row2: '+', column1: '−' };
 
-/** Row 2 gives 9 − 3 = 6, but Column 1 gives 6 − 9, which goes below zero. */
+/** Row 2 gives 9 − 3 = 6, but Column 1 gives 6 − 9 = −3, not its target of 3 (spec-002 FR-208). */
 export const belowZero: Entry = { topRight: 2, bottomLeft: 9, bottomRight: 3, row2: '−', column1: '−' };
 
 /** Column 1 gives 6 ÷ 4, which is not a whole number. */
