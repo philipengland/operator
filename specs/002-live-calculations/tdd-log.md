@@ -456,4 +456,17 @@ spec-002 30 passed, 2 failed (AC-9).
 - **User Story 1 complete**: AC-1 to AC-7, AC-11, both edge cases, the not-announced check
   and the small screens all pass on the engine and both phones, and every spec-001 scenario
   still passes.
-- **Checkpoint**: awaiting the owner.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-8: with bottom-left 9 and Column 1 −, Column 1 reads "6 − 9 = −3", unmarked because its target is 3 ⚠️ passed at RED
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "bottom-left 9 and Column 1 −
+  make Column 1 "6 − 9 = −3", unmarked because its target is 3".
+- **Acceptance RED**: **passed on its first run**, on the engine and both phones, as
+  `tasks.md` predicted: pull request 1's rule change works out −3, and AC-4 writes it with
+  the minus sign.
+- **Driver proof**: a deliberate break, putting back the old rule that a line may not go below
+  zero, made it fail on the engine and both phones: `Error: Column 1 working … Expected:
+  "6 − 9 = −3" Received: "6 − 9"`. Reverted with `git checkout`, rebuilt; passes again.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record AC-8 as delivered.
