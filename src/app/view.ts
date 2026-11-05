@@ -1,4 +1,4 @@
-// The play screen (contracts/play-screen.md): builds the grid once, then writes each session
+// The play screen (docs/contracts/play-screen.md): builds the grid once, then writes each session
 // state into it. Wording and names come from labels.ts; rules come from the engine.
 
 import { isGiven, lineOperator, lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';

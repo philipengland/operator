@@ -1,7 +1,7 @@
 # Contract change: Engine API (spec-002)
 
 Changes to the engine's public API in spec-001
-[contracts/engine-api.md](../../001-walking-skeleton/contracts/engine-api.md). Everything not
+[docs/contracts/engine-api.md](../../../docs/contracts/engine-api.md). Everything not
 listed here is unchanged. When this feature merges, the current-state contract is updated to
 match (plan, Open Items 1).
 

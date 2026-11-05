@@ -1,6 +1,6 @@
 # Contract change: Play Screen (spec-002)
 
-Changes to spec-001 [contracts/play-screen.md](../../001-walking-skeleton/contracts/play-screen.md).
+Changes to spec-001 [docs/contracts/play-screen.md](../../../docs/contracts/play-screen.md).
 Every role, name and layout guarantee there still holds. When this feature merges, the
 current-state contract is updated to match (plan, Open Items 1).
 

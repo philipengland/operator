@@ -1,4 +1,4 @@
-// The engine's data shapes (contracts/engine-api.md, data-model.md "Engine").
+// The engine's data shapes (docs/contracts/engine-api.md, data-model.md "Engine").
 
 export type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 

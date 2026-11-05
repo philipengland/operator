@@ -28,7 +28,7 @@ Capacitor later. Feature F0, the walking skeleton, plays one fixed 2 × 2 puzzle
 - **Boundaries and integrations**: none at runtime. After loading, the game makes no network
   requests (constitution I; CSP `connect-src 'none'` in `index.html`).
 - **Contracts**: no OpenAPI/AsyncAPI. The internal contracts are
-  `specs/001-walking-skeleton/contracts/engine-api.md` (engine) and `play-screen.md`
+  `docs/contracts/engine-api.md` (engine) and `docs/contracts/play-screen.md`
   (accessible names and wording the UI driver reads).
 - **Key ADRs**: `docs/adr/0001-web-stack-and-hosting.md` — TypeScript and Vite (Capacitor-ready),
   Vitest, Playwright as the UI driver, GitHub Pages deployed by GitHub Actions; TypeScript is
@@ -99,7 +99,7 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
   and ESLint stops engine code importing anything outside `src/engine/` or using browser
   globals, `Date`, timers or `Math.random`. Why: the engine must run unchanged in Node and stay deterministic (constitution II, III).
 - **The screen is read by accessible name.** The UI driver finds and reads everything through
-  roles and `aria-label`s defined in `contracts/play-screen.md`; changing wording in `labels.ts`
+  roles and `aria-label`s defined in `docs/contracts/play-screen.md`; changing wording in `labels.ts`
   can break the driver. Why: the same names are what VoiceOver and TalkBack users hear.
 - **Write live-region text only when it changes** (`writeText` in `view.ts`). Why: rewriting
   identical text makes screen readers announce it again (found by AC-20).

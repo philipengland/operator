@@ -1,5 +1,5 @@
 // What the play screen says, as plain functions: visible wording and accessible names
-// (contracts/play-screen.md). No DOM access.
+// (docs/contracts/play-screen.md). No DOM access.
 
 import { lineOperator, type CellPosition, type Entry, type LinePosition, type Operator, type Puzzle } from '../engine';
 import type { MessageKind } from './session';

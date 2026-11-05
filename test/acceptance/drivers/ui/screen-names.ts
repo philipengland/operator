@@ -1,4 +1,4 @@
-// Layer 3 — the accessible names on the play screen (contracts/play-screen.md), and how to
+// Layer 3 — the accessible names on the play screen (docs/contracts/play-screen.md), and how to
 // read the scenarios' values back out of them.
 
 import type { Cell, CellValue, Digit, Line, Operator, OperatorChoice, Result } from '../../dsl/vocabulary';

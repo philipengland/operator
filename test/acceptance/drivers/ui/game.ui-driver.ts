@@ -1,5 +1,5 @@
 // Layer 3 — drives the game through a phone-sized browser page, locating elements only by
-// role and accessible name (contracts/play-screen.md).
+// role and accessible name (docs/contracts/play-screen.md).
 
 import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
