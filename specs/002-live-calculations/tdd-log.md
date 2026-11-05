@@ -529,4 +529,22 @@ spec-002 30 passed, 2 failed (AC-9).
   not whole, made it fail on the engine and both phones: `Error: Column 1 working … Expected:
   "6 ÷ 6 = 1" Received: "6 ÷ 6"`. Reverted with `git checkout`, rebuilt; passes again.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record AC-10 as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## AC-12: a line whose target is −3 is met by 6 − 9 and not by 6 − 8 ⚠️ passed at RED (unit tests only)
+
+- **No acceptance scenario, by the owner's decision (spec option A)**: F0's puzzle has no
+  negative target, so the criterion is proved on a test puzzle with one row (6 − ?, target
+  −3) and single-cell columns (targets 6 and 9), so the row is tested on its own.
+- **Tests**: `lineWorking › a negative target … › reaches −3 with 6 − 9` (`result`, −3,
+  `reachesTarget` true) and `… › misses −3 with 6 − 8, which gives −2` (`result`, −2,
+  `reachesTarget` false) in `src/engine/line-working.spec.ts`.
+- **RED**: **both passed on their first run**, as predicted: pull request 1's rule change
+  works out the negative result and AC-2's comparison checks it against the target. (A first
+  run failed to compile on a quote in the `describe` name; fixed before the real run.)
+- **Proof, 6 − 9 reaches −3**: a deliberate break, only a result of zero or more can reach its
+  target, made it fail on `reachesTarget`. Reverted.
+- **Proof, 6 − 8 misses −3**: a deliberate break, any result with the target's sign reaches it,
+  made it fail on `reachesTarget`. Reverted. Then 6 of 6 pass — commit `b2f33c5` (`test:`).
+- Check's own negative-target test is pull request 1's cycle 2 (`bc32ebf`).
+- **Checkpoint**: awaiting the owner's decision to record AC-12 as delivered.

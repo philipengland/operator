@@ -176,8 +176,8 @@ and no result. The rule itself shipped in Phase 2.
 
 ### AC-10: making the division whole ⚠️
 
-- [ ] T038 [US2] AC-10 RED: likely passes. Same handling as T016.
-- [ ] T039 [US2] AC-10 GREEN, checkpoint.
+- [X] T038 [US2] AC-10 RED: likely passes. Same handling as T016.
+- [X] T039 [US2] AC-10 GREEN, checkpoint.
 
 ### AC-12: a negative target (unit tests only, spec option A)
 
