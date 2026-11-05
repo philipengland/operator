@@ -174,14 +174,15 @@ Two pull requests, each under 30 minutes to review, each leaving `main` deployab
 
 ## Open Items for a Human
 
-1. **Where the current contracts live**: today they sit in
-   `specs/001-walking-skeleton/contracts/`. Recommended: move them to `docs/contracts/` in
-   pull request 1 and update them in place, so specs record changes and `docs/contracts/`
-   describes the product now (`AGENTS.md` links updated). Otherwise they are updated where they
-   are.
-2. **AC-9 wording (locked files)**: approve at `/speckit-acceptance` a rewording of spec-001's
-   AC-9 test title and the `belowZero` comment in `examples.ts`, which give "below zero" as the
-   reason (research R6). The assertions are unchanged.
-3. **Your mockups**: the layout follows your description (targets left and top, results right
-   and bottom). If the mockups add styling beyond that, it is a separate feature (spec-002, Out
-   of Scope).
+1. **Where the current contracts live** — *decided 2026-11-05*: move them from
+   `specs/001-walking-skeleton/contracts/` to `docs/contracts/` in pull request 1 and keep them
+   current there. Specs record changes; `docs/contracts/` describes the product now. `AGENTS.md`
+   and other links are updated in the same pull request.
+2. **AC-9 wording (locked files)** — *agreed 2026-11-05 to amend through approval*: at
+   `/speckit-acceptance`, propose rewording spec-001's AC-9 test title and the `belowZero`
+   comment in `examples.ts` to give the new reason (6 − 9 = −3, not 3). The scenario is kept,
+   with its steps and assertions unchanged. Record the approval in both features'
+   `acceptance.md`, and add a dated note to spec-001's AC-9 criterion text.
+3. **Your mockups** — *decided 2026-11-05*: the visual redesign is a separate feature. This
+   feature only places the results, as described (targets left and top, results right and
+   bottom).
