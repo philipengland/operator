@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
-import { cellName, lineName, messageText, operatorName, workingText } from './labels';
+import { cellName, lineName, messageText, operatorName, workingName, workingText } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -62,6 +62,14 @@ describe('workingText', () => {
     const working: LineWorking = { line: { axis: 'row', index: 0 }, digits, operator, outcome: { kind: 'incomplete' } };
 
     expect(workingText(working)).toBe(text);
+  });
+});
+
+describe('workingName', () => {
+  it('names a working by its line, then the working: "Row 1 working, 6 + ?"', () => {
+    const working: LineWorking = { line: { axis: 'row', index: 0 }, digits: [6, null], operator: '+', outcome: { kind: 'incomplete' } };
+
+    expect(workingName(working)).toBe('Row 1 working, 6 + ?');
   });
 });
 

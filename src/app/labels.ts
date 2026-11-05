@@ -53,6 +53,11 @@ export function workingText({ digits, operator }: LineWorking): string {
   return digits.map((digit) => digit ?? GAP_MARK).join(between);
 }
 
+/** The working's accessible name, read by screen readers: "Row 1 working, 6 + ?" (spec-002 FR-206). */
+export function workingName(working: LineWorking): string {
+  return `${lineName(working.line)} working, ${workingText(working)}`;
+}
+
 // Every message kind must have wording; the compiler enforces it.
 const MESSAGES: Readonly<Record<MessageKind, string>> = {
   'new-solution': 'New solution found!',
