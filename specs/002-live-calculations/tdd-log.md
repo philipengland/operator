@@ -592,3 +592,19 @@ approved scenario can pass) — commit `2daa108`.
 
   Every step matches the quickstart. This is a scripted run, not the owner's hands-on play;
   T044 covers real phones and screen readers.
+
+### T046 — CODEOWNERS
+
+Owner's decision (2026-11-05): `/test/acceptance/play/examples.ts @philipengland` added to
+`.github/CODEOWNERS`, so the locked examples file needs the owner's review — commit `3b77d0b`.
+
+### T045 — pull request
+
+Owner's decision (2026-11-05): mark #7 ready now and do T044 after merge. #7 retitled
+"spec-002: live line calculations", its description rewritten to cover both parts, and marked
+ready for review. The owner merges it with a merge commit.
+
+### T044 — owner's manual checks
+
+Open: VoiceOver and TalkBack, the bold marks in greyscale, and five hallway playtests for
+SC-201 and SC-202 (quickstart section 4). Results to be recorded here.
