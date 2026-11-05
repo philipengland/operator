@@ -667,3 +667,12 @@
 - **Decision**: owner chose option (a) on 2026-11-05 — record AC-21 as delivered by construction (no service worker or offline cache), write no new code. T078 (cycles only if red) was skipped.
 - **Acceptance GREEN**: AC-21 passes on both phones; no product code changed.
 - **Checkpoint**: approved by Philip England on 2026-11-05 (option a).
+
+## Edge case — small screens (T080): on 320 × 568 and 375 × 667 screens, everything needed to play is visible without scrolling
+
+- **Acceptance tests**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — both small-screen scenarios (iphone, android)
+- **Driver added** (`5ec43e9`): `useScreen` sets the viewport before the game opens. Until now it was a stub, so the 320 × 568 scenario actually ran at the projects' 375 × 667: its earlier passes did not test the smaller screen.
+- **Acceptance RED**: **passed at RED** on both phones (4 of 4). The layout was measured at 320 × 568 during User Story 1; the game ends 375 px down the screen.
+- **Check proven**: at 320 × 400 it still passed, correctly (the game fits in 375 px); at 320 × 250 it failed with `counter is on screen without scrolling — Expected: true, Received: false`. Restored.
+- No CSS change and no sizing logic were needed, so there were no unit cycles.
+- Ordering: T080 and T081 were brought forward into pull request 5 by owner decision on 2026-11-05, so the first deploy goes out with every scenario passing.
