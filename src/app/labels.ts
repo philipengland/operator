@@ -58,6 +58,12 @@ export function workingName(working: LineWorking): string {
   return `${lineName(working.line)} working, ${workingText(working)}`;
 }
 
+/** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
+export function resultText(working: LineWorking): string {
+  void working;
+  return `= ${GAP_MARK}`;
+}
+
 // Every message kind must have wording; the compiler enforces it.
 const MESSAGES: Readonly<Record<MessageKind, string>> = {
   'new-solution': 'New solution found!',
