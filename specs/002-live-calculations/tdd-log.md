@@ -369,4 +369,17 @@ spec-002 30 passed, 2 failed (AC-9).
 - **Passing early**: AC-7 and AC-11 now pass on the phones as well as the engine; reported at
   their own RED.
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting the owner.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-7: changing bottom-left to 3 after Solution A updates Row 2 and Column 1 straight away, before any Check ⚠️ passed at RED
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "changing bottom-left to 3
+  after Solution A updates Row 2 and Column 1 before any Check".
+- **Acceptance RED**: **passed on its first run**, on the engine and both phones, as
+  `tasks.md` predicted: workings are worked out afresh from the entry on every render.
+- **Driver proof**: a deliberate break in `lineWorkings`, keeping each line's first complete
+  working instead of working it out again, made it fail on the engine and both phones:
+  `Error: Row 2 working … Expected: "3 × 3 = 9" Received: "2 + 3 = 5"` (the first complete
+  Row 2 while Solution A was entered). Reverted with `git checkout`, rebuilt; passes again.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record AC-7 as delivered.
