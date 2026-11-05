@@ -135,8 +135,8 @@ with ✓ when it reaches its target.
 
 ### AC-7: one change, straight away ⚠️
 
-- [ ] T026 [US1] AC-7 RED: likely passes (workings are derived on every render). Same handling as T016.
-- [ ] T027 [US1] AC-7 GREEN, checkpoint.
+- [X] T026 [US1] AC-7 RED: likely passes (workings are derived on every render). Same handling as T016.
+- [X] T027 [US1] AC-7 GREEN, checkpoint.
 
 ### AC-11: wrong, then right ⚠️
 

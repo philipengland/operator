@@ -382,4 +382,16 @@ spec-002 30 passed, 2 failed (AC-9).
   `Error: Row 2 working … Expected: "3 × 3 = 9" Received: "2 + 3 = 5"` (the first complete
   Row 2 while Solution A was entered). Reverted with `git checkout`, rebuilt; passes again.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record AC-7 as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## AC-11: top-right 3 gives Row 1 "6 + 3 = 9" unmarked, and nine more taps, round to 2, give "6 + 2 = 8" marked ⚠️ passed at RED
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "top-right 3 gives Row 1
+  "6 + 3 = 9" unmarked, and nine more taps, round to 2, give "6 + 2 = 8" marked".
+- **Acceptance RED**: **passed on its first run**, on the engine and both phones, as
+  `tasks.md` predicted: AC-2 and AC-6 deliver the result and the mark.
+- **Driver proof**: a deliberate break, "reaches its target" meaning "at least the target",
+  made it fail on the engine and both phones: `Error: Row 1 should carry no mark … Expected:
+  "none" Received: "target reached"`. Reverted with `git checkout`, rebuilt; passes again.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record AC-11 as delivered.
