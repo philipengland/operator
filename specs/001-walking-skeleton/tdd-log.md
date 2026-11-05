@@ -664,4 +664,6 @@
 - **Acceptance RED**: with the corrected driver, **passed at RED** on both phones, as T077 predicted. The game has no service worker or offline cache (FR-016).
 - **Driver proven**: with `loseConnection` temporarily left online, the reload loaded the game and both phones failed with `Expected: false, Received: true`; restored.
 - Full suite: 76 unit tests pass; engine 22 of 22; phones 54 passed, failing only the Android speed budget (Polish, T080–T081).
-- **Checkpoint**: awaiting the owner's decision (record as delivered by construction, as for AC-18).
+- **Decision**: owner chose option (a) on 2026-11-05 — record AC-21 as delivered by construction (no service worker or offline cache), write no new code. T078 (cycles only if red) was skipped.
+- **Acceptance GREEN**: AC-21 passes on both phones; no product code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-05 (option a).

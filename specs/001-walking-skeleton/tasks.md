@@ -249,9 +249,9 @@ Open Items 1). AC-17 cannot go green without it.
 
 ### AC-21 Reloading with no connection ⚠️
 
-- [ ] T077 [US3] AC-21 RED: phone driver `reload()` (`page.reload()`, catching the offline navigation error) and `isGameShowing()` (whether the "Puzzle" group is visible). ⚠️ This may pass the first time it runs, because there is no service worker. If so, stop and report.
-- [ ] T078 [US3] AC-21 TDD cycles: only if red. Remove whatever caches the page for offline opening (FR-016). Files: `index.html`, `src/app/main.ts`.
-- [ ] T079 [US3] AC-21 scenarios GREEN in both UI projects; TDD log; checkpoint. Scenarios: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts`.
+- [X] T077 [US3] AC-21 RED: phone driver `reload()` (`page.reload()`, catching the offline navigation error) and `isGameShowing()` (whether the "Puzzle" group is visible). ⚠️ This may pass the first time it runs, because there is no service worker. If so, stop and report.
+- [X] T078 [US3] AC-21 TDD cycles: only if red. Remove whatever caches the page for offline opening (FR-016). Files: `index.html`, `src/app/main.ts`.
+- [X] T079 [US3] AC-21 scenarios GREEN in both UI projects; TDD log; checkpoint. Scenarios: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts`.
 
 **Checkpoint**: all three user stories work, and every merge to `main` reaches the public address.
 
