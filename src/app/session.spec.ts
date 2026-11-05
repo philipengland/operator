@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type Entry, type SolutionKey } from '../engine';
-import { applyAction, counterText, startSession, type SessionState } from './session';
+import { applyAction, counterText, lineWorkings, startSession, type SessionState } from './session';
 
 describe('startSession', () => {
   it('starts on the worked example with an empty entry, nothing found and no message', () => {
@@ -16,6 +16,19 @@ describe('startSession', () => {
 describe('counterText', () => {
   it('reads "Found 0 of 2" when nothing has been found in the worked example', () => {
     expect(counterText(startSession())).toBe('Found 0 of 2');
+  });
+});
+
+describe('lineWorkings', () => {
+  it("gives every line's working on opening, rows then columns", () => {
+    const workings = lineWorkings(startSession());
+
+    expect(workings.map(({ line, digits, operator }) => ({ line, digits, operator }))).toEqual([
+      { line: { axis: 'row', index: 0 }, digits: [6, null], operator: '+' },
+      { line: { axis: 'row', index: 1 }, digits: [null, null], operator: null },
+      { line: { axis: 'column', index: 0 }, digits: [6, null], operator: null },
+      { line: { axis: 'column', index: 1 }, digits: [null, null], operator: '×' },
+    ]);
   });
 });
 

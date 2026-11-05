@@ -4,6 +4,7 @@ export { nextCellValue, nextOperator } from './cycles';
 export { checkEntry } from './check-entry';
 export { emptyEntry, lineOperator } from './entry';
 export { defaultRules, evaluateLine } from './evaluate-line';
+export { lineWorking } from './line-working';
 export { isGiven, lineSpec } from './puzzle';
 export { workedExample } from './puzzles/worked-example';
 export type {
