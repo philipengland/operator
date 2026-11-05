@@ -22,6 +22,9 @@ const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
 // Stands for an empty cell or an operator not yet chosen, in a working.
 const GAP_MARK = '?';
 
+// Shown after a result that reaches its target (spec-002 FR-204).
+const TARGET_REACHED_MARK = '✓';
+
 // F0's grid is 2 × 2, so each cell is a corner (spec "The Puzzle").
 const CORNER_NAMES: readonly (readonly string[])[] = [
   ['Top-left', 'Top-right'],
@@ -61,7 +64,10 @@ export function workingName(working: LineWorking): string {
 
 /** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
 export function resultText({ outcome }: LineWorking): string {
-  return outcome.kind === 'result' ? `= ${outcome.value}` : `= ${GAP_MARK}`;
+  if (outcome.kind !== 'result') {
+    return `= ${GAP_MARK}`;
+  }
+  return outcome.reachesTarget ? `= ${outcome.value} ${TARGET_REACHED_MARK}` : `= ${outcome.value}`;
 }
 
 // Every message kind must have wording; the compiler enforces it.

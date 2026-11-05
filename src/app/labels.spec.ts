@@ -100,6 +100,10 @@ describe('resultText', () => {
 
     expect(resultText(missing)).toBe('= 9');
   });
+
+  it('marks a line that reaches its target with a tick: "= 8 ✓"', () => {
+    expect(resultText(ROW_1_WITH_TOP_RIGHT_2)).toBe('= 8 ✓');
+  });
 });
 
 describe('messageText', () => {
