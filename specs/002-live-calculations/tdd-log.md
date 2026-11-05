@@ -547,4 +547,4 @@ spec-002 30 passed, 2 failed (AC-9).
 - **Proof, 6 − 8 misses −3**: a deliberate break, any result with the target's sign reaches it,
   made it fail on `reachesTarget`. Reverted. Then 6 of 6 pass — commit `b2f33c5` (`test:`).
 - Check's own negative-target test is pull request 1's cycle 2 (`bc32ebf`).
-- **Checkpoint**: awaiting the owner's decision to record AC-12 as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).

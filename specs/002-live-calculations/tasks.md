@@ -181,7 +181,7 @@ and no result. The rule itself shipped in Phase 2.
 
 ### AC-12: a negative target (unit tests only, spec option A)
 
-- [ ] T040 [US2] AC-12 TDD cycles in `src/engine/line-working.spec.ts`, on a test puzzle whose Row 1 has target −3 and operator −: 6 then 9 gives `result`, value −3, `reachesTarget` true; 6 then 8 gives value −2, `reachesTarget` false. Record in the TDD log that this criterion has no acceptance scenario, by the owner's decision.
+- [X] T040 [US2] AC-12 TDD cycles in `src/engine/line-working.spec.ts`, on a test puzzle whose Row 1 has target −3 and operator −: 6 then 9 gives `result`, value −3, `reachesTarget` true; 6 then 8 gives value −2, `reachesTarget` false. Record in the TDD log that this criterion has no acceptance scenario, by the owner's decision.
 
 **Checkpoint**: both stories complete.
 
@@ -189,8 +189,8 @@ and no result. The rule itself shipped in Phase 2.
 
 ## Phase 5: Polish & Cross-Cutting Concerns (pull request 2)
 
-- [ ] T041 Run the whole suite: lint, type checks, unit tests with coverage (90% lines and branches on engine, session, labels), engine acceptance, both phone projects including the speed budget (SC-203), build within 30 KB.
-- [ ] T042 [P] Update `AGENTS.md` where spec-002 changes it: the purpose paragraph (each line shows its working; results below zero), the contracts location (if T001 did not already), and any new convention learned during implementation.
+- [X] T041 Run the whole suite: lint, type checks, unit tests with coverage (90% lines and branches on engine, session, labels), engine acceptance, both phone projects including the speed budget (SC-203), build within 30 KB.
+- [X] T042 [P] Update `AGENTS.md` where spec-002 changes it: the purpose paragraph (each line shows its working; results below zero), the contracts location (if T001 did not already), and any new convention learned during implementation.
 - [ ] T043 [P] Run [quickstart.md](quickstart.md) sections 1 to 3 and record the results in the TDD log.
 - [ ] T044 Owner's manual checks ([quickstart.md](quickstart.md) section 4): VoiceOver and TalkBack read each working sensibly ("?", "minus 3", "target reached"); five hallway playtests for SC-201 and SC-202. Results in the TDD log; raise a work item for any failure.
 - [ ] T045 Pull request 2 (*now: mark draft #7 ready for review, retitle it "spec-002: live line calculations" and update its description to cover both parts*): push and open "spec-002 part 2 of 2: line workings on screen" with what changed, why, how it was tested, and rollback (re-run `ci-deploy.yml` with `ref` = the merge commit of pull request 1, or revert). End with the attribution line. The owner merges it with a merge commit.
