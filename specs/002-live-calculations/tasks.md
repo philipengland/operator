@@ -194,7 +194,7 @@ and no result. The rule itself shipped in Phase 2.
 - [X] T043 [P] Run [quickstart.md](quickstart.md) sections 1 to 3 and record the results in the TDD log.
 - [ ] T044 Owner's manual checks ([quickstart.md](quickstart.md) section 4): VoiceOver and TalkBack read each working sensibly ("?", "minus 3", "target reached"); five hallway playtests for SC-201 and SC-202. Results in the TDD log; raise a work item for any failure.
 - [ ] T045 Pull request 2 (*now: mark draft #7 ready for review, retitle it "spec-002: live line calculations" and update its description to cover both parts*): push and open "spec-002 part 2 of 2: line workings on screen" with what changed, why, how it was tested, and rollback (re-run `ci-deploy.yml` with `ref` = the merge commit of pull request 1, or revert). End with the attribution line. The owner merges it with a merge commit.
-- [ ] T046 Owner decision, not done without it: add `/test/acceptance/play/examples.ts @philipengland` to `.github/CODEOWNERS`, so the locked examples file needs the owner's review (both approval records list it as locked; the current patterns do not cover it).
+- [X] T046 Owner decision, not done without it: add `/test/acceptance/play/examples.ts @philipengland` to `.github/CODEOWNERS`, so the locked examples file needs the owner's review (both approval records list it as locked; the current patterns do not cover it).
 
 ---
 
