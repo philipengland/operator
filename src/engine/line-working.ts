@@ -30,7 +30,7 @@ function isComplete(digits: readonly (Digit | null)[]): digits is readonly Digit
 }
 
 /** A line's digits in reading order: rows left to right, columns top to bottom. */
-export function lineDigits(puzzle: Puzzle, entry: Entry, line: LinePosition): (Digit | null)[] {
+function lineDigits(puzzle: Puzzle, entry: Entry, line: LinePosition): (Digit | null)[] {
   const length = line.axis === 'row' ? puzzle.columns : puzzle.rows;
   return Array.from({ length }, (_, step) => {
     const [row, column] = line.axis === 'row' ? [line.index, step] : [step, line.index];
