@@ -83,7 +83,8 @@ export function resultText({ outcome }: LineWorking): string {
   if (outcome.kind !== 'result') {
     return `= ${GAP_MARK}`;
   }
-  return outcome.reachesTarget ? `= ${outcome.value} ${TARGET_REACHED_MARK}` : `= ${outcome.value}`;
+  const result = `= ${shownNumber(outcome.value)}`;
+  return outcome.reachesTarget ? `${result} ${TARGET_REACHED_MARK}` : result;
 }
 
 // Every message kind must have wording; the compiler enforces it.

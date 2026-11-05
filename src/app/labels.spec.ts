@@ -120,6 +120,10 @@ describe('resultText', () => {
   it('marks a line that reaches its target with a tick: "= 8 ✓"', () => {
     expect(resultText(ROW_1_WITH_TOP_RIGHT_2)).toBe('= 8 ✓');
   });
+
+  it('shows a result below zero with the minus sign: "= −1"', () => {
+    expect(resultText(ROW_2_GOING_BELOW_ZERO)).toBe('= −1');
+  });
 });
 
 describe('messageText', () => {
