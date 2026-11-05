@@ -619,7 +619,7 @@
 - `2cc4936`: the config imports the lookup with its `.ts` extension, clearing a new Vite warning.
 - Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
 - **Acceptance GREEN**: **blocked** — needs the GitHub repository, Pages set to "GitHub Actions", and a merge to `main` (T069).
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
 
 ## AC-18: Given the game has loaded, when the device loses its connection, then the player can still fill in, check and find solutions, and the game makes no network requests after it has loaded
 
@@ -653,4 +653,15 @@
 - **Acceptance GREEN**: AC-19 passes (engine 2 of 2). Full suite: 76 unit tests pass (lines 99.2%, branches 95.6%); lint, type checks and build clean; engine 22 of 22; phones 52 passed, failing only AC-21 (next) and the Android speed budget (Polish).
 - **Slice refactor**: none beyond cycle 4's.
 - **Manual part (outstanding)**: after the first failing `verify` run on `main`, confirm the public address still serves the previous version (acceptance.md). Needs the pipeline live (pull request 5).
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-21: Given the player has opened the game once, when they reload it with no connection, then the game does not load (no offline reload in F0)
+
+- **Acceptance test**: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts` — "after opening the game once, reloading with no connection does not load it" (iphone, android)
+- **Drivers added** (`6615d5a`): `reload` (`page.reload()`, treating the offline navigation failure as the expected outcome) and `isGameShowing`.
+- **First driver, by visibility alone**: Android passed; iPhone failed with `the game is showing — Expected: false, Received: true`. A probe showed why: Chromium fails the reload with `net::ERR_INTERNET_DISCONNECTED` and shows its error page, but Playwright's WebKit fails it with "WebKit encountered an internal error" and leaves the **old page in place** (its navigation entry was still the first load). The game had not loaded again; real Safari shows "Safari Can't Open the Page". This was a driver problem, not product behaviour.
+- **Driver corrected**: the page is marked before the reload, and the game counts as showing only on a page that really loaded with the puzzle visible.
+- **Acceptance RED**: with the corrected driver, **passed at RED** on both phones, as T077 predicted. The game has no service worker or offline cache (FR-016).
+- **Driver proven**: with `loseConnection` temporarily left online, the reload loaded the game and both phones failed with `Expected: false, Received: true`; restored.
+- Full suite: 76 unit tests pass; engine 22 of 22; phones 54 passed, failing only the Android speed budget (Polish, T080–T081).
+- **Checkpoint**: awaiting the owner's decision (record as delivered by construction, as for AC-18).
