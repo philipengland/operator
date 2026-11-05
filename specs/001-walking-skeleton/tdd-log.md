@@ -620,7 +620,7 @@
 - Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
 - **Acceptance GREEN** (2026-11-05): pull request 5 merged as `3197161`; run 42048739409 on `main`: `verify` passed (14:49:29–14:53:16 UTC), then `deploy` published and its after-publish check passed: `✓ [after-publish] › [spec-001 AC-17] a merged change goes live › once the pipeline finishes, the public address serves the merged version — 1 passed`. The public address serves `<meta name="version" content="3197161b2f53d4a6931dc31abe09d39128ab36c4">`.
 - **SC-005**: merge to live in 4 min 36 s (run created 14:49:26, deploy finished 14:54:02), inside the 15-minute budget.
-- **Checkpoint**: awaiting approval from Philip England (AC-17 now passes after the first deploy).
+- **Checkpoint**: approved by Philip England on 2026-11-05 ("Let's continue", after the game went live).
 
 ## AC-18: Given the game has loaded, when the device loses its connection, then the player can still fill in, check and find solutions, and the game makes no network requests after it has loaded
 
