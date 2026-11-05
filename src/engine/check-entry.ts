@@ -1,5 +1,6 @@
 import { lineOperator } from './entry';
 import { evaluateLine } from './evaluate-line';
+import { lineDigits } from './line-working';
 import { isGiven, lineSpec } from './puzzle';
 import type { CellPosition, CheckResult, Digit, Entry, LinePosition, Puzzle, Rules, SolutionKey } from './types';
 
@@ -45,15 +46,6 @@ function reachesTarget(puzzle: Puzzle, entry: Entry, line: LinePosition, rules: 
   }
   const result = evaluateLine(digits as Digit[], operator, rules);
   return result.ok && result.value === lineSpec(puzzle, line)?.target;
-}
-
-/** A line's digits in reading order: rows left to right, columns top to bottom. */
-function lineDigits(puzzle: Puzzle, entry: Entry, line: LinePosition): (Digit | null)[] {
-  const length = line.axis === 'row' ? puzzle.columns : puzzle.rows;
-  return Array.from({ length }, (_, step) => {
-    const [row, column] = line.axis === 'row' ? [line.index, step] : [step, line.index];
-    return puzzle.givens[row]?.[column] ?? entry.cells[row]?.[column] ?? null;
-  });
 }
 
 /**
