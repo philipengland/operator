@@ -1,7 +1,15 @@
 // The play screen (docs/contracts/play-screen.md): builds the grid once, then writes each session
 // state into it. Wording and names come from labels.ts; rules come from the engine.
 
-import { isGiven, lineOperator, lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
+import {
+  isGiven,
+  lineOperator,
+  lineSpec,
+  type CellPosition,
+  type LineOutcome,
+  type LinePosition,
+  type Puzzle,
+} from '../engine';
 import { cellName, lineName, messageText, operatorName, resultText, workingName } from './labels';
 import { counterText, lineWorkings, type SessionAction, type SessionState } from './session';
 
@@ -135,10 +143,14 @@ function renderWorkings(parts: readonly WorkingPart[], state: SessionState): voi
     if (part) {
       writeText(part.name, workingName(working));
       writeText(part.result, resultText(working));
-      // Bold as well as the ✓, so the mark never relies on one cue (owner's decision, 2026-11-05).
-      part.slot.classList.toggle('reached', working.outcome.kind === 'result' && working.outcome.reachesTarget);
+      // Bold as well as the ✓ or ✗, so a mark never relies on one cue (owner's decision, 2026-11-05).
+      part.slot.classList.toggle('marked', isMarked(working.outcome));
     }
   }
+}
+
+function isMarked(outcome: LineOutcome): boolean {
+  return outcome.kind === 'not-whole' || (outcome.kind === 'result' && outcome.reachesTarget);
 }
 
 function puzzleGroup(puzzle: Puzzle): HTMLElement {

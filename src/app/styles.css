@@ -85,8 +85,8 @@ button {
   text-align: center;
 }
 
-/* A line that reaches its target: the ✓ plus a heavier weight, never colour alone. */
-.working.reached {
+/* A marked line, ✓ reached or ✗ not whole: the symbol plus a heavier weight, never colour alone. */
+.working.marked {
   font-weight: 700;
 }
 
