@@ -30,4 +30,12 @@ describe('lineWorking', () => {
 
     expect(working.outcome).toEqual({ kind: 'result', value: 9, reachesTarget: false });
   });
+
+  it('reports Column 1 as not whole at step 1 when bottom-left is 4 and Column 1 is ÷: 6 ÷ 4', () => {
+    const entry: Entry = { ...emptyEntry(workedExample), cells: [[null, null], [4, null]], columnOperators: ['÷', null] };
+
+    const working = lineWorking(workedExample, entry, { axis: 'column', index: 0 }, defaultRules);
+
+    expect(working.outcome).toEqual({ kind: 'not-whole', step: 1 });
+  });
 });

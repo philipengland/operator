@@ -22,7 +22,10 @@ function outcomeOf({ digits, operator, target }: LineParts, rules: Rules): LineO
     return { kind: 'incomplete' };
   }
   const result = evaluateLine(digits, operator, rules);
-  return result.ok ? { kind: 'result', value: result.value, reachesTarget: result.value === target } : { kind: 'incomplete' };
+  if (!result.ok) {
+    return { kind: 'not-whole', step: result.step };
+  }
+  return { kind: 'result', value: result.value, reachesTarget: result.value === target };
 }
 
 function isComplete(digits: readonly (Digit | null)[]): digits is readonly Digit[] {
