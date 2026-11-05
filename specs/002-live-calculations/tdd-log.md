@@ -266,3 +266,46 @@ gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples �
   Received: "2 × 3"`. Reverted with `git checkout`, rebuilt; passes again.
 - **No cycles**: no new behaviour was needed.
 - **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## AC-4: with bottom-left 2 and bottom-right 3, each tap on Row 2's operator shows "2 + 3 = 5", "2 − 3 = −1", "2 × 3 = 6"
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "with bottom-left 2 and
+  bottom-right 3, each tap on Row 2's operator changes its working".
+- **Driver work** — commit `dc8e6f5`: the UI driver reads a name's spoken negative result
+  ("= minus 1") back as shown ("= −1"), as the play-screen contract specifies. No change to
+  the engine driver.
+- **Acceptance RED**: engine and both phones `Error: Row 2 working after each tap`,
+  expected `"2 − 3 = −1"`, received `"2 − 3 = -1"` (a hyphen-minus), as `tasks.md` predicted.
+
+### Cycle 1 — a result below zero is written with the minus sign
+
+- **RED**: `workingText › writes a result below zero with the minus sign U+2212, not a hyphen:
+  "2 − 3 = −1"` — failed: `expected '2 − 3 = -1' to be '2 − 3 = −1'`.
+- **GREEN**: `shownNumber` writes a negative number with `MINUS_SIGN` (U+2212) — commit
+  `7e8f04d`. AC-4 passes on the engine driver.
+- **REFACTOR**: none needed.
+
+### Cycle 2 — the working's name speaks a result below zero as "minus"
+
+- **RED**: `workingName › speaks a result below zero as "minus": "Row 2 working, 2 − 3 =
+  minus 1"` — failed: `expected 'Row 2 working, 2 − 3 = −1' to be 'Row 2 working, 2 − 3 =
+  minus 1'`.
+- **GREEN**: the working is described once (`describeWorking`) with a number writer:
+  `shownNumber` for the text, `spokenNumber` ("minus 1") for the name, because some screen
+  readers skip or misread U+2212 before a number (research R2) — commit `9bdfa82`.
+- **REFACTOR**: none needed.
+
+### Cycle 3 — the slot shows a result below zero with the minus sign
+
+- **RED**: `resultText › shows a result below zero with the minus sign: "= −1"` — failed:
+  `expected '= -1' to be '= −1'`.
+- **GREEN**: the slot uses `shownNumber` — commit `321af9b`.
+- **REFACTOR**: none needed.
+
+- **Acceptance GREEN**: lint and type checks clean; 93 unit tests (99.36% statements, 95.41%
+  branches); build 4.1 KB gzipped. Engine 34 passed, 1 failed (AC-9). Phones 79 passed, 8
+  failed (AC-6, AC-7, AC-9, AC-11 on each).
+- **Passing early**: AC-8 ("6 − 9 = −3", unmarked) now passes on the engine and both phones,
+  as `tasks.md` predicted; it is reported at its own RED (T033).
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting the owner.

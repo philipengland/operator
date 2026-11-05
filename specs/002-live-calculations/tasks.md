@@ -118,9 +118,9 @@ with ✓ when it reaches its target.
 
 ### AC-4: choosing an operator changes the working
 
-- [ ] T018 [US1] AC-4 RED: no new driver code. Expected failure on the second tap, the negative result: `Row 2 working after each tap — Expected: [..., "2 − 3 = −1", ...]`, with the received value showing how a negative result is currently written.
-- [ ] T019 [US1] AC-4 TDD cycles: `workingText` writes a negative result with the true minus sign U+2212 ("= −1", never a hyphen-minus); `workingName` speaks it as "minus 1" (research R2); `resultText` gives "= −1".
-- [ ] T020 [US1] AC-4 GREEN, slice refactor, checkpoint.
+- [X] T018 [US1] AC-4 RED: no new driver code. Expected failure on the second tap, the negative result: `Row 2 working after each tap — Expected: [..., "2 − 3 = −1", ...]`, with the received value showing how a negative result is currently written.
+- [X] T019 [US1] AC-4 TDD cycles: `workingText` writes a negative result with the true minus sign U+2212 ("= −1", never a hyphen-minus); `workingName` speaks it as "minus 1" (research R2); `resultText` gives "= −1".
+- [X] T020 [US1] AC-4 GREEN, slice refactor, checkpoint.
 
 ### AC-5: dividing in a column ⚠️
 
