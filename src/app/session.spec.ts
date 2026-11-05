@@ -109,7 +109,7 @@ describe('applyAction', () => {
     });
 
     it('says the grid is not solved, and records nothing, when a line misses', () => {
-      // spec-001 "Below zero": Column 1 gives 6 − 9.
+      // spec-001 "Below zero": Column 1 gives 6 − 9 = −3, not its target of 3 (spec-002 FR-208).
       const belowZero: Entry = { cells: [[null, 2], [9, 3]], rowOperators: [null, '−'], columnOperators: ['−', null] };
       const filledIn: SessionState = { ...startSession(), entry: belowZero };
 
