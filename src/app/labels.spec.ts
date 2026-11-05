@@ -100,6 +100,10 @@ describe('workingName', () => {
   it('names a working by its line, then the working: "Row 1 working, 6 + ?"', () => {
     expect(workingName(ROW_1_ON_OPENING)).toBe('Row 1 working, 6 + ?');
   });
+
+  it('speaks a result below zero as "minus": "Row 2 working, 2 − 3 = minus 1"', () => {
+    expect(workingName(ROW_2_GOING_BELOW_ZERO)).toBe('Row 2 working, 2 − 3 = minus 1');
+  });
 });
 
 describe('resultText', () => {

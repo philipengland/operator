@@ -53,10 +53,14 @@ export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): 
 }
 
 /** A line's working as the player reads it: "6 + ?", "6 + 2 = 8" (spec-002 FR-201). */
-export function workingText({ digits, operator, outcome }: LineWorking): string {
+export function workingText(working: LineWorking): string {
+  return describeWorking(working, shownNumber);
+}
+
+function describeWorking({ digits, operator, outcome }: LineWorking, writeNumber: (value: number) => string): string {
   const between = ` ${operator ?? GAP_MARK} `;
   const calculation = digits.map((digit) => digit ?? GAP_MARK).join(between);
-  return outcome.kind === 'result' ? `${calculation} = ${shownNumber(outcome.value)}` : calculation;
+  return outcome.kind === 'result' ? `${calculation} = ${writeNumber(outcome.value)}` : calculation;
 }
 
 /** A number as the player sees it: below zero with the minus sign U+2212, never a hyphen (spec-002). */
@@ -66,7 +70,12 @@ function shownNumber(value: number): string {
 
 /** The working's accessible name, read by screen readers: "Row 1 working, 6 + ?" (spec-002 FR-206). */
 export function workingName(working: LineWorking): string {
-  return `${lineName(working.line)} working, ${workingText(working)}`;
+  return `${lineName(working.line)} working, ${describeWorking(working, spokenNumber)}`;
+}
+
+/** A number as a screen reader should say it: "minus 3". Some skip or misread U+2212 before a number (research R2). */
+function spokenNumber(value: number): string {
+  return value < 0 ? `minus ${-value}` : String(value);
 }
 
 /** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
