@@ -352,13 +352,16 @@ gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples �
   with `git checkout` — commit `082b245` (`test:`).
 - **REFACTOR**: none needed.
 
-### Not done — heavier weight on a reached slot (owner's decision)
+### Heavier weight on a reached slot — no test, checked by hand (owner's decision)
 
 T024 also lists "the view gives a reached slot heavier weight as well as the ✓". FR-204
-requires only that the mark does not rely on colour alone and is heard by screen readers;
-the ✓ symbol and ", target reached" meet both. The weight comes from the plan and
-`docs/contracts/play-screen.md`, and no test drives it, so it was not added without the
-owner's decision.
+requires only that the mark does not rely on colour alone and is heard by screen readers; the
+✓ symbol and ", target reached" meet both. The weight comes from the plan and
+`docs/contracts/play-screen.md`, and no test drives it, so the owner was asked. **Decision
+(2026-11-05): add it, checked by hand.** `view.ts` toggles a `reached` class on the slot;
+`styles.css` makes it bold. `quickstart.md` section 4 gains the manual check "Marks stand out
+without colour" — commit `f678b2f`. Phones after the change: all 55 spec-001 scenarios pass;
+spec-002 30 passed, 2 failed (AC-9).
 
 - **Acceptance GREEN**: lint and type checks clean; 95 unit tests (99.37% statements, 96.46%
   branches); build 4.2 KB gzipped. Engine 34 passed, 1 failed (AC-9). Phones 85 passed, 2
