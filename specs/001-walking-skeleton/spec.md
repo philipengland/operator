@@ -253,6 +253,9 @@ narrative, why this priority, and the independent test).
   view. There is no backward step: reaching a lower digit means tapping round through empty.
 - **Checking on submit only**: lines are not checked as the player types. The brief warns that
   instant feedback could turn open lines into trial and error.
+  *Superseded on 2026-11-05 by [spec-002](../002-live-calculations/spec.md): each line shows
+  its working and is marked when it reaches its target. Check still decides what is a
+  solution.*
 - **Feedback detail**: a rejected grid is reported only as "not solved yet". Naming the failing
   line and step is F2.
 - **No saving**: found solutions and the current entry are lost when the page is reloaded or
