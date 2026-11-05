@@ -30,7 +30,7 @@ export interface Rules {
 
 export type LineResult =
   | { readonly ok: true; readonly value: number }
-  | { readonly ok: false; readonly reason: 'below-zero' | 'inexact-division'; readonly step: number };
+  | { readonly ok: false; readonly reason: 'inexact-division'; readonly step: number };
 
 export type SolutionKey = string & { readonly __brand: 'SolutionKey' };
 
