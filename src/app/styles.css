@@ -53,7 +53,8 @@ button {
 
 .grid {
   display: grid;
-  grid-template-columns: auto repeat(var(--columns), minmax(var(--touch-target), 4.5rem));
+  /* Targets on the left, cells, then each row's working on the right (spec-002). */
+  grid-template-columns: auto repeat(var(--columns), minmax(var(--touch-target), 4.5rem)) auto;
   gap: var(--gap);
   align-items: center;
 }
@@ -72,6 +73,16 @@ button {
 .target {
   font-size: var(--target-font);
   font-weight: 700;
+}
+
+/* A line's result slot. Long results wrap inside it rather than overflowing (spec-002). */
+.working {
+  font-size: var(--target-font);
+  overflow-wrap: anywhere;
+}
+
+.column-working {
+  text-align: center;
 }
 
 .cell {
