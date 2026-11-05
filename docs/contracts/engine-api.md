@@ -1,11 +1,15 @@
-# Contract: Puzzle Engine API (F0)
+# Contract: Puzzle Engine API
 
 **Status**: internal boundary, not a published contract (constitution, Baseline
 Applicability: Baseline 3 has no subject while there are no HTTP APIs or events).
 
 This is the TypeScript surface the app (and the acceptance engine driver) may use from
 `src/engine/index.ts`. Nothing else in `src/engine/` is imported from outside it. Field
-meanings and rules are in [data-model.md](../data-model.md).
+meanings and rules are in spec-001's [data-model.md](../../specs/001-walking-skeleton/data-model.md)
+and spec-002's [data-model.md](../../specs/002-live-calculations/data-model.md).
+
+**History**: written for F0 (spec-001). Changed by spec-002 on 2026-11-05: results below
+zero count, so `evaluateLine` fails only on a division that is not whole (FR-208).
 
 ```ts
 export type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
@@ -37,7 +41,7 @@ export interface Rules {
 
 export type LineResult =
   | { readonly ok: true; readonly value: number }
-  | { readonly ok: false; readonly reason: 'below-zero' | 'inexact-division'; readonly step: number };
+  | { readonly ok: false; readonly reason: 'inexact-division'; readonly step: number };
 
 export type SolutionKey = string & { readonly __brand: 'SolutionKey' };
 
@@ -79,8 +83,9 @@ export function nextOperator(operator: Operator | null): Operator;
 - Every function is pure: same input, same output, no side effects, no globals.
 - Nothing in the engine references the DOM, browser APIs, Node APIs, timers, randomness
   or the clock. The build enforces this (research R2).
-- `evaluateLine` fails on the first step that goes below zero or does not divide exactly,
-  even if a later step would reach the target (spec Edge Cases).
+- `evaluateLine` fails on the first step that does not divide exactly, even if a later step
+  would reach the target (spec-001 Edge Cases). A step may go below zero; results and
+  targets may be negative (spec-002 FR-208).
 - `checkEntry` returns `incomplete` before evaluating any line, so an incomplete grid is
   never marked wrong (FR-010).
 - Two `solved` results have the same `key` exactly when every entered digit and chosen
@@ -92,6 +97,14 @@ export function nextOperator(operator: Operator | null): Operator;
 | --- | --- |
 | 2, 2, 3, ×, ÷ | `solved`, key `2,2,3\|×\|÷` |
 | 2, 3, 3, +, − | `solved`, key `2,3,3\|+\|−` |
-| 2, 9, 3, −, − | `not-solved` (Column 1: 6 − 9 below zero at step 1) |
+| 2, 9, 3, −, − | `not-solved` (Column 1: 6 − 9 = −3, not its target of 3) |
 | 2, 4, 3, +, ÷ | `not-solved` (Column 1: 6 ÷ 4 inexact at step 1) |
 | 2, 2, empty, ×, ÷ | `incomplete`, missing bottom-right |
+
+## `evaluateLine` examples
+
+| Digits | Operator | Result |
+| --- | --- | --- |
+| 6, 9 | − | `{ ok: true, value: -3 }` (before spec-002: `{ ok: false, reason: 'below-zero', step: 1 }`) |
+| 6, 4 | ÷ | `{ ok: false, reason: 'inexact-division', step: 1 }` |
+| 6, 2 | ÷ | `{ ok: true, value: 3 }` |
