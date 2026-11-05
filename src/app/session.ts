@@ -13,6 +13,7 @@ import {
   type CellPosition,
   type Entry,
   type LinePosition,
+  type LineWorking,
   type Operator,
   type Puzzle,
   type SolutionKey,
@@ -44,6 +45,12 @@ export function startSession(): SessionState {
 /** "Found N of M" (FR-013). */
 export function counterText(state: SessionState): string {
   return `Found ${state.found.size} of ${state.puzzle.solutionCount}`;
+}
+
+/** What every line works out to now, rows then columns (spec-002 FR-201). */
+export function lineWorkings(state: SessionState): LineWorking[] {
+  void state;
+  return [];
 }
 
 export function applyAction(state: SessionState, action: SessionAction): SessionState {

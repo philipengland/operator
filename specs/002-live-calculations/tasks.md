@@ -96,7 +96,7 @@ with ✓ when it reaches its target.
 
 ### AC-1: the working on opening
 
-- [ ] T010 [US1] AC-1 RED. Engine driver: `view().workings` from `lineWorkings(state)` in `src/app/session.ts`, with `workingText` and the mark from `src/app/labels.ts` (stub both to return nothing useful). UI driver (`test/acceptance/drivers/ui/game.ui-driver.ts`, `screen-names.ts`): read the element named `/^<Line> working, /` inside "Puzzle", strip the prefix, and map ", target reached" and ", not a whole number" to the mark. Phone driver: `layout().workings` from each working element's box. Expected failure: `Row 1 working — Expected: "6 + ?", Received: ""`.
+- [X] T010 [US1] AC-1 RED. Engine driver: `view().workings` from `lineWorkings(state)` in `src/app/session.ts`, with `workingText` and the mark from `src/app/labels.ts` (stub both to return nothing useful). UI driver (`test/acceptance/drivers/ui/game.ui-driver.ts`, `screen-names.ts`): read the element named `/^<Line> working, /` inside "Puzzle", strip the prefix, and map ", target reached" and ", not a whole number" to the mark. Phone driver: `layout().workings` from each working element's box. Expected failure: `Row 1 working — Expected: "6 + ?", Received: ""`.
 - [ ] T011 [US1] AC-1 TDD cycles:
   - `src/engine/line-working.ts`: `lineWorking` returns the line's digits in reading order (given digits included, `null` for empty cells) and its operator (`null` if not chosen); outcome `incomplete` when any part is `null`. Move "a line's digits in reading order" out of `check-entry.ts` into this file and use it in both.
   - `src/app/session.ts`: `lineWorkings(state)` returns all four, rows then columns.

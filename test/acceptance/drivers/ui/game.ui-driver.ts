@@ -5,7 +5,7 @@ import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { scanForAccessibilityProblems } from '../../support/axe';
 import { DEFAULT_VIEW } from '../default-view';
-import type { CellView, GameDriver, GameView, OperatorView } from '../game.driver';
+import type { CellView, GameDriver, GameView, OperatorView, WorkingView } from '../game.driver';
 import { CELLS, LINES } from '../positions';
 import {
   cellNamePattern,
@@ -15,7 +15,9 @@ import {
   readOperatorName,
   readResult,
   readTargetText,
+  readWorkingName,
   targetTextPattern,
+  workingNamePattern,
 } from './screen-names';
 
 const GAME_READY_TIMEOUT_MS = 5_000;
@@ -54,13 +56,15 @@ export class UiGameDriver implements GameDriver {
     }
     const targets = {} as Record<Line, number>;
     const operators = {} as Record<Line, OperatorView>;
+    const workings = {} as Record<Line, WorkingView>;
     for (const line of LINES) {
       targets[line] = readTargetText((await this.target(line).textContent()) ?? '');
       operators[line] = await this.operatorView(line);
+      workings[line] = await this.workingView(line);
     }
     const statusText = await this.status().innerText();
     const counter = statusText.match(COUNTER_PATTERN)?.[0] ?? '';
-    return { cells, targets, operators, counter, result: readResult(statusText), workings: DEFAULT_VIEW.workings };
+    return { cells, targets, operators, counter, result: readResult(statusText), workings };
   }
 
   async announcementCount(): Promise<number> {
@@ -106,6 +110,15 @@ export class UiGameDriver implements GameDriver {
 
   private target(line: Line): Locator {
     return this.puzzle().getByText(targetTextPattern(line));
+  }
+
+  /** A working that is not on the screen reads as nothing, rather than waiting for it. */
+  private async workingView(line: Line): Promise<WorkingView> {
+    const named = this.puzzle().getByText(workingNamePattern(line));
+    if ((await named.count()) !== 1) {
+      return DEFAULT_VIEW.workings[line];
+    }
+    return readWorkingName(line, (await named.textContent()) ?? '');
   }
 
   private async operatorView(line: Line): Promise<OperatorView> {

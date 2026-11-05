@@ -44,6 +44,20 @@ export interface LinePosition {
   readonly index: number;
 }
 
+/** What one line currently works out to (spec-002, data-model "LineWorking"). */
+export type LineOutcome =
+  | { readonly kind: 'incomplete' }
+  | { readonly kind: 'result'; readonly value: number; readonly reachesTarget: boolean }
+  | { readonly kind: 'not-whole'; readonly step: number };
+
+export interface LineWorking {
+  readonly line: LinePosition;
+  /** Reading order, given digits included; null for an empty cell. */
+  readonly digits: readonly (Digit | null)[];
+  readonly operator: Operator | null;
+  readonly outcome: LineOutcome;
+}
+
 export type CheckResult =
   | {
       readonly kind: 'incomplete';

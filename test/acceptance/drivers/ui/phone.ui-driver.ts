@@ -3,7 +3,7 @@
 import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
-import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern } from './screen-names';
+import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
 import type { Box, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
 
@@ -121,16 +121,19 @@ export class UiPhoneDriver implements PhoneDriver {
     }
     const targets = {} as Record<Line, Box>;
     const operators = {} as Record<Line, Box>;
+    const workings = {} as Record<Line, Box>;
     for (const line of LINES) {
       targets[line] = await boxOf(puzzle.getByText(targetTextPattern(line)));
       operators[line] = await boxOf(puzzle.getByRole('button', { name: operatorNamePattern(line) }));
+      // The name is visually hidden; the working's slot on screen is the element around it.
+      workings[line] = await boxOf(puzzle.getByText(workingNamePattern(line)).locator('..'));
     }
     return {
       screen,
       cells,
       targets,
       operators,
-      workings: EMPTY_LAYOUT.workings,
+      workings,
       counter: await boxOf(this.page.getByRole('status').getByText(COUNTER_PATTERN)),
       checkButton: await boxOf(this.page.getByRole('button', { name: 'Check' })),
     };

@@ -1,7 +1,15 @@
 // What the play screen says, as plain functions: visible wording and accessible names
 // (docs/contracts/play-screen.md). No DOM access.
 
-import { lineOperator, type CellPosition, type Entry, type LinePosition, type Operator, type Puzzle } from '../engine';
+import {
+  lineOperator,
+  type CellPosition,
+  type Entry,
+  type LinePosition,
+  type LineWorking,
+  type Operator,
+  type Puzzle,
+} from '../engine';
 import type { MessageKind } from './session';
 
 const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
@@ -34,6 +42,12 @@ export function lineName(line: LinePosition): string {
 export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
   const operator = lineOperator(puzzle, entry, line);
   return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
+}
+
+/** A line's working as the player reads it: "6 + ?", "6 + 2 = 8" (spec-002 FR-201). */
+export function workingText(working: LineWorking): string {
+  void working;
+  return '';
 }
 
 // Every message kind must have wording; the compiler enforces it.
