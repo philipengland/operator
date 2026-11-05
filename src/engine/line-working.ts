@@ -1,20 +1,28 @@
 import { lineOperator } from './entry';
 import { evaluateLine } from './evaluate-line';
+import { lineSpec } from './puzzle';
 import type { Digit, Entry, LineOutcome, LinePosition, LineWorking, Operator, Puzzle, Rules } from './types';
 
 /** What one line works out to now (spec-002 FR-201, data-model "LineWorking"). */
 export function lineWorking(puzzle: Puzzle, entry: Entry, line: LinePosition, rules: Rules): LineWorking {
   const digits = lineDigits(puzzle, entry, line);
   const operator = lineOperator(puzzle, entry, line);
-  return { line, digits, operator, outcome: outcomeOf(digits, operator, rules) };
+  const target = lineSpec(puzzle, line)?.target;
+  return { line, digits, operator, outcome: outcomeOf({ digits, operator, target }, rules) };
 }
 
-function outcomeOf(digits: readonly (Digit | null)[], operator: Operator | null, rules: Rules): LineOutcome {
+interface LineParts {
+  readonly digits: readonly (Digit | null)[];
+  readonly operator: Operator | null;
+  readonly target: number | undefined;
+}
+
+function outcomeOf({ digits, operator, target }: LineParts, rules: Rules): LineOutcome {
   if (operator === null || !isComplete(digits)) {
     return { kind: 'incomplete' };
   }
   const result = evaluateLine(digits, operator, rules);
-  return result.ok ? { kind: 'result', value: result.value, reachesTarget: true } : { kind: 'incomplete' };
+  return result.ok ? { kind: 'result', value: result.value, reachesTarget: result.value === target } : { kind: 'incomplete' };
 }
 
 function isComplete(digits: readonly (Digit | null)[]): digits is readonly Digit[] {

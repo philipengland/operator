@@ -24,4 +24,10 @@ describe('lineWorking', () => {
 
     expect(working.outcome).toEqual({ kind: 'result', value: 8, reachesTarget: true });
   });
+
+  it('works out Row 1 as 6 + 3 = 9 once top-right is 3, missing its target of 8', () => {
+    const working = lineWorking(workedExample, topRight(3), ROW_1, defaultRules);
+
+    expect(working.outcome).toEqual({ kind: 'result', value: 9, reachesTarget: false });
+  });
 });
