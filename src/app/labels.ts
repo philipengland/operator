@@ -19,6 +19,9 @@ const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
   '÷': 'divide',
 };
 
+// Stands for an empty cell or an operator not yet chosen, in a working.
+const GAP_MARK = '?';
+
 // F0's grid is 2 × 2, so each cell is a corner (spec "The Puzzle").
 const CORNER_NAMES: readonly (readonly string[])[] = [
   ['Top-left', 'Top-right'],
@@ -45,9 +48,9 @@ export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): 
 }
 
 /** A line's working as the player reads it: "6 + ?", "6 + 2 = 8" (spec-002 FR-201). */
-export function workingText(working: LineWorking): string {
-  void working;
-  return '';
+export function workingText({ digits, operator }: LineWorking): string {
+  const between = ` ${operator ?? GAP_MARK} `;
+  return digits.map((digit) => digit ?? GAP_MARK).join(between);
 }
 
 // Every message kind must have wording; the compiler enforces it.

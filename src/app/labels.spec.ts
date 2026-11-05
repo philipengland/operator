@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { emptyEntry, workedExample } from '../engine';
-import { cellName, lineName, messageText, operatorName } from './labels';
+import { emptyEntry, workedExample, type LineWorking } from '../engine';
+import { cellName, lineName, messageText, operatorName, workingText } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -49,6 +49,19 @@ describe('operatorName', () => {
     const entry = { ...emptyEntry(workedExample), rowOperators: [null, choice] };
 
     expect(operatorName(workedExample, entry, { axis: 'row', index: 1 })).toBe(`Row 2 operator, ${word}`);
+  });
+});
+
+describe('workingText', () => {
+  it.each([
+    { digits: [6, null], operator: '+', text: '6 + ?' },
+    { digits: [null, null], operator: null, text: '? ? ?' },
+    { digits: [6, null], operator: null, text: '6 ? ?' },
+    { digits: [null, null], operator: '×', text: '? × ?' },
+  ] as const)('writes $text for an unfinished line, with ? for each gap', ({ digits, operator, text }) => {
+    const working: LineWorking = { line: { axis: 'row', index: 0 }, digits, operator, outcome: { kind: 'incomplete' } };
+
+    expect(workingText(working)).toBe(text);
   });
 });
 
