@@ -6,6 +6,9 @@ import { CELLS, LINES } from '../positions';
 import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern } from './screen-names';
 import type { Box, CellLook, PhoneDriver, ScreenLayout } from '../phone.driver';
 
+// Set on the page before a reload; a page that really reloads no longer has it.
+const PAGE_BEFORE_RELOAD = 'operatorPageBeforeReload';
+
 // Unknown positions: NaN compares false, so nothing unread can count as on screen.
 const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
 
@@ -40,11 +43,21 @@ export class UiPhoneDriver implements PhoneDriver {
     await this.page.context().setOffline(true);
   }
 
-  async reload(): Promise<void> {}
+  // With no connection the reload fails; that is the expected outcome, not a driver error.
+  // Chromium then shows its error page, but Playwright's WebKit leaves the old page in place
+  // (real Safari shows "Safari Can't Open the Page"), so the old page is marked first and a
+  // marked page never counts as the game having loaded again.
+  async reload(): Promise<void> {
+    await this.page.evaluate((marker) => Object.assign(window, { [marker]: true }), PAGE_BEFORE_RELOAD).catch(() => undefined);
+    await this.page.reload().catch(() => undefined);
+  }
 
-  // Until this is built it reports the game as showing, so AC-21 cannot pass vacuously.
+  /** Whether the game is on screen in a page that actually loaded, not one left behind by a failed reload. */
   async isGameShowing(): Promise<boolean> {
-    return true;
+    const isOldPage = await this.page
+      .evaluate((marker) => marker in window, PAGE_BEFORE_RELOAD)
+      .catch(() => false);
+    return !isOldPage && (await this.page.getByRole('group', { name: 'Puzzle' }).isVisible());
   }
 
   async networkRequestsSinceOpening(): Promise<number> {
