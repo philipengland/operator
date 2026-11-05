@@ -1,7 +1,7 @@
 import { lineOperator } from './entry';
-import { evaluateLine } from './evaluate-line';
+import { lineWorking } from './line-working';
 import { isGiven, lineSpec } from './puzzle';
-import type { CellPosition, CheckResult, Digit, Entry, LinePosition, Puzzle, Rules, SolutionKey } from './types';
+import type { CellPosition, CheckResult, Entry, LinePosition, Puzzle, Rules, SolutionKey } from './types';
 
 /**
  * Checks an entry by working out every line against its target (FR-008, FR-009). An entry with
@@ -36,24 +36,10 @@ function allLines(puzzle: Puzzle): LinePosition[] {
   ];
 }
 
+/** Check and the screen judge a line the same way (docs/contracts/engine-api.md, Guarantees). */
 function reachesTarget(puzzle: Puzzle, entry: Entry, line: LinePosition, rules: Rules): boolean {
-  const digits = lineDigits(puzzle, entry, line);
-  const operator = lineOperator(puzzle, entry, line);
-  // checkEntry has already returned incomplete for any gap; this only narrows the types.
-  if (operator === null || digits.some((digit) => digit === null)) {
-    return false;
-  }
-  const result = evaluateLine(digits as Digit[], operator, rules);
-  return result.ok && result.value === lineSpec(puzzle, line)?.target;
-}
-
-/** A line's digits in reading order: rows left to right, columns top to bottom. */
-function lineDigits(puzzle: Puzzle, entry: Entry, line: LinePosition): (Digit | null)[] {
-  const length = line.axis === 'row' ? puzzle.columns : puzzle.rows;
-  return Array.from({ length }, (_, step) => {
-    const [row, column] = line.axis === 'row' ? [line.index, step] : [step, line.index];
-    return puzzle.givens[row]?.[column] ?? entry.cells[row]?.[column] ?? null;
-  });
+  const { outcome } = lineWorking(puzzle, entry, line, rules);
+  return outcome.kind === 'result' && outcome.reachesTarget;
 }
 
 /**

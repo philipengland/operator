@@ -1,4 +1,4 @@
-// The engine's data shapes (contracts/engine-api.md, data-model.md "Engine").
+// The engine's data shapes (docs/contracts/engine-api.md, data-model.md "Engine").
 
 export type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -30,7 +30,7 @@ export interface Rules {
 
 export type LineResult =
   | { readonly ok: true; readonly value: number }
-  | { readonly ok: false; readonly reason: 'below-zero' | 'inexact-division'; readonly step: number };
+  | { readonly ok: false; readonly reason: 'inexact-division'; readonly step: number };
 
 export type SolutionKey = string & { readonly __brand: 'SolutionKey' };
 
@@ -42,6 +42,20 @@ export interface CellPosition {
 export interface LinePosition {
   readonly axis: 'row' | 'column';
   readonly index: number;
+}
+
+/** What one line currently works out to (spec-002, data-model "LineWorking"). */
+export type LineOutcome =
+  | { readonly kind: 'incomplete' }
+  | { readonly kind: 'result'; readonly value: number; readonly reachesTarget: boolean }
+  | { readonly kind: 'not-whole'; readonly step: number };
+
+export interface LineWorking {
+  readonly line: LinePosition;
+  /** Reading order, given digits included; null for an empty cell. */
+  readonly digits: readonly (Digit | null)[];
+  readonly operator: Operator | null;
+  readonly outcome: LineOutcome;
 }
 
 export type CheckResult =

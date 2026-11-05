@@ -11,6 +11,7 @@ import type {
   Operator,
   OperatorChoice,
   Result,
+  Working,
 } from './vocabulary';
 
 // A cell has ten values (empty and 1 to 9) and an operator has four, so this many taps
@@ -155,6 +156,44 @@ export class GameDsl {
 
   async expectAnnouncementsStillAt(count: number): Promise<void> {
     expect(await this.driver().announcementCount(), 'announcements to screen-reader users').toBe(count);
+  }
+
+  // spec-002 — each line's working, shown as the grid changes.
+
+  async expectWorking(line: Line, working: Working): Promise<void> {
+    expect((await this.view()).workings[line].working, `${line} working`).toBe(working);
+  }
+
+  async expectWorkings(workings: Readonly<Record<Line, Working>>): Promise<void> {
+    for (const [line, working] of Object.entries(workings) as [Line, Working][]) {
+      await this.expectWorking(line, working);
+    }
+  }
+
+  /** Taps the operator once per expected working and checks the line's working after each tap. */
+  async expectTappingOperatorShowsWorking(line: Line, workingsInOrder: readonly Working[]): Promise<void> {
+    const seen: Working[] = [];
+    for (let tap = 0; tap < workingsInOrder.length; tap++) {
+      await this.driver().tapOperator(line);
+      seen.push((await this.view()).workings[line].working);
+    }
+    expect(seen, `${line} working after each tap`).toEqual(workingsInOrder);
+  }
+
+  async expectMarkedAsReachingTarget(lines: readonly Line[]): Promise<void> {
+    for (const line of lines) {
+      expect((await this.view()).workings[line].mark, `${line} should be marked as reaching its target`).toBe('target reached');
+    }
+  }
+
+  async expectNotMarked(lines: readonly Line[]): Promise<void> {
+    for (const line of lines) {
+      expect((await this.view()).workings[line].mark, `${line} should carry no mark`).toBe('none');
+    }
+  }
+
+  async expectCrossedOut(line: Line): Promise<void> {
+    expect((await this.view()).workings[line].mark, `${line} should show a cross`).toBe('not a whole number');
   }
 
   private view(): Promise<GameView> {

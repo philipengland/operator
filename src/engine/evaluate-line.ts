@@ -11,8 +11,8 @@ const APPLY: Readonly<Record<Operator, (left: number, right: number) => number>>
 
 /**
  * Works out a line in reading order: rows left to right, columns top to bottom. The line fails
- * at the first step that goes below zero or does not divide exactly, even if a later step
- * would reach the target (FR-008).
+ * at the first step that does not divide exactly, even if a later step would reach the target
+ * (spec-001 FR-008). Results may go below zero (spec-002 FR-208).
  */
 export function evaluateLine(digits: readonly Digit[], operator: Operator, rules: Rules): LineResult {
   void rules;
@@ -23,9 +23,6 @@ export function evaluateLine(digits: readonly Digit[], operator: Operator, rules
       return { ok: false, reason: 'inexact-division', step: index + 1 };
     }
     value = APPLY[operator](value, digit);
-    if (value < 0) {
-      return { ok: false, reason: 'below-zero', step: index + 1 };
-    }
   }
   return { ok: true, value };
 }

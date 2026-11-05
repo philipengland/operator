@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type Entry, type SolutionKey } from '../engine';
-import { applyAction, counterText, startSession, type SessionState } from './session';
+import { applyAction, counterText, lineWorkings, startSession, type SessionAction, type SessionState } from './session';
 
 describe('startSession', () => {
   it('starts on the worked example with an empty entry, nothing found and no message', () => {
@@ -16,6 +16,35 @@ describe('startSession', () => {
 describe('counterText', () => {
   it('reads "Found 0 of 2" when nothing has been found in the worked example', () => {
     expect(counterText(startSession())).toBe('Found 0 of 2');
+  });
+
+  it('still reads "Found 0 of 2" once every line reaches its target, until Check (spec-002 AC-6)', () => {
+    const taps: SessionAction[] = [
+      { type: 'tapCell', row: 0, column: 1 },
+      { type: 'tapCell', row: 0, column: 1 },
+      { type: 'tapCell', row: 1, column: 0 },
+      { type: 'tapCell', row: 1, column: 0 },
+      ...Array.from({ length: 3 }, (): SessionAction => ({ type: 'tapCell', row: 1, column: 1 })),
+      ...Array.from({ length: 3 }, (): SessionAction => ({ type: 'tapOperator', line: { axis: 'row', index: 1 } })),
+      ...Array.from({ length: 4 }, (): SessionAction => ({ type: 'tapOperator', line: { axis: 'column', index: 0 } })),
+    ];
+    const solutionAFilledIn = taps.reduce(applyAction, startSession());
+
+    expect(lineWorkings(solutionAFilledIn).every(({ outcome }) => outcome.kind === 'result' && outcome.reachesTarget)).toBe(true);
+    expect(counterText(solutionAFilledIn)).toBe('Found 0 of 2');
+  });
+});
+
+describe('lineWorkings', () => {
+  it("gives every line's working on opening, rows then columns", () => {
+    const workings = lineWorkings(startSession());
+
+    expect(workings.map(({ line, digits, operator }) => ({ line, digits, operator }))).toEqual([
+      { line: { axis: 'row', index: 0 }, digits: [6, null], operator: '+' },
+      { line: { axis: 'row', index: 1 }, digits: [null, null], operator: null },
+      { line: { axis: 'column', index: 0 }, digits: [6, null], operator: null },
+      { line: { axis: 'column', index: 1 }, digits: [null, null], operator: '×' },
+    ]);
   });
 });
 
@@ -109,7 +138,7 @@ describe('applyAction', () => {
     });
 
     it('says the grid is not solved, and records nothing, when a line misses', () => {
-      // spec-001 "Below zero": Column 1 gives 6 − 9.
+      // spec-001 "Below zero": Column 1 gives 6 − 9 = −3, not its target of 3 (spec-002 FR-208).
       const belowZero: Entry = { cells: [[null, 2], [9, 3]], rowOperators: [null, '−'], columnOperators: ['−', null] };
       const filledIn: SessionState = { ...startSession(), entry: belowZero };
 

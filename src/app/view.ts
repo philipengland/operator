@@ -1,9 +1,17 @@
-// The play screen (contracts/play-screen.md): builds the grid once, then writes each session
+// The play screen (docs/contracts/play-screen.md): builds the grid once, then writes each session
 // state into it. Wording and names come from labels.ts; rules come from the engine.
 
-import { isGiven, lineOperator, lineSpec, type CellPosition, type LinePosition, type Puzzle } from '../engine';
-import { cellName, lineName, messageText, operatorName } from './labels';
-import { counterText, type SessionAction, type SessionState } from './session';
+import {
+  isGiven,
+  lineOperator,
+  lineSpec,
+  type CellPosition,
+  type LineOutcome,
+  type LinePosition,
+  type Puzzle,
+} from '../engine';
+import { cellName, lineName, messageText, operatorName, resultText, workingName } from './labels';
+import { counterText, lineWorkings, type SessionAction, type SessionState } from './session';
 
 const NOT_CHOSEN_MARK = '?';
 
@@ -21,9 +29,18 @@ interface OperatorPart {
   readonly button: HTMLButtonElement;
 }
 
+/** A line's working: its name for screen readers, and the result slot the player sees. */
+interface WorkingPart {
+  readonly line: LinePosition;
+  readonly slot: HTMLElement;
+  readonly name: HTMLElement;
+  readonly result: HTMLElement;
+}
+
 interface ScreenParts {
   readonly cells: readonly CellPart[];
   readonly operators: readonly OperatorPart[];
+  readonly workings: readonly WorkingPart[];
   readonly message: HTMLElement;
   readonly counter: HTMLElement;
   readonly check: HTMLButtonElement;
@@ -50,12 +67,14 @@ export function createPlayScreen(
 function build(root: HTMLElement, puzzle: Puzzle): ScreenParts {
   const cells: CellPart[] = [];
   const operators: OperatorPart[] = [];
+  const workings: WorkingPart[] = [];
   const grid = puzzleGroup(puzzle);
 
   grid.append(element('span', 'corner'));
   puzzle.columnLines.forEach((spec, index) => {
     grid.append(lineHeader({ axis: 'column', index }, spec.target, operators));
   });
+  grid.append(element('span', 'corner'));
   puzzle.rowLines.forEach((spec, row) => {
     grid.append(lineHeader({ axis: 'row', index: row }, spec.target, operators));
     for (let column = 0; column < puzzle.columns; column++) {
@@ -63,18 +82,24 @@ function build(root: HTMLElement, puzzle: Puzzle): ScreenParts {
       cells.push({ position: { row, column }, button });
       grid.append(button);
     }
+    grid.append(workingElement({ axis: 'row', index: row }, workings));
+  });
+  grid.append(element('span', 'corner'));
+  puzzle.columnLines.forEach((_, index) => {
+    grid.append(workingElement({ axis: 'column', index }, workings));
   });
 
   const message = element('p', 'message');
   const counter = element('p', 'counter');
   const check = checkButton();
   root.replaceChildren(grid, statusRegion(message, counter), check);
-  return { cells, operators, message, counter, check };
+  return { cells, operators, workings, message, counter, check };
 }
 
 function render(parts: ScreenParts, state: SessionState): void {
   parts.cells.forEach((cell) => renderCell(cell, state));
   parts.operators.forEach((operator) => renderOperator(operator, state));
+  renderWorkings(parts.workings, state);
   writeText(parts.message, state.message ? messageText(state.message) : '');
   writeText(parts.counter, counterText(state));
 }
@@ -111,6 +136,23 @@ function renderOperator({ line, button }: OperatorPart, { puzzle, entry }: Sessi
   }
 }
 
+/** The working is read from its name, not announced: it is not in a live region (spec-002 FR-206). */
+function renderWorkings(parts: readonly WorkingPart[], state: SessionState): void {
+  for (const working of lineWorkings(state)) {
+    const part = parts.find(({ line }) => line.axis === working.line.axis && line.index === working.line.index);
+    if (part) {
+      writeText(part.name, workingName(working));
+      writeText(part.result, resultText(working));
+      // Bold as well as the ✓ or ✗, so a mark never relies on one cue (owner's decision, 2026-11-05).
+      part.slot.classList.toggle('marked', isMarked(working.outcome));
+    }
+  }
+}
+
+function isMarked(outcome: LineOutcome): boolean {
+  return outcome.kind === 'not-whole' || (outcome.kind === 'result' && outcome.reachesTarget);
+}
+
 function puzzleGroup(puzzle: Puzzle): HTMLElement {
   const grid = element('div', 'grid');
   grid.setAttribute('role', 'group');
@@ -133,6 +175,17 @@ function targetElement(line: LinePosition, target: number): HTMLElement {
   const hiddenName = element('span', 'visually-hidden');
   hiddenName.textContent = `${lineName(line)} target `;
   wrapper.append(hiddenName, String(target));
+  return wrapper;
+}
+
+/** A line's result slot: right of a row, below a column. The visible slot is hidden from screen readers, which read the name. */
+function workingElement(line: LinePosition, workings: WorkingPart[]): HTMLElement {
+  const wrapper = element('span', `working ${line.axis}-working`);
+  const name = element('span', 'visually-hidden');
+  const result = element('span', 'result');
+  result.setAttribute('aria-hidden', 'true');
+  workings.push({ line, slot: wrapper, name, result });
+  wrapper.append(name, result);
   return wrapper;
 }
 

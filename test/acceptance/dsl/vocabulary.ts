@@ -28,3 +28,13 @@ export interface Entry {
   readonly row2: OperatorChoice;
   readonly column1: OperatorChoice;
 }
+
+/**
+ * A line's working (spec-002): its digits and operator in reading order, with ? for anything
+ * not filled in, then "= " and the result once there is one. For example "6 + ?", "6 + 2 = 8",
+ * "6 − 9 = −3", or "6 ÷ 4" when the division is not whole.
+ */
+export type Working = string;
+
+/** How a line's working is marked (spec-002 FR-204, FR-205). */
+export type WorkingMark = 'target reached' | 'not a whole number' | 'none';

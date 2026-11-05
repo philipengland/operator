@@ -30,7 +30,7 @@ A puzzle is solved when every row and every column reaches its target.
 - **Lines:** a row or a column is a line. Every line has one operator, +, −, × or ÷, applied between each pair of cells in it.
 - **Cells:** each empty cell takes one digit from 1 to 9 and counts in both its row and its column. Pre-filled cells are greyed out and cannot be changed.
 - **Evaluation:** rows are worked left to right and columns top to bottom. For example 8 − 3 − 2 is 5 − 2, which is 3.
-- **Whole numbers only:** every step must give a whole number. Division must be exact, and subtraction may not go below zero.
+- **Whole numbers only:** every step must give a whole number, so division must be exact. Results may go below zero, and targets may be negative.
 - **Repeats:** digits may repeat within a line and across lines.
 - **Valid answers:** any filling that hits every target counts. The app checks by calculating, not by comparing with a stored answer.
 
@@ -113,7 +113,7 @@ The generator builds each puzzle backwards from a known solution, so every puzzl
 
 1. Take a seed, a grid size and a preset. The same seed always produces the same puzzle.
 2. Fill the whole grid with digits 1-9. This is the known solution.
-3. For each row and each column, pick an operator that gives a whole, non-negative result on its digits, favouring the preset's operator set, and compute the target. Reject a target of 0. If the preset's mix cannot be met, redraw the grid.
+3. For each row and each column, pick an operator that gives a whole, non-negative result on its digits, favouring the preset's operator set, and compute the target. Reject a target of 0. (Since spec-002, negative results and targets are allowed in play; F7 decides whether the generator uses them.) If the preset's mix cannot be met, redraw the grid.
 4. Grey out a share of the cells to match the preset, keeping their digits as given values.
 5. Count solutions by backtracking over the empty cells, stopping at 101. For each digit filling that works, multiply in the number of operators that hit each open line's target. Time-box the search and discard puzzles that count too slowly.
 6. Keep the puzzle only if the count falls inside the preset's band; otherwise regenerate. Store the seed, targets, operators, greyed cells and the capped count.
@@ -149,7 +149,7 @@ The MVP is a single-player, mobile-first web game with targets on rows and colum
 
 - **MVP:** grid play with row and column targets, line evaluation with the whole-number rule, Fixed / Mixed / Open modes, any-valid checking, the solution log and counter, Easy / Medium / Hard / Collector presets, and a seeded generator with capped solution counting.
 - **Phase 2:** hints (reveal an operator or fill one cell), lines with mixed operators and the order setting, and custom difficulty with a live score.
-- **Phase 3:** a daily puzzle and share-by-seed, global solution-rarity stats, and optional negative-number and no-repeat variants.
+- **Phase 3:** a daily puzzle and share-by-seed, global solution-rarity stats, and an optional no-repeat variant. (Negative numbers are standard play since spec-002.)
 - **Out of scope:** fractions and decimals, real-time multiplayer, accounts and monetisation.
 
 The platform is decided: a client-side web app with no backend, packaged for iOS and Android with Capacitor, so it works fully offline. Seeded puzzles need no server.
@@ -162,7 +162,7 @@ Fourteen features: a walking skeleton (F0), seven MVP features, store packaging 
 | --- | --- | --- | --- |
 | F0 | Walking skeleton | The 2 × 2 worked example plays end to end on a phone browser: digits 1-9 go in empty cells, the given cell cannot change, open operators cycle on tap, and any valid filling is accepted. After both solutions are submitted the counter reads "Found 2 of 2". The pipeline builds and deploys it to a public URL. | Skeleton |
 | F1 | Grid and entry | Each row shows its target on the left and each column shows its target above. Empty cells accept only digits 1-9. Pre-filled cells are greyed and reject input. | MVP |
-| F2 | Line evaluation | A row or column is marked correct when its result equals its target. A step that is not a whole number, or goes below zero, marks the line invalid and names the step. | MVP |
+| F2 | Line evaluation | A row or column is marked correct when its result equals its target. A step that is not a whole number marks the line invalid and names the step. | MVP |
 | F3 | Operator modes | Fixed lines cannot change operator. Open lines cycle through + − × ÷ on tap. A Mixed puzzle contains both kinds, across rows and columns. | MVP |
 | F4 | Any-valid checking | The puzzle is solved when all rows and columns hit their targets, whether or not the grid matches the generator's own answer. | MVP |
 | F5 | Solution log and counter | Each distinct solution is added once. Resubmitting a known solution leaves the count unchanged. The counter shows "Found N of M" when M is 100 or less, otherwise "Found N". | MVP |
@@ -181,7 +181,7 @@ All the points below are settled.
 
 - [x] Targets sit on rows and on columns.
 - [x] "Operator order" means mixing operators within a line: one operator per line in the MVP, mixed lines in Phase 2.
-- [x] A step cannot go below zero; results stay at zero or above.
+- [x] Results may go below zero, and targets may be negative. Changed on 2026-11-05 from "a step cannot go below zero" by the owner's decision ([spec-002](../../specs/002-live-calculations/spec.md), FR-208).
 - [x] Digits may repeat within a line.
 - [x] 3 × 1 and 3 ÷ 1 count as two solutions, because the operator is part of a solution.
 - [x] The total number of solutions is shown only when it is 100 or fewer.

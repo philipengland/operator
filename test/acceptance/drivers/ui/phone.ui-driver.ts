@@ -3,7 +3,7 @@
 import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
-import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern } from './screen-names';
+import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
 import type { Box, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
 
@@ -30,6 +30,7 @@ const EMPTY_LAYOUT: ScreenLayout = {
   cells: { 'top-left': NO_BOX, 'top-right': NO_BOX, 'bottom-left': NO_BOX, 'bottom-right': NO_BOX },
   targets: { 'Row 1': NO_BOX, 'Row 2': NO_BOX, 'Column 1': NO_BOX, 'Column 2': NO_BOX },
   operators: { 'Row 1': NO_BOX, 'Row 2': NO_BOX, 'Column 1': NO_BOX, 'Column 2': NO_BOX },
+  workings: { 'Row 1': NO_BOX, 'Row 2': NO_BOX, 'Column 1': NO_BOX, 'Column 2': NO_BOX },
   counter: NO_BOX,
   checkButton: NO_BOX,
 };
@@ -120,15 +121,19 @@ export class UiPhoneDriver implements PhoneDriver {
     }
     const targets = {} as Record<Line, Box>;
     const operators = {} as Record<Line, Box>;
+    const workings = {} as Record<Line, Box>;
     for (const line of LINES) {
       targets[line] = await boxOf(puzzle.getByText(targetTextPattern(line)));
       operators[line] = await boxOf(puzzle.getByRole('button', { name: operatorNamePattern(line) }));
+      // The name is visually hidden; the working's slot on screen is the element around it.
+      workings[line] = await boxOf(puzzle.getByText(workingNamePattern(line)).locator('..'));
     }
     return {
       screen,
       cells,
       targets,
       operators,
+      workings,
       counter: await boxOf(this.page.getByRole('status').getByText(COUNTER_PATTERN)),
       checkButton: await boxOf(this.page.getByRole('button', { name: 'Check' })),
     };

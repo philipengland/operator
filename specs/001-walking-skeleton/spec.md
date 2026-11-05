@@ -84,6 +84,9 @@ narrative, why this priority, and the independent test).
    Row 2 − and Column 1 − (Row 2 gives 9 − 3 = 6, but Column 1 gives 6 − 9, which goes below
    zero), **When** they submit, **Then** the game says the puzzle is not solved yet and the
    counter still reads "Found 0 of 2".
+   *Reason amended on 2026-11-05 by [spec-002](../002-live-calculations/spec.md): going below
+   zero is allowed, and Column 1 gives 6 − 9 = −3, which is not its target of 3. The outcome
+   is unchanged.*
 10. **AC-10** — **Given** the player has entered top-right 2, bottom-left 4, bottom-right 3,
     Row 2 + and Column 1 ÷ (Column 1 gives 6 ÷ 4, which is not a whole number), **When** they
     submit, **Then** the game says the puzzle is not solved yet and the counter does not change.
@@ -188,6 +191,9 @@ narrative, why this priority, and the independent test).
 - **FR-008**: The game MUST work out each line from its own digits and operator, rows left to
   right and columns top to bottom. A line fails if any step goes below zero or does not divide
   exactly.
+  *Below-zero clause superseded on 2026-11-05 by [spec-002](../002-live-calculations/spec.md)
+  FR-208: results below zero count, and targets may be negative. Inexact division still
+  fails.*
 - **FR-009**: A submitted grid MUST be accepted as a solution when every row and every column
   reaches its target. The game MUST NOT compare the grid with a stored answer.
 - **FR-010**: Submitting with an empty cell or an unchosen open operator MUST NOT count as a
@@ -253,6 +259,9 @@ narrative, why this priority, and the independent test).
   view. There is no backward step: reaching a lower digit means tapping round through empty.
 - **Checking on submit only**: lines are not checked as the player types. The brief warns that
   instant feedback could turn open lines into trial and error.
+  *Superseded on 2026-11-05 by [spec-002](../002-live-calculations/spec.md): each line shows
+  its working and is marked when it reaches its target. Check still decides what is a
+  solution.*
 - **Feedback detail**: a rejected grid is reported only as "not solved yet". Naming the failing
   line and step is F2.
 - **No saving**: found solutions and the current entry are lost when the page is reloaded or

@@ -1,7 +1,7 @@
-// Layer 3 — the accessible names on the play screen (contracts/play-screen.md), and how to
+// Layer 3 — the accessible names on the play screen (docs/contracts/play-screen.md), and how to
 // read the scenarios' values back out of them.
 
-import type { Cell, CellValue, Digit, Line, Operator, OperatorChoice, Result } from '../../dsl/vocabulary';
+import type { Cell, CellValue, Digit, Line, Operator, OperatorChoice, Result, Working, WorkingMark } from '../../dsl/vocabulary';
 
 const CELL_NAME_PREFIX: Readonly<Record<Cell, string>> = {
   'top-left': 'Top-left cell, ',
@@ -61,6 +61,32 @@ export function readOperatorName(line: Line, name: string): OperatorChoice {
 /** "Row 1 target 8" → 8. */
 export function readTargetText(text: string): number {
   return Number(text.match(/(\d+)\s*$/)?.[1] ?? Number.NaN);
+}
+
+/** spec-002: a line's working is the text named "Row 1 working, …". */
+export function workingNamePattern(line: Line): RegExp {
+  return new RegExp(`^${line} working, `);
+}
+
+// How a working's name ends when the line is marked (docs/contracts/play-screen.md).
+const WORKING_MARKS: readonly (readonly [string, WorkingMark])[] = [
+  [', target reached', 'target reached'],
+  [', not a whole number', 'not a whole number'],
+];
+
+/** "Row 1 working, 6 + 2 = 8, target reached" → { working: "6 + 2 = 8", mark: "target reached" }. */
+export function readWorkingName(line: Line, name: string): { working: Working; mark: WorkingMark } {
+  const described = name.slice(`${line} working, `.length);
+  const marked = WORKING_MARKS.find(([ending]) => described.endsWith(ending));
+  if (!marked) {
+    return { working: asShown(described), mark: 'none' };
+  }
+  return { working: asShown(described.slice(0, -marked[0].length)), mark: marked[1] };
+}
+
+/** The name speaks a negative result, "= minus 1"; the player sees "= −1" (U+2212). */
+function asShown(spoken: string): Working {
+  return spoken.replace(/= minus (\d+)$/, '= −$1');
 }
 
 export const COUNTER_PATTERN = /Found \d+ of \d+/;

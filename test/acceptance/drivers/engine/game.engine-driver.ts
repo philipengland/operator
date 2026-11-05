@@ -3,14 +3,17 @@
 import {
   applyAction,
   counterText,
+  lineWorkings,
   startSession,
   type MessageKind,
   type SessionAction,
   type SessionState,
 } from '../../../../src/app/session';
-import type { Cell, CellValue, Line, OperatorChoice, Result } from '../../dsl/vocabulary';
+import { workingText } from '../../../../src/app/labels';
+import type { LineOutcome } from '../../../../src/engine';
+import type { Cell, CellValue, Line, OperatorChoice, Result, WorkingMark } from '../../dsl/vocabulary';
 import { DEFAULT_VIEW } from '../default-view';
-import type { CellView, GameDriver, GameView, OperatorView } from '../game.driver';
+import type { CellView, GameDriver, GameView, OperatorView, WorkingView } from '../game.driver';
 import { CELL_POSITIONS, CELLS, LINE_POSITIONS, LINES } from '../positions';
 
 const RESULTS: Readonly<Record<MessageKind, Result>> = {
@@ -56,6 +59,7 @@ export class EngineGameDriver implements GameDriver {
       operators: mapEach(LINES, (line) => operatorView(session, line)),
       counter: counterText(session),
       result: session.message ? RESULTS[session.message] : null,
+      workings: mapEach(LINES, (line) => workingView(session, line)),
     };
   }
 
@@ -99,4 +103,21 @@ function operatorView(session: SessionState, line: Line): OperatorView {
   const chosen = (axis === 'row' ? session.entry.rowOperators : session.entry.columnOperators)[index] ?? null;
   const choice: OperatorChoice = chosen ?? 'not chosen';
   return { choice, isOpen: true };
+}
+
+/** A line's working as the session reports it; a line it does not report reads as nothing. */
+function workingView(session: SessionState, line: Line): WorkingView {
+  const { axis, index } = LINE_POSITIONS[line];
+  const working = lineWorkings(session).find((each) => each.line.axis === axis && each.line.index === index);
+  if (!working) {
+    return DEFAULT_VIEW.workings[line];
+  }
+  return { working: workingText(working), mark: markOf(working.outcome) };
+}
+
+function markOf(outcome: LineOutcome): WorkingMark {
+  if (outcome.kind === 'not-whole') {
+    return 'not a whole number';
+  }
+  return outcome.kind === 'result' && outcome.reachesTarget ? 'target reached' : 'none';
 }

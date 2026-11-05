@@ -15,7 +15,9 @@ either shown or chosen by the player. Several answers are usually valid, and the
 the distinct solutions found. It is for puzzle fans (Kakuro, KenKen) and people practising
 mental arithmetic, played in a phone browser first and packaged for iOS and Android with
 Capacitor later. Feature F0, the walking skeleton, plays one fixed 2 × 2 puzzle
-(`specs/001-walking-skeleton/`). Sources: `docs/brief/project-brief.md`, the constitution.
+(`specs/001-walking-skeleton/`). Spec-002 (`specs/002-live-calculations/`) shows each line's
+working as the player taps ("6 + 2 = 8 ✓", "6 ÷ 4 ✗"); results may go below zero, and only a
+division that is not whole fails a line. Sources: `docs/brief/project-brief.md`, the constitution.
 
 ## Architecture and Key Decisions
 
@@ -28,7 +30,7 @@ Capacitor later. Feature F0, the walking skeleton, plays one fixed 2 × 2 puzzle
 - **Boundaries and integrations**: none at runtime. After loading, the game makes no network
   requests (constitution I; CSP `connect-src 'none'` in `index.html`).
 - **Contracts**: no OpenAPI/AsyncAPI. The internal contracts are
-  `specs/001-walking-skeleton/contracts/engine-api.md` (engine) and `play-screen.md`
+  `docs/contracts/engine-api.md` (engine) and `docs/contracts/play-screen.md`
   (accessible names and wording the UI driver reads).
 - **Key ADRs**: `docs/adr/0001-web-stack-and-hosting.md` — TypeScript and Vite (Capacitor-ready),
   Vitest, Playwright as the UI driver, GitHub Pages deployed by GitHub Actions; TypeScript is
@@ -58,7 +60,7 @@ npm test
 # Acceptance tests — in-process engine driver, then the UI driver on two phones
 npm run test:acceptance
 npm run test:acceptance:engine                     # fast, no browser
-npm run test:acceptance:ui                         # iPhone SE (WebKit) and Pixel 5 (Chromium) at 375 × 667
+npm run test:acceptance:ui                         # iPhone SE (WebKit) and Pixel 5 (Chromium) at 375 × 667; run npm run build first
 npm run test:acceptance:engine -- -g "spec-001 AC-8]"   # one acceptance criterion
 # After deploy only: ACCEPTANCE_PUBLIC_URL=<url> npm run test:acceptance:engine   (AC-17)
 
@@ -99,13 +101,22 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
   and ESLint stops engine code importing anything outside `src/engine/` or using browser
   globals, `Date`, timers or `Math.random`. Why: the engine must run unchanged in Node and stay deterministic (constitution II, III).
 - **The screen is read by accessible name.** The UI driver finds and reads everything through
-  roles and `aria-label`s defined in `contracts/play-screen.md`; changing wording in `labels.ts`
+  roles and `aria-label`s defined in `docs/contracts/play-screen.md`; changing wording in `labels.ts`
   can break the driver. Why: the same names are what VoiceOver and TalkBack users hear.
 - **Write live-region text only when it changes** (`writeText` in `view.ts`). Why: rewriting
   identical text makes screen readers announce it again (found by AC-20).
 - **A scenario that passes at RED is reported, and its driver proven** by a deliberate,
   reverted break before it is recorded as delivered. Why: several stubs passed vacuously
   early on; `tdd-log.md` records each proof.
+- **Build before running the UI driver.** It serves the built `dist/`, not the source. Why: a
+  stale build gave a false failure during spec-002 AC-1.
+- **Marks and announcements are tested by the phones, not the engine driver.** The engine
+  driver takes a line's ✓/✗ from the engine's outcome and counts an announcement itself when
+  Check shows a message. Why: only the UI driver reads the app's own names and live region, so
+  a break meant to prove those must be run on the phones (spec-002 AC-6, T030).
+- **Split a feature into pull requests only where every approved scenario can pass.** Why:
+  `verify` runs every approved scenario and `main` requires it, so spec-002's first part
+  stayed a draft until the second was done.
 - **Merge pull requests with a merge commit.** Why: `tdd-log.md` cites commit hashes, which
   rebase and squash merges rewrite. The `main` ruleset allows merge commits only and requires `verify`.
 - **The build is labelled with the checked-out commit** (`tools/build-version.ts`), not
