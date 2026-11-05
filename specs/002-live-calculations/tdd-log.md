@@ -469,4 +469,51 @@ spec-002 30 passed, 2 failed (AC-9).
   zero, made it fail on the engine and both phones: `Error: Column 1 working … Expected:
   "6 − 9 = −3" Received: "6 − 9"`. Reverted with `git checkout`, rebuilt; passes again.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record AC-8 as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## AC-9: with bottom-left 4 and Column 1 ÷, Column 1 reads "6 ÷ 4" with a cross and no result
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "bottom-left 4 and Column 1 ÷
+  make Column 1 "6 ÷ 4" with a cross and no result".
+- **Acceptance RED** (no new driver code): engine and both phones `Error: Column 1 should show
+  a cross … Expected: "not a whole number" Received: "none"`. The working itself already read
+  "6 ÷ 4", because the outcome was still `incomplete` (AC-2 cycle 1).
+
+### Cycle 1 — the working reports a division that is not whole
+
+- **RED**: `lineWorking › reports Column 1 as not whole at step 1 when bottom-left is 4 and
+  Column 1 is ÷: 6 ÷ 4` — failed: `expected { kind: 'incomplete' } to deeply equal
+  { kind: 'not-whole', step: 1 }`.
+- **GREEN**: a failed `evaluateLine` becomes `not-whole` with its step — commit `8b684da`.
+  AC-9 passes on the engine driver (it takes the cross from the outcome).
+- **REFACTOR**: none needed.
+
+### Cycle 2 — the working's name says the division is not whole
+
+- **RED**: `workingName › says when a division is not whole: "Column 1 working, 6 ÷ 4, not a
+  whole number"` — failed: `expected 'Column 1 working, 6 ÷ 4' to be 'Column 1 working,
+  6 ÷ 4, not a whole …'`.
+- **GREEN**: the name's ending comes from `spokenMark(outcome)`: ", not a whole number" or
+  ", target reached" — commit `08eab12`.
+- **REFACTOR**: none needed (the GREEN step already replaced the single-mark condition).
+
+### Cycle 3 — the slot shows a cross and no result
+
+- **RED**: `resultText › shows a cross and no result when a division is not whole: "✗"` —
+  failed: `expected '= ?' to be '✗'`.
+- **GREEN**: `NOT_WHOLE_MARK` (✗) for `not-whole` — commit `6a945b7`.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the cross is bold, like the tick (view, checked by hand)
+
+- Following the owner's AC-6 decision ("and later the ✗ slot"), the view's class becomes
+  `marked` for both ✓ and ✗, and is bold; `quickstart.md`'s manual check covers the ✗ —
+  commit `09123c0`. AC-9 passes on both phones. A scratch check against the preview: "= 8 ✓"
+  and "✗" slots carry `marked` at weight 700; "= ?" slots weight 400.
+
+- **Acceptance GREEN**: lint and type checks clean; 98 unit tests (100% statements, 98.23%
+  branches); **engine 35 of 35, phones 87 of 87** (every spec-001 and spec-002 scenario,
+  speed budgets included).
+- **Passing early**: AC-10 now passes everywhere; reported at its own RED.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting the owner.

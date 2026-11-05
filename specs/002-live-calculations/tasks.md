@@ -165,14 +165,14 @@ and no result. The rule itself shipped in Phase 2.
 
 ### AC-8: a result below zero ⚠️
 
-- [ ] T033 [US2] AC-8 RED: likely passes after AC-4 (negative results are already written). Same handling as T016.
-- [ ] T034 [US2] AC-8 GREEN, checkpoint.
+- [X] T033 [US2] AC-8 RED: likely passes after AC-4 (negative results are already written). Same handling as T016.
+- [X] T034 [US2] AC-8 GREEN, checkpoint.
 
 ### AC-9: a division that is not whole
 
-- [ ] T035 [US2] AC-9 RED: no new driver code. Expected failure: `Column 1 working — Expected: "6 ÷ 4", Received: …` or `Column 1 should show a cross — Expected: "not a whole number", Received: "none"`.
-- [ ] T036 [US2] AC-9 TDD cycles: `lineWorking` outcome `not-whole` with the `step` from `evaluateLine`; `workingText` gives "6 ÷ 4" with no result; `workingName` adds ", not a whole number"; `resultText` gives "✗"; the view gives the cross the same weight treatment as the mark, never colour alone (FR-205).
-- [ ] T037 [US2] AC-9 GREEN, slice refactor, checkpoint.
+- [X] T035 [US2] AC-9 RED: no new driver code. Expected failure: `Column 1 working — Expected: "6 ÷ 4", Received: …` or `Column 1 should show a cross — Expected: "not a whole number", Received: "none"`.
+- [X] T036 [US2] AC-9 TDD cycles: `lineWorking` outcome `not-whole` with the `step` from `evaluateLine`; `workingText` gives "6 ÷ 4" with no result; `workingName` adds ", not a whole number"; `resultText` gives "✗"; the view gives the cross the same weight treatment as the mark, never colour alone (FR-205).
+- [X] T037 [US2] AC-9 GREEN, slice refactor, checkpoint.
 
 ### AC-10: making the division whole ⚠️
 
