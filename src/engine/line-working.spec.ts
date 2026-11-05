@@ -3,14 +3,25 @@ import { emptyEntry } from './entry';
 import { defaultRules } from './evaluate-line';
 import { lineWorking } from './line-working';
 import { workedExample } from './puzzles/worked-example';
-import type { LinePosition } from './types';
+import type { Digit, Entry, LinePosition } from './types';
 
 const ROW_1: LinePosition = { axis: 'row', index: 0 };
+
+/** The worked example with only the top-right cell filled in. */
+function topRight(digit: Digit): Entry {
+  return { ...emptyEntry(workedExample), cells: [[null, digit], [null, null]] };
+}
 
 describe('lineWorking', () => {
   it('gives Row 1 on opening as 6, an empty cell and +, with no result yet', () => {
     const working = lineWorking(workedExample, emptyEntry(workedExample), ROW_1, defaultRules);
 
     expect(working).toEqual({ line: ROW_1, digits: [6, null], operator: '+', outcome: { kind: 'incomplete' } });
+  });
+
+  it('works out Row 1 as 6 + 2 = 8 once top-right is 2, reaching its target of 8', () => {
+    const working = lineWorking(workedExample, topRight(2), ROW_1, defaultRules);
+
+    expect(working.outcome).toEqual({ kind: 'result', value: 8, reachesTarget: true });
   });
 });
