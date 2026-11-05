@@ -124,12 +124,12 @@ with ✓ when it reaches its target.
 
 ### AC-5: dividing in a column ⚠️
 
-- [ ] T021 [US1] AC-5 RED: likely passes (÷ with a whole result needs nothing new). Same handling as T016.
-- [ ] T022 [US1] AC-5 GREEN, checkpoint.
+- [X] T021 [US1] AC-5 RED: likely passes (÷ with a whole result needs nothing new). Same handling as T016.
+- [X] T022 [US1] AC-5 GREEN, checkpoint.
 
 ### AC-6: every line reaching its target
 
-- [ ] T023 [US1] AC-6 RED: no new driver code. Expected failure: `Row 1 should be marked as reaching its target — Expected: "target reached", Received: "none"` if the mark is not yet in the name, or a style failure in the UI projects.
+- [X] T023 [US1] AC-6 RED: no new driver code. Expected failure: `Row 1 should be marked as reaching its target — Expected: "target reached", Received: "none"` if the mark is not yet in the name, or a style failure in the UI projects.
 - [ ] T024 [US1] AC-6 TDD cycles: `workingName` adds ", target reached" when `reachesTarget`; the view gives a reached slot heavier weight as well as the ✓ (never colour alone, FR-204); the counter stays "Found 0 of 2" until Check (no session change expected; prove it with a unit test in `session.spec.ts`).
 - [ ] T025 [US1] AC-6 GREEN, slice refactor, checkpoint.
 

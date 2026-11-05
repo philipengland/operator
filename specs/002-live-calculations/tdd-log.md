@@ -320,4 +320,50 @@ gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples �
   it fail on the engine and both phones: `Error: Column 1 working … Expected: "6 ÷ 2 = 3"
   Received: "6 ÷ 2"`. Reverted with `git checkout`, rebuilt; passes again.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record AC-5 as delivered.
+- **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## AC-6: with Solution A, every line shows its target and is marked, and nothing is counted until Check
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "with Solution A, every line
+  shows its target and is marked, and nothing is counted until Check".
+- **Acceptance RED** (no new driver code): both phones `Error: Row 1 should be marked as
+  reaching its target … Expected: "target reached" Received: "none"`. The engine driver
+  **passed**: it takes the mark from the outcome, which AC-2 delivered (noted at AC-2). The
+  phones test the app's wording of the mark.
+
+### Cycle 1 — the working's name says when the line reaches its target
+
+- **RED**: `workingName › says when the line reaches its target: "Row 1 working, 6 + 2 = 8,
+  target reached"` — failed: `expected 'Row 1 working, 6 + 2 = 8' to be 'Row 1 working,
+  6 + 2 = 8, target reac…'`.
+- **GREEN**: appends ", target reached" when the outcome reaches its target — commit
+  `5a14114`. AC-6 passes on both phones.
+- **REFACTOR**: none needed.
+
+### Cycle 2 — the counter waits for Check ⚠️ passed at RED
+
+- **RED**: `counterText › still reads "Found 0 of 2" once every line reaches its target, until
+  Check (spec-002 AC-6)` in `src/app/session.spec.ts`, filling Solution A through taps.
+  **Passed on its first run**, as `tasks.md` expected (no session change needed).
+- **Proof**: a deliberate break, the session checking the grid on every operator tap, made it
+  fail: `expected 'Found 1 of 2' to be 'Found 0 of 2'`. (A first attempt broke cell taps
+  only, which this test cannot see, because Solution A's last tap is an operator; a second
+  attempt hit the wrong line and only broke the syntax. Neither counted as proof.) Reverted
+  with `git checkout` — commit `082b245` (`test:`).
+- **REFACTOR**: none needed.
+
+### Not done — heavier weight on a reached slot (owner's decision)
+
+T024 also lists "the view gives a reached slot heavier weight as well as the ✓". FR-204
+requires only that the mark does not rely on colour alone and is heard by screen readers;
+the ✓ symbol and ", target reached" meet both. The weight comes from the plan and
+`docs/contracts/play-screen.md`, and no test drives it, so it was not added without the
+owner's decision.
+
+- **Acceptance GREEN**: lint and type checks clean; 95 unit tests (99.37% statements, 96.46%
+  branches); build 4.2 KB gzipped. Engine 34 passed, 1 failed (AC-9). Phones 85 passed, 2
+  failed (AC-9 on each).
+- **Passing early**: AC-7 and AC-11 now pass on the phones as well as the engine; reported at
+  their own RED.
+- **Slice refactor**: none needed.
+- **Checkpoint**: awaiting the owner.
