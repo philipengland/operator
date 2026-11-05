@@ -19,7 +19,16 @@ const EMPTY_LAYOUT: ScreenLayout = {
 };
 
 export class UiPhoneDriver implements PhoneDriver {
-  constructor(private readonly page: Page) {}
+  // Every request the page makes, and how many had been made when it last finished loading.
+  private readonly requests: string[] = [];
+  private requestsWhenOpened = 0;
+
+  constructor(private readonly page: Page) {
+    page.on('request', (request) => this.requests.push(request.url()));
+    page.on('load', () => {
+      this.requestsWhenOpened = this.requests.length;
+    });
+  }
 
   async useScreen(): Promise<void> {}
 
@@ -38,9 +47,8 @@ export class UiPhoneDriver implements PhoneDriver {
     return true;
   }
 
-  // Until this is built it reports an unknown count, so AC-18 cannot pass vacuously.
   async networkRequestsSinceOpening(): Promise<number> {
-    return Number.NaN;
+    return this.requests.length - this.requestsWhenOpened;
   }
 
   async look(cell: Cell): Promise<CellLook> {
