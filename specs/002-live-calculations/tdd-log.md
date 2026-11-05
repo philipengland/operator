@@ -414,4 +414,27 @@ spec-002 30 passed, 2 failed (AC-9).
   message (spec-001 design), so no change in the app can make it fail there. Only the phones,
   which watch the page's live region, test this scenario.
 - **No cycles**: no new behaviour was needed.
-- **Checkpoint**: awaiting the owner's decision to record both as delivered.
+- **Checkpoint**: both recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## T031: edge case "small screens", 320 × 568 and 375 × 667 ⚠️ passed at RED
+
+- **Acceptance tests** (`@ui`): `see-line-working.acceptance-spec.ts` — "on a 320 × 568
+  screen, all four workings are visible without scrolling" and the same at 375 × 667.
+- **Acceptance RED**: **all 4 runs passed on their first run** (two screens, two phones), as
+  noticed at AC-1. No layout change was needed, so `styles.css` is unchanged.
+- **Measurements** (Chromium and WebKit agree; CSS px, left/top/right/bottom), from a scratch
+  script against the built preview:
+  - **On opening** ("= ?" in every slot): grid 260 px wide. At 320 × 568 the row workings
+    sit at 262–290, the column workings end at 282 down; the Check button ends at 410.
+    At 375 × 667 the grid spans 58–317. No horizontal or vertical scroll at either size.
+  - **With the widest results** ("= 8 ✓", "= −1", "= 6 ✓"): the row-working column grows
+    from 28 to 52 px and the grid to 284 px. At 320 × 568 it spans 18–302, inside the 8 px
+    gutter; at 375 × 667, 46–329. Still no scroll.
+  - **Noticed, not fixed**: because the grid is centred and the row-working column sizes to
+    its content, the grid moves up to 12 px sideways as results appear. No test or requirement
+    covers it; raised with the owner for the redesign feature.
+- **Driver proof**: a deliberate break, a 400 px minimum width on every working slot, made all
+  4 runs fail: `Error: Row 1 working is on screen without scrolling … Expected: true Received:
+  false`. Reverted, rebuilt; all 4 pass again.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record it as delivered.
