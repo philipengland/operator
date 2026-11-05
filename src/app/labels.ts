@@ -22,6 +22,8 @@ const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
 // Stands for an empty cell or an operator not yet chosen, in a working.
 const GAP_MARK = '?';
 
+const MINUS_SIGN = '−';
+
 // Shown after a result that reaches its target (spec-002 FR-204).
 const TARGET_REACHED_MARK = '✓';
 
@@ -54,7 +56,12 @@ export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): 
 export function workingText({ digits, operator, outcome }: LineWorking): string {
   const between = ` ${operator ?? GAP_MARK} `;
   const calculation = digits.map((digit) => digit ?? GAP_MARK).join(between);
-  return outcome.kind === 'result' ? `${calculation} = ${outcome.value}` : calculation;
+  return outcome.kind === 'result' ? `${calculation} = ${shownNumber(outcome.value)}` : calculation;
+}
+
+/** A number as the player sees it: below zero with the minus sign U+2212, never a hyphen (spec-002). */
+function shownNumber(value: number): string {
+  return value < 0 ? `${MINUS_SIGN}${-value}` : String(value);
 }
 
 /** The working's accessible name, read by screen readers: "Row 1 working, 6 + ?" (spec-002 FR-206). */

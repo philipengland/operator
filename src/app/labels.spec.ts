@@ -67,6 +67,14 @@ const ROW_1_WITH_TOP_RIGHT_2: LineWorking = {
   outcome: { kind: 'result', value: 8, reachesTarget: true },
 };
 
+// Row 2 with bottom-left 2, bottom-right 3 and − chosen: 2 − 3 = −1, missing its target of 6.
+const ROW_2_GOING_BELOW_ZERO: LineWorking = {
+  line: { axis: 'row', index: 1 },
+  digits: [2, 3],
+  operator: '−',
+  outcome: { kind: 'result', value: -1, reachesTarget: false },
+};
+
 describe('workingText', () => {
   it.each([
     { digits: [6, null], operator: '+', text: '6 + ?' },
@@ -81,6 +89,10 @@ describe('workingText', () => {
 
   it('adds the result once the line is complete: "6 + 2 = 8"', () => {
     expect(workingText(ROW_1_WITH_TOP_RIGHT_2)).toBe('6 + 2 = 8');
+  });
+
+  it('writes a result below zero with the minus sign U+2212, not a hyphen: "2 − 3 = −1"', () => {
+    expect(workingText(ROW_2_GOING_BELOW_ZERO)).toBe('2 − 3 = −1');
   });
 });
 
