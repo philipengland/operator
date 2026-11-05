@@ -60,6 +60,13 @@ const ROW_1_ON_OPENING: LineWorking = {
   outcome: { kind: 'incomplete' },
 };
 
+// Row 1 once top-right is 2: 6 + 2 = 8, its target.
+const ROW_1_WITH_TOP_RIGHT_2: LineWorking = {
+  ...ROW_1_ON_OPENING,
+  digits: [6, 2],
+  outcome: { kind: 'result', value: 8, reachesTarget: true },
+};
+
 describe('workingText', () => {
   it.each([
     { digits: [6, null], operator: '+', text: '6 + ?' },
@@ -70,6 +77,10 @@ describe('workingText', () => {
     const working: LineWorking = { line: { axis: 'row', index: 0 }, digits, operator, outcome: { kind: 'incomplete' } };
 
     expect(workingText(working)).toBe(text);
+  });
+
+  it('adds the result once the line is complete: "6 + 2 = 8"', () => {
+    expect(workingText(ROW_1_WITH_TOP_RIGHT_2)).toBe('6 + 2 = 8');
   });
 });
 

@@ -48,9 +48,10 @@ export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): 
 }
 
 /** A line's working as the player reads it: "6 + ?", "6 + 2 = 8" (spec-002 FR-201). */
-export function workingText({ digits, operator }: LineWorking): string {
+export function workingText({ digits, operator, outcome }: LineWorking): string {
   const between = ` ${operator ?? GAP_MARK} `;
-  return digits.map((digit) => digit ?? GAP_MARK).join(between);
+  const calculation = digits.map((digit) => digit ?? GAP_MARK).join(between);
+  return outcome.kind === 'result' ? `${calculation} = ${outcome.value}` : calculation;
 }
 
 /** The working's accessible name, read by screen readers: "Row 1 working, 6 + ?" (spec-002 FR-206). */
