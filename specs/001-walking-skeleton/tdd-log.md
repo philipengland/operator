@@ -619,7 +619,7 @@
 - `2cc4936`: the config imports the lookup with its `.ts` extension, clearing a new Vite warning.
 - Full suite after the cycle: 71 unit tests pass (lines 99.1%, branches 96.5%); lint, type checks and build clean; engine 20 passed, UI 50 passed (remaining failures are AC-18, AC-19, AC-21 and the Android budget, not yet started).
 - **Acceptance GREEN**: **blocked** — needs the GitHub repository, Pages set to "GitHub Actions", and a merge to `main` (T069).
-- **Checkpoint**: approved by Philip England on 2026-11-05.
+- **Checkpoint**: work up to the pipeline shown to the owner on 2026-11-02; approval waits for AC-17 to pass after the first deploy (T069). (Corrected 2026-11-05: an earlier bulk edit had marked this approved.)
 
 ## AC-18: Given the game has loaded, when the device loses its connection, then the player can still fill in, check and find solutions, and the game makes no network requests after it has loaded
 
@@ -689,4 +689,4 @@
   - 90 ms in every tap → `slowest tap, in milliseconds — Expected: <= 100, Received: 113.8`
 - No product code changed, so there were no unit cycles.
 - Full suite: 76 unit tests pass; lint and type checks clean; engine 22 of 22; **phones 55 of 55**. Every approved scenario that runs before publishing now passes.
-- **Checkpoint**: awaiting approval from Philip England.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
