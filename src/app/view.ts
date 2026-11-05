@@ -24,6 +24,7 @@ interface OperatorPart {
 /** A line's working: its name for screen readers, and the result slot the player sees. */
 interface WorkingPart {
   readonly line: LinePosition;
+  readonly slot: HTMLElement;
   readonly name: HTMLElement;
   readonly result: HTMLElement;
 }
@@ -134,6 +135,8 @@ function renderWorkings(parts: readonly WorkingPart[], state: SessionState): voi
     if (part) {
       writeText(part.name, workingName(working));
       writeText(part.result, resultText(working));
+      // Bold as well as the ✓, so the mark never relies on one cue (owner's decision, 2026-11-05).
+      part.slot.classList.toggle('reached', working.outcome.kind === 'result' && working.outcome.reachesTarget);
     }
   }
 }
@@ -169,7 +172,7 @@ function workingElement(line: LinePosition, workings: WorkingPart[]): HTMLElemen
   const name = element('span', 'visually-hidden');
   const result = element('span', 'result');
   result.setAttribute('aria-hidden', 'true');
-  workings.push({ line, name, result });
+  workings.push({ line, slot: wrapper, name, result });
   wrapper.append(name, result);
   return wrapper;
 }

@@ -85,6 +85,11 @@ button {
   text-align: center;
 }
 
+/* A line that reaches its target: the ✓ plus a heavier weight, never colour alone. */
+.working.reached {
+  font-weight: 700;
+}
+
 .cell {
   aspect-ratio: 1;
   font-size: var(--cell-font);

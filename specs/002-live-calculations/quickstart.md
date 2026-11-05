@@ -52,4 +52,5 @@ At 375 × 667 (and again at 320 × 568):
 | Check | Device | Pass when |
 | --- | --- | --- |
 | Screen reader reads the working | iPhone with VoiceOver; Android with TalkBack | Moving through Row 1 reads target, operator, cells, then "Row 1 working, 6 plus 2 equals 8, target reached" (or close). Nothing is announced on a tap except as in spec-001. "?" and "minus 3" read sensibly. |
+| Marks stand out without colour | Any phone, and a greyscale screenshot | A slot that reaches its target shows ✓ **and** is bold; an unmarked slot is not bold. Seen in greyscale too. No automated test covers the weight (owner's decision, 2026-11-05). |
 | Deduction (SC-202) | 5 hallway playtests | At least 4 of 5 find the first solution with no more than 2 rejected Checks, within 3 minutes. |
