@@ -19,4 +19,10 @@ describe('findExpiryProblems', () => {
 
     expect(problems).toEqual([]);
   });
+
+  it('fails an exception whose review date is after its expiry date', () => {
+    const problems = findExpiryProblems([exception({ id: 'EXC-005', reviewBy: '2028-01-01', expires: '2027-12-01' })], TODAY);
+
+    expect(problems).toEqual(['EXC-005 is reviewed on 2028-01-01, after it expires on 2027-12-01']);
+  });
 });

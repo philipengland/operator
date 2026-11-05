@@ -9,8 +9,17 @@ export interface ExceptionRecord {
 
 /** What is wrong with the recorded exceptions on the given day (YYYY-MM-DD); empty when none. */
 export function findExpiryProblems(exceptions: readonly ExceptionRecord[], today: string): readonly string[] {
-  // ISO dates (YYYY-MM-DD) sort as plain text.
-  return exceptions
-    .filter((exception) => exception.expires < today)
-    .map((exception) => `${exception.id} expired on ${exception.expires}`);
+  return exceptions.flatMap((exception) => problemsWith(exception, today));
+}
+
+// ISO dates (YYYY-MM-DD) sort as plain text.
+function problemsWith({ id, reviewBy, expires }: ExceptionRecord, today: string): readonly string[] {
+  const problems: string[] = [];
+  if (expires < today) {
+    problems.push(`${id} expired on ${expires}`);
+  }
+  if (reviewBy > expires) {
+    problems.push(`${id} is reviewed on ${reviewBy}, after it expires on ${expires}`);
+  }
+  return problems;
 }
