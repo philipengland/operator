@@ -1,0 +1,35 @@
+{
+  "name": "operator",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Operator: a number puzzle with targets on rows and columns.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --project tsconfig.json && tsc --project src/engine/tsconfig.json && tsc --project test/acceptance/tsconfig.json",
+    "test": "vitest run --coverage",
+    "test:acceptance": "npm run test:acceptance:engine && npm run test:acceptance:ui",
+    "typecheck:acceptance": "tsc --project test/acceptance/tsconfig.json",
+    "test:acceptance:engine": "node tools/run-acceptance.mjs engine",
+    "test:acceptance:ui": "node tools/run-acceptance.mjs ui"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "22.20.5",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "10.14.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vitest": "5.0.5",
+    "yaml": "2.9.1"
+  }
+}

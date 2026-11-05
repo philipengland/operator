@@ -1,0 +1,54 @@
+import { defineConfig, devices } from '@playwright/test';
+
+// Driver choice is configuration only (acceptance-tests standard "Choosing the Driver"):
+//   npm run test:acceptance:engine   in-process, no browser
+//   npm run test:acceptance:ui       iPhone (WebKit) and Android (Chromium) at 375 × 667
+const isUiRun = process.env.ACCEPTANCE_DRIVER === 'ui';
+const isCi = !!process.env.CI;
+const PREVIEW_PORT = 4173;
+const baseURL = process.env.ACCEPTANCE_BASE_URL ?? `http://localhost:${PREVIEW_PORT}`;
+const PHONE_SCREEN = { width: 375, height: 667 }; // SC-002
+
+export default defineConfig({
+  testDir: 'test/acceptance',
+  testMatch: '**/*.acceptance-spec.ts',
+  forbidOnly: isCi,
+  // Retries only collect traces for diagnosis; a scenario that passes on retry is flaky
+  // and is fixed, never accepted (Playwright standard).
+  retries: isCi ? 1 : 0,
+  reporter: 'list',
+  use: {
+    baseURL,
+    trace: 'on-first-retry',
+  },
+  projects: isUiRun
+    ? [
+        {
+          name: 'iphone',
+          testIgnore: '**/delivery/**',
+          grepInvert: /@budget|@after-publish/,
+          use: { ...devices['iPhone SE'], viewport: PHONE_SCREEN },
+        },
+        {
+          name: 'android',
+          testIgnore: '**/delivery/**',
+          grepInvert: /@after-publish/,
+          use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN },
+        },
+      ]
+    : [
+        {
+          name: 'engine',
+          grepInvert: /@ui|@after-publish/,
+        },
+      ],
+  webServer:
+    isUiRun && !process.env.ACCEPTANCE_BASE_URL
+      ? {
+          // Serves the built dist/ artifact: the same files that are deployed (research R5).
+          command: `npm run preview -- --port ${PREVIEW_PORT} --strictPort`,
+          url: baseURL,
+          reuseExistingServer: !isCi,
+        }
+      : undefined,
+});
