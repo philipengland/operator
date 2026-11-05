@@ -548,3 +548,47 @@ spec-002 30 passed, 2 failed (AC-9).
   made it fail on `reachesTarget`. Reverted. Then 6 of 6 pass — commit `b2f33c5` (`test:`).
 - Check's own negative-target test is pull request 1's cycle 2 (`bc32ebf`).
 - **Checkpoint**: recorded as delivered with the owner's approval (Philip England, 2026-11-05).
+
+## Polish
+
+### T041 — the whole suite
+
+- `npm run exceptions:check`: 4 exceptions, 0 problems. `npm run lint`, `npm run typecheck`:
+  clean.
+- `npm test`: 100 unit tests. Coverage 100% statements and lines, 98.23% branches (threshold
+  90%, applied to the total). Two files sit below 90% branches, both unchanged since F0:
+  `src/engine/cycles.ts` and `tools/` (87.5% each).
+- `npm run build`: JavaScript 3.31 KB + CSS 0.93 KB gzipped (F0 ended at 2.77 + 0.90), well
+  within 30 KB.
+- `npm run test:acceptance`: **engine 35 of 35; phones 87 of 87** (iPhone SE on WebKit, Pixel 5
+  on Chromium, speed budgets on Android: SC-203).
+- Draft pull request #7: `verify` passed on the first push with every scenario green.
+
+### T042 — AGENTS.md
+
+Purpose paragraph describes the workings and the rule change; the UI acceptance command says
+to build first; three conventions added, each with its reason (build before the UI driver;
+marks and announcements are tested by the phones; split pull requests only where every
+approved scenario can pass) — commit `2daa108`.
+
+### T043 — quickstart sections 1 to 3
+
+- **Section 1** (lint, type checks, unit tests): green, as T041. **Gap noted**: the section
+  says the unit tests cover `lineWorking` for every row of the engine-API table. Every row
+  but one has a `lineWorking` unit test; "bottom-left 9, Column 1 −" (−3 on the worked
+  example) is covered by `evaluateLine`'s unit test and AC-8's scenario instead.
+- **Section 2** (build and acceptance): as T041. Every spec-001 and spec-002 scenario passes
+  through both drivers; small screens include the workings at 320 × 568; axe clean.
+- **Section 3** (play it yourself): scripted against the built preview at 375 × 667 and
+  320 × 568 (Chromium), reading each result slot. Identical at both sizes, no scrolling:
+
+  | Step | Slots (Row 1 \| Row 2 \| Column 1 \| Column 2) |
+  | --- | --- |
+  | 1. Opening | = ? \| = ? \| = ? \| = ? |
+  | 2. Top-right 3, then round to 2 | = 9 …, then = 8 ✓ … |
+  | 3. Bottom-left 9, Column 1 − | = 8 ✓ \| = ? \| = −3 \| = ? |
+  | 4. Bottom-left 4, Column 1 ÷; then 6 | … ✗ …; then … = 1 … |
+  | 5. Solution A, then Check | = 8 ✓ \| = 6 ✓ \| = 3 ✓ \| = 6 ✓, "Found 0 of 2"; Check: "New solution found!", "Found 1 of 2" |
+
+  Every step matches the quickstart. This is a scripted run, not the owner's hands-on play;
+  T044 covers real phones and screen readers.
