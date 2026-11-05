@@ -140,6 +140,10 @@ describe('resultText', () => {
   it('shows a result below zero with the minus sign: "= −1"', () => {
     expect(resultText(ROW_2_GOING_BELOW_ZERO)).toBe('= −1');
   });
+
+  it('shows a cross and no result when a division is not whole: "✗"', () => {
+    expect(resultText(COLUMN_1_NOT_WHOLE)).toBe('✗');
+  });
 });
 
 describe('messageText', () => {

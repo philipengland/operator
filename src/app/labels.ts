@@ -28,6 +28,9 @@ const MINUS_SIGN = '−';
 // Shown after a result that reaches its target (spec-002 FR-204).
 const TARGET_REACHED_MARK = '✓';
 
+// Shown instead of a result when a division is not whole (spec-002 FR-205).
+const NOT_WHOLE_MARK = '✗';
+
 // F0's grid is 2 × 2, so each cell is a corner (spec "The Puzzle").
 const CORNER_NAMES: readonly (readonly string[])[] = [
   ['Top-left', 'Top-right'],
@@ -89,6 +92,9 @@ function spokenNumber(value: number): string {
 
 /** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
 export function resultText({ outcome }: LineWorking): string {
+  if (outcome.kind === 'not-whole') {
+    return NOT_WHOLE_MARK;
+  }
   if (outcome.kind !== 'result') {
     return `= ${GAP_MARK}`;
   }
