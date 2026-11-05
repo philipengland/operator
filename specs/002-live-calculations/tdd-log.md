@@ -88,4 +88,4 @@ workings are on screen. The rule is driven by unit tests.
   the 13 spec-002 scenarios fail on their working assertions, as approved.
 - `npm run test:acceptance:ui -- --grep-invert "spec-002"`: 55 passed (both phones, speed
   budgets on Android).
-- **Checkpoint**: awaiting the owner.
+- **Checkpoint**: approved by Philip England on 2026-11-05, including cycle 2 as delivered (passed at RED, proven by a reverted break).
