@@ -70,7 +70,9 @@ function shownNumber(value: number): string {
 
 /** The working's accessible name, read by screen readers: "Row 1 working, 6 + ?" (spec-002 FR-206). */
 export function workingName(working: LineWorking): string {
-  return `${lineName(working.line)} working, ${describeWorking(working, spokenNumber)}`;
+  const name = `${lineName(working.line)} working, ${describeWorking(working, spokenNumber)}`;
+  const { outcome } = working;
+  return outcome.kind === 'result' && outcome.reachesTarget ? `${name}, target reached` : name;
 }
 
 /** A number as a screen reader should say it: "minus 3". Some skip or misread U+2212 before a number (research R2). */

@@ -104,6 +104,10 @@ describe('workingName', () => {
   it('speaks a result below zero as "minus": "Row 2 working, 2 − 3 = minus 1"', () => {
     expect(workingName(ROW_2_GOING_BELOW_ZERO)).toBe('Row 2 working, 2 − 3 = minus 1');
   });
+
+  it('says when the line reaches its target: "Row 1 working, 6 + 2 = 8, target reached"', () => {
+    expect(workingName(ROW_1_WITH_TOP_RIGHT_2)).toBe('Row 1 working, 6 + 2 = 8, target reached');
+  });
 });
 
 describe('resultText', () => {
