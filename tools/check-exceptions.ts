@@ -9,6 +9,8 @@ export interface ExceptionRecord {
 
 /** What is wrong with the recorded exceptions on the given day (YYYY-MM-DD); empty when none. */
 export function findExpiryProblems(exceptions: readonly ExceptionRecord[], today: string): readonly string[] {
-  void today;
-  return exceptions.map((exception) => `${exception.id} expired on ${exception.expires}`);
+  // ISO dates (YYYY-MM-DD) sort as plain text.
+  return exceptions
+    .filter((exception) => exception.expires < today)
+    .map((exception) => `${exception.id} expired on ${exception.expires}`);
 }

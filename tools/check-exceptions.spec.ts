@@ -13,4 +13,10 @@ describe('findExpiryProblems', () => {
 
     expect(problems).toEqual(['EXC-002 expired on 2027-11-01']);
   });
+
+  it.each(['2027-11-02', '2028-01-01'])('passes an exception that expires on %s, today or later', (expires) => {
+    const problems = findExpiryProblems([exception({ expires })], TODAY);
+
+    expect(problems).toEqual([]);
+  });
 });
