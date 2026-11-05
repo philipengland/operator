@@ -308,4 +308,16 @@ gains `LineOutcome`, `LineWorking`, `lineWorking`, its guarantee and examples �
 - **Passing early**: AC-8 ("6 − 9 = −3", unmarked) now passes on the engine and both phones,
   as `tasks.md` predicted; it is reported at its own RED (T033).
 - **Slice refactor**: none needed.
-- **Checkpoint**: awaiting the owner.
+- **Checkpoint**: approved by Philip England on 2026-11-05.
+
+## AC-5: with bottom-left 2 and Column 1 ÷, Column 1 reads "6 ÷ 2 = 3" ⚠️ passed at RED
+
+- **Acceptance test**: `see-line-working.acceptance-spec.ts` — "bottom-left 2 and Column 1 ÷
+  make Column 1 "6 ÷ 2 = 3"".
+- **Acceptance RED**: **passed on its first run**, on the engine and both phones, as
+  `tasks.md` predicted: a division with a whole result is worked out like any other line.
+- **Driver proof**: a deliberate break, `lineWorking` treating every ÷ line as unfinished, made
+  it fail on the engine and both phones: `Error: Column 1 working … Expected: "6 ÷ 2 = 3"
+  Received: "6 ÷ 2"`. Reverted with `git checkout`, rebuilt; passes again.
+- **No cycles**: no new behaviour was needed.
+- **Checkpoint**: awaiting the owner's decision to record AC-5 as delivered.
