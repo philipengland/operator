@@ -627,4 +627,6 @@
 - **Drivers added**: `loseConnection` (`context.setOffline(true)`, built earlier because a placeholder let the offline scenario pass without going offline); `networkRequestsSinceOpening` (records every page request and counts those after the page's last `load` event) — commit `38e0bde`.
 - **Acceptance RED**: **passed at RED** on both phones (4 of 4), as T070 predicted. Nothing in the game uses the network after loading, and the CSP sets `connect-src 'none'`.
 - **Counter proven**: with a temporary image request on every tap added to `src/app/main.ts` and the game rebuilt, the scenario failed on both phones: `network requests after opening — Expected: 0, Received: 15`. The change was reverted and the game rebuilt; no product code changed.
-- **Checkpoint**: awaiting the owner's decision (record as delivered by construction, as for AC-5).
+- **Decision**: owner chose option (a) on 2026-11-05 — record AC-18 as delivered by construction (no request after load; CSP `connect-src 'none'`), write no new code. T071 (cycles only if red) was skipped.
+- **Acceptance GREEN**: AC-18 passes on both phones; no product code changed.
+- **Checkpoint**: approved by Philip England on 2026-11-05 (option a).

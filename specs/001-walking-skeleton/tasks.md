@@ -236,9 +236,9 @@ Open Items 1). AC-17 cannot go green without it.
 
 ### AC-18 Playing after the connection is lost ⚠️
 
-- [ ] T070 [US3] AC-18 RED: phone driver `loseConnection()` (`context.setOffline(true)`) and `networkRequestsSinceOpening()` (counts `page.on('request')` events after `open()` finishes). ⚠️ Both scenarios may pass the first time they run, because nothing in the game uses the network and the CSP forbids `connect-src`. If so, stop and report: the behaviour exists by construction.
-- [ ] T071 [US3] AC-18 TDD cycles: only if red. Remove whatever makes a request after load. Files: `index.html`, `src/app/main.ts`.
-- [ ] T072 [US3] AC-18 scenarios GREEN in both UI projects; TDD log; checkpoint. Scenarios: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts`.
+- [X] T070 [US3] AC-18 RED: phone driver `loseConnection()` (`context.setOffline(true)`) and `networkRequestsSinceOpening()` (counts `page.on('request')` events after `open()` finishes). ⚠️ Both scenarios may pass the first time they run, because nothing in the game uses the network and the CSP forbids `connect-src`. If so, stop and report: the behaviour exists by construction.
+- [X] T071 [US3] AC-18 TDD cycles: only if red. Remove whatever makes a request after load. Files: `index.html`, `src/app/main.ts`.
+- [X] T072 [US3] AC-18 scenarios GREEN in both UI projects; TDD log; checkpoint. Scenarios: `test/acceptance/play/play-on-a-phone.acceptance-spec.ts`.
 
 ### AC-19 A failed change never goes live
 
