@@ -16,8 +16,10 @@ export interface ButtonModel {
   readonly label: string;
   readonly name: string;
   readonly isUnavailable: boolean;
+  /** The classes that give the button its style (button.css). */
+  readonly classes: readonly string[];
 }
 
-export function buttonModel({ label, action, isUnavailable = false }: ButtonProps): ButtonModel {
-  return { label, name: action ? `${label}, ${action}` : label, isUnavailable };
+export function buttonModel({ label, style, action, isUnavailable = false }: ButtonProps): ButtonModel {
+  return { label, name: action ? `${label}, ${action}` : label, isUnavailable, classes: ['button', `button--${style}`] };
 }

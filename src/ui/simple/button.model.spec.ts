@@ -13,4 +13,8 @@ describe('buttonModel', () => {
   it('says when it is unavailable', () => {
     expect(buttonModel({ label: 'Check', style: 'key', isUnavailable: true }).isUnavailable).toBe(true);
   });
+
+  it.each(['main', 'key', 'solid', 'dashed'] as const)('carries the %s style, so each style looks different', (style) => {
+    expect(buttonModel({ label: 'x', style }).classes).toEqual(['button', `button--${style}`]);
+  });
 });
