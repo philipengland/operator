@@ -15,5 +15,5 @@ export interface IconModel {
 }
 
 export function iconModel({ spokenAs }: IconProps): IconModel {
-  return { isHeard: true, name: spokenAs ?? null };
+  return { isHeard: spokenAs !== undefined, name: spokenAs ?? null };
 }

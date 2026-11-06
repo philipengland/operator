@@ -7,4 +7,10 @@ describe('iconModel', () => {
 
     expect(model).toMatchObject({ isHeard: true, name: 'target reached' });
   });
+
+  it('is hidden from screen readers when it is decoration', () => {
+    const model = iconModel({ icon: 'tick' });
+
+    expect(model).toMatchObject({ isHeard: false, name: null });
+  });
 });
