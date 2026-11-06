@@ -2,6 +2,7 @@
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
 import { createButton } from '../ui/simple/button';
+import { createText } from '../ui/simple/text';
 import { createTextInput } from '../ui/simple/text-input';
 
 export interface Sample {
@@ -10,6 +11,10 @@ export interface Sample {
 }
 
 export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
+  Text: [
+    { label: 'Display', render: () => createText({ text: 'Hello, Operator!', style: 'display' }).element },
+    { label: 'Body', render: () => createText({ text: 'Tap a dashed bubble to swap its operator.', style: 'body' }).element },
+  ],
   Button: [
     { label: 'Main', render: () => createButton({ label: 'Put it through!', style: 'main', action: 'Check' }).element },
     { label: 'Key', render: () => createButton({ label: '5', style: 'key' }).element },
