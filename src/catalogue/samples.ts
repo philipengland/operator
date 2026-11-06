@@ -1,8 +1,11 @@
 // The catalogue's samples: each component in every state the design guide lists (spec-003 FR-324).
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
+import { createBadge } from '../ui/simple/badge';
 import { createButton } from '../ui/simple/button';
 import { createIcon } from '../ui/simple/icon';
+import { createMascot } from '../ui/simple/mascot';
+import { createSurface } from '../ui/simple/surface';
 import { createText } from '../ui/simple/text';
 import { createTextInput } from '../ui/simple/text-input';
 
@@ -29,4 +32,15 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Cross', render: () => createIcon({ icon: 'cross', spokenAs: 'not a whole number' }).element },
     { label: 'Decorative tick', render: () => createIcon({ icon: 'tick' }).element },
   ],
+  Surface: [
+    { label: 'Panel', render: () => createSurface({ variant: 'panel' }, [sampleText('Panels hold the grid and the keypad.')]).element },
+    { label: 'Bubble', render: () => createSurface({ variant: 'bubble' }, [sampleText('Hello, Operator!')]).element },
+  ],
+  Badge: [{ label: 'Badge', render: () => createBadge({ text: '× 12' }).element }],
+  Mascot: [{ label: 'Mascot', render: () => createMascot().element }],
 };
+
+/** Body text to show inside a surface sample. */
+function sampleText(text: string): HTMLElement {
+  return createText({ text, style: 'body' }).element;
+}
