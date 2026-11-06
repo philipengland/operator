@@ -3,16 +3,29 @@
 // needed by an implemented criterion return values that cannot pass (spec-003 tasks, T013).
 
 import type { Locator, Page } from '@playwright/test';
-import type { CatalogueSection, LibraryComponent, Sample } from '../../dsl/catalogue-vocabulary';
-import { NO_BOX, readAppearance, readGreyscaleContrast, readSampleView, readTypeface, textElement } from './catalogue-reading';
+import type { CatalogueSection, LibraryComponent, LibraryScreen, PlayScreenPart, Sample, ScreenSample } from '../../dsl/catalogue-vocabulary';
+import { NO_BOX, readAppearance, readGreyscaleContrast, readPartView, readSampleView, readTypeface, textElement } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
-import type { Box } from '../phone.driver';
+import type { Box, ScreenSize } from '../phone.driver';
 import { scanForAccessibilityProblems } from '../../support/axe';
 import { publishedFiles } from '../published-files';
 
 const CATALOGUE_PAGE = 'catalogue.html';
 const CATALOGUE_TITLE = 'Operator component catalogue';
 const CATALOGUE_SECTIONS: readonly CatalogueSection[] = ['Foundations', 'Simple components', 'Combined components', 'Screens'];
+const SCREEN_VIEW_PAGE = 'catalogue.html#play-screen';
+const PLAY_SCREEN_PARTS: readonly PlayScreenPart[] = ['Operator header', 'Solutions counter', 'Puzzle grid', 'Keypad', 'Main button'];
+// Each part of the play screen, found by the names the contracts give it (component-library.md,
+// play-screen.md). The header has no name of its own: it is the element around the bubble whose
+// title is "Hello, Operator!".
+const FIND_SCREEN_PART: Readonly<Record<string, (screen: Locator) => Locator>> = {
+  'Operator header': (screen) => screen.getByText('Hello, Operator!', { exact: true }).locator('xpath=../..'),
+  'Solutions counter': (screen) => screen.getByText(/^Found \d+/).locator('xpath=..'),
+  'Puzzle grid': (screen) => screen.getByRole('group', { name: 'Puzzle', exact: true }),
+  Keypad: (screen) => screen.getByRole('group', { name: 'Keypad', exact: true }),
+  'Main button': (screen) => screen.getByRole('button', { name: /, Check$/ }),
+  'Row 1 target': (screen) => namedPart(screen, /Row 1 target/),
+};
 const BUILT_FROM_LINE = /^\s*Built from:\s*/;
 // The fixed 2 × 2 puzzle (spec-001): lines 1 and 2, cells named by corner, row by row.
 const FIXED_PUZZLE_LINES = [1, 2] as const;
@@ -62,6 +75,10 @@ export class UiCatalogueDriver implements CatalogueDriver {
 
   /** What a sample shows, and what a screen reader hears from it (from the accessibility tree). */
   async sample(sample: Sample): Promise<SampleView> {
+    if (sample.component === 'Play screen') {
+      const part = this.screenPart(sample.label);
+      return (await part.count()) === 0 ? NOT_SHOWN : readPartView(part);
+    }
     const group = this.sampleGroup(sample);
     if ((await group.count()) === 0) {
       return NOT_SHOWN;
@@ -182,15 +199,34 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return { mascot: await firstBox(mascot), bubble: await firstBox(bubble) };
   }
 
-  async openScreen(): Promise<void> {}
+  /** Opens the screen alone at full size, showing the given sample. */
+  async openScreen(screen: LibraryScreen, screenSample: ScreenSample): Promise<void> {
+    await this.page.goto(SCREEN_VIEW_PAGE);
+    await this.componentRegion(screen).waitFor();
+    await this.chooseScreenSample(screenSample);
+    await scanForAccessibilityProblems(this.page);
+  }
 
-  async chooseScreenSample(): Promise<void> {}
+  /** Presses the sample's button in the "Screen sample" switch, then looks at the top of the page again. */
+  async chooseScreenSample(screenSample: ScreenSample): Promise<void> {
+    const button = this.page.getByRole('group', { name: 'Screen sample', exact: true }).getByRole('button', { name: screenSample, exact: true });
+    if ((await button.count()) === 0) {
+      return; // No such sample to choose: the screen stays as it is, and the scenario's checks decide.
+    }
+    await button.click();
+    await button.and(this.page.locator('[aria-pressed="true"]')).waitFor();
+    await this.page.evaluate(() => window.scrollTo(0, 0));
+  }
 
-  async useScreen(): Promise<void> {}
+  async useScreen(size: ScreenSize): Promise<void> {
+    await this.page.setViewportSize(size);
+  }
 
+  /** The screen's size and where its five parts sit, relative to the top of the screen. */
   async screenView(): Promise<ScreenView> {
-    const parts = { 'Operator header': NO_BOX, 'Solutions counter': NO_BOX, 'Puzzle grid': NO_BOX, Keypad: NO_BOX, 'Main button': NO_BOX };
-    return { screen: { width: 0, height: 0 }, parts };
+    const screen = this.page.viewportSize() ?? { width: 0, height: 0 };
+    const boxes = await Promise.all(PLAY_SCREEN_PARTS.map(async (part) => [part, await boxIfOne(this.screenPart(part))] as const));
+    return { screen, parts: Object.fromEntries(boxes) as ScreenView['parts'] };
   }
 
   async chooseTheme(): Promise<void> {}
@@ -209,6 +245,13 @@ export class UiCatalogueDriver implements CatalogueDriver {
 
   async publishedFiles(): Promise<readonly PublishedFile[]> {
     return publishedFiles();
+  }
+
+  /** One part of the play screen, by the name its contract gives it; nothing when the label is not a part. */
+  protected screenPart(label: string): Locator {
+    const find = FIND_SCREEN_PART[label];
+    const screen = this.componentRegion('Play screen');
+    return find ? find(screen) : screen.locator(':scope > :not(*)');
   }
 
   /** The region named by the component, inside the catalogue. */
@@ -244,4 +287,14 @@ async function partBox(within: Locator, name: RegExp): Promise<Box> {
 async function boxOf(element: Locator): Promise<Box> {
   const box = await element.boundingBox();
   return box ? { left: box.x, top: box.y, right: box.x + box.width, bottom: box.y + box.height } : NO_BOX;
+}
+
+/** A part named by the pattern: a button with that name, or the element holding a hidden name with that text. */
+function namedPart(within: Locator, name: RegExp): Locator {
+  return within.getByRole('button', { name }).or(within.getByText(name).locator('xpath=..')).first();
+}
+
+/** The box of the only element matched; unknown when there is none or more than one. */
+async function boxIfOne(element: Locator): Promise<Box> {
+  return (await element.count()) === 1 ? boxOf(element) : NO_BOX;
 }

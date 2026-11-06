@@ -49,8 +49,18 @@ function parseNode(line: string): HeardNode | null {
 
 /** A shown sample: its first element is the component; the group's ARIA snapshot is what is heard. */
 export async function readSampleView(group: Locator): Promise<SampleView> {
-  const content = group.locator(':scope > *').first();
-  const heard = firstNodeIn(await group.ariaSnapshot());
+  return readView(group.locator(':scope > *').first(), await group.ariaSnapshot());
+}
+
+/** A part of a screen, read like a sample: its own ARIA snapshot, as if it were a group's content. */
+export async function readPartView(part: Locator): Promise<SampleView> {
+  const snapshot = await part.ariaSnapshot();
+  const asGroup = ['- part:', ...snapshot.split('\n').map((line) => `  ${line}`)].join('\n');
+  return readView(part, asGroup);
+}
+
+async function readView(content: Locator, groupSnapshot: string): Promise<SampleView> {
+  const heard = firstNodeIn(groupSnapshot);
   const states = heard?.states ?? [];
   return {
     text: await shownText(content),
