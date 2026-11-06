@@ -97,8 +97,22 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return this.page.evaluate(readGreyscaleContrast, screenshot.toString('base64'));
   }
 
-  async greyscaleImage(): Promise<Uint8Array> {
-    return new Uint8Array();
+  /** A screenshot of the sample with colour removed (CSS grayscale filter), to compare states. */
+  async greyscaleImage(sample: Sample): Promise<Uint8Array> {
+    const group = this.sampleGroup(sample);
+    if ((await group.count()) === 0) {
+      return new Uint8Array();
+    }
+    const content = group.locator(':scope > *').first();
+    const previousFilter = await content.evaluate((element) => {
+      const style = (element as HTMLElement).style;
+      const before = style.filter;
+      style.filter = 'grayscale(1)';
+      return before;
+    });
+    const image = await content.screenshot({ animations: 'disabled' });
+    await content.evaluate((element, before) => ((element as HTMLElement).style.filter = before), previousFilter);
+    return new Uint8Array(image);
   }
 
   /** The components named on a component's "Built from:" line; none when it has no such line. */
