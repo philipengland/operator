@@ -879,3 +879,59 @@
 
 - **Full suite** after AC-17 and AC-18: 191 unit tests; engine 36 passed; phones 177 passed, 8
   failed (AC-19 and AC-22, not started). Game JS and CSS unchanged.
+
+## AC-19: switching to Midnight blue
+
+- **Acceptance test**: `themes.acceptance-spec.ts` — `[spec-003 AC-19]`, four scenarios on both
+  catalogue phones.
+- **Driver** (T072, `646755e`):
+  - `chooseTheme()` presses the theme's button in the "Theme" switch, waits for it to show as
+    pressed, and scrolls back to the top, as `chooseScreenSample()` does.
+  - `coloursInUse()` reads every colour drawn on the page: text, fill, borders, outlines, shadows
+    and a drawing's fill and stroke. Fully transparent colours are left out. If nothing is read it
+    returns a sentence, so it can never pass on nothing.
+  - `layoutOfEverySample()` reads where every region and named group sits on the page, numbered in
+    document order. If nothing is read it returns an unknown box.
+- **Acceptance RED** (Pixel 5):
+  - `#1A1A1A is one of Midnight blue's four colours`: the expected failure.
+  - `Button "Main" shows — Expected: "Connect me!", Received: "Put it through!"`.
+  - Switching back to Classic failed `#0000EE is one of Classic's four colours`. This is a real
+    defect the scenario found: the catalogue's links were drawn in the browser's own blue.
+  - **Reported — passes at RED** (⚠️): "nothing moves or changes size" passed, because there was
+    no Midnight blue button to press, so nothing changed. It failed for real during the cycles
+    (below).
+- **Cycle 1** (`6d9b51b`) — `THEMES` starts with Classic, then Midnight blue, each with its four
+  colours, address, sign-off and button label (`themes.spec.ts`). RED: `expected [] to deeply
+  equal [ …(2) ]`. GREEN: `Theme` gains `address`, `signOff` and `buttonLabel`; Classic and
+  Midnight blue from the spec's Themes table. The other four come with AC-20.
+- **Cycle 2** (`13f5fd6`) — `screenSamplesFor(theme)` returns the play screen's samples in the
+  theme's voice (`screen-samples.spec.ts`). RED: the messages said "pal" and the button "Put it
+  through!". GREEN: the messages are built from the theme's address and the button from its label.
+  `SCREEN_SAMPLES` is replaced by the function.
+- **Cycle 3** (`a039d57`, wiring; covered by the acceptance scenarios, no unit test, as with
+  `view.ts`):
+  - The theme switch calls `applyTheme` and redraws only what speaks: the play screen (through
+    `update`), and the samples marked `speaksInTheme` (Button "Main", Speech bubble "Row through",
+    Operator header "Greeting").
+  - Catalogue links take the theme's ink.
+  - **"Nothing moves" then failed for real**: the "Main" sample narrowed (222 → 184 px) and "Row
+    through" lost a line, moving every sample below it up 22 px.
+  - **Owner decision (2026-11-06)**: fix the sizes in the catalogue, with no component changes and
+    the scenario unchanged. Each sample that speaks holds invisible copies of itself
+    (`visibility: hidden`, `aria-hidden`) in every theme's words, in the same grid cell. So it is
+    always the size of its longest wording, at any screen width. The shown sample stays first in
+    its group, so the existing readings are unchanged.
+- **Driver proven**:
+  - All three readings failed for real above.
+  - Reverted breaks (Pixel 5): the mascot's light parts painted `#ffffff` failed `#FFFFFF is one of
+    Midnight blue's four colours`; and switching to Classic applying Midnight blue's colours failed
+    `#1B2A4A is one of Classic's four colours`.
+- **Acceptance GREEN** (T074): AC-19, 8 runs passed.
+- **Edge case** (T071): the long-words case now really switches theme. It first failed `Operator
+  header is on screen without scrolling`, because pressing the switch below the screen scrolled
+  the page. `chooseTheme()` now scrolls back to the top, and the case passes. It checks only the
+  two themes that exist so far: choosing a theme that has no button does nothing. T071 stays open
+  until AC-20 adds the other four.
+- **Full suite**: 193 unit tests; engine 36 passed; phones 183 passed, 2 failed (AC-22, not
+  started). Game JS and CSS unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
+- **Slice refactor**: none needed.

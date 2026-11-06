@@ -260,9 +260,9 @@ and the theme unit tests pass.
 
 ### AC-19: switching to Midnight blue
 
-- [ ] T072 [US4] AC-19 RED: driver `chooseTheme()` presses the theme button; `coloursInUse()` collects every computed colour, background, border and shadow colour on visible elements (ignoring transparent); `layoutOfEverySample()` maps each sample to its box. Expected failure: `#1A1A1A is one of Midnight blue's four colours`.
-- [ ] T073 [US4] AC-19 TDD cycles: the catalogue's theme switch calls `applyTheme` and re-renders samples whose content depends on the theme (main button label, greeting address) through `update`; `src/catalogue/samples.ts` derives "Fill the grid, <address>." and the main button label from the current theme. `aria-pressed` follows the choice.
-- [ ] T074 [US4] AC-19 GREEN (all four scenarios), then the edge case T071, slice refactor, checkpoint.
+- [X] T072 [US4] AC-19 RED: driver `chooseTheme()` presses the theme button; `coloursInUse()` collects every computed colour, background, border and shadow colour on visible elements (ignoring transparent); `layoutOfEverySample()` maps each sample to its box. Expected failure: `#1A1A1A is one of Midnight blue's four colours`.
+- [X] T073 [US4] AC-19 TDD cycles: the catalogue's theme switch calls `applyTheme` and re-renders samples whose content depends on the theme (main button label, greeting address) through `update`; `src/catalogue/samples.ts` derives "Fill the grid, <address>." and the main button label from the current theme. `aria-pressed` follows the choice.
+- [X] T074 [US4] AC-19 GREEN (all four scenarios), then the edge case T071, slice refactor, checkpoint.
 
 ### AC-20 and AC-21: theme values and contrast (unit tests only)
 
