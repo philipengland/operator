@@ -55,4 +55,19 @@ describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)', () => {
 
     expect(themes).toEqual(['Plum and mint', 'Plum and mint', 'Plum and mint']);
   });
+
+  it('gives each theme between 70 and 130 of 600 seeds, "000000" to "000257" (AC-24)', () => {
+    const seeds = Array.from({ length: 600 }, (_, index) => index.toString(16).toUpperCase().padStart(6, '0'));
+    const counts = new Map(THEMES.map((theme) => [theme.label, 0]));
+
+    seeds.forEach((seed) => {
+      const { label } = themeForSeed(seed);
+      counts.set(label, (counts.get(label) ?? 0) + 1);
+    });
+
+    for (const [label, count] of counts) {
+      expect(count, `${label} is given ${count} times`).toBeGreaterThanOrEqual(70);
+      expect(count, `${label} is given ${count} times`).toBeLessThanOrEqual(130);
+    }
+  });
 });
