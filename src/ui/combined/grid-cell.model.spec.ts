@@ -21,4 +21,8 @@ describe('gridCellModel', () => {
       isSelected: false,
     });
   });
+
+  it('a selected cell is heard as selected', () => {
+    expect(gridCellModel({ name: 'Top-right cell', digit: null, isSelected: true }).isSelected).toBe(true);
+  });
 });
