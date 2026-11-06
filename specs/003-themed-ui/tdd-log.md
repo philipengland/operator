@@ -317,3 +317,14 @@
   AC-25 not covered until parts 2 and 3.
 - **Pull request**: branch `003-themed-ui-part-1`, "spec-003 part 1 of 3: foundations and simple
   components".
+
+## Part 2: combined components (T033)
+
+- **Branch**: `003-themed-ui-part-2` from `main` at `36815b0` (part 1 merged, PR #9).
+- **Scenarios brought over**: `test/acceptance/library/combined-components.acceptance-spec.ts`
+  from `003-themed-ui`, unchanged: blob `868c4d9`, as approved in `79718d4`. The DSL and
+  `examples.ts` on `main` are identical to the approved ones.
+- **Baseline**: 20 scenarios, 40 runs on the two catalogue phones, all failed on their
+  assertions for missing samples or driver stubs (e.g. `Solutions counter "None yet" shows`,
+  `keypad keys, row by row`, `what Speech bubble is built from`); none crashed. The rest of the
+  suite is as at the end of part 1.

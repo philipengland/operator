@@ -157,7 +157,7 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 **Independent Test**: Combined components section against the design guide; the 20 scenarios in
 `combined-components.acceptance-spec.ts` pass on both catalogue phones.
 
-- [ ] T033 [US2] Create `003-themed-ui-part-2` from `main` (after part 1 merges) and bring over `test/acceptance/library/combined-components.acceptance-spec.ts` from `003-themed-ui`. Run it: 20 scenarios fail on missing samples. TDD log.
+- [X] T033 [US2] Create `003-themed-ui-part-2` from `main` (after part 1 merges) and bring over `test/acceptance/library/combined-components.acceptance-spec.ts` from `003-themed-ui`. Run it: 20 scenarios fail on missing samples. TDD log.
 
 ### AC-7: built from
 
