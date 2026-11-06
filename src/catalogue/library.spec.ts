@@ -22,7 +22,6 @@ describe('LIBRARY', () => {
     expect(notBuiltYet).toEqual([
       'Speech bubble: Built in part 2.',
       'Operator header: Built in part 2.',
-      'Solutions counter: Built in part 2.',
       'Target pill: Built in part 2.',
       'Grid cell: Built in part 2.',
       'Line working: Built in part 2.',

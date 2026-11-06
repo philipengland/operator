@@ -20,15 +20,10 @@ const builtIn =
 export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[]>> = {
   Foundations: [],
   'Simple components': entries('Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot'),
-  'Combined components': builtIn('part 2')(
-    'Speech bubble',
-    'Operator header',
-    'Solutions counter',
-    'Target pill',
-    'Grid cell',
-    'Line working',
-    'Puzzle grid',
-    'Keypad',
-  ),
+  'Combined components': [
+    ...builtIn('part 2')('Speech bubble', 'Operator header'),
+    ...entries('Solutions counter'),
+    ...builtIn('part 2')('Target pill', 'Grid cell', 'Line working', 'Puzzle grid', 'Keypad'),
+  ],
   Screens: builtIn('part 3')('Play screen'),
 };
