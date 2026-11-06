@@ -45,7 +45,7 @@ a **model** (what it shows and says). Names below are the props; full shapes are
 | Text input | simple | `label`, `hint`, `value` | – |
 | Icon | simple | `icon: tick | cross`, `spokenAs?` (glyph ✓ or ✗) | heard, decorative |\| cross`, `spokenAs?` | heard, decorative |
 | Surface | simple | `variant: panel | bubble`, `fill?: tile | accent | ink` | – |\| bubble` | – |
-| Badge | simple | `text`, `style?: ink | light` | – |
+| Badge | simple | `text`, `style?: ink | light`, `spokenAs?` | – || light` | – |
 | Mascot | simple | – | – |
 | Speech bubble | combined | `title`, `message` | – |
 | Operator header | combined | `title`, `message` | – |

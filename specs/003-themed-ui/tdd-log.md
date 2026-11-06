@@ -423,3 +423,64 @@
   passed (87 game + 42 catalogue), 32 failed (the 16 part-2 scenarios not started). Game JS and
   CSS unchanged (same hashes).
 - **Slice refactor**: none beyond `6b2d718`.
+
+## AC-9: the target pill
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-9]`, four
+  scenarios on both catalogue phones.
+- **Acceptance RED**: all 8 runs failed for the missing samples: `Target pill "Add" shows —
+  Expected: "+ 16", Received: ""`, as T040 predicted.
+- **Design note**: the look check reads a sample's outermost element, which must be the ink badge
+  itself, so the pill cannot wrap it. Badge therefore gains `spokenAs` (as Icon has): its visible
+  text is hidden from screen readers and a visually hidden name speaks. Icon now takes the colour
+  of what it sits on, so the tick shows on the ink badge.
+
+### Cycle 1 — a badge can be heard as something other than its text
+
+- **RED**: `badgeModel › can be heard as something other than its text` — `expected '+ 16' to be
+  'Row 1 target 16, plus'`. (The first badge test now also states it is heard as its text.)
+  **GREEN**: `369575c`. **REFACTOR**: none needed.
+
+### Cycles 2 to 4 — the target pill model
+
+- **2 RED**: `targetPillModel › a shown operator is a badge showing "+ 16", heard by its line's
+  name` — `expected { kind: 'button', text: '', … } to deeply equal { kind: 'badge', text: '+ 16',
+  … }`. **GREEN**: `908bfe2`.
+- **3 RED**: `… an open operator not yet chosen is a button showing "? 12"` — received the badge.
+  **GREEN**: open is a button; no operator shows "?" — `d68b80a`. A chosen open operator ("× 12"
+  on the button) follows from the same rule; a test for it would pass at once, so none was added.
+- **4 RED**: `… a line that reaches its target gains a tick, heard with "target reached"` —
+  received `hasTick: false`. **GREEN**: tick, and ", target reached" (spec-002's wording) —
+  `fc5d4ad`.
+- **REFACTOR**: none needed.
+
+### Cycle 5 — the catalogue shows the pill as built (AC-7)
+
+- **RED**: `LIBRARY › says which part builds each component not built yet` without the pill, and
+  `… what each built combined component is built from` with `'Target pill': ['Badge', 'Button',
+  'Icon']` — both describe the pill being built, so both changed in one RED: `expected [ …(8) ] to
+  deeply equal [ …(7) ]` and `expected { 'Solutions counter': … } to deeply equal { …, 'Target
+  pill': … }`. **GREEN**: `cf16154`. **REFACTOR**: none needed.
+
+- **Renderer** (driven by the scenarios), commit `24a0c5f`: `createTargetPill(props, onChoose?)`
+  — shown: a Badge spoken by the line's name with a decorative tick Icon inside, hidden unless
+  the line reaches its target; open: a dashed Button labelled "? 12" whose name is "? 12, Row 2
+  target 12, operator not chosen" (label first, WCAG 2.5.3), calling `onChoose` when tapped.
+  Shown or open is fixed for a puzzle, so it is chosen at creation. Layout-only
+  `target-pill.css` sizes the tick to the pill. Badge renders its spoken name; `aria-hidden` set
+  to `"true"` (a first try with `toggleAttribute` wrote `""`, which hides nothing; fixed before
+  the run). Samples Add, Subtract, Multiply, Divide, Open, Line correct.
+  - **Known limit**: an open pill whose line reaches its target is heard with "target reached"
+    but shows no tick, since Button holds only its label. The play screen shows the ✓ in the
+    line's working (AC-11); raised at the checkpoint.
+- **Driver proven** by reverted breaks (iPhone): no tick failed `"Line correct" shows — Received:
+  "+ 9"`; open pill as a key failed `"Open" outline — Expected: "dashed", Received: "solid"`;
+  badge not spoken by name failed `"Add" is heard to include "plus" — Received: "+ 16"`; light
+  badge failed `"Add" fill — Expected: "ink", Received: "tile"`.
+- **Acceptance GREEN**: AC-9, 8 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 177 unit tests; engine 35 passed; phones 137 passed (87 game + 50 catalogue),
+  24 failed (the 12 part-2 scenarios not started). Game JS and CSS unchanged.
+- **Slice refactor** (`60cb210`): setting or removing an attribute, now in Button, Icon and Badge,
+  moves from `button.ts` to `component.ts` as `setAttributeOrRemove`. Full suite green again.
+  Unit line coverage 100% → 98.9% (branches 95.6%): the helper now sits in a unit-covered file
+  but is exercised through the components; above the 90% threshold.

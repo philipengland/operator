@@ -173,9 +173,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-9: target pill
 
-- [ ] T040 [US2] AC-9 RED. Expected failure: `Target pill "Add" shows — Expected: "+ 16", Received: ""`.
-- [ ] T041 [US2] AC-9 TDD cycles in `src/ui/combined/target-pill.ts`: shown operator → Badge with "<op> <target>", heard by the given `name`; open → dashed Button showing "? <target>" or the chosen operator; `reachesTarget` adds a heard Icon tick ("target reached"). Built from Badge, Button, Icon. Samples: Add, Subtract, Multiply, Divide, Open, Line correct, with sample names containing the operator word and target ("Row 1 target 16, plus").
-- [ ] T042 [US2] AC-9 GREEN, slice refactor, checkpoint.
+- [X] T040 [US2] AC-9 RED. Expected failure: `Target pill "Add" shows — Expected: "+ 16", Received: ""`.
+- [X] T041 [US2] AC-9 TDD cycles in `src/ui/combined/target-pill.ts`: shown operator → Badge with "<op> <target>", heard by the given `name`; open → dashed Button showing "? <target>" or the chosen operator; `reachesTarget` adds a heard Icon tick ("target reached"). Built from Badge, Button, Icon. Samples: Add, Subtract, Multiply, Divide, Open, Line correct, with sample names containing the operator word and target ("Row 1 target 16, plus").
+- [X] T042 [US2] AC-9 GREEN, slice refactor, checkpoint.
 
 ### AC-10: grid cell
 

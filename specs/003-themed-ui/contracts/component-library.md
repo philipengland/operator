@@ -46,7 +46,7 @@ interface Component<Props> {
 | Text input | `textbox` | its visible `label` (a real `<label for>`) | hint as `placeholder`; typed text in Chewy |
 | Icon | `img` when `spokenAs` is given, otherwise hidden | `spokenAs` ("target reached") | tick, cross (drawn; the ✓ or ✗ kept as visually hidden text) |
 | Surface | none | – | panel; bubble (accent shadow, 6 px tail corner); fill tile, accent or ink (ink casts an accent shadow) |
-| Badge | none (text) | its text | ink pill; light pill (tile, ink outline) for a count on a coloured surface |
+| Badge | none (text) | its text, or `spokenAs` (visible text then hidden) | ink pill; light pill (tile, ink outline) for a count on a coloured surface |
 | Mascot | hidden (`aria-hidden="true"`) | – | 76 px, original character from the design guide |
 
 ## Combined components
