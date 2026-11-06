@@ -64,6 +64,10 @@ npm run test:acceptance:ui                         # iPhone SE (WebKit) and Pixe
 npm run test:acceptance:engine -- -g "spec-001 AC-8]"   # one acceptance criterion
 # After deploy only: ACCEPTANCE_PUBLIC_URL=<url> npm run test:acceptance:engine   (AC-17)
 
+# Test evidence: runs every suite and writes specs/<feature>/test-results.md, which the
+# Spec Kit Dashboard shows under Supporting Artifacts (last line: "OVERALL status: PASS")
+npm run test-results -- <feature-folder> [--public-url <url>] [--note "<text>"]
+
 # Run locally
 npm run dev                     # http://localhost:5173
 npm run preview                 # the built dist/ at http://localhost:4173 (what the UI driver uses)
