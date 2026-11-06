@@ -191,9 +191,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-12: puzzle grid
 
-- [ ] T049 [US2] AC-12 RED: driver `gridLayout()` reads, inside the sample, the pills, cells and workings by role and name pattern (column pills, row pills, cells by row and column, workings) and the helper text. Expected failure: `No box at position 1`.
-- [ ] T050 [US2] AC-12 TDD cycles in `src/ui/combined/puzzle-grid.ts`: a `group` named "Puzzle" on a panel Surface; CSS grid of 64px pill column, the cells, and a working column, with a pill row on top and a working row below; helper line as body Text ("Tap a dashed bubble to swap its operator."). `puzzle-grid.css` lays out only. Built from Surface, Target pill, Grid cell, Line working, Text. Sample: Fixed puzzle (spec-001's puzzle, just opened).
-- [ ] T051 [US2] AC-12 GREEN, slice refactor, checkpoint.
+- [X] T049 [US2] AC-12 RED: driver `gridLayout()` reads, inside the sample, the pills, cells and workings by role and name pattern (column pills, row pills, cells by row and column, workings) and the helper text. Expected failure: `No box at position 1`.
+- [X] T050 [US2] AC-12 TDD cycles in `src/ui/combined/puzzle-grid.ts`: a `group` named "Puzzle" on a panel Surface; CSS grid of 64px pill column, the cells, and a working column, with a pill row on top and a working row below; helper line as body Text ("Tap a dashed bubble to swap its operator."). `puzzle-grid.css` lays out only. Built from Surface, Target pill, Grid cell, Line working, Text. Sample: Fixed puzzle (spec-001's puzzle, just opened).
+- [X] T051 [US2] AC-12 GREEN, slice refactor, checkpoint.
 
 ### AC-13: keypad
 

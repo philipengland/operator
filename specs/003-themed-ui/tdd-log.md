@@ -590,3 +590,57 @@
   CSS unchanged.
 - **Slice refactor**: none. The hidden name speaking for a hidden visible row now appears in the
   solutions counter and the line working; worth sharing if a third combined component needs it.
+
+## AC-12: the puzzle grid
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-12]`, one
+  scenario on both catalogue phones.
+- **Driver** (T049): `gridLayout()` finds the group named "Puzzle" in the sample and reads each
+  part's box by its accessible name (play-screen contract): a button with that name (open pills,
+  cells) or else the element holding a visually hidden name with that text (shown pills,
+  workings); the helper line is the grid's last paragraph.
+  - **Found at RED**: with no puzzle the first draft returned no cells, so the DSL's position
+    checks looped over nothing and only the helper line failed; a grid with no cells and the
+    right helper would have passed. The driver now always reports the fixed 2 × 2 structure,
+    each missing part an unknown box, so every check runs.
+- **Acceptance RED**: `column pill 1 is above the cell at row 1, column 1 — Expected: true,
+  Received: false` on both phones (T049 predicted `No box at position 1`; the same cause, a
+  missing part, reported by the first check).
+
+### Cycles 1 to 3 — where each part sits (`puzzleGridPlaces`)
+
+- **1 RED**: `puzzleGridPlaces › puts the cells below the row of column pills and right of the
+  column of row pills` — `expected [ { row: +0, column: +0 }, … ] to deeply equal [ { row: 2,
+  column: 2 }, … ]`. **GREEN**: `3757a68`. (The size parameter, unused until cycle 3, failed
+  lint, so it came in with the cycle that needs it.)
+- **2 RED**: `… puts each column pill on top, above its column, and each row pill at the left,
+  beside its row` — received `{ row: +0, column: +0 }`. **GREEN**: `1185b61`.
+- **3 RED**: `… puts each row's working at the far right of its row, and each column's working
+  below its column` — received `{ row: +0, column: +0 }`. **GREEN**: the line just past the last
+  cell — `be33c98`.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the catalogue shows the grid as built (AC-7)
+
+- **RED**: both library tests (not built yet without it; built from with `'Puzzle grid':
+  ['Surface', 'Target pill', 'Grid cell', 'Line working', 'Text']`). **GREEN**: `15f0119`.
+
+- **Renderer** (driven by the scenario), commit `54754c1`: `createPuzzleGrid` — a panel Surface
+  named "Puzzle" (`role="group"`), a CSS grid whose parts are placed by `puzzleGridPlaces`
+  (`gridRow` and `gridColumn` set from script, which the CSP allows), and the helper line, a
+  paragraph of body Text. Layout-only `puzzle-grid.css`: a pill column of at least 64 px, cell
+  columns from 44 px (touch target) to 84 px (design guide), the working column; cells fill
+  their column. Sample Fixed puzzle: spec-001's puzzle just opened, in the play-screen contract's
+  wording.
+  - **Looked at on a phone** (screenshots at 375 and 320 px, no horizontal scroll at either): at
+    320 px the open pill's "? 3" and the workings' "= ?" wrapped onto two lines; the grid now
+    keeps its parts' text on one line (`white-space: nowrap`) and the cells give way.
+- **Driver proven** by reverted breaks (iPhone): row workings placed on the left failed `row 1's
+  working is right of the cell at row 1, column 1`; column pills placed below failed `column pill
+  1 is above the cell at row 1, column 1`; no helper line failed `helper line — Received: ""`.
+- **Acceptance GREEN**: AC-12, 2 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 190 unit tests (lines 99.0%, branches 96.0%); engine 35 passed; phones 155
+  passed (87 game + 68 catalogue), 6 failed (AC-7, AC-13, AC-14 not finished). Game JS and CSS
+  unchanged.
+- **Slice refactor** (`a863bc8`): the helper line's construction named as `createHelperLine`,
+  shortening `createPuzzleGrid`. Catalogue scenarios and unit tests green again.
