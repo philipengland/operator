@@ -1,0 +1,36 @@
+/* Text input (design guide: seed field). Foundations only. */
+
+.text-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.text-input label {
+  font-family: var(--font-body);
+  font-weight: var(--weight-strong);
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.text-input input {
+  min-width: 0;
+  min-height: 52px;
+  padding: 0 18px;
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--radius-key);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+
+.text-input input::placeholder {
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+.text-input input:focus-visible {
+  outline: var(--outline-thin) solid var(--accent);
+  outline-offset: 3px;
+}

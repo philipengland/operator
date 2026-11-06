@@ -37,12 +37,28 @@ function bundleBudget(): Plugin {
   };
 }
 
-export default defineConfig({
-  // Relative paths work under the GitHub Pages sub-path and inside Capacitor (research R7).
-  base: './',
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-  },
-  plugins: [versionMeta(), bundleBudget()],
-});
+// spec-003 research R7: the component catalogue is a separate build. Only `vite build --mode
+// catalogue` includes catalogue.html, and it writes to catalogue-dist/, so the game's dist/ never
+// contains it.
+const CATALOGUE_MODE = 'catalogue';
+
+export default defineConfig(({ mode }) =>
+  mode === CATALOGUE_MODE
+    ? {
+        base: './',
+        build: {
+          outDir: 'catalogue-dist',
+          emptyOutDir: true,
+          rollupOptions: { input: 'catalogue.html' },
+        },
+      }
+    : {
+        // Relative paths work under the GitHub Pages sub-path and inside Capacitor (research R7).
+        base: './',
+        build: {
+          outDir: 'dist',
+          emptyOutDir: true,
+        },
+        plugins: [versionMeta(), bundleBudget()],
+      },
+);

@@ -1,0 +1,40 @@
+/* Mascot (design guide: the small operator, 76 px). Foundations only. */
+
+.mascot {
+  display: inline-flex;
+  width: 76px;
+  height: 76px;
+}
+
+.mascot svg {
+  width: 100%;
+  height: 100%;
+}
+
+.mascot__fill--none {
+  fill: none;
+}
+
+.mascot__fill--ink {
+  fill: var(--ink);
+}
+
+.mascot__fill--paper {
+  fill: var(--paper);
+}
+
+.mascot__fill--accent {
+  fill: var(--accent);
+}
+
+.mascot__stroke--ink {
+  stroke: var(--ink);
+}
+
+.mascot__stroke--paper {
+  stroke: var(--paper);
+}
+
+.mascot__stroke--accent {
+  stroke: var(--accent);
+}

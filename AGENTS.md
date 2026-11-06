@@ -30,11 +30,14 @@ division that is not whole fails a line. Sources: `docs/brief/project-brief.md`,
 - **Boundaries and integrations**: none at runtime. After loading, the game makes no network
   requests (constitution I; CSP `connect-src 'none'` in `index.html`).
 - **Contracts**: no OpenAPI/AsyncAPI. The internal contracts are
-  `docs/contracts/engine-api.md` (engine) and `docs/contracts/play-screen.md`
-  (accessible names and wording the UI driver reads).
+  `docs/contracts/engine-api.md` (engine), `docs/contracts/play-screen.md`
+  (accessible names and wording the UI driver reads) and `docs/contracts/component-library.md`
+  (the component library's tiers, roles and names; spec-003).
 - **Key ADRs**: `docs/adr/0001-web-stack-and-hosting.md` — TypeScript and Vite (Capacitor-ready),
   Vitest, Playwright as the UI driver, GitHub Pages deployed by GitHub Actions; TypeScript is
   pinned to 6.0.x because typescript-eslint does not yet support 6.1+.
+  `docs/adr/0002-component-library.md` — a tiered component library in plain TypeScript (no
+  framework), themes as data, self-hosted fonts, and a catalogue that is never published.
 - **Active exceptions**: see `docs/exceptions/` (EXC-001, -002, -005, -006).
 
 ## Build, Test and Run

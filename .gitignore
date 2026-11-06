@@ -9,4 +9,5 @@ node_modules/
 test-results/
 playwright-report/
 dist/
+catalogue-dist/
 coverage/

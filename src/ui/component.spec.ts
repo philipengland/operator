@@ -1,0 +1,28 @@
+import { describe, expect, it } from 'vitest';
+import { writeText } from './component';
+
+describe('writeText', () => {
+  it('writes new text into the element', () => {
+    const target = { textContent: 'Found 0 of 2' };
+
+    writeText(target, 'Found 1 of 2');
+
+    expect(target.textContent).toBe('Found 1 of 2');
+  });
+
+  it('does not write the same text again, so a screen reader does not announce it twice', () => {
+    let writes = 0;
+    const target = {
+      get textContent() {
+        return 'Found 1 of 2';
+      },
+      set textContent(_text: string) {
+        writes++;
+      },
+    };
+
+    writeText(target, 'Found 1 of 2');
+
+    expect(writes).toBe(0);
+  });
+});

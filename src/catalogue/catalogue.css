@@ -1,0 +1,78 @@
+/* The catalogue page's own layout (development only). Components bring their own styles. */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) * 3);
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+.theme-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+}
+
+.theme-switch button {
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  padding: 0 14px;
+  border: var(--outline-thin) solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: var(--tile);
+  color: var(--ink);
+  font: inherit;
+}
+
+.theme-switch button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) * 2);
+}
+
+.samples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: calc(var(--gap) * 3);
+}
+
+.sample {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap);
+}
+
+.sample-label {
+  margin: 0;
+  font-weight: var(--weight-strong);
+  font-size: 14px;
+}

@@ -1,0 +1,58 @@
+/*
+ * Foundations (spec-003, design guide "Foundations"): every design value the simple components
+ * use. Colours come only from --ink, --paper, --tile and --accent, set by applyTheme (themes.ts).
+ * Fonts ship with the game (README.md in fonts/); never fetched from elsewhere (constitution I).
+ */
+
+@font-face {
+  font-family: 'Chewy';
+  src: url('./fonts/chewy-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('./fonts/nunito-variable.woff2') format('woff2');
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-display: 'Chewy', 'Comic Sans MS', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --weight-body: 700;
+  --weight-strong: 800;
+
+  /* Outline: 4px ink on every component. Dashed means the player can change it. */
+  --outline: 4px;
+  --outline-thin: 3px;
+
+  /* Shadow: hard offset, no blur. */
+  --shadow-small: 3px;
+  --shadow-medium: 5px;
+  --shadow-large: 6px;
+
+  /* Radius: pills 24, cells 22, keys 26, cards 28, panels 30, bubble 26 with a 6px tail corner. */
+  --radius-pill: 24px;
+  --radius-cell: 22px;
+  --radius-key: 26px;
+  --radius-card: 28px;
+  --radius-panel: 30px;
+  --radius-bubble: 26px;
+  --radius-tail: 6px;
+
+  --gap: 8px;
+  --touch-target: 44px; /* constitution IV */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

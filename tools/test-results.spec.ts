@@ -109,6 +109,18 @@ describe('readPlaywrightReport', () => {
     expect(readPlaywrightReport(report).find((each) => each.title === 'flaky one' && each.run === 'engine')?.status).toBe('failed');
   });
 
+  it('records the catalogue phones (spec-003) as runs of their own', () => {
+    const catalogue = {
+      suites: [
+        {
+          title: 'library/simple-components.acceptance-spec.ts',
+          specs: [{ title: 't', tests: [{ projectName: 'catalogue-iphone', status: 'expected' }, { projectName: 'catalogue-android', status: 'expected' }] }],
+        },
+      ],
+    };
+    expect(readPlaywrightReport(catalogue).map((each) => each.run)).toEqual(['catalogue-iphone', 'catalogue-android']);
+  });
+
   it('rejects a project it does not know, rather than guessing where the test ran', () => {
     const unknown = { suites: [{ title: 'x', specs: [{ title: 't', tests: [{ projectName: 'desktop', status: 'expected' }] }] }] };
     expect(() => readPlaywrightReport(unknown)).toThrow('Unknown Playwright project "desktop"');
@@ -185,6 +197,12 @@ describe('writeTestResults', () => {
 
   it('shows one row per scenario with its result on each driver and phone', () => {
     expect(markdown).toContain('| AC-1 | opening › shows the working | – | pass | pass | – | – |');
+  });
+
+  it('shows catalogue results in their own columns, after the game\'s phones', () => {
+    const fromCatalogue = writeTestResults(input([...ALL_PASSING, result('[spec-002 AC-1] catalogue › sample', 'catalogue-android')]));
+    expect(fromCatalogue).toContain('| Criterion | Test | Engine | iPhone SE | Pixel 5 | Catalogue iPhone SE | Catalogue Pixel 5 | Public site | Unit |');
+    expect(fromCatalogue).toContain('| AC-1 | catalogue › sample | – | – | – | – | pass | – | – |');
   });
 
   it('summarises each criterion', () => {
