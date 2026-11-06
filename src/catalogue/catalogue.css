@@ -71,6 +71,25 @@ section {
   gap: var(--gap);
 }
 
+/* A sample that speaks in the theme's voice: it and its invisible copies in every theme's words
+   share one cell, so it is always the size of its longest wording (spec-003 AC-19). */
+.sample--speaks {
+  display: grid;
+  align-items: stretch;
+}
+
+.sample--speaks > * {
+  grid-area: 1 / 1;
+}
+
+.sample--speaks > .sample-label {
+  grid-area: 2 / 1;
+}
+
+.sample__size-keeper {
+  visibility: hidden;
+}
+
 .sample-label {
   margin: 0;
   font-weight: var(--weight-strong);
@@ -92,4 +111,9 @@ main.screen-view {
   flex-direction: column;
   gap: calc(var(--gap) * 2);
   padding: 16px;
+}
+
+/* Links take the theme's ink, not the browser's own blue. */
+a {
+  color: var(--ink);
 }

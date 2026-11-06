@@ -4,14 +4,12 @@
 
 import '../ui/foundations/tokens.css';
 import './catalogue.css';
-import { applyTheme, CLASSIC, type Theme } from '../ui/foundations/themes';
+import { applyTheme, CLASSIC, THEMES, type Theme } from '../ui/foundations/themes';
 import { createPlayScreen } from '../ui/screens/play-screen';
 import { LIBRARY, type CatalogueEntry, type CatalogueSection } from './library';
 import { SAMPLES, type Sample } from './samples';
 import { screenSamplesFor, type ScreenSampleName } from './screen-samples';
 
-// Every theme the catalogue can switch to; the other five arrive with User Story 4.
-const THEMES: readonly Theme[] = [CLASSIC];
 const SCREEN_VIEW = '#play-screen';
 const FIRST_SCREEN_SAMPLE: ScreenSampleName = 'Just opened';
 
@@ -21,18 +19,24 @@ if (!root) {
 }
 const catalogue = root;
 
-applyTheme(document.documentElement, CLASSIC);
+// The theme shown, and what to redraw when it changes: the samples whose words are the theme's.
+// Not remembered between visits (FR-325).
+let shownTheme = CLASSIC;
+let redrawInTheme: Array<(theme: Theme) => void> = [];
+
+applyTheme(document.documentElement, shownTheme);
 window.addEventListener('hashchange', render);
 render();
 
 function render(): void {
+  redrawInTheme = [];
   const isScreenView = window.location.hash === SCREEN_VIEW;
   catalogue.className = isScreenView ? 'screen-view' : '';
   catalogue.replaceChildren(...(isScreenView ? screenView() : catalogueView()));
 }
 
 function catalogueView(): readonly HTMLElement[] {
-  return [heading('h1', 'Operator component catalogue'), themeSwitch(CLASSIC), ...(Object.keys(LIBRARY) as CatalogueSection[]).map(section)];
+  return [heading('h1', 'Operator component catalogue'), themeSwitch(), ...(Object.keys(LIBRARY) as CatalogueSection[]).map(section)];
 }
 
 /** The play screen alone, filling the phone's screen; the switches and the way back are below it. */
@@ -42,7 +46,7 @@ function screenView(): readonly HTMLElement[] {
   screenRegion.className = 'screen-view__screen';
   const controls = document.createElement('div');
   controls.className = 'screen-view__controls';
-  controls.append(themeSwitch(CLASSIC), sampleSwitch, link('Back to the catalogue', '#'));
+  controls.append(themeSwitch(), sampleSwitch, link('Back to the catalogue', '#'));
   return [screenRegion, controls];
 }
 
@@ -71,10 +75,14 @@ function componentSamples(name: string): readonly HTMLElement[] {
 
 /** The play screen with a "Screen sample" switch that shows each sample in place (spec-003 AC-17). */
 function playScreenWithSampleSwitch(): { readonly screen: HTMLElement; readonly sampleSwitch: HTMLElement } {
-  const samples = screenSamplesFor(CLASSIC);
-  const playScreen = createPlayScreen(samples[FIRST_SCREEN_SAMPLE]);
-  const names = Object.keys(samples) as ScreenSampleName[];
-  const sampleSwitch = switchGroup('Screen sample', names, FIRST_SCREEN_SAMPLE, (name) => playScreen.update(samples[name]));
+  let shownSample = FIRST_SCREEN_SAMPLE;
+  const playScreen = createPlayScreen(screenSamplesFor(shownTheme)[shownSample]);
+  const names = Object.keys(screenSamplesFor(shownTheme)) as ScreenSampleName[];
+  const sampleSwitch = switchGroup('Screen sample', names, shownSample, (name) => {
+    shownSample = name;
+    playScreen.update(screenSamplesFor(shownTheme)[name]);
+  });
+  redrawInTheme.push((theme) => playScreen.update(screenSamplesFor(theme)[shownSample]));
   return { screen: playScreen.element, sampleSwitch };
 }
 
@@ -87,8 +95,30 @@ function sampleGroup(sample: Sample): HTMLElement {
   const caption = paragraph(sample.label);
   caption.className = 'sample-label';
   caption.setAttribute('aria-hidden', 'true');
-  group.append(sample.render(), caption);
+  const drawn = sample.render(shownTheme);
+  group.append(drawn, ...(sample.speaksInTheme ? speakingInEveryTheme(group, sample, drawn) : []), caption);
   return group;
+}
+
+/**
+ * A sample whose words change with the theme keeps the size of its longest wording: invisible
+ * copies in every theme's words share its place, so switching theme moves nothing (spec-003 AC-19).
+ * The shown sample stays first and is redrawn on a switch.
+ */
+function speakingInEveryTheme(group: HTMLElement, sample: Sample, firstDrawn: HTMLElement): readonly HTMLElement[] {
+  group.classList.add('sample--speaks');
+  let drawn = firstDrawn;
+  redrawInTheme.push((theme) => {
+    const redrawn = sample.render(theme);
+    drawn.replaceWith(redrawn);
+    drawn = redrawn;
+  });
+  return THEMES.map((theme) => {
+    const sizeKeeper = sample.render(theme);
+    sizeKeeper.classList.add('sample__size-keeper');
+    sizeKeeper.setAttribute('aria-hidden', 'true');
+    return sizeKeeper;
+  });
 }
 
 function region(name: string, ...children: readonly HTMLElement[]): HTMLElement {
@@ -112,9 +142,16 @@ function link(text: string, href: string): HTMLElement {
 }
 
 /** A group named "Theme" with one button per theme; the shown theme is pressed (FR-325). */
-function themeSwitch(current: Theme): HTMLElement {
+function themeSwitch(): HTMLElement {
   const labels = THEMES.map((theme) => theme.label);
-  return switchGroup('Theme', labels, current.label, () => undefined);
+  return switchGroup('Theme', labels, shownTheme.label, (label) => showTheme(THEMES.find((theme) => theme.label === label) ?? CLASSIC));
+}
+
+/** Every colour changes through the four theme colours; only the samples that speak are redrawn, so nothing moves (spec-003 AC-19). */
+function showTheme(theme: Theme): void {
+  shownTheme = theme;
+  applyTheme(document.documentElement, theme);
+  redrawInTheme.forEach((redraw) => redraw(theme));
 }
 
 /** A named group of buttons, one per choice; the chosen one is pressed. */
