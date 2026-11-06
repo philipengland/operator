@@ -38,6 +38,8 @@ const RUN_COLUMNS: readonly (readonly [RunName, string])[] = [
   ['engine', 'Engine'],
   ['iphone', 'iPhone SE'],
   ['android', 'Pixel 5'],
+  ['catalogue-iphone', 'Catalogue iPhone SE'],
+  ['catalogue-android', 'Catalogue Pixel 5'],
   ['after-publish', 'Public site'],
   ['unit', 'Unit'],
 ];

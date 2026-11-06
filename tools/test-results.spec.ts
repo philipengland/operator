@@ -199,6 +199,12 @@ describe('writeTestResults', () => {
     expect(markdown).toContain('| AC-1 | opening › shows the working | – | pass | pass | – | – |');
   });
 
+  it('shows catalogue results in their own columns, after the game\'s phones', () => {
+    const fromCatalogue = writeTestResults(input([...ALL_PASSING, result('[spec-002 AC-1] catalogue › sample', 'catalogue-android')]));
+    expect(fromCatalogue).toContain('| Criterion | Test | Engine | iPhone SE | Pixel 5 | Catalogue iPhone SE | Catalogue Pixel 5 | Public site | Unit |');
+    expect(fromCatalogue).toContain('| AC-1 | catalogue › sample | – | – | – | – | pass | – | – |');
+  });
+
   it('summarises each criterion', () => {
     expect(markdown).toContain('| AC-10 | 1 | PASS |');
   });
