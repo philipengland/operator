@@ -11,4 +11,14 @@ describe('gridCellModel', () => {
       isSelected: false,
     });
   });
+
+  it('an empty cell shows nothing and is heard as "empty"', () => {
+    expect(gridCellModel({ name: 'Top-right cell', digit: null })).toEqual({
+      label: '',
+      name: 'Top-right cell, empty',
+      style: 'cell',
+      isUnavailable: false,
+      isSelected: false,
+    });
+  });
 });

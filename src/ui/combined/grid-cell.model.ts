@@ -16,6 +16,14 @@ export interface GridCellProps {
 
 /** The Button that shows the cell. */
 export function gridCellModel({ name, digit, isGiven = false }: GridCellProps): ButtonProps {
-  const label = String(digit);
-  return { label, name: `${name}, given ${label}`, style: 'cell', isUnavailable: isGiven, isSelected: false };
+  const label = digit === null ? '' : String(digit);
+  return { label, name: `${name}, ${heardValue(label, isGiven)}`, style: 'cell', isUnavailable: isGiven, isSelected: false };
+}
+
+/** What follows the cell's name (play-screen contract): "given 2", "empty" or the digit. */
+function heardValue(label: string, isGiven: boolean): string {
+  if (isGiven) {
+    return `given ${label}`;
+  }
+  return label === '' ? 'empty' : label;
 }
