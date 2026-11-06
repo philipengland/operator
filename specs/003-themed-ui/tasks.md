@@ -271,8 +271,8 @@ and the theme unit tests pass.
 
 ### AC-22: accessible in every theme
 
-- [ ] T077 [US4] AC-22 RED: driver `accessibilityProblems()` uses `test/acceptance/support/axe.ts`'s scan, returning violation summaries. Expected failure lists any violation in a theme; ⚠️ may pass at RED if earlier work was clean: prove with a reverted low-contrast colour.
-- [ ] T078 [US4] AC-22 GREEN, checkpoint.
+- [X] T077 [US4] AC-22 RED: driver `accessibilityProblems()` uses `test/acceptance/support/axe.ts`'s scan, returning violation summaries. Expected failure lists any violation in a theme; ⚠️ may pass at RED if earlier work was clean: prove with a reverted low-contrast colour.
+- [X] T078 [US4] AC-22 GREEN, checkpoint.
 
 ---
 

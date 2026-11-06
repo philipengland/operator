@@ -978,3 +978,24 @@ Unit tests only.
 
 - **Full suite** after AC-20, AC-21 and T071: 238 unit tests; engine 36 passed; phones 183
   passed, 2 failed (AC-22, not started). Game JS and CSS unchanged.
+
+## AC-22: accessible in every theme
+
+- **Acceptance test**: `themes.acceptance-spec.ts` — `[spec-003 AC-22]`, one scenario on both
+  catalogue phones, choosing each of the six themes in turn.
+- **Driver** (T077, `8a73c2f`):
+  - `accessibilityProblems()` returns what the axe scan finds on the catalogue in the theme now
+    shown (WCAG 2.2 AA tags).
+  - `test/acceptance/support/axe.ts` gains `accessibilityProblems(page)`, which returns one line
+    per violation. The existing `scanForAccessibilityProblems` now throws on that list, so every
+    other page is scanned as before.
+- **Acceptance RED**: **reported — passes at RED** (⚠️), as T077 allowed: the earlier work was
+  clean. The invisible size-keeping copies from AC-19 are `visibility: hidden`, so the scan skips
+  them.
+- **Driver proven** by a reverted break: Bubblegum's ink set to `#AAAAAA` failed on both phones
+  `accessibility problems in Bubblegum — "color-contrast: Elements must meet minimum color contrast
+  ratio thresholds (128 element(s))"`.
+- **No cycles**: no new behaviour was needed.
+- **Acceptance GREEN** (T078): AC-22, 2 runs passed.
+- **Full suite**: 238 unit tests; engine 36 passed; phones 185 passed, none failed. Game JS and
+  CSS unchanged.
