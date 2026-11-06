@@ -1,6 +1,7 @@
 // What the catalogue shows: the component library by tier (spec-003 AC-1, contract
 // docs/contracts/component-library.md).
 
+import { builtFrom as gridCellParts } from '../ui/combined/grid-cell';
 import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
 import { builtFrom as targetPillParts } from '../ui/combined/target-pill';
 
@@ -29,7 +30,8 @@ export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[
     ...builtIn('part 2')('Speech bubble', 'Operator header'),
     { name: 'Solutions counter', builtFrom: solutionsCounterParts },
     { name: 'Target pill', builtFrom: targetPillParts },
-    ...builtIn('part 2')('Grid cell', 'Line working', 'Puzzle grid', 'Keypad'),
+    { name: 'Grid cell', builtFrom: gridCellParts },
+    ...builtIn('part 2')('Line working', 'Puzzle grid', 'Keypad'),
   ],
   Screens: builtIn('part 3')('Play screen'),
 };
