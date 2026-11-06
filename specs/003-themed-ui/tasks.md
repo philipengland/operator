@@ -230,9 +230,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-16: fits a phone
 
-- [ ] T063 [US3] AC-16 RED: driver `useScreen(size)` sets the viewport before opening. Expected failure (if any) names the part off screen at 320 × 568.
-- [ ] T064 [US3] AC-16 TDD cycles: sizes from the tokens scale down at narrow widths (cell height and keypad keys keep 44 px minimum; pill column and gaps shrink) so 320 × 568 fits; any size rule lives in simple components' CSS, not the screen's.
-- [ ] T065 [US3] AC-16 GREEN (both sizes; ⚠️ 375 × 667 may pass at RED), checkpoint.
+- [X] T063 [US3] AC-16 RED: driver `useScreen(size)` sets the viewport before opening. Expected failure (if any) names the part off screen at 320 × 568.
+- [X] T064 [US3] AC-16 TDD cycles: sizes from the tokens scale down at narrow widths (cell height and keypad keys keep 44 px minimum; pill column and gaps shrink) so 320 × 568 fits; any size rule lives in simple components' CSS, not the screen's.
+- [X] T065 [US3] AC-16 GREEN (both sizes; ⚠️ 375 × 667 may pass at RED), checkpoint.
 
 ### AC-17: screen samples
 

@@ -805,3 +805,39 @@
   included); phones 171 passed, 14 failed (AC-16, AC-19, AC-22 and the long-words edge case, not
   started). Game JS and CSS unchanged.
 - **Slice refactor**: none beyond `dad7308`.
+
+## AC-16: the play screen fits a phone
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-16]`, two scenarios
+  (375 × 667 and 320 × 568) on both catalogue phones.
+- **Driver** (T063): `useScreen(size)` was written with AC-15; the scenario sets the size, then
+  opens the screen.
+- **Acceptance RED**: both sizes failed — 375 × 667 `Keypad is on screen without scrolling`;
+  320 × 568 `Puzzle grid is on screen without scrolling` (T065's "375 × 667 may pass at RED"
+  did not happen: the main button ended at 776 px).
+- **No unit cycles**: these are style changes, which unit tests cannot see (Vitest does not load
+  CSS); the scenarios drove them, measured at each step (each part's top and height, every
+  sample, both sizes) and looked at in screenshots.
+  - **Round 1**: sizes become foundation tokens (`--size-cell`, `--size-key`, `--size-main`,
+    `--size-dashed`, `--text-display`, `--space-surface`, `--space-screen`, `--space-between`)
+    with smaller values for screens up to 700 px tall (667 px phones) and up to 600 px (568 px
+    phones), never below the 44 px touch target; the simple components use them; the bubble takes
+    the design guide's own padding (8 px 14 px). 375 × 667 then fitted (main button ends 617 px)
+    and stayed put across samples; 320 × 568 ended at 579 px, the "Row 1 correct" message wrapped
+    (+16 px) and "All found" ticks made the working rows taller (+11 px).
+  - **Round 2**: `--text-body` 14 px and `--text-display` 22 px on screens under 360 px wide (the
+    design guide's bubble message is 14 px); `--space-grid` for the grid, keypad and helper
+    gaps, 4 px on 568 px phones; a working's icon is the size of its result. 320 × 568 then ends
+    at 528–536 px across the samples.
+  - **Looked at**: at 375 close to the design guide, room to spare; at 320 tighter but clear,
+    every tap target at least 44 px, helper line on one line.
+- Commit `a37845d`.
+- **Driver proven** by reverted breaks (iPhone): without the 667 px sizes, 375 × 667 failed
+  `Keypad is on screen without scrolling`; without the 568 px sizes, 320 × 568 failed the same.
+- **Acceptance GREEN**: AC-16, 4 runs passed; AC-1 to AC-17 still pass.
+  - **Reported**: the long-words edge case (fits at 320 × 568 in all six themes) passes too, but
+    only because `chooseTheme` does nothing yet, so it checks Classic six times. It becomes a real
+    check with AC-19.
+- **Full suite**: 191 unit tests; engine 36 passed; phones 177 passed, 8 failed (AC-19 and AC-22,
+  not started). Game JS and CSS unchanged.
+- **Slice refactor**: none needed.
