@@ -19,9 +19,7 @@ describe('LIBRARY', () => {
       .filter((entry) => entry.notBuiltYet)
       .map((entry) => `${entry.name}: ${entry.notBuiltYet}`);
 
-    expect(notBuiltYet).toEqual([
-      'Play screen: Built in part 3.',
-    ]);
+    expect(notBuiltYet).toEqual([]);
   });
 
   it('says what each built combined component is built from', () => {
@@ -39,5 +37,11 @@ describe('LIBRARY', () => {
       'Puzzle grid': ['Surface', 'Target pill', 'Grid cell', 'Line working', 'Text'],
       Keypad: ['Button'],
     });
+  });
+
+  it('says what the play screen is built from', () => {
+    expect(LIBRARY.Screens).toEqual([
+      { name: 'Play screen', builtFrom: ['Operator header', 'Solutions counter', 'Puzzle grid', 'Keypad', 'Button'] },
+    ]);
   });
 });
