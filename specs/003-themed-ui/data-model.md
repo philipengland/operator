@@ -43,9 +43,9 @@ a **model** (what it shows and says). Names below are the props; full shapes are
 | Text | simple | `text`, `style: display \| body` | – |
 | Button | simple | `label`, `style: main \| key \| solid \| dashed`, `action?`, `isUnavailable?` | available, unavailable |
 | Text input | simple | `label`, `hint`, `value` | – |
-| Icon | simple | `icon: tick \| cross`, `spokenAs?` | heard, decorative |
-| Surface | simple | `variant: panel \| bubble` | – |
-| Badge | simple | `text` | – |
+| Icon | simple | `icon: tick | cross`, `spokenAs?` (glyph ✓ or ✗) | heard, decorative |\| cross`, `spokenAs?` | heard, decorative |
+| Surface | simple | `variant: panel | bubble`, `fill?: tile | accent | ink` | – |\| bubble` | – |
+| Badge | simple | `text`, `style?: ink | light` | – |
 | Mascot | simple | – | – |
 | Speech bubble | combined | `title`, `message` | – |
 | Operator header | combined | `title`, `message` | – |
