@@ -3,8 +3,8 @@
 // needed by an implemented criterion return values that cannot pass (spec-003 tasks, T013).
 
 import type { Locator, Page } from '@playwright/test';
-import type { CatalogueSection, LibraryComponent, LibraryScreen, PlayScreenPart, Sample, ScreenSample } from '../../dsl/catalogue-vocabulary';
-import { NO_BOX, readAppearance, readGreyscaleContrast, readPartView, readSampleView, readTypeface, textElement } from './catalogue-reading';
+import type { CatalogueSection, LibraryComponent, LibraryScreen, PlayScreenPart, Sample, ScreenSample, ThemeName } from '../../dsl/catalogue-vocabulary';
+import { NO_BOX, readAppearance, readColoursInUse, readGreyscaleContrast, readPartView, readSampleView, readTypeface, textElement } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
 import type { Box, ScreenSize } from '../phone.driver';
 import { scanForAccessibilityProblems } from '../../support/axe';
@@ -229,14 +229,39 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return { screen, parts: Object.fromEntries(boxes) as ScreenView['parts'] };
   }
 
-  async chooseTheme(): Promise<void> {}
-
-  async coloursInUse(): Promise<readonly string[]> {
-    return ['not read yet'];
+  /** Presses the theme's button in the catalogue's "Theme" switch, waits until it shows as chosen, and looks back to the top. */
+  async chooseTheme(theme: ThemeName): Promise<void> {
+    const button = this.page.getByRole('group', { name: 'Theme', exact: true }).getByRole('button', { name: theme, exact: true });
+    if ((await button.count()) === 0) {
+      return;
+    }
+    await button.click();
+    await button.and(this.page.locator('[aria-pressed="true"]')).waitFor();
+    await this.page.evaluate(() => window.scrollTo(0, 0)); // The switch is below the screen; look back up at it.
   }
 
+  /** Every colour drawn on the catalogue page; never empty, so "only the theme's colours" cannot pass on nothing. */
+  async coloursInUse(): Promise<readonly string[]> {
+    const colours = await this.page.evaluate(readColoursInUse);
+    return colours.length > 0 ? colours : ['no colours were read'];
+  }
+
+  /**
+   * Where every component region and every named group in it (each sample, the play screen's
+   * parts) sits on the page, numbered in document order. Never empty, so "nothing moved" cannot
+   * pass when nothing was read.
+   */
   async layoutOfEverySample(): Promise<Readonly<Record<string, Box>>> {
-    return {};
+    const main = this.page.getByRole('main');
+    const parts = main.getByRole('region').or(main.getByRole('group'));
+    const layout = await parts.evaluateAll((elements) =>
+      elements.map((element, index) => {
+        const box = element.getBoundingClientRect();
+        const name = `${index + 1}. ${element.getAttribute('aria-label') ?? ''}`;
+        return [name, { left: box.left + window.scrollX, top: box.top + window.scrollY, right: box.right + window.scrollX, bottom: box.bottom + window.scrollY }] as const;
+      }),
+    );
+    return layout.length > 0 ? Object.fromEntries(layout) : { 'no samples were read': unknownBox() };
   }
 
   async accessibilityProblems(): Promise<readonly string[]> {

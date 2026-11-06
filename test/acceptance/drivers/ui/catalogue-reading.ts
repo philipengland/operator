@@ -183,3 +183,34 @@ export async function readGreyscaleContrast(pngBase64: string): Promise<number> 
   const contrastWith = (grey: number) => (Math.max(grey, background) + 0.05) / (Math.min(grey, background) + 0.05);
   return Math.max(...greys.map(contrastWith));
 }
+
+/**
+ * Runs in the page: every colour drawn by a visible element, as #RRGGBB — text, fill, outlines,
+ * borders, shadows and a drawing's paint. Fully transparent colours draw nothing and are left out;
+ * a part-transparent one is kept as written, so it can never match a theme colour.
+ */
+export function readColoursInUse(): readonly string[] {
+  const asHex = (colour: string): string | null => {
+    const [red, green, blue, alpha = 1] = colour.match(/[\d.]+/g)?.map(Number) ?? [];
+    if (blue === undefined || alpha === 0) {
+      return null; // "none", "transparent" or fully transparent: nothing is drawn
+    }
+    const hex = `#${[red, green, blue].map((channel) => Number(channel).toString(16).padStart(2, '0')).join('')}`.toUpperCase();
+    return alpha === 1 ? hex : colour;
+  };
+  const drawnBy = (element: Element): readonly string[] => {
+    const style = getComputedStyle(element);
+    const sides = ['Top', 'Right', 'Bottom', 'Left'] as const;
+    const borders = sides
+      .filter((side) => style.getPropertyValue(`border-${side.toLowerCase()}-style`) !== 'none' && Number.parseFloat(style.getPropertyValue(`border-${side.toLowerCase()}-width`)) > 0)
+      .map((side) => style.getPropertyValue(`border-${side.toLowerCase()}-color`));
+    const outline = style.outlineStyle !== 'none' && Number.parseFloat(style.outlineWidth) > 0 ? [style.outlineColor] : [];
+    const shadows = style.boxShadow === 'none' ? [] : (style.boxShadow.match(/rgba?\([^)]*\)/g) ?? []);
+    const paint = element instanceof SVGElement && !(element instanceof SVGSVGElement) ? [style.fill, style.stroke] : [];
+    return [style.color, style.backgroundColor, ...borders, ...outline, ...shadows, ...paint];
+  };
+  const isVisible = (element: Element) => element.getClientRects().length > 0 && getComputedStyle(element).visibility === 'visible';
+  const elements = [document.documentElement, document.body, ...Array.from(document.body.querySelectorAll('*'))].filter(isVisible);
+  const colours = new Set(elements.flatMap(drawnBy).map(asHex).filter((colour): colour is string => colour !== null));
+  return [...colours];
+}
