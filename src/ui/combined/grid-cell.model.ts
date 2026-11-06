@@ -17,7 +17,15 @@ export interface GridCellProps {
 /** The Button that shows the cell. */
 export function gridCellModel({ name, digit, isGiven = false, isSelected = false, isInCorrectLine = false }: GridCellProps): ButtonProps {
   const label = digit === null ? '' : String(digit);
-  return { label, name: `${name}, ${heardValue(label, isGiven)}`, style: isInCorrectLine ? 'cell-correct' : 'cell', isUnavailable: isGiven, isSelected };
+  // Selected wins: the player must always see which cell the keypad will fill (data model).
+  const hasCorrectLook = isInCorrectLine && !isSelected;
+  return {
+    label,
+    name: `${name}, ${heardValue(label, isGiven)}`,
+    style: hasCorrectLook ? 'cell-correct' : 'cell',
+    isUnavailable: isGiven,
+    isSelected,
+  };
 }
 
 /** What follows the cell's name (play-screen contract): "given 2", "empty" or the digit. */

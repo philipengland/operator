@@ -29,4 +29,10 @@ describe('gridCellModel', () => {
   it('a cell in a line that reaches its target has the correct-line look', () => {
     expect(gridCellModel({ name: 'Bottom-left cell', digit: 4, isInCorrectLine: true }).style).toBe('cell-correct');
   });
+
+  it('a selected cell in a correct line shows the selected look: selected wins', () => {
+    const model = gridCellModel({ name: 'Bottom-left cell', digit: 4, isSelected: true, isInCorrectLine: true });
+
+    expect(model).toMatchObject({ style: 'cell', isSelected: true });
+  });
 });
