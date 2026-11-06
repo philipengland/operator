@@ -2,6 +2,7 @@
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
 import { createButton } from '../ui/simple/button';
+import { createTextInput } from '../ui/simple/text-input';
 
 export interface Sample {
   readonly label: string;
@@ -16,4 +17,5 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Dashed', render: () => createButton({ label: '? 12', style: 'dashed' }).element },
     { label: 'Unavailable', render: () => createButton({ label: 'Check', style: 'key', isUnavailable: true }).element },
   ],
+  'Text input': [{ label: 'Seed', render: () => createTextInput({ label: 'Play from a seed', hint: 'e.g. 4F7A21' }).element }],
 };
