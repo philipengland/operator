@@ -2,6 +2,7 @@
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
 import { createGridCell } from '../ui/combined/grid-cell';
+import { createKeypad } from '../ui/combined/keypad';
 import { createLineWorking } from '../ui/combined/line-working';
 import { createPuzzleGrid, type PuzzleGridProps } from '../ui/combined/puzzle-grid';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
@@ -84,6 +85,7 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     },
   ],
   'Puzzle grid': [{ label: 'Fixed puzzle', render: () => createPuzzleGrid(FIXED_PUZZLE_JUST_OPENED).element }],
+  Keypad: [{ label: 'Keypad', render: () => createKeypad().element }],
 };
 
 /** Body text to show inside a surface sample. */
