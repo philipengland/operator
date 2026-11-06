@@ -1,7 +1,7 @@
-import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
-
 // What the catalogue shows: the component library by tier (spec-003 AC-1, contract
 // docs/contracts/component-library.md).
+
+import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
 
 export type CatalogueSection = 'Foundations' | 'Simple components' | 'Combined components' | 'Screens';
 
