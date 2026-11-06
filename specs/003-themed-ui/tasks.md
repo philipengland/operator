@@ -126,9 +126,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-4: the game's typefaces
 
-- [ ] T023 [US1] AC-4 RED: driver `requestsToOtherSites()` counts requests whose origin is not the catalogue's since `open()`. Expected failure: `Text "Display" shows — Expected: "Hello, Operator!", Received: ""`.
-- [ ] T024 [US1] AC-4 TDD cycles in `src/ui/simple/text.ts`: `textModel` with `style: display | body`; `text.css` maps them to `--font-display` (Chewy) and `--font-body` (Nunito 700, 800 bold). Samples: Display ("Hello, Operator!"), Body ("Tap a dashed bubble to swap its operator."). Import `tokens.css` from the catalogue entry so the fonts load from the same origin.
-- [ ] T025 [US1] AC-4 GREEN (both scenarios; ⚠️ the "nothing fetched from another site" scenario may pass at RED: prove it with a reverted break that adds a cross-origin font link), checkpoint.
+- [X] T023 [US1] AC-4 RED: driver `requestsToOtherSites()` counts requests whose origin is not the catalogue's since `open()`. Expected failure: `Text "Display" shows — Expected: "Hello, Operator!", Received: ""`.
+- [X] T024 [US1] AC-4 TDD cycles in `src/ui/simple/text.ts`: `textModel` with `style: display | body`; `text.css` maps them to `--font-display` (Chewy) and `--font-body` (Nunito 700, 800 bold). Samples: Display ("Hello, Operator!"), Body ("Tap a dashed bubble to swap its operator."). Import `tokens.css` from the catalogue entry so the fonts load from the same origin.
+- [X] T025 [US1] AC-4 GREEN (both scenarios; ⚠️ the "nothing fetched from another site" scenario may pass at RED: prove it with a reverted break that adds a cross-origin font link), checkpoint.
 
 ### AC-5: tick and cross
 

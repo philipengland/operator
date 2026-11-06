@@ -178,3 +178,31 @@
 - **Full suite**: 154 unit tests (lines 100%, branches 96.2%); engine 35 passed; phones 103 passed
   (87 game + 16 catalogue: AC-1, AC-2, AC-3), 18 failed (9 scenarios not started).
 - **Slice refactor**: none needed.
+
+## AC-4: text in the game's own typefaces
+
+- **Acceptance test**: `simple-components.acceptance-spec.ts` — `[spec-003 AC-4]`, two scenarios
+  on both catalogue phones.
+- **Driver**: `requestsToOtherSites()` counts every `http(s)` request since the page was created
+  whose origin is not the catalogue's.
+- **Acceptance RED**: `Text "Display" shows — Expected: "Hello, Operator!", Received: ""`.
+  **Reported**: "the typefaces come with the game: nothing is fetched from another site" **passed
+  at RED**, as the task predicted (⚠️), because the fonts already come from the catalogue's own
+  build (T011, T012). Driver proven by a reverted break: a Google Fonts stylesheet in
+  `catalogue.html` (with the CSP removed, since the CSP would block the request before the
+  driver could see it): failed `requests to other sites — Expected: 0, Received: 2`. Reverted.
+
+### Cycle 1 — text carries its display or body style
+
+- **RED**: `textModel › carries the display style …` and `… body style …` — `expected [] to
+  deeply equal [ 'text', 'text--display' ]` (and body).
+- **GREEN**: classes `text` and `text--<style>` — commit `5ec9d24`.
+- **REFACTOR**: none needed.
+
+- **Renderer** (driven by the scenario): `createText` — a `<span>`; `text.css`: display in
+  `--font-display` (Chewy, 28 px), body in `--font-body` (Nunito 700, 16 px). Samples Display
+  ("Hello, Operator!") and Body ("Tap a dashed bubble to swap its operator.").
+- **Acceptance GREEN**: AC-4, 4 runs passed, axe clean.
+- **Full suite**: 156 unit tests (lines 100%, branches 96.2%); engine 35 passed; phones 107 passed
+  (87 game + 20 catalogue: AC-1 to AC-4), 14 failed (7 scenarios not started).
+- **Slice refactor**: none needed.
