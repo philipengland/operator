@@ -5,7 +5,7 @@ import './badge.css';
 import { writeText, type Component } from '../component';
 import { badgeModel, type BadgeProps } from './badge.model';
 
-export { badgeModel, type BadgeProps } from './badge.model';
+export { badgeModel, type BadgeProps, type BadgeStyle } from './badge.model';
 
 /** Simple components are built from the foundations only. */
 export const builtFrom: readonly string[] = [];
