@@ -15,10 +15,11 @@ const CATALOGUE_TITLE = 'Operator component catalogue';
 const CATALOGUE_SECTIONS: readonly CatalogueSection[] = ['Foundations', 'Simple components', 'Combined components', 'Screens'];
 
 
-// A sample the catalogue does not show yet: nothing shown, nothing heard, no look.
+// A sample the catalogue does not show yet. It must not pass any check, including "not heard",
+// so it is heard as a sentence no sample says.
 const NOT_SHOWN: SampleView = {
   text: '',
-  heardAs: null,
+  heardAs: 'this sample is not in the catalogue',
   isButton: false,
   isTextbox: false,
   isUnavailable: false,

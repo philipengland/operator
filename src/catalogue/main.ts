@@ -5,6 +5,7 @@ import '../ui/foundations/tokens.css';
 import './catalogue.css';
 import { applyTheme, CLASSIC, type Theme } from '../ui/foundations/themes';
 import { LIBRARY, type CatalogueEntry, type CatalogueSection } from './library';
+import { SAMPLES, type Sample } from './samples';
 
 
 // Every theme the catalogue can switch to; the other five arrive with User Story 4.
@@ -23,10 +24,26 @@ function section(name: CatalogueSection): HTMLElement {
   return region(name, heading('h2', name), ...LIBRARY[name].map(componentRegion));
 }
 
-/** One component, named by the component; until it is built, a line saying which part builds it. */
+/** One component, named by the component, with its samples; until it is built, which part builds it. */
 function componentRegion(entry: CatalogueEntry): HTMLElement {
   const placeholder = entry.notBuiltYet ? [paragraph(entry.notBuiltYet)] : [];
-  return region(entry.name, heading('h3', entry.name), ...placeholder);
+  const samples = document.createElement('div');
+  samples.className = 'samples';
+  samples.append(...(SAMPLES[entry.name] ?? []).map(sampleGroup));
+  return region(entry.name, heading('h3', entry.name), ...placeholder, samples);
+}
+
+/** A sample: a group named by its label, holding the component first and a visible caption. */
+function sampleGroup(sample: Sample): HTMLElement {
+  const group = document.createElement('div');
+  group.className = 'sample';
+  group.setAttribute('role', 'group');
+  group.setAttribute('aria-label', sample.label);
+  const caption = paragraph(sample.label);
+  caption.className = 'sample-label';
+  caption.setAttribute('aria-hidden', 'true');
+  group.append(sample.render(), caption);
+  return group;
 }
 
 function region(name: string, ...children: readonly HTMLElement[]): HTMLElement {

@@ -56,3 +56,23 @@ section {
   flex-direction: column;
   gap: calc(var(--gap) * 2);
 }
+
+.samples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: calc(var(--gap) * 3);
+}
+
+.sample {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap);
+}
+
+.sample-label {
+  margin: 0;
+  font-weight: var(--weight-strong);
+  font-size: 14px;
+}
