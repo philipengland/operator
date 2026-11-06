@@ -6,6 +6,8 @@ export type ButtonStyle = 'main' | 'key' | 'solid' | 'dashed';
 export interface ButtonProps {
   readonly label: string;
   readonly style: ButtonStyle;
+  /** What the button does, when its label alone does not say: "clear cell", "Check". */
+  readonly action?: string;
 }
 
 export interface ButtonModel {
@@ -13,6 +15,6 @@ export interface ButtonModel {
   readonly name: string;
 }
 
-export function buttonModel({ label }: ButtonProps): ButtonModel {
-  return { label, name: label };
+export function buttonModel({ label, action }: ButtonProps): ButtonModel {
+  return { label, name: action ? `${label}, ${action}` : label };
 }
