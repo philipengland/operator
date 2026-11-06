@@ -220,7 +220,7 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 **Independent Test**: Screens section at 375 × 667 and 320 × 568 against the Classic mockup;
 `play-screen.acceptance-spec.ts` passes.
 
-- [ ] T059 [US3] Create `003-themed-ui-part-3` from `main` (after part 2 merges) and bring over `test/acceptance/library/play-screen.acceptance-spec.ts` and `themes.acceptance-spec.ts` from `003-themed-ui`. Run them: all fail on missing samples or behaviour. TDD log.
+- [X] T059 [US3] Create `003-themed-ui-part-3` from `main` (after part 2 merges) and bring over `test/acceptance/library/play-screen.acceptance-spec.ts` and `themes.acceptance-spec.ts` from `003-themed-ui`. Run them: all fail on missing samples or behaviour. TDD log.
 
 ### AC-15: the play screen, top to bottom
 

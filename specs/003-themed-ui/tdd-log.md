@@ -734,3 +734,19 @@
 - **Test results**: `npm run test-results -- 003-themed-ui` — `OVERALL status: BLOCKED`, as
   expected: AC-1 to AC-14 PASS, AC-15 to AC-25 not covered until part 3.
 - **Pull request**: branch `003-themed-ui-part-2`, "spec-003 part 2 of 3: combined components".
+
+## Part 3: the play screen and themes (T059)
+
+- **Branch**: `003-themed-ui-part-3` from `main` at `095b318` (part 2 merged, PR #10).
+- **Scenarios brought over**: `play-screen.acceptance-spec.ts` (blob `534052c`) and
+  `themes.acceptance-spec.ts` (blob `2610b08`) from `003-themed-ui`, unchanged, as approved in
+  `79718d4`. The DSL and `examples.ts` on `main` are identical to the approved ones.
+- **Baseline** on the two catalogue phones: 22 runs, 18 failed on their assertions for missing
+  samples or behaviour (e.g. `Operator header is above Solutions counter`, `Button "Main" shows —
+  Expected: "Connect me!", Received: "Put it through!"`, `not read yet is one of Classic's four
+  colours`).
+  - **Reported — 4 runs passed at baseline** (⚠️): AC-17 "nothing moves between 'Just opened',
+    'Row 1 correct' and 'All found'" and AC-19 "nothing moves or changes size", on both phones.
+    Both compare `layoutOfEverySample()` before and after a change, and that driver method is
+    still a stub returning `{}`, so nothing is compared with nothing. Not behaviour that exists;
+    their drivers are built (unable to pass while empty) and proven with breaks in AC-17 and AC-19.
