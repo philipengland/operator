@@ -31,14 +31,14 @@ function render(element: HTMLButtonElement, model: ReturnType<typeof buttonModel
   element.className = model.classes.join(' ');
   writeText(element, model.label);
   // The visible label is always the start of the name (WCAG 2.5.3, label in name).
-  if (model.name === model.label) {
-    element.removeAttribute('aria-label');
+  setAttributeOrRemove(element, 'aria-label', model.name === model.label ? null : model.name);
+  setAttributeOrRemove(element, 'aria-disabled', model.isUnavailable ? 'true' : null);
+}
+
+function setAttributeOrRemove(element: Element, name: string, value: string | null): void {
+  if (value === null) {
+    element.removeAttribute(name);
   } else {
-    element.setAttribute('aria-label', model.name);
-  }
-  if (model.isUnavailable) {
-    element.setAttribute('aria-disabled', 'true');
-  } else {
-    element.removeAttribute('aria-disabled');
+    element.setAttribute(name, value);
   }
 }
