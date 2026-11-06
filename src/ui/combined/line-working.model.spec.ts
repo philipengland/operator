@@ -13,4 +13,10 @@ describe('lineWorkingModel', () => {
 
     expect(model.icon).toBe('tick');
   });
+
+  it('shows a cross when a division is not whole', () => {
+    const model = lineWorkingModel({ result: '', mark: 'cross', name: 'Column 1 working, 6 ÷ 4, not a whole number' });
+
+    expect(model.icon).toBe('cross');
+  });
 });

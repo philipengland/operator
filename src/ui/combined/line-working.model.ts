@@ -22,5 +22,5 @@ export interface LineWorkingModel {
 }
 
 export function lineWorkingModel({ result, mark, name }: LineWorkingProps): LineWorkingModel {
-  return { result, icon: mark === 'tick' ? 'tick' : null, heardAs: name };
+  return { result, icon: mark === 'none' ? null : mark, heardAs: name };
 }
