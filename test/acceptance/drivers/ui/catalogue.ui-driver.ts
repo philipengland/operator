@@ -170,8 +170,16 @@ export class UiCatalogueDriver implements CatalogueDriver {
       .map(([, row]) => row.sort((first, second) => first.box.left - second.box.left).map((key) => key.name));
   }
 
-  async mascotAndBubble(): Promise<{ readonly mascot: Box; readonly bubble: Box }> {
-    return { mascot: NO_BOX, bubble: NO_BOX };
+  /**
+   * Where the header's mascot and speech bubble sit. The mascot is hidden from screen readers and
+   * has no name to find it by, so the header's hidden part is the mascot and its heard part the bubble.
+   */
+  async mascotAndBubble(sample: Sample): Promise<{ readonly mascot: Box; readonly bubble: Box }> {
+    const header = this.sampleGroup(sample).locator(':scope > *').first();
+    const mascot = header.locator(':scope > [aria-hidden="true"]');
+    const bubble = header.locator(':scope > :not([aria-hidden="true"])');
+    const firstBox = async (part: Locator) => ((await part.count()) === 1 ? boxOf(part) : NO_BOX);
+    return { mascot: await firstBox(mascot), bubble: await firstBox(bubble) };
   }
 
   async openScreen(): Promise<void> {}
