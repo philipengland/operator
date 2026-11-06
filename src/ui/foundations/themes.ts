@@ -75,3 +75,20 @@ export function applyTheme(root: { readonly style: Pick<CSSStyleDeclaration, 'se
     root.style.setProperty(`--${name}`, colour);
   }
 }
+
+// 32-bit FNV-1a (research R4): the same seed gives the same theme on every device.
+const FNV_OFFSET_BASIS = 0x811c9dc5;
+const FNV_PRIME = 0x01000193;
+
+/** The theme a puzzle is shown in, worked out from its seed; case does not matter (spec-003 FR-323, research R4). */
+export function themeForSeed(seed: string | undefined): Theme {
+  return THEMES[fnv1a((seed ?? '').toUpperCase()) % THEMES.length] ?? CLASSIC;
+}
+
+function fnv1a(text: string): number {
+  let hash = FNV_OFFSET_BASIS;
+  for (const character of text) {
+    hash = Math.imul(hash ^ (character.codePointAt(0) ?? 0), FNV_PRIME) >>> 0;
+  }
+  return hash;
+}

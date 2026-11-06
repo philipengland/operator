@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { contrastRatio } from './contrast';
-import { applyTheme, THEMES } from './themes';
+import { applyTheme, THEMES, themeForSeed } from './themes';
 
 describe('THEMES (spec-003 AC-20)', () => {
   it('holds the six themes of the spec\'s Themes table, in order, each with exactly its four colours and its voice', () => {
@@ -47,4 +47,12 @@ describe('contrast in every theme (spec-003 AC-21)', () => {
       expect(contrastRatio(colours[foreground], colours[background])).toBeGreaterThanOrEqual(required);
     },
   );
+});
+
+describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)', () => {
+  it('gives "4F7A21" Plum and mint every time, and "4f7a21" the same (AC-23, golden: research R4)', () => {
+    const themes = [themeForSeed('4F7A21'), themeForSeed('4F7A21'), themeForSeed('4f7a21')].map((theme) => theme.label);
+
+    expect(themes).toEqual(['Plum and mint', 'Plum and mint', 'Plum and mint']);
+  });
 });
