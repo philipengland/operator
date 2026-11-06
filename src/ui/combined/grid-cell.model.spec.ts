@@ -25,4 +25,8 @@ describe('gridCellModel', () => {
   it('a selected cell is heard as selected', () => {
     expect(gridCellModel({ name: 'Top-right cell', digit: null, isSelected: true }).isSelected).toBe(true);
   });
+
+  it('a cell in a line that reaches its target has the correct-line look', () => {
+    expect(gridCellModel({ name: 'Bottom-left cell', digit: 4, isInCorrectLine: true }).style).toBe('cell-correct');
+  });
 });
