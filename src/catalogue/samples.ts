@@ -2,6 +2,7 @@
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
 import { createGridCell } from '../ui/combined/grid-cell';
+import { createLineWorking } from '../ui/combined/line-working';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createTargetPill } from '../ui/combined/target-pill';
 import { createBadge } from '../ui/simple/badge';
@@ -67,6 +68,18 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     {
       label: 'Selected, in a correct line',
       render: () => createGridCell({ name: 'Bottom-left cell', digit: 4, isSelected: true, isInCorrectLine: true }).element,
+    },
+  ],
+  'Line working': [
+    { label: 'Incomplete', render: () => createLineWorking({ result: '= ?', mark: 'none', name: 'Row 1 working, 6 + ?' }).element },
+    {
+      label: 'Target reached',
+      render: () => createLineWorking({ result: '= 8', mark: 'tick', name: 'Row 1 working, 6 + 2 = 8, target reached' }).element,
+    },
+    { label: 'Below zero', render: () => createLineWorking({ result: '= −3', mark: 'none', name: 'Row 2 working, 4 − 7 = minus 3' }).element },
+    {
+      label: 'Not whole',
+      render: () => createLineWorking({ result: '', mark: 'cross', name: 'Column 1 working, 6 ÷ 4, not a whole number' }).element,
     },
   ],
 };
