@@ -2,6 +2,7 @@
 // docs/contracts/component-library.md).
 
 import { builtFrom as gridCellParts } from '../ui/combined/grid-cell';
+import { builtFrom as keypadParts } from '../ui/combined/keypad';
 import { builtFrom as lineWorkingParts } from '../ui/combined/line-working';
 import { builtFrom as puzzleGridParts } from '../ui/combined/puzzle-grid';
 import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
@@ -35,7 +36,7 @@ export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[
     { name: 'Grid cell', builtFrom: gridCellParts },
     { name: 'Line working', builtFrom: lineWorkingParts },
     { name: 'Puzzle grid', builtFrom: puzzleGridParts },
-    ...builtIn('part 2')('Keypad'),
+    { name: 'Keypad', builtFrom: keypadParts },
   ],
   Screens: builtIn('part 3')('Play screen'),
 };

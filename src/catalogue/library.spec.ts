@@ -22,7 +22,6 @@ describe('LIBRARY', () => {
     expect(notBuiltYet).toEqual([
       'Speech bubble: Built in part 2.',
       'Operator header: Built in part 2.',
-      'Keypad: Built in part 2.',
       'Play screen: Built in part 3.',
     ]);
   });
@@ -38,6 +37,7 @@ describe('LIBRARY', () => {
       'Grid cell': ['Button'],
       'Line working': ['Text', 'Icon'],
       'Puzzle grid': ['Surface', 'Target pill', 'Grid cell', 'Line working', 'Text'],
+      Keypad: ['Button'],
     });
   });
 });
