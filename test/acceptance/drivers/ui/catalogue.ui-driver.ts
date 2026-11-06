@@ -13,6 +13,7 @@ import { publishedFiles } from '../published-files';
 const CATALOGUE_PAGE = 'catalogue.html';
 const CATALOGUE_TITLE = 'Operator component catalogue';
 const CATALOGUE_SECTIONS: readonly CatalogueSection[] = ['Foundations', 'Simple components', 'Combined components', 'Screens'];
+const BUILT_FROM_LINE = /^\s*Built from:\s*/;
 
 
 // A sample the catalogue does not show yet. It must not pass any check, including "not heard",
@@ -100,8 +101,14 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return new Uint8Array();
   }
 
-  async builtFrom(): Promise<readonly LibraryComponent[]> {
-    return [];
+  /** The components named on a component's "Built from:" line; none when it has no such line. */
+  async builtFrom(component: LibraryComponent): Promise<readonly LibraryComponent[]> {
+    const line = this.componentRegion(component).getByText(BUILT_FROM_LINE);
+    if ((await line.count()) === 0) {
+      return [];
+    }
+    const text = (await line.first().innerText()).replace(BUILT_FROM_LINE, '');
+    return text.split(',').map((name) => name.trim()).filter((name) => name.length > 0) as LibraryComponent[];
   }
 
   /** Requests since the page was created to any origin but the catalogue's own. */
