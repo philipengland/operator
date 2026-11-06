@@ -28,3 +28,8 @@
 - **T006**: `catalogue.html` and `src/catalogue/main.ts`; Vite `catalogue` mode builds only
   `catalogue.html` into `catalogue-dist/`. Game build compared file by file (SHA-256) before and
   after: identical (`index.html`, `index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
+- **T007**: Playwright projects `catalogue-iphone` and `catalogue-android` (`grep: /@catalogue/`,
+  base URL the catalogue preview on port 4174), a second web server that builds and serves the
+  catalogue, and `@catalogue` excluded from the game's `iphone` and `android`. `--list`: 17
+  library scenarios on each catalogue project, 43 and 44 game scenarios on the game's phones.
+  Run: 87 game scenarios pass; the 34 catalogue runs fail on the missing driver, as before.
