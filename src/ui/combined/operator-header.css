@@ -1,0 +1,17 @@
+/* Operator header: layout only; its look comes from Mascot and Speech bubble (FR-303). The mascot
+   keeps its size; the bubble takes the rest of the width. */
+
+.operator-header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--gap) * 2);
+}
+
+.operator-header > .mascot {
+  flex: none;
+}
+
+.operator-header > .speech-bubble {
+  flex: 1;
+  min-width: 0;
+}

@@ -4,8 +4,10 @@
 import { createGridCell } from '../ui/combined/grid-cell';
 import { createKeypad } from '../ui/combined/keypad';
 import { createLineWorking } from '../ui/combined/line-working';
+import { createOperatorHeader } from '../ui/combined/operator-header';
 import { createPuzzleGrid, type PuzzleGridProps } from '../ui/combined/puzzle-grid';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
+import { createSpeechBubble } from '../ui/combined/speech-bubble';
 import { createTargetPill } from '../ui/combined/target-pill';
 import { createBadge } from '../ui/simple/badge';
 import { createButton } from '../ui/simple/button';
@@ -44,6 +46,12 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
   ],
   Badge: [{ label: 'Badge', render: () => createBadge({ text: '× 12' }).element }],
   Mascot: [{ label: 'Mascot', render: () => createMascot().element }],
+  'Speech bubble': [
+    { label: 'Row through', render: () => createSpeechBubble({ title: 'Hello, Operator!', message: "Row one's through, pal. Keep 'em coming!" }).element },
+  ],
+  'Operator header': [
+    { label: 'Greeting', render: () => createOperatorHeader({ title: 'Hello, Operator!', message: 'Fill the grid, pal.' }).element },
+  ],
   'Solutions counter': [
     { label: 'None yet', render: () => createSolutionsCounter({ found: 0, total: 2 }).element },
     { label: 'In progress', render: () => createSolutionsCounter({ found: 1, total: 2 }).element },

@@ -1,0 +1,6 @@
+/* Speech bubble: layout only; its look comes from Surface and Text (FR-303). Title above message. */
+
+.speech-bubble {
+  display: flex;
+  flex-direction: column;
+}
