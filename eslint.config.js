@@ -26,7 +26,7 @@ function engineFolderLimit(depth) {
 
 export default tseslint.config(
   {
-    ignores: ['dist/', 'coverage/', 'test-results/', 'playwright-report/', 'node_modules/'],
+    ignores: ['dist/', 'catalogue-dist/', 'coverage/', 'test-results/', 'playwright-report/', 'node_modules/'],
   },
   js.configs.recommended,
   ...tseslint.configs.strict,

@@ -25,3 +25,6 @@
   License 2.0, not the SIL OFL as spec, plan, research and ADR assumed; Nunito is OFL. Both
   allow bundling with their licence texts, which are committed. Documents corrected; raised
   with the owner at the next checkpoint.
+- **T006**: `catalogue.html` and `src/catalogue/main.ts`; Vite `catalogue` mode builds only
+  `catalogue.html` into `catalogue-dist/`. Game build compared file by file (SHA-256) before and
+  after: identical (`index.html`, `index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
