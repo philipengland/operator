@@ -185,9 +185,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-11: line working
 
-- [ ] T046 [US2] AC-11 RED. Expected failure: `Line working "Incomplete" shows — Expected: "= ?", Received: ""`.
-- [ ] T047 [US2] AC-11 TDD cycles in `src/ui/combined/line-working.ts`: shows the given result text and mark ("= ?", "= 8 ✓", "= −3", "✗"), the visible slot hidden, heard by the given `name` ("Row 1 working, 6 + 2 = 8, target reached"); marked slots heavier as well as the symbol. Built from Text, Icon.
-- [ ] T048 [US2] AC-11 GREEN, slice refactor, checkpoint.
+- [X] T046 [US2] AC-11 RED. Expected failure: `Line working "Incomplete" shows — Expected: "= ?", Received: ""`.
+- [X] T047 [US2] AC-11 TDD cycles in `src/ui/combined/line-working.ts`: shows the given result text and mark ("= ?", "= 8 ✓", "= −3", "✗"), the visible slot hidden, heard by the given `name` ("Row 1 working, 6 + 2 = 8, target reached"); marked slots heavier as well as the symbol. Built from Text, Icon.
+- [X] T048 [US2] AC-11 GREEN, slice refactor, checkpoint.
 
 ### AC-12: puzzle grid
 

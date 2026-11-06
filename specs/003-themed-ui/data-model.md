@@ -52,7 +52,7 @@ a **model** (what it shows and says). Names below are the props; full shapes are
 | Solutions counter | combined | `found`, `total?` | searching, complete, no total |
 | Target pill | combined | `line`, `operator: + − × ÷ \| open`, `chosen?`, `target`, `reachesTarget`, `name` | shown, open, ticked |
 | Grid cell | combined | `state`, `digit?`, `name` | given, empty, selected, your digit, in a correct line (+ selected and correct) |
-| Line working | combined | `text`, `mark: none \| tick \| cross`, `name` | – |
+| Line working | combined | `result`, `mark: none \| tick \| cross`, `name` | – |
 | Puzzle grid | combined | `columns`, `columnPills`, `rowPills`, `cells`, `workings`, `helper` | – |
 | Keypad | combined | `keys` (1–9 and Oops) | – |
 | Play screen | screen | `header`, `counter`, `grid`, `keypad`, `mainButton` | sample: just opened, Row 1 correct, all found |

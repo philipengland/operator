@@ -547,3 +547,46 @@
   passed (87 game + 62 catalogue), 12 failed (the 6 part-2 scenarios not started). Game JS and
   CSS unchanged.
 - **Slice refactor**: none needed.
+
+## AC-11: the line working
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-11]`, two
+  scenarios on both catalogue phones.
+- **Acceptance RED**: all 4 runs failed for the missing samples: `Line working "Incomplete" shows
+  — Expected: "= ?", Received: ""`, as T046 predicted.
+- **Owner decision (2026-11-06)**: T047 carried over spec-002's "marked slots heavier as well as
+  the symbol", but Chewy, the display face, has one weight. Decision: the result slot is display
+  text like the pills and cells beside it, and a mark is shown by its ✓ or ✗ only (already more
+  than colour alone).
+
+### Cycles 1 to 3 — the line working model
+
+- **1 RED**: `lineWorkingModel › shows an unmarked result slot with no icon, heard by the whole
+  working` — `expected { result: '', icon: null, heardAs: '' } to deeply equal { result: '= ?', …
+  }`. **GREEN**: `6c18afd`.
+- **2 RED**: `… shows a tick after the result when the line reaches its target` — `expected null
+  to be 'tick'`. **GREEN**: `bcbd0b1`.
+- **3 RED**: `… shows a cross when a division is not whole` — `expected null to be 'cross'`.
+  **GREEN**: the mark is the icon, none is no icon — `3301fda`.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the catalogue shows the working as built (AC-7)
+
+- **RED**: both library tests (not built yet without it; built from with `'Line working':
+  ['Text', 'Icon']`) — `expected [ …(6) ] to deeply equal [ …(5) ]` and the built-from map.
+  **GREEN**: `9599056`.
+
+- **Renderer** (driven by the scenarios), commit `0c818ed`: `createLineWorking` — a visually
+  hidden name ("Row 1 working, 6 + 2 = 8, target reached") and an `aria-hidden` row of the result
+  as display Text and the mark Icon (decorative, its ✓ or ✗ kept as text), hidden when there is
+  no mark. Layout-only `line-working.css`. Samples Incomplete, Target reached, Below zero, Not
+  whole, named in the play-screen contract's wording. The data model's prop is `result`.
+- **Driver proven** by reverted breaks (iPhone): no tick failed `"Target reached" shows —
+  Received: "= 8"`; no spoken name failed `"Target reached" is heard to include "6 + 2 = 8" —
+  Received: ""`; no cross failed `"Not whole" shows — Received: ""`.
+- **Acceptance GREEN**: AC-11, 4 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 187 unit tests (lines 98.9%, branches 96.0%); engine 35 passed; phones 153
+  passed (87 game + 66 catalogue), 8 failed (the 4 part-2 scenarios not started). Game JS and
+  CSS unchanged.
+- **Slice refactor**: none. The hidden name speaking for a hidden visible row now appears in the
+  solutions counter and the line working; worth sharing if a third combined component needs it.
