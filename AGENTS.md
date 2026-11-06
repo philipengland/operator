@@ -17,7 +17,9 @@ mental arithmetic, played in a phone browser first and packaged for iOS and Andr
 Capacitor later. Feature F0, the walking skeleton, plays one fixed 2 × 2 puzzle
 (`specs/001-walking-skeleton/`). Spec-002 (`specs/002-live-calculations/`) shows each line's
 working as the player taps ("6 + 2 = 8 ✓", "6 ÷ 4 ✗"); results may go below zero, and only a
-division that is not whole fails a line. Sources: `docs/brief/project-brief.md`, the constitution.
+division that is not whole fails a line. Spec-003 (`specs/003-themed-ui/`) builds a themed
+component library (six colour themes, a puzzle's theme worked out from its seed) and a
+development-only catalogue; spec-004 applies it to the game. Sources: `docs/brief/project-brief.md`, the constitution.
 
 ## Architecture and Key Decisions
 
@@ -26,6 +28,12 @@ division that is not whole fails a line. Sources: `docs/brief/project-brief.md`,
     rule, checking. No DOM, browser APIs, timers or randomness (constitution II).
   - Play screen — `src/app/` — session state (`session.ts`), wording and accessible names
     (`labels.ts`), DOM rendering (`view.ts`), wiring (`main.ts`).
+  - Component library — `src/ui/` — in tiers: `foundations/` (themes, `themeForSeed`,
+    `contrastRatio`, `tokens.css`), `simple/`, `combined/`, `screens/`. Each component has a pure
+    `*.model.ts` and a renderer `create<Name>(props) → { element, update }`. Not yet used by the
+    game (spec-004).
+  - Catalogue — `src/catalogue/`, `catalogue.html` — every component in every state and theme,
+    and the play screen alone at `catalogue.html#play-screen`. Development only, never published.
   - Deployable unit: the static `dist/` build, published to GitHub Pages.
 - **Boundaries and integrations**: none at runtime. After loading, the game makes no network
   requests (constitution I; CSP `connect-src 'none'` in `index.html`).
@@ -71,6 +79,10 @@ npm run test:acceptance:engine -- -g "spec-001 AC-8]"   # one acceptance criteri
 # Spec Kit Dashboard shows under Supporting Artifacts (last line: "OVERALL status: PASS")
 npm run test-results -- <feature-folder> [--public-url <url>] [--note "<text>"]
 
+# Component catalogue (development only; never in dist/)
+npm run catalogue               # dev server, opens /catalogue.html (add -- --host to view on a phone)
+npm run build:catalogue         # builds to catalogue-dist/ (git-ignored); the UI driver serves it on its own port
+
 # Run locally
 npm run dev                     # http://localhost:5173
 npm run preview                 # the built dist/ at http://localhost:4173 (what the UI driver uses)
@@ -82,14 +94,17 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
 |---|---|
 | `src/engine/` | Pure puzzle engine; `puzzles/` holds puzzle data. Unit tests sit next to each file (`*.spec.ts`). |
 | `src/app/` | Session, labels, view and entry point for the play screen; `styles.css`. |
+| `src/ui/` | Component library by tier: `foundations/`, `simple/`, `combined/`, `screens/`. Unit tests next to each model. |
+| `src/catalogue/` | The catalogue: what it lists (`library.ts`), component and screen samples, entry point. |
+| `catalogue.html` | The catalogue's page; built only by `npm run build:catalogue`. |
 | `index.html` | Page shell, CSP, viewport and the `version` meta written at build time. |
-| `test/acceptance/play/`, `delivery/` | Layer 1 scenarios by capability, tagged `[spec-001 AC-n]` — **locked** |
+| `test/acceptance/play/`, `delivery/`, `library/` | Layer 1 scenarios by capability, tagged `[spec-NNN AC-n]` — **locked** (`library/` is spec-003's catalogue) |
 | `test/acceptance/dsl/` | Layer 2 DSL and vocabulary — **locked** |
 | `test/acceptance/drivers/` | Layer 3: engine driver, UI drivers (Playwright), delivery driver |
 | `test/acceptance/support/` | Driver selection (`ACCEPTANCE_DRIVER=engine|ui`) and the axe scan helper |
 | `tools/` | Build version lookup, exceptions check, acceptance launcher |
 | `.github/workflows/ci-deploy.yml` | `verify` on every PR and push; `deploy` to Pages from `main` only |
-| `specs/001-walking-skeleton/` | Spec, stories, plan, contracts, acceptance approval, tasks, `tdd-log.md` |
+| `specs/NNN-*/` | Per feature: spec, stories, plan, contracts, acceptance approval, tasks, `tdd-log.md`, `test-results.md` |
 | `docs/adr/` | Architecture Decision Records |
 | `docs/exceptions/` | Recorded exceptions to the organisation baseline |
 | `docs/brief/` | Product brief |
@@ -130,5 +145,13 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
   `GITHUB_SHA`. Why: rollback runs (`workflow_dispatch` with `ref`) check out an older commit.
 - **Speed budgets run on Android only.** Why: throttling to the reference phone uses
   Chromium's DevTools protocol.
+- **The library's tiers are enforced by lint and `tools/ui-tiers.spec.ts`.** ESLint stops a tier
+  importing a higher one (and `src/ui/` importing the engine or the app); the tools test fails if
+  combined or screen CSS declares colours, fills, outlines, shadows, radii or type. Why: a theme
+  must restyle everything through the simple components and four colours alone (spec-003 AC-7).
+- **Catalogue scenarios run only on the catalogue projects.** They are tagged `@catalogue`, the
+  game's phone projects skip them, and `catalogue-iphone` / `catalogue-android` run only them
+  against the catalogue build on its own port. Why: the catalogue is a separate build that must
+  never reach `dist/` (spec-003 AC-18, research R8).
 - **Run TypeScript tools with** `node --experimental-strip-types` (see `exceptions:check`).
   Why: no extra dependency is needed to run a `.ts` tool on Node 22.
