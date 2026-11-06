@@ -3,8 +3,8 @@
 
 import { builtFrom as gridCellParts } from '../ui/combined/grid-cell';
 import { builtFrom as keypadParts } from '../ui/combined/keypad';
-import { builtFrom as operatorHeaderParts } from '../ui/combined/operator-header';
 import { builtFrom as lineWorkingParts } from '../ui/combined/line-working';
+import { builtFrom as operatorHeaderParts } from '../ui/combined/operator-header';
 import { builtFrom as puzzleGridParts } from '../ui/combined/puzzle-grid';
 import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
 import { builtFrom as speechBubbleParts } from '../ui/combined/speech-bubble';
