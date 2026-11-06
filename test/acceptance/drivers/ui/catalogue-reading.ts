@@ -19,8 +19,16 @@ export interface HeardNode {
  * `- group "Main":\n  - button "Put it through!, Check" [disabled]`. Null when nothing is heard.
  */
 export function firstNodeIn(snapshot: string): HeardNode | null {
-  const child = snapshot.split('\n').find((line) => /^\s{2,}- /.test(line));
-  const match = child?.match(/^\s*- ([a-z]+)(?: "((?:[^"\\]|\\.)*)")?((?: \[[^\]]+\])*)(?::\s*(.*))?$/);
+  const children = snapshot.split('\n').filter((line) => /^\s{2,}- /.test(line));
+  // A field's visible label is read as text before the field: prefer the first node that is not
+  // plain text, so a sample is heard as the control it shows.
+  const child = children.find((line) => !/^\s*- text\b/.test(line)) ?? children[0];
+  return child === undefined ? null : parseNode(child);
+}
+
+/** One line of an ARIA snapshot: role, quoted name or text, and [states]. */
+function parseNode(line: string): HeardNode | null {
+  const match = line.match(/^\s*- ([a-z]+)(?: "((?:[^"\\]|\\.)*)")?((?: \[[^\]]+\])*)(?::\s*(.*))?$/);
   if (!match) {
     return null;
   }
@@ -57,6 +65,24 @@ export async function shownText(content: Locator): Promise<string> {
     const text = field ? field.value || field.placeholder : (element as HTMLElement).innerText;
     return text.replace(/\s+/g, ' ').trim();
   });
+}
+
+/** The element whose text a sample shows: its field when it has one, otherwise the component. */
+export function textElement(group: Locator): Locator {
+  const content = group.locator(':scope > *').first();
+  return content.locator('input').or(content.locator(':scope:not(:has(input))')).first();
+}
+
+/** Runs in the page: the first family in the element's font stack that is loaded and in use. */
+export function readTypeface(element: Element): string {
+  const unquote = (family: string) => family.trim().replace(/^["']|["']$/g, '');
+  const families = getComputedStyle(element).fontFamily.split(',').map(unquote);
+  const loaded = new Set(
+    Array.from(document.fonts)
+      .filter((face) => face.status === 'loaded')
+      .map((face) => unquote(face.family)),
+  );
+  return families.find((family) => loaded.has(family)) ?? families[families.length - 1] ?? '';
 }
 
 /** Runs in the page: the element's fill, outline, shadow and corners, as theme colour names. */

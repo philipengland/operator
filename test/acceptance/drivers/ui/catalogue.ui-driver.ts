@@ -4,7 +4,7 @@
 
 import type { Locator, Page } from '@playwright/test';
 import type { CatalogueSection, LibraryComponent, Sample } from '../../dsl/catalogue-vocabulary';
-import { NO_BOX, readAppearance, readSampleView } from './catalogue-reading';
+import { NO_BOX, readAppearance, readSampleView, readTypeface, textElement } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
 import type { Box } from '../phone.driver';
 import { scanForAccessibilityProblems } from '../../support/axe';
@@ -68,11 +68,19 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return content.evaluate(readAppearance);
   }
 
-  async typeface(): Promise<string> {
-    return '';
+  /** The typeface the sample's text is drawn in: the first family in use that has loaded. */
+  async typeface(sample: Sample): Promise<string> {
+    const group = this.sampleGroup(sample);
+    if ((await group.count()) === 0) {
+      return '';
+    }
+    await this.page.evaluate(() => document.fonts.ready);
+    return textElement(group).evaluate(readTypeface);
   }
 
-  async typeInto(): Promise<void> {}
+  async typeInto(sample: Sample, text: string): Promise<void> {
+    await this.sampleGroup(sample).getByRole('textbox').fill(text);
+  }
 
   async greyscaleContrast(): Promise<number> {
     return 0;
