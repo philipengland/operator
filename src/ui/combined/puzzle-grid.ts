@@ -39,11 +39,8 @@ export function createPuzzleGrid(props: PuzzleGridProps): Component<PuzzleGridPr
   const columnWorkings = props.columnWorkings.map((working, column) =>
     placed(grid, createLineWorking(working), places.columnWorking(column)),
   );
-  const helper = createText({ text: props.helper, style: 'body' });
-  const helperLine = document.createElement('p');
-  helperLine.className = 'puzzle-grid__helper';
-  helperLine.append(helper.element);
-  const surface = createSurface({ variant: 'panel' }, [grid, helperLine]);
+  const helper = createHelperLine(props.helper);
+  const surface = createSurface({ variant: 'panel' }, [grid, helper.element]);
   surface.element.setAttribute('role', 'group');
   surface.element.setAttribute('aria-label', 'Puzzle');
   const update = (next: PuzzleGridProps): void => {
@@ -52,9 +49,18 @@ export function createPuzzleGrid(props: PuzzleGridProps): Component<PuzzleGridPr
     next.cells.forEach((cellsInRow, row) => cellsInRow.forEach((cell, column) => cells[row]?.[column]?.update(cell)));
     next.rowWorkings.forEach((working, row) => rowWorkings[row]?.update(working));
     next.columnWorkings.forEach((working, column) => columnWorkings[column]?.update(working));
-    helper.update({ text: next.helper, style: 'body' });
+    helper.update(next.helper);
   };
   return { element: surface.element, update };
+}
+
+/** The helper line under the grid: a paragraph of body Text. */
+function createHelperLine(text: string): Component<string> {
+  const words = createText({ text, style: 'body' });
+  const element = document.createElement('p');
+  element.className = 'puzzle-grid__helper';
+  element.append(words.element);
+  return { element, update: (next) => words.update({ text: next, style: 'body' }) };
 }
 
 /** Adds a part to the grid at its place, and returns it. */
