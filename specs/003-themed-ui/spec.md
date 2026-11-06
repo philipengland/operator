@@ -402,8 +402,9 @@ puzzles exist, so it is proved by unit tests on the rule alone.
   large size belongs to the Choose screen.
 - **Sample content**: the catalogue uses the design guide's examples and the fixed puzzle's
   values. The play-screen wording is settled in spec-004.
-- **Fonts**: Chewy and Nunito are under the SIL Open Font Licence. Only the characters the game
-  uses need to ship.
+- **Fonts**: Chewy is under the Apache License 2.0 and Nunito under the SIL Open Font Licence;
+  both allow bundling with the game, with their licence texts (corrected 2026-11-06: Chewy is Apache 2.0, not OFL). Only the characters the
+  game uses need to ship.
 
 ## Acceptance Criteria as Examples *(org baseline)*
 

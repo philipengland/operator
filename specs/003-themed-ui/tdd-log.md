@@ -18,3 +18,10 @@
 - **T001**: branch `003-themed-ui-part-1` from `main` after PR #8 merged; part-1 files brought from
   `003-themed-ui` (only the simple-components scenario file). Commit `docs(spec-003): …`.
 - **T002**: this log and the baseline above.
+- **T003, T004**: ADR 0002 and `docs/contracts/component-library.md`, linked from `AGENTS.md`.
+- **T005**: fonts downloaded from Google Fonts on 2026-11-06 (sources and SHA-256 in
+  `src/ui/foundations/fonts/README.md`): `chewy-400.woff2` 19,920 bytes; `nunito-variable.woff2`
+  39,128 bytes (one variable file covers 700 and 800). **Found**: Chewy is under the Apache
+  License 2.0, not the SIL OFL as spec, plan, research and ADR assumed; Nunito is OFL. Both
+  allow bundling with their licence texts, which are committed. Documents corrected; raised
+  with the owner at the next checkpoint.

@@ -24,8 +24,8 @@ so it never reaches `dist/` (R7). Fonts are committed WOFF2 files (R5). No new d
 
 **Language/Version**: TypeScript (strict), Node 22. Unchanged (ADR 0001).
 
-**Primary Dependencies**: none added. Fonts Chewy and Nunito are committed assets under the SIL
-Open Font Licence, not packages.
+**Primary Dependencies**: none added. Fonts Chewy (Apache License 2.0) and Nunito (SIL Open Font
+Licence) are committed assets, not packages (corrected 2026-11-06: Chewy is Apache 2.0, not OFL).
 
 **Storage**: none. The catalogue's theme choice is not remembered (FR-325).
 
@@ -106,7 +106,7 @@ catalogue.html                      # NEW: second entry, development only (R7)
 src/ui/                             # NEW: the component library
 ├── foundations/
 │   ├── tokens.css                  # typefaces, outline, shadows, radii, spacing, touch target
-│   ├── fonts/                      # Chewy 400, Nunito 700 and 800 (WOFF2) + OFL.txt
+│   ├── fonts/                      # Chewy 400, Nunito variable (WOFF2), licences, README
 │   ├── themes.ts                   # THEMES, applyTheme, themeForSeed
 │   └── contrast.ts                 # contrastRatio
 ├── simple/                         # text, button, text-input, icon, surface, badge, mascot
@@ -214,7 +214,7 @@ All decided by the owner on 2026-11-06, as recommended:
 1. **Pull requests** (R9): all scenarios are approved at once; each Layer 1 file is added in the
    pull request that makes it pass. Three pull requests, as in Delivery.
 2. **Fonts** (R5): download Chewy (400) and Nunito (700, 800) latin WOFF2 from Google Fonts
-   once, and commit them with their OFL licence.
+   once, and commit them with their licence texts (Chewy: Apache 2.0; Nunito: OFL).
 3. **DOM unit tests** (R1): no `happy-dom`; renderers are proven through the catalogue on the
    phones.
 4. **`chore/test-results`**: merged before this feature's first pull request; the catalogue's

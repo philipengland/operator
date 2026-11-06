@@ -92,10 +92,11 @@ a puzzle rule; it uses only pure code, so it still runs in Node for tests.
 
 ## R5. Typefaces shipped with the game
 
-**Decision**: commit WOFF2 files for Chewy (400) and Nunito (700, 800), latin subset, with
-their SIL Open Font Licence text, under `src/ui/foundations/fonts/`. `tokens.css` declares
+**Decision**: commit WOFF2 files for Chewy (400) and Nunito (variable, used at 700 and 800),
+latin subset, with their licence texts (Chewy: Apache License 2.0; Nunito: SIL Open Font
+Licence (corrected 2026-11-06: Chewy is Apache 2.0, not OFL)), under `src/ui/foundations/fonts/`. `tokens.css` declares
 them with `@font-face` and `font-display: swap`, with system fallbacks. Downloaded once by
-the developer from the fonts' official distribution (Google Fonts, OFL); never fetched at
+the developer from the fonts' official distribution (Google Fonts); never fetched at
 run time (constitution I, FR-312).
 
 **Rationale**: same-origin files satisfy the CSP (`default-src 'self'`) and offline play.

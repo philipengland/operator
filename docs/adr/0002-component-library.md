@@ -25,7 +25,7 @@ This is that revisit.
 | Component shape | A pure **model** (props → what it shows and says), unit-tested in Node with Vitest, and a **renderer** `create<Name>(props)` returning `{ element, update(props) }`, proven through the catalogue on both phones. No DOM library in unit tests. |
 | Tiers | `src/ui/foundations/`, `simple/`, `combined/`, `screens/`. Import direction enforced by ESLint `no-restricted-imports`; nothing in `src/ui/` imports the engine or the app. A unit test (`src/ui/tiers.spec.ts`) fails if a combined component or screen declares colour, typeface, border, radius or shadow. |
 | Themes | TypeScript data (`src/ui/foundations/themes.ts`) applied as four CSS custom properties (`--ink`, `--paper`, `--tile`, `--accent`). All other design values are fixed custom properties in `tokens.css`. A puzzle's theme comes from its seed (FNV-1a, remainder by six). |
-| Fonts | Chewy and Nunito WOFF2 files, under the SIL Open Font Licence, committed in `src/ui/foundations/fonts/` and served from the same origin. Never fetched at run time (constitution I). |
+| Fonts | Chewy (Apache License 2.0) and Nunito (SIL Open Font Licence) WOFF2 files, with their licence texts, committed in `src/ui/foundations/fonts/` and served from the same origin. Never fetched at run time (constitution I). |
 | Catalogue | A second HTML entry, `catalogue.html`, built only by `npm run build:catalogue` into `catalogue-dist/`. The game's `npm run build` never includes it, so it is never published. Tested on its own Playwright projects. |
 
 ## Consequences
@@ -45,5 +45,6 @@ This is that revisit.
 - Plain DOM composition is more code than a framework's templates. If F6/F7's screens make it
   costly, adopting a framework needs a new ADR; the model/renderer split keeps the pure parts
   reusable.
-- Font files are third-party assets in the repository; their licence text is committed with them.
+- Font files are third-party assets in the repository; their licence texts and a README of sources
+  and hashes are committed with them (`src/ui/foundations/fonts/`).
 - The catalogue's two Playwright projects lengthen the acceptance run.
