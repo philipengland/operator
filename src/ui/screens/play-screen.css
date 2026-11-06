@@ -4,7 +4,7 @@
 .play-screen {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--gap) * 2);
-  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
-    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  gap: var(--space-between);
+  padding: max(var(--space-screen), env(safe-area-inset-top)) max(var(--space-screen), env(safe-area-inset-right))
+    max(var(--space-screen), env(safe-area-inset-bottom)) max(var(--space-screen), env(safe-area-inset-left));
 }

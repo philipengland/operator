@@ -4,7 +4,7 @@
 .keypad {
   display: grid;
   grid-template-columns: repeat(5, minmax(var(--touch-target), 1fr));
-  gap: var(--gap);
+  gap: var(--space-grid);
 }
 
 .keypad > .button {

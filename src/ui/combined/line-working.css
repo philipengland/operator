@@ -10,3 +10,9 @@
   align-items: center;
   gap: 4px;
 }
+
+/* The mark is the size of the result beside it, so a ticked line is no taller than an open one. */
+.line-working__shown > .icon {
+  width: 1em;
+  height: 1em;
+}

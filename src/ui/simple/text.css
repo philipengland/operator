@@ -7,13 +7,13 @@
 .text--display {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 28px;
+  font-size: var(--text-display);
   line-height: 1.15;
 }
 
 .text--body {
   font-family: var(--font-body);
   font-weight: var(--weight-body);
-  font-size: 16px;
+  font-size: var(--text-body);
   line-height: 1.35;
 }

@@ -4,7 +4,7 @@
 .puzzle-grid__grid {
   display: grid;
   grid-template-columns: minmax(64px, auto) repeat(var(--columns), minmax(var(--touch-target), 84px)) auto;
-  gap: var(--gap);
+  gap: var(--space-grid);
   align-items: center;
   justify-items: center;
   /* Pills and workings keep their text on one line; on narrow phones the cells give way. */
@@ -18,5 +18,5 @@
 }
 
 .puzzle-grid__helper {
-  margin: calc(var(--gap) * 2) 0 0;
+  margin: var(--space-grid) 0 0;
 }

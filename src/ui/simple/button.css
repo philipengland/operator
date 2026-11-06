@@ -29,7 +29,7 @@
 /* The one action per screen: accent fill, large and full width on phones. */
 .button--main {
   width: 100%;
-  min-height: 60px;
+  min-height: var(--size-main);
   border-radius: var(--radius-panel);
   background: var(--accent);
   color: var(--tile);
@@ -39,7 +39,7 @@
 
 /* A keypad key: tile fill, small hard shadow. */
 .button--key {
-  min-height: 52px;
+  min-height: var(--size-key);
   background: var(--tile);
   color: var(--ink);
   font-size: 28px;
@@ -48,7 +48,7 @@
 
 /* The clear key: solid ink. */
 .button--solid {
-  min-height: 52px;
+  min-height: var(--size-key);
   background: var(--ink);
   color: var(--paper);
   font-size: 20px;
@@ -56,7 +56,7 @@
 
 /* Something the player can change: a dashed accent outline and no fill. */
 .button--dashed {
-  min-height: 48px;
+  min-height: var(--size-dashed);
   border-style: dashed;
   border-color: var(--accent);
   border-radius: var(--radius-pill);
@@ -69,7 +69,7 @@
 .button--cell,
 .button--cell-correct {
   min-width: 84px;
-  min-height: 72px;
+  min-height: var(--size-cell);
   padding: 0;
   border-radius: var(--radius-cell);
   background: var(--tile);

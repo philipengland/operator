@@ -46,6 +46,53 @@
 
   --gap: 8px;
   --touch-target: 44px; /* constitution IV */
+
+  /* Sizes that give way on small phones so the play screen fits without scrolling (spec-003
+     AC-16). Nothing a player taps goes below the touch target. */
+  --size-cell: 72px;
+  --size-key: 52px;
+  --size-main: 60px;
+  --size-dashed: 48px;
+  --text-display: 28px;
+  --text-body: 16px;
+  --space-surface: 16px;
+  --space-grid: var(--gap);
+  --space-screen: 16px;
+  --space-between: 16px;
+}
+
+/* A 667 px phone (iPhone SE, Pixel 5 in the catalogue's tests). */
+@media (max-height: 700px) {
+  :root {
+    --size-cell: 56px;
+    --size-key: var(--touch-target);
+    --size-main: 52px;
+    --size-dashed: var(--touch-target);
+    --space-surface: 12px;
+    --space-screen: 12px;
+    --space-between: 8px;
+  }
+}
+
+/* A 568 px phone (iPhone SE first generation, 320 × 568). */
+@media (max-height: 600px) {
+  :root {
+    --size-cell: var(--touch-target);
+    --size-main: var(--touch-target);
+    --space-surface: 8px;
+    --space-screen: 8px;
+    --space-between: 4px;
+    --space-grid: 4px;
+  }
+}
+
+/* A 320 px wide phone: text a little smaller so titles stay on one line (the design guide's
+   bubble message is 14 px). */
+@media (max-width: 359px) {
+  :root {
+    --text-display: 22px;
+    --text-body: 14px;
+  }
 }
 
 /* Hidden means hidden, whatever display a component gives itself. */

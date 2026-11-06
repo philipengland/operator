@@ -1,7 +1,7 @@
 /* Surface (design guide: panels and the speech bubble). Foundations only. */
 
 .surface {
-  padding: calc(var(--gap) * 2);
+  padding: var(--space-surface);
   border: var(--outline) solid var(--ink);
   background: var(--tile);
   color: var(--ink);
@@ -15,6 +15,7 @@
 
 /* A speech bubble: accent shadow, and a near-square corner where the tail points at the mascot. */
 .surface--bubble {
+  padding: 8px 14px;
   border-radius: var(--radius-bubble) var(--radius-bubble) var(--radius-bubble) var(--radius-tail);
   box-shadow: var(--shadow-large) var(--shadow-large) 0 var(--accent);
 }
