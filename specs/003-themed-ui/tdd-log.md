@@ -678,3 +678,51 @@
 - **Full suite**: 191 unit tests (lines 99.0%, branches 96.0%); engine 35 passed; phones 157
   passed (87 game + 70 catalogue), 4 failed (AC-7 and AC-14). Game JS and CSS unchanged.
 - **Slice refactor**: none needed.
+
+## AC-14: the operator header
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-14]`, one
+  scenario on both catalogue phones.
+- **Driver** (T055): `mascotAndBubble()` reads the header's two parts. The mascot is hidden from
+  screen readers by design and has no name to find it by, so the header's hidden part is the
+  mascot and its heard part the bubble; anything else gives unknown boxes.
+- **Acceptance RED**: `the mascot is beside the speech bubble — Expected: true, Received: false`
+  on both phones (the scenario's first check; T055 named the "shows" check after it, same cause).
+- Neither component has logic of its own, so there is no model to unit-test; their unit cycles
+  are the catalogue's, and the scenario drives the renderers.
+
+### Cycles 1 and 2 — the catalogue shows the bubble and the header as built (AC-7)
+
+- **1 RED**: library tests without "Speech bubble: Built in part 2." and with `'Speech bubble':
+  ['Surface', 'Text']`. **GREEN**: `fbb861a`.
+- **2 RED**: without "Operator header: Built in part 2." (`expected [ …(2) ] to deeply equal [
+  'Play screen: Built in part 3.' ]`) and with `'Operator header': ['Mascot', 'Speech bubble']`.
+  **GREEN**: every combined component is now built — `d9ba0d2`.
+
+- **Renderers** (driven by the scenario), commit `1a8628b`: `createSpeechBubble({ title,
+  message })` — a bubble Surface stacking display Text over body Text; `createOperatorHeader` —
+  the Mascot at its fixed size beside the bubble, which takes the rest of the width. Layout-only
+  stylesheets. Samples: Speech bubble "Row through" (the design guide's "Row one's through, pal.
+  Keep 'em coming!"), Operator header "Greeting" ("Hello, Operator!", "Fill the grid, pal.").
+  - **Looked at on a phone**: no horizontal scroll at 375 or 320 px. At 375 px it matches the
+    design guide; at 320 px the title wraps to two lines ("Hello, / Operator!"), which part 3
+    must allow for when the play screen has to fit 320 × 568 without scrolling.
+- **Driver proven** by reverted breaks (iPhone): mascot after the bubble failed `the mascot is
+  beside the speech bubble`; no message failed `"Greeting" shows — Received: "Hello, Operator!"`;
+  words only a screen reader gets, added inside the bubble, failed `"Greeting" is heard as —
+  Received: "Hello, Operator! Fill the grid, pal. Operator mascot"`. (Giving the mascot a name
+  failed earlier, on "beside": the driver could no longer tell the parts apart.)
+- **Acceptance GREEN**: AC-14, 2 runs passed, axe clean.
+- **Slice refactor** (`d3229e8`): the catalogue library's imports sorted.
+
+## AC-7: each combined component says what it is built from (closed)
+
+- **Acceptance GREEN** (T036, T057): with all eight combined components built, the scenario
+  passes on both phones. Its cycles ran with each component (AC-8 to AC-14): every module
+  exports `builtFrom`, the catalogue lists it, and the tier rules were proven on a real combined
+  stylesheet and import in AC-8.
+- **Driver proven** by a reverted break: the keypad claiming `['Button', 'Text']` failed `what
+  Keypad is built from` with "Text" received but not expected.
+- **Full suite** (part 2's criteria all green): 191 unit tests (lines 99.0%, branches 96.0%);
+  engine 35 passed; phones 161 passed (87 game + 74 catalogue), none failed. Game JS and CSS
+  unchanged.

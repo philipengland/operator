@@ -162,8 +162,8 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 ### AC-7: built from
 
 - [X] T034 [US2] AC-7 RED: driver `builtFrom(component)` reads the component region's "Built from:" line. Expected failure on the first combined component without a sample.
-- [ ] T035 [US2] AC-7 TDD cycles: each combined module exports `builtFrom` matching the contract table, and imports exactly those simple or combined components (the lint rules from T009 and `tools/ui-tiers.spec.ts` now check real files: confirm it fails on a reverted bad declaration in a combined stylesheet).
-- [ ] T036 [US2] AC-7 GREEN once all eight combined components exist (it is the last criterion in this phase to go green); checkpoint.
+- [X] T035 [US2] AC-7 TDD cycles: each combined module exports `builtFrom` matching the contract table, and imports exactly those simple or combined components (the lint rules from T009 and `tools/ui-tiers.spec.ts` now check real files: confirm it fails on a reverted bad declaration in a combined stylesheet).
+- [X] T036 [US2] AC-7 GREEN once all eight combined components exist (it is the last criterion in this phase to go green); checkpoint.
 
 ### AC-8: solutions counter
 
@@ -203,9 +203,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-14: operator header
 
-- [ ] T055 [US2] AC-14 RED: driver `mascotAndBubble()`. Expected failure: `Operator header "Greeting" shows — Expected: "Hello, Operator! Fill the grid, pal.", Received: ""`.
-- [ ] T056 [US2] AC-14 TDD cycles: `src/ui/combined/speech-bubble.ts` (bubble Surface, display title, body message; built from Surface, Text) and `src/ui/combined/operator-header.ts` (Mascot beside Speech bubble; built from Mascot, Speech bubble). Sample: Greeting ("Hello, Operator!", "Fill the grid, pal." in Classic; the address comes from the theme in US4).
-- [ ] T057 [US2] AC-14 GREEN, AC-7 GREEN (T036), slice refactor, checkpoint.
+- [X] T055 [US2] AC-14 RED: driver `mascotAndBubble()`. Expected failure: `Operator header "Greeting" shows — Expected: "Hello, Operator! Fill the grid, pal.", Received: ""`.
+- [X] T056 [US2] AC-14 TDD cycles: `src/ui/combined/speech-bubble.ts` (bubble Surface, display title, body message; built from Surface, Text) and `src/ui/combined/operator-header.ts` (Mascot beside Speech bubble; built from Mascot, Speech bubble). Sample: Greeting ("Hello, Operator!", "Fill the grid, pal." in Classic; the address comes from the theme in US4).
+- [X] T057 [US2] AC-14 GREEN, AC-7 GREEN (T036), slice refactor, checkpoint.
 
 ### Pull request 2
 
