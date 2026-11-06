@@ -1,6 +1,7 @@
 // The catalogue's samples: each component in every state the design guide lists (spec-003 FR-324).
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
+import { createGridCell } from '../ui/combined/grid-cell';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createTargetPill } from '../ui/combined/target-pill';
 import { createBadge } from '../ui/simple/badge';
@@ -55,6 +56,17 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     {
       label: 'Line correct',
       render: () => createTargetPill({ target: 9, operator: '+', isOpen: false, name: 'Row 1 target 9, plus', reachesTarget: true }).element,
+    },
+  ],
+  'Grid cell': [
+    { label: 'Given', render: () => createGridCell({ name: 'Top-left cell', digit: 2, isGiven: true }).element },
+    { label: 'Empty', render: () => createGridCell({ name: 'Top-right cell', digit: null }).element },
+    { label: 'Selected', render: () => createGridCell({ name: 'Top-right cell', digit: null, isSelected: true }).element },
+    { label: 'Your digit', render: () => createGridCell({ name: 'Top-right cell', digit: 8 }).element },
+    { label: 'In a correct line', render: () => createGridCell({ name: 'Bottom-left cell', digit: 4, isInCorrectLine: true }).element },
+    {
+      label: 'Selected, in a correct line',
+      render: () => createGridCell({ name: 'Bottom-left cell', digit: 4, isSelected: true, isInCorrectLine: true }).element,
     },
   ],
 };

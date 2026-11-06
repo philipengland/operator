@@ -64,3 +64,45 @@
   color: var(--ink);
   font-size: 24px;
 }
+
+/* A puzzle grid cell (design guide: Grid cell): 72px tall, 22px corners, a 44px display digit. */
+.button--cell,
+.button--cell-correct {
+  min-width: 84px;
+  min-height: 72px;
+  padding: 0;
+  border-radius: var(--radius-cell);
+  background: var(--tile);
+  color: var(--ink);
+  font-size: 44px;
+  box-shadow: var(--shadow-medium) var(--shadow-medium) 0 var(--ink);
+}
+
+/* In a line that reaches its target: an accent digit and an accent shadow. */
+.button--cell-correct {
+  color: var(--accent);
+  box-shadow: var(--shadow-medium) var(--shadow-medium) 0 var(--accent);
+}
+
+/* Given: solid ink, no outline or shadow, so it reads as part of the puzzle. */
+.button--cell[aria-disabled='true'],
+.button--cell-correct[aria-disabled='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: none;
+}
+
+/* Selected: the accent fill, and a caret when there is no digit yet. */
+.button--cell[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--tile);
+}
+
+.button--cell[aria-pressed='true']:empty::after {
+  content: '';
+  width: 6px;
+  height: 34px;
+  border-radius: 3px;
+  background: var(--tile);
+}
