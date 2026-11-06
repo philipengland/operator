@@ -30,11 +30,11 @@ interface Component<Props> {
 
 | Export | Purpose |
 | --- | --- |
-| `THEMES`, `CLASSIC`, `ThemeName`, `Theme` | the six themes (data model) |
-| `applyTheme(root, theme)` | sets the four colour properties on `root` |
-| `themeForSeed(seed?)` | research R4 |
-| `contrastRatio(a, b)` | WCAG 2.2 relative-luminance ratio, for the contrast test |
-| `tokens.css` | typefaces (`--font-display`, `--font-body`), `--outline`, `--shadow-small`, `--shadow-large`, radii, `--gap`, `--touch-target` |
+| `THEMES`, `CLASSIC`, `MIDNIGHT_BLUE`, `Theme`, `ThemeColours` | the six themes in table order, each `{ label, colours: { ink, paper, tile, accent }, address, signOff, buttonLabel }` (data model) |
+| `applyTheme(root, theme)` | sets the four colour properties on `root`, and nothing else |
+| `themeForSeed(seed: string \| undefined)` | research R4: 32-bit FNV-1a over the upper-cased seed, remainder by 6; no seed gives Classic |
+| `contrastRatio(foreground, background)` | WCAG 2.2 relative-luminance ratio, for the contrast test |
+| `tokens.css` | typefaces (`--font-display`, `--font-body`, weights), outlines, shadows, radii, `--gap`, `--touch-target`; screen sizes `--size-cell`, `--size-key`, `--size-main`, `--size-dashed`, `--text-display`, `--text-body`, `--space-surface`, `--space-screen`, `--space-between`, `--space-grid`, which shrink on screens up to 700 and 600 px tall and up to 359 px wide, so the play screen fits 375 × 667 and 320 × 568 |
 
 ## Simple components
 
@@ -75,7 +75,14 @@ interface Component<Props> {
   samples, each labelled ("Complete"), and for combined components and screens a "Built from:"
   line.
 - Theme switch: a `group` named "Theme" with six buttons named by theme label, the current one
-  `aria-pressed="true"`.
+  `aria-pressed="true"`. Starts on Classic and is not remembered. Switching sets the four
+  colours and redraws only the samples whose words are the theme's (the play screen, Button
+  "Main", Speech bubble "Row through", Operator header "Greeting"). Each of those keeps the size
+  of its longest wording in any theme, using invisible copies (`visibility: hidden`), so nothing moves.
 - Screen samples: a `group` named "Screen sample" with buttons "Just opened", "Row 1 correct",
-  "All found".
+  "All found", switched in place through the play screen's `update`. Their messages use the
+  theme's address and the main button its label.
+- `catalogue.html#play-screen` shows a `region` named "Play screen" alone at full screen height,
+  with the theme switch, the screen-sample switch and a "Back to the catalogue" link below it;
+  the catalogue's Play screen entry links to it ("Open the play screen alone").
 - Never in `dist/`; built to `catalogue-dist/` by `npm run build:catalogue`.
