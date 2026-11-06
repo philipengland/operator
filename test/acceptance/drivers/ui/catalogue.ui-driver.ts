@@ -154,8 +154,20 @@ export class UiCatalogueDriver implements CatalogueDriver {
     };
   }
 
-  async keypadRows(): Promise<readonly (readonly string[])[]> {
-    return [];
+  /** The sample's buttons by name, row by row as they sit on screen: grouped by top edge, left to right. */
+  async keypadRows(sample: Sample): Promise<readonly (readonly string[])[]> {
+    const keys = this.sampleGroup(sample).getByRole('button');
+    const placed = await Promise.all(
+      (await keys.all()).map(async (key) => ({ name: (await key.getAttribute('aria-label')) ?? (await key.innerText()).trim(), box: await boxOf(key) })),
+    );
+    const rows = new Map<number, { name: string; box: Box }[]>();
+    placed.forEach((key) => {
+      const top = Math.round(key.box.top);
+      rows.set(top, [...(rows.get(top) ?? []), key]);
+    });
+    return [...rows.entries()]
+      .sort(([firstTop], [secondTop]) => firstTop - secondTop)
+      .map(([, row]) => row.sort((first, second) => first.box.left - second.box.left).map((key) => key.name));
   }
 
   async mascotAndBubble(): Promise<{ readonly mascot: Box; readonly bubble: Box }> {
