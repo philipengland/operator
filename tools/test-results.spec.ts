@@ -109,6 +109,18 @@ describe('readPlaywrightReport', () => {
     expect(readPlaywrightReport(report).find((each) => each.title === 'flaky one' && each.run === 'engine')?.status).toBe('failed');
   });
 
+  it('records the catalogue phones (spec-003) as runs of their own', () => {
+    const catalogue = {
+      suites: [
+        {
+          title: 'library/simple-components.acceptance-spec.ts',
+          specs: [{ title: 't', tests: [{ projectName: 'catalogue-iphone', status: 'expected' }, { projectName: 'catalogue-android', status: 'expected' }] }],
+        },
+      ],
+    };
+    expect(readPlaywrightReport(catalogue).map((each) => each.run)).toEqual(['catalogue-iphone', 'catalogue-android']);
+  });
+
   it('rejects a project it does not know, rather than guessing where the test ran', () => {
     const unknown = { suites: [{ title: 'x', specs: [{ title: 't', tests: [{ projectName: 'desktop', status: 'expected' }] }] }] };
     expect(() => readPlaywrightReport(unknown)).toThrow('Unknown Playwright project "desktop"');

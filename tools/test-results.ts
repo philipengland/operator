@@ -3,7 +3,7 @@
 // this file under Supporting Artifacts and reads its last "OVERALL status:" line.
 // No clock and no file access here: the runner (run-test-results.ts) passes everything in.
 
-export type RunName = 'engine' | 'iphone' | 'android' | 'after-publish' | 'unit';
+export type RunName = 'engine' | 'iphone' | 'android' | 'catalogue-iphone' | 'catalogue-android' | 'after-publish' | 'unit';
 export type TestStatus = 'passed' | 'failed' | 'skipped';
 export type OverallStatus = 'PASS' | 'FAIL' | 'BLOCKED';
 type CriterionStatus = 'PASS' | 'FAIL' | 'NOT RUN' | 'NOT COVERED';
@@ -42,7 +42,7 @@ const RUN_COLUMNS: readonly (readonly [RunName, string])[] = [
   ['unit', 'Unit'],
 ];
 
-const PLAYWRIGHT_PROJECTS: ReadonlySet<string> = new Set(['engine', 'iphone', 'android', 'after-publish']);
+const PLAYWRIGHT_PROJECTS: ReadonlySet<string> = new Set(['engine', 'iphone', 'android', 'catalogue-iphone', 'catalogue-android', 'after-publish']);
 
 // A flaky test passed only on retry, which is never accepted (Playwright standard).
 const PLAYWRIGHT_STATUSES: Readonly<Record<string, TestStatus>> = {
