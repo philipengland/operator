@@ -3,6 +3,7 @@
 
 import { createGridCell } from '../ui/combined/grid-cell';
 import { createLineWorking } from '../ui/combined/line-working';
+import { createPuzzleGrid, type PuzzleGridProps } from '../ui/combined/puzzle-grid';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createTargetPill } from '../ui/combined/target-pill';
 import { createBadge } from '../ui/simple/badge';
@@ -82,9 +83,41 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
       render: () => createLineWorking({ result: '', mark: 'cross', name: 'Column 1 working, 6 ÷ 4, not a whole number' }).element,
     },
   ],
+  'Puzzle grid': [{ label: 'Fixed puzzle', render: () => createPuzzleGrid(FIXED_PUZZLE_JUST_OPENED).element }],
 };
 
 /** Body text to show inside a surface sample. */
 function sampleText(text: string): HTMLElement {
   return createText({ text, style: 'body' }).element;
 }
+
+/** spec-001's 2 × 2 puzzle as the game shows it just opened (play-screen contract wording). */
+const FIXED_PUZZLE_JUST_OPENED = {
+  columnPills: [
+    { target: 3, operator: null, isOpen: true, name: 'Column 1 target 3, operator not chosen' },
+    { target: 6, operator: '×', isOpen: false, name: 'Column 2 target 6, times' },
+  ],
+  rowPills: [
+    { target: 8, operator: '+', isOpen: false, name: 'Row 1 target 8, plus' },
+    { target: 6, operator: null, isOpen: true, name: 'Row 2 target 6, operator not chosen' },
+  ],
+  cells: [
+    [
+      { name: 'Top-left cell', digit: 6, isGiven: true },
+      { name: 'Top-right cell', digit: null },
+    ],
+    [
+      { name: 'Bottom-left cell', digit: null },
+      { name: 'Bottom-right cell', digit: null },
+    ],
+  ],
+  rowWorkings: [
+    { result: '= ?', mark: 'none', name: 'Row 1 working, 6 + ?' },
+    { result: '= ?', mark: 'none', name: 'Row 2 working, ? ? ?' },
+  ],
+  columnWorkings: [
+    { result: '= ?', mark: 'none', name: 'Column 1 working, 6 ? ?' },
+    { result: '= ?', mark: 'none', name: 'Column 2 working, ? × ?' },
+  ],
+  helper: 'Tap a dashed bubble to swap its operator.',
+} as const satisfies PuzzleGridProps;
