@@ -282,7 +282,7 @@ and the theme unit tests pass.
 
 **Independent Test**: unit tests in `src/ui/foundations/themes.spec.ts`.
 
-- [ ] T079 [US5] AC-23 to AC-25 TDD cycles in `themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)')`: `themeForSeed(undefined)` is Classic (AC-25); "4F7A21" twice and "4f7a21" give the same theme, and that theme is Plum and mint (golden, research R4) (AC-23); 600 seeds (hex "000000" to "000257") give each theme between 70 and 130 (AC-24). Implementation: 32-bit FNV-1a over the upper-cased seed, remainder by 6, index into `THEMES`.
+- [X] T079 [US5] AC-23 to AC-25 TDD cycles in `themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)')`: `themeForSeed(undefined)` is Classic (AC-25); "4F7A21" twice and "4f7a21" give the same theme, and that theme is Plum and mint (golden, research R4) (AC-23); 600 seeds (hex "000000" to "000257") give each theme between 70 and 130 (AC-24). Implementation: 32-bit FNV-1a over the upper-cased seed, remainder by 6, index into `THEMES`.
 
 ---
 

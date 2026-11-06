@@ -999,3 +999,26 @@ Unit tests only.
 - **Acceptance GREEN** (T078): AC-22, 2 runs passed.
 - **Full suite**: 238 unit tests; engine 36 passed; phones 185 passed, none failed. Game JS and
   CSS unchanged.
+
+## AC-23 to AC-25: a puzzle's theme from its seed
+
+Unit tests only (`themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)')`).
+
+- **Cycle 1, AC-23** (`afa662b`): "4F7A21" gives Plum and mint every time, and "4f7a21" the same
+  (golden value from research R4).
+  - RED: `expected [ 'Classic', 'Classic', 'Classic' ] to deeply equal [ 'Plum and mint', …(2) ]`
+    (the stub returned Classic).
+  - GREEN: 32-bit FNV-1a over the upper-cased seed (`Math.imul`, unsigned), remainder by 6, index
+    into `THEMES`. It gives Plum and mint, as R4 says.
+- **Cycle 2, AC-24** (`d0c766b`): over seeds "000000" to "000257" (600), each theme is given 70 to
+  130 times.
+  - **Reported — passes on its first run** (⚠️), as expected: R4 measured this rule's spread.
+  - **Proven** by a reverted break. A first attempt, using the seed's last character, left the
+    spread inside the limits (the last hex digit spreads evenly by itself), so it proved nothing.
+    Using the first character instead failed `Classic is given 600 times: expected 600 to be less
+    than or equal to 130`.
+- **Cycle 3, AC-25** (`096cbb3`): a puzzle with no seed is shown in Classic.
+  - RED: `expected 'Midnight blue' to be 'Classic'` (an empty seed hashes to Midnight blue).
+  - GREEN: no seed returns Classic before hashing.
+- **Slice refactor**: none needed.
+- **Full suite**: 241 unit tests; engine 36 passed; phones 185 passed. Game JS and CSS unchanged.
