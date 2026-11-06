@@ -11,4 +11,14 @@ describe('solutionsCounterModel', () => {
       heardAs: 'Found 1 of 2',
     });
   });
+
+  it('when every solution is found shows "All found!" on ink, complete, heard as "Found 2 of 2"', () => {
+    expect(solutionsCounterModel({ found: 2, total: 2 })).toEqual({
+      title: 'All found!',
+      count: '2 of 2',
+      isComplete: true,
+      fill: 'ink',
+      heardAs: 'Found 2 of 2',
+    });
+  });
 });
