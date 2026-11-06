@@ -114,9 +114,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-2: buttons in four styles
 
-- [ ] T017 [US1] AC-2 RED: driver `sample()` (text, accessible name, role button/textbox, `aria-disabled`, `aria-pressed`, bounding box) and `appearance()` (computed background, border style and colour, box-shadow colour, border radii; colours mapped to `ink`/`paper`/`tile`/`accent` by reading the four custom properties on the page root, `other` otherwise). Expected failure: `Button "Main" shows — Expected: "Put it through!", Received: ""`.
-- [ ] T018 [US1] AC-2 TDD cycles in `src/ui/simple/button.ts`: `buttonModel` names a button by its label, or "label, action" when an action is given ("Oops, clear cell", "Put it through!, Check"); styles `main | key | solid | dashed`; `isUnavailable` gives `aria-disabled="true"` and ignores taps (the button stays focusable). Renderer: a real `<button type="button">`, at least `--touch-target` square; `button.css` per style (main: accent fill, tile text, large shadow; key: tile fill, small shadow; solid: ink fill, paper text; dashed: dashed accent outline). Samples in `samples.ts`: Main, Key, Solid, Dashed, Unavailable.
-- [ ] T019 [US1] AC-2 GREEN, slice refactor, checkpoint.
+- [X] T017 [US1] AC-2 RED: driver `sample()` (text, accessible name, role button/textbox, `aria-disabled`, `aria-pressed`, bounding box) and `appearance()` (computed background, border style and colour, box-shadow colour, border radii; colours mapped to `ink`/`paper`/`tile`/`accent` by reading the four custom properties on the page root, `other` otherwise). Expected failure: `Button "Main" shows — Expected: "Put it through!", Received: ""`.
+- [X] T018 [US1] AC-2 TDD cycles in `src/ui/simple/button.ts`: `buttonModel` names a button by its label, or "label, action" when an action is given ("Oops, clear cell", "Put it through!, Check"); styles `main | key | solid | dashed`; `isUnavailable` gives `aria-disabled="true"` and ignores taps (the button stays focusable). Renderer: a real `<button type="button">`, at least `--touch-target` square; `button.css` per style (main: accent fill, tile text, large shadow; key: tile fill, small shadow; solid: ink fill, paper text; dashed: dashed accent outline). Samples in `samples.ts`: Main, Key, Solid, Dashed, Unavailable.
+- [X] T019 [US1] AC-2 GREEN, slice refactor, checkpoint.
 
 ### AC-3: labelled text input
 

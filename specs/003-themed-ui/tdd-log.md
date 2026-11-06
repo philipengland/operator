@@ -115,3 +115,40 @@
   (lines 100%, branches 96.12%); engine 35 passed; phones 91 passed (87 game + 4 AC-1) and 30
   failed (the 15 part-1 scenarios not yet started, on two phones).
 - **Slice refactor**: none needed.
+
+## AC-2: buttons in four styles
+
+- **Acceptance test**: `simple-components.acceptance-spec.ts` — `[spec-003 AC-2]`, five
+  scenarios on both catalogue phones.
+- **Driver**: `sample()` reads the sample group's ARIA snapshot (role, name, `[disabled]`,
+  `[pressed]`), shown text and box; `appearance()` maps computed fill, border and shadow colours
+  to ink/paper/tile/accent from the page's four custom properties
+  (`drivers/ui/catalogue-reading.ts`). A missing sample is reported at once rather than timing
+  out after 30 s (first RED attempt: `locator.ariaSnapshot: Test timeout of 30000ms exceeded`);
+  `sample()` moved into a helper to stay under the complexity limit.
+- **Acceptance RED**: `Button "Main" shows — Expected: "Put it through!", Received: ""` (and
+  Key, Solid, Dashed); `Button "Unavailable" is a button — Expected: true, Received: false`.
+
+### Cycles in `src/ui/simple/button.model.spec.ts`
+
+1. Heard by its label "5" — RED `expected '' to be '5'`; GREEN, the name is the label.
+2. Label then action, "Oops, clear cell" — RED `expected 'Oops' to be 'Oops, clear cell'`; GREEN
+   `9eacde2`.
+3. Says when it is unavailable — RED `expected false to be true`; GREEN.
+4. Carries its style class (main, key, solid, dashed) — 4 RED `expected [] …`; GREEN `06b07ed`.
+   No refactor needed in the model.
+
+- **Renderer** (driven by the scenario): `createButton` — a real `<button type="button">`;
+  `aria-label` only when the name differs from the label (the label always starts the name);
+  `aria-disabled="true"` when unavailable, presses ignored. `button.css`: main (accent fill, tile
+  text, 60 px, medium ink shadow), key (tile, small shadow), solid (ink, paper text), dashed
+  (dashed accent border, no fill), all at least 44 × 44. Catalogue samples Main, Key, Solid,
+  Dashed, Unavailable (`src/catalogue/samples.ts`), each a group named by its label.
+- **Acceptance GREEN**: AC-2, 10 runs passed, axe clean. Commit `bdfa205`.
+- **Found in the full run**: AC-5 "a decorative tick is not read" passed with no sample, because
+  a missing sample was reported as "nothing heard". Driver fixed: a missing sample is heard as
+  "this sample is not in the catalogue", so it can pass no check. Catalogue run after the fix:
+  14 passed (AC-1, AC-2), 20 failed (10 scenarios not started).
+- **Full suite**: 153 unit tests (lines 100%, branches 96.2%); engine 35 passed.
+- **Slice refactor**: `button.ts` sets-or-removes two attributes the same way; named
+  `setAttributeOrRemove`. Commit `ef1bf93`.
