@@ -197,9 +197,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-13: keypad
 
-- [ ] T052 [US2] AC-13 RED: driver `keypadRows()` groups the sample's buttons by their top edge. Expected failure: `keypad keys, row by row — Received: []`.
-- [ ] T053 [US2] AC-13 TDD cycles in `src/ui/combined/keypad.ts`: a `group` named "Keypad" of key Buttons 1–9 and a solid Button "Oops" with action "clear cell", in a five-column grid. Built from Button.
-- [ ] T054 [US2] AC-13 GREEN, slice refactor, checkpoint.
+- [X] T052 [US2] AC-13 RED: driver `keypadRows()` groups the sample's buttons by their top edge. Expected failure: `keypad keys, row by row — Received: []`.
+- [X] T053 [US2] AC-13 TDD cycles in `src/ui/combined/keypad.ts`: a `group` named "Keypad" of key Buttons 1–9 and a solid Button "Oops" with action "clear cell", in a five-column grid. Built from Button.
+- [X] T054 [US2] AC-13 GREEN, slice refactor, checkpoint.
 
 ### AC-14: operator header
 

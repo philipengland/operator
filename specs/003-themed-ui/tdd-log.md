@@ -644,3 +644,37 @@
   unchanged.
 - **Slice refactor** (`a863bc8`): the helper line's construction named as `createHelperLine`,
   shortening `createPuzzleGrid`. Catalogue scenarios and unit tests green again.
+
+## AC-13: the keypad
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-13]`, one
+  scenario on both catalogue phones.
+- **Driver** (T052): `keypadRows()` reads each button in the sample by name (its `aria-label`,
+  or its text) and box, groups them into rows by top edge, top to bottom, and orders each row
+  left to right.
+- **Acceptance RED**: `keypad keys, row by row — Received: []` on both phones, as T052 predicted.
+
+### Cycle 1 — the keypad's keys
+
+- **RED**: `keypadKeys › are the digits 1 to 9 as keys, then a solid "Oops" that clears the cell`
+  — `expected [] to deeply equal [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 'clear' ]`. **GREEN**: digit keys
+  from 1 to the largest digit, then the Oops key (`no-magic-numbers` refused a literal list of
+  digits) — `5ba7228`. **REFACTOR**: none needed.
+
+### Cycle 2 — the catalogue shows the keypad as built (AC-7)
+
+- **RED**: both library tests (not built yet without it; built from with `Keypad: ['Button']`).
+  **GREEN**: `2a054d5`. Only the speech bubble and operator header (AC-14) and the play screen
+  (part 3) still say where they are built.
+
+- **Renderer** (driven by the scenario), commit `33a84e6`: `createKeypad(onKey?)` — a group named
+  "Keypad", a five-column grid of the key Buttons, each calling `onKey` with its digit or
+  'clear'. Layout-only `keypad.css`: columns share the width and never go below the 44 px touch
+  target; keys keep their label on one line. Sample Keypad. Screenshots at 375 and 320 px: two
+  rows of five, "Oops" fits its key, no horizontal scroll.
+- **Driver proven** by reverted breaks (iPhone): Oops first failed `keypad keys, row by row` with
+  "Oops, clear cell" at the start of row 1; ten columns failed with one row instead of two.
+- **Acceptance GREEN**: AC-13, 2 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 191 unit tests (lines 99.0%, branches 96.0%); engine 35 passed; phones 157
+  passed (87 game + 70 catalogue), 4 failed (AC-7 and AC-14). Game JS and CSS unchanged.
+- **Slice refactor**: none needed.
