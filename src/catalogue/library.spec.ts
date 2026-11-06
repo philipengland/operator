@@ -30,4 +30,12 @@ describe('LIBRARY', () => {
       'Play screen: Built in part 3.',
     ]);
   });
+
+  it('says what each built combined component is built from', () => {
+    const builtFrom = Object.fromEntries(
+      LIBRARY['Combined components'].filter((entry) => !entry.notBuiltYet).map((entry) => [entry.name, entry.builtFrom]),
+    );
+
+    expect(builtFrom).toEqual({ 'Solutions counter': ['Surface', 'Text', 'Badge', 'Icon'] });
+  });
 });

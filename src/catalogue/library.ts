@@ -1,3 +1,5 @@
+import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
+
 // What the catalogue shows: the component library by tier (spec-003 AC-1, contract
 // docs/contracts/component-library.md).
 
@@ -5,6 +7,8 @@ export type CatalogueSection = 'Foundations' | 'Simple components' | 'Combined c
 
 export interface CatalogueEntry {
   readonly name: string;
+  /** For combined components and screens: the components it is laid out from. */
+  readonly builtFrom?: readonly string[];
   /** Shown in place of samples until the component is built (owner decision 2026-11-06). */
   readonly notBuiltYet?: string;
 }
@@ -22,7 +26,7 @@ export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[
   'Simple components': entries('Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot'),
   'Combined components': [
     ...builtIn('part 2')('Speech bubble', 'Operator header'),
-    ...entries('Solutions counter'),
+    { name: 'Solutions counter', builtFrom: solutionsCounterParts },
     ...builtIn('part 2')('Target pill', 'Grid cell', 'Line working', 'Puzzle grid', 'Keypad'),
   ],
   Screens: builtIn('part 3')('Play screen'),
