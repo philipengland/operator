@@ -9,4 +9,20 @@ describe('writeText', () => {
 
     expect(target.textContent).toBe('Found 1 of 2');
   });
+
+  it('does not write the same text again, so a screen reader does not announce it twice', () => {
+    let writes = 0;
+    const target = {
+      get textContent() {
+        return 'Found 1 of 2';
+      },
+      set textContent(_text: string) {
+        writes++;
+      },
+    };
+
+    writeText(target, 'Found 1 of 2');
+
+    expect(writes).toBe(0);
+  });
 });
