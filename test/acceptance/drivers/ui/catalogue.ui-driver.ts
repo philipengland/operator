@@ -7,7 +7,7 @@ import type { CatalogueSection, LibraryComponent, LibraryScreen, PlayScreenPart,
 import { NO_BOX, readAppearance, readColoursInUse, readGreyscaleContrast, readPartView, readSampleView, readTypeface, textElement } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
 import type { Box, ScreenSize } from '../phone.driver';
-import { scanForAccessibilityProblems } from '../../support/axe';
+import { accessibilityProblems, scanForAccessibilityProblems } from '../../support/axe';
 import { publishedFiles } from '../published-files';
 
 const CATALOGUE_PAGE = 'catalogue.html';
@@ -264,8 +264,9 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return layout.length > 0 ? Object.fromEntries(layout) : { 'no samples were read': unknownBox() };
   }
 
+  /** What the accessibility scan finds on the catalogue in the theme now shown. */
   async accessibilityProblems(): Promise<readonly string[]> {
-    return ['not read yet'];
+    return accessibilityProblems(this.page);
   }
 
   async publishedFiles(): Promise<readonly PublishedFile[]> {
