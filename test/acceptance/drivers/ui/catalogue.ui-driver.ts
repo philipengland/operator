@@ -29,7 +29,11 @@ const NOT_SHOWN: SampleView = {
 const NOT_SHOWN_LOOK: SampleAppearance = { fill: 'other', outline: 'none', outlineColour: 'other', shadow: 'other', hasTailCorner: false };
 
 export class UiCatalogueDriver implements CatalogueDriver {
-  constructor(private readonly page: Page) {}
+  private readonly requestedUrls: string[] = [];
+
+  constructor(private readonly page: Page) {
+    page.on('request', (request) => this.requestedUrls.push(request.url()));
+  }
 
   async open(): Promise<void> {
     await this.page.goto(CATALOGUE_PAGE);
@@ -94,8 +98,10 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return [];
   }
 
+  /** Requests since the page was created to any origin but the catalogue's own. */
   async requestsToOtherSites(): Promise<number> {
-    return Number.NaN;
+    const ownOrigin = new URL(this.page.url()).origin;
+    return this.requestedUrls.filter((url) => /^https?:/.test(url) && new URL(url).origin !== ownOrigin).length;
   }
 
   async gridLayout(): Promise<GridLayout> {
