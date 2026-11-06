@@ -21,4 +21,14 @@ describe('solutionsCounterModel', () => {
       heardAs: 'Found 2 of 2',
     });
   });
+
+  it('with no total known shows the count alone, heard as "Found 12", and is never complete', () => {
+    expect(solutionsCounterModel({ found: 12 })).toEqual({
+      title: 'Solutions found',
+      count: '12',
+      isComplete: false,
+      fill: 'accent',
+      heardAs: 'Found 12',
+    });
+  });
 });

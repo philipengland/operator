@@ -18,7 +18,7 @@ export interface SolutionsCounterModel {
 }
 
 export function solutionsCounterModel({ found, total }: SolutionsCounterProps): SolutionsCounterModel {
-  const count = `${found} of ${total}`;
+  const count = total === undefined ? `${found}` : `${found} of ${total}`;
   const isComplete = found === total;
   return {
     title: isComplete ? 'All found!' : 'Solutions found',
