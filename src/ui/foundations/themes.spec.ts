@@ -49,14 +49,14 @@ describe('contrast in every theme (spec-003 AC-21)', () => {
   );
 });
 
-describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)', () => {
-  it('gives "4F7A21" Plum and mint every time, and "4f7a21" the same (AC-23, golden: research R4)', () => {
+describe('themeForSeed', () => {
+  it('gives "4F7A21" Plum and mint every time, and "4f7a21" the same (spec-003 AC-23; golden, research R4)', () => {
     const themes = [themeForSeed('4F7A21'), themeForSeed('4F7A21'), themeForSeed('4f7a21')].map((theme) => theme.label);
 
     expect(themes).toEqual(['Plum and mint', 'Plum and mint', 'Plum and mint']);
   });
 
-  it('gives each theme between 70 and 130 of 600 seeds, "000000" to "000257" (AC-24)', () => {
+  it('gives each theme between 70 and 130 of 600 seeds, "000000" to "000257" (spec-003 AC-24)', () => {
     const seeds = Array.from({ length: 600 }, (_, index) => index.toString(16).toUpperCase().padStart(6, '0'));
     const counts = new Map(THEMES.map((theme) => [theme.label, 0]));
 
@@ -71,7 +71,7 @@ describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)', () => {
     }
   });
 
-  it('shows a puzzle with no seed, such as the fixed puzzle, in Classic (AC-25)', () => {
+  it('shows a puzzle with no seed, such as the fixed puzzle, in Classic (spec-003 AC-25)', () => {
     expect(themeForSeed(undefined).label).toBe('Classic');
   });
 });
