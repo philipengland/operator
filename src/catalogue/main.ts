@@ -8,7 +8,7 @@ import { applyTheme, CLASSIC, type Theme } from '../ui/foundations/themes';
 import { createPlayScreen } from '../ui/screens/play-screen';
 import { LIBRARY, type CatalogueEntry, type CatalogueSection } from './library';
 import { SAMPLES, type Sample } from './samples';
-import { SCREEN_SAMPLES, type ScreenSampleName } from './screen-samples';
+import { screenSamplesFor, type ScreenSampleName } from './screen-samples';
 
 // Every theme the catalogue can switch to; the other five arrive with User Story 4.
 const THEMES: readonly Theme[] = [CLASSIC];
@@ -71,9 +71,10 @@ function componentSamples(name: string): readonly HTMLElement[] {
 
 /** The play screen with a "Screen sample" switch that shows each sample in place (spec-003 AC-17). */
 function playScreenWithSampleSwitch(): { readonly screen: HTMLElement; readonly sampleSwitch: HTMLElement } {
-  const playScreen = createPlayScreen(SCREEN_SAMPLES[FIRST_SCREEN_SAMPLE]);
-  const names = Object.keys(SCREEN_SAMPLES) as ScreenSampleName[];
-  const sampleSwitch = switchGroup('Screen sample', names, FIRST_SCREEN_SAMPLE, (name) => playScreen.update(SCREEN_SAMPLES[name]));
+  const samples = screenSamplesFor(CLASSIC);
+  const playScreen = createPlayScreen(samples[FIRST_SCREEN_SAMPLE]);
+  const names = Object.keys(samples) as ScreenSampleName[];
+  const sampleSwitch = switchGroup('Screen sample', names, FIRST_SCREEN_SAMPLE, (name) => playScreen.update(samples[name]));
   return { screen: playScreen.element, sampleSwitch };
 }
 

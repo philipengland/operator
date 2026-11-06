@@ -3,6 +3,7 @@
 // right 3, Row 2 +, Column 1 −). Names follow the play-screen contract's wording.
 
 import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
+import type { Theme } from '../ui/foundations/themes';
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 
 export type ScreenSampleName = 'Just opened' | 'Row 1 correct' | 'All found';
@@ -90,25 +91,27 @@ const SOLUTION_B = {
 } as const satisfies PuzzleGridProps;
 
 const TITLE = 'Hello, Operator!';
-const MAIN_BUTTON_LABEL = 'Put it through!';
 
-export const SCREEN_SAMPLES: Readonly<Record<ScreenSampleName, PlayScreenProps>> = {
-  'Just opened': {
-    header: { title: TITLE, message: 'Fill the grid, pal.' },
-    counter: { found: 0, total: 2 },
-    grid: FIXED_PUZZLE_JUST_OPENED,
-    mainButtonLabel: MAIN_BUTTON_LABEL,
-  },
-  'Row 1 correct': {
-    header: { title: TITLE, message: "Row one's through, pal." },
-    counter: { found: 0, total: 2 },
-    grid: ROW_1_CORRECT,
-    mainButtonLabel: MAIN_BUTTON_LABEL,
-  },
-  'All found': {
-    header: { title: TITLE, message: "That's all of them, pal!" },
-    counter: { found: 2, total: 2 },
-    grid: SOLUTION_B,
-    mainButtonLabel: MAIN_BUTTON_LABEL,
-  },
-};
+/** The play screen's samples, in the theme's voice: its form of address and its main button's words. */
+export function screenSamplesFor({ address, buttonLabel }: Theme): Readonly<Record<ScreenSampleName, PlayScreenProps>> {
+  return {
+    'Just opened': {
+      header: { title: TITLE, message: `Fill the grid, ${address}.` },
+      counter: { found: 0, total: 2 },
+      grid: FIXED_PUZZLE_JUST_OPENED,
+      mainButtonLabel: buttonLabel,
+    },
+    'Row 1 correct': {
+      header: { title: TITLE, message: `Row one's through, ${address}.` },
+      counter: { found: 0, total: 2 },
+      grid: ROW_1_CORRECT,
+      mainButtonLabel: buttonLabel,
+    },
+    'All found': {
+      header: { title: TITLE, message: `That's all of them, ${address}!` },
+      counter: { found: 2, total: 2 },
+      grid: SOLUTION_B,
+      mainButtonLabel: buttonLabel,
+    },
+  };
+}

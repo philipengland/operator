@@ -26,7 +26,7 @@ export const CLASSIC: Theme = {
   buttonLabel: 'Put it through!',
 };
 
-const MIDNIGHT_BLUE: Theme = {
+export const MIDNIGHT_BLUE: Theme = {
   label: 'Midnight blue',
   colours: { ink: '#1B2A4A', paper: '#D8E6F0', tile: '#F4F9FC', accent: '#C8441B' },
   address: 'chief',
