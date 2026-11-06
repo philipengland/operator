@@ -161,7 +161,7 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-7: built from
 
-- [ ] T034 [US2] AC-7 RED: driver `builtFrom(component)` reads the component region's "Built from:" line. Expected failure on the first combined component without a sample.
+- [X] T034 [US2] AC-7 RED: driver `builtFrom(component)` reads the component region's "Built from:" line. Expected failure on the first combined component without a sample.
 - [ ] T035 [US2] AC-7 TDD cycles: each combined module exports `builtFrom` matching the contract table, and imports exactly those simple or combined components (the lint rules from T009 and `tools/ui-tiers.spec.ts` now check real files: confirm it fails on a reverted bad declaration in a combined stylesheet).
 - [ ] T036 [US2] AC-7 GREEN once all eight combined components exist (it is the last criterion in this phase to go green); checkpoint.
 

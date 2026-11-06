@@ -328,3 +328,13 @@
   assertions for missing samples or driver stubs (e.g. `Solutions counter "None yet" shows`,
   `keypad keys, row by row`, `what Speech bubble is built from`); none crashed. The rest of the
   suite is as at the end of part 1.
+
+## AC-7: each combined component says what it is built from (opened)
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-7]`, one scenario
+  on both catalogue phones. By plan it goes green last in part 2 (T036), once all eight combined
+  components exist; its cycles run with each component's criterion.
+- **Driver** (T034): `builtFrom(component)` finds the component region's text starting "Built
+  from:" and splits the rest on commas; no line gives none.
+- **Acceptance RED**: `what Speech bubble is built from — Expected: ["Surface", "Text"],
+  Received: []` on both phones, as T034 predicted.
