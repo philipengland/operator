@@ -116,7 +116,7 @@ src/ui/                             # NEW: the component library
 ├── screens/
 │   └── play-screen.ts, play-screen.css
 ├── component.ts                    # the Component<Props> shape and writeText
-└── *.spec.ts                       # unit tests next to each file; tiers.spec.ts (styling check)
+└── *.spec.ts                       # unit tests next to each file
 
 src/catalogue/                      # NEW: the catalogue page (development only)
 ├── main.ts                         # sections, theme switch, screen samples
@@ -183,7 +183,7 @@ app, so spec-004 changes only `src/app/` to use it.
 | Acceptance criterion | Test level | Test location |
 | --- | --- | --- |
 | AC-1 to AC-6 Simple components | Acceptance (catalogue, both phones); unit (models) | `test/acceptance/library/simple-components.acceptance-spec.ts`; `src/ui/simple/*.spec.ts` |
-| AC-7 Built from, no own styling | Acceptance (Built from line); unit (styling check, R2); lint (imports) | `test/acceptance/library/combined-components.acceptance-spec.ts`; `src/ui/tiers.spec.ts` |
+| AC-7 Built from, no own styling | Acceptance (Built from line); unit (styling check, R2); lint (imports) | `test/acceptance/library/combined-components.acceptance-spec.ts`; `tools/ui-tiers.spec.ts` (moved from `src/ui/tiers.spec.ts`: Vitest empties CSS imports, so the check reads files from disk with Node) |
 | AC-8 to AC-14 Combined components | Acceptance (catalogue, both phones, greyscale for AC-10); unit (models) | `test/acceptance/library/combined-components.acceptance-spec.ts`; `src/ui/combined/*.spec.ts` |
 | AC-15 to AC-17 Play screen | Acceptance (catalogue, both phones, 375 × 667 and 320 × 568) | `test/acceptance/library/play-screen.acceptance-spec.ts` |
 | AC-18 Not published | Acceptance (engine driver reads `dist/` after build) | `test/acceptance/library/play-screen.acceptance-spec.ts` |

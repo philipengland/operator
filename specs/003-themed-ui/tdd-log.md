@@ -33,3 +33,26 @@
   catalogue, and `@catalogue` excluded from the game's `iphone` and `android`. `--list`: 17
   library scenarios on each catalogue project, 43 and 44 game scenarios on the game's phones.
   Run: 87 game scenarios pass; the 34 catalogue runs fail on the missing driver, as before.
+- **T008**: test-results generator, two cycles in `tools/test-results.spec.ts`:
+  - RED "records the catalogue phones (spec-003) as runs of their own": `Error: Unknown Playwright
+    project "catalogue-iphone"` (the generator's own guard). GREEN: two run names and projects.
+    `020cf88`. The columns were first added in the same step with no test asking for them; taken
+    out again so they were driven by their own cycle.
+  - RED "shows catalogue results in their own columns, after the game's phones": heading missing.
+    GREEN: two columns. `06564f5`. 27 tests.
+- **T009** tier rules:
+  - ESLint `no-restricted-imports` per tier (`eslint.config.js`). Proved with throwaway files in
+    each tier, then deleted: 10 bad imports rejected, each naming its rule (a higher tier, the
+    engine, the app, a package); every allowed import passed.
+  - Styling check, five cycles. Started in `src/ui/tiers.spec.ts` with `import.meta.glob`; found
+    that Vitest replaces CSS imports with empty strings (`{ './combined/zz-probe.css': '' }`,
+    also with `css.include` and `?inline`), so the check moved to `tools/ui-tiers.ts` and reads
+    stylesheets from disk with Node, as the exceptions check does. Cycles: finds `color` (RED
+    `expected [] to deeply equal [ 'color: red' ]`); finds the ten other styling declarations
+    (10 RED); allows layout and `border: none` (RED `[ 'border: none' ]`); `stylesheetsIn` reads
+    folders recursively, missing folder none (RED `expected [] …`); the check over
+    `src/ui/combined` and `src/ui/screens` passed vacuously (no folders yet), proved by a reverted
+    `box-shadow` in `src/ui/screens/zz-probe.css`: failed naming the file and declaration.
+    Commits `db3ee69`, `62e043b`. **To raise**: `acceptance.md` (owner-locked) names
+    `src/ui/tiers.spec.ts` for AC-7's second half; the test is now `tools/ui-tiers.spec.ts`, with
+    the same title, so `npm run test-results` still counts it.
