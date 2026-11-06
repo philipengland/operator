@@ -14,6 +14,10 @@ describe('buttonModel', () => {
     expect(buttonModel({ label: 'Check', style: 'key', isUnavailable: true }).isUnavailable).toBe(true);
   });
 
+  it('says when it is selected', () => {
+    expect(buttonModel({ label: '8', style: 'key', isSelected: true }).isSelected).toBe(true);
+  });
+
   it.each(['main', 'key', 'solid', 'dashed'] as const)('carries the %s style, so each style looks different', (style) => {
     expect(buttonModel({ label: 'x', style }).classes).toEqual(['button', `button--${style}`]);
   });

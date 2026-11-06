@@ -33,4 +33,5 @@ function render(element: HTMLButtonElement, model: ReturnType<typeof buttonModel
   // The visible label is always the start of the name (WCAG 2.5.3, label in name).
   setAttributeOrRemove(element, 'aria-label', model.name === model.label ? null : model.name);
   setAttributeOrRemove(element, 'aria-disabled', model.isUnavailable ? 'true' : null);
+  setAttributeOrRemove(element, 'aria-pressed', model.isSelected ? 'true' : null);
 }
