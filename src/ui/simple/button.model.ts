@@ -8,6 +8,11 @@ export interface ButtonProps {
   readonly style: ButtonStyle;
   /** What the button does, when its label alone does not say: "clear cell", "Check". */
   readonly action?: string;
+  /**
+   * Its whole name, where "label, action" would not read well: "Top-right cell, 8" for a cell
+   * showing "8". It must contain the label (WCAG 2.5.3, label in name).
+   */
+  readonly name?: string;
   /** Shown but cannot be used: heard as unavailable, ignores taps, still focusable. */
   readonly isUnavailable?: boolean;
   /** One of a set the player picks from (the selected cell): heard as selected (pressed). */
@@ -23,6 +28,6 @@ export interface ButtonModel {
   readonly classes: readonly string[];
 }
 
-export function buttonModel({ label, style, action, isUnavailable = false, isSelected = false }: ButtonProps): ButtonModel {
-  return { label, name: action ? `${label}, ${action}` : label, isUnavailable, isSelected, classes: ['button', `button--${style}`] };
+export function buttonModel({ label, style, action, name, isUnavailable = false, isSelected = false }: ButtonProps): ButtonModel {
+  return { label, name: name ?? (action ? `${label}, ${action}` : label), isUnavailable, isSelected, classes: ['button', `button--${style}`] };
 }

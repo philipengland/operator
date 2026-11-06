@@ -10,6 +10,10 @@ describe('buttonModel', () => {
     expect(buttonModel({ label: 'Oops', style: 'solid', action: 'clear cell' }).name).toBe('Oops, clear cell');
   });
 
+  it('can be given its whole name, which contains its label: "Top-right cell, 8"', () => {
+    expect(buttonModel({ label: '8', style: 'key', name: 'Top-right cell, 8' }).name).toBe('Top-right cell, 8');
+  });
+
   it('says when it is unavailable', () => {
     expect(buttonModel({ label: 'Check', style: 'key', isUnavailable: true }).isUnavailable).toBe(true);
   });
