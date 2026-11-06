@@ -935,3 +935,46 @@
 - **Full suite**: 193 unit tests; engine 36 passed; phones 183 passed, 2 failed (AC-22, not
   started). Game JS and CSS unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
 - **Slice refactor**: none needed.
+
+## AC-20: the six themes
+
+Unit tests only (`src/ui/foundations/themes.spec.ts`, `describe('THEMES (spec-003 AC-20)')`).
+
+- **Cycle 1** (`58827ed`) — `THEMES` holds the six themes of the spec's Themes table, in order,
+  each with exactly four colours, its address, sign-off and button label. RED: `expected [
+  Array(2) ] to deeply equal [ Array(6) ]`. GREEN: Plum and mint, Amber and teal, Bubblegum and
+  Racing green added from the table.
+- **Refactor** (`6ebcbca`):
+  - The two-theme test from AC-19 is folded into the AC-20 test.
+  - The part-1 `applyTheme` test now runs for all six themes and is titled under AC-20.
+  - **Reported**: the `applyTheme` half of AC-20 was built in part 1 (T011), so this is not a new
+    red.
+
+## AC-21: contrast in every theme
+
+Unit tests only.
+
+- **Cycle 1** (`8cd9cfe`) — `contrastRatio(foreground, background)` gives the WCAG 2.2 contrast
+  (`contrast.spec.ts`; #1A1A1A on #FFFDF6 ≈ 17.1, black on white 21, a colour on itself 1). RED:
+  `expected +0 to be close to 17.1`. GREEN: WCAG relative luminance and contrast ratio, with
+  named constants.
+- **Cycle 2** (`6a243bc`) — `describe('contrast in every theme (spec-003 AC-21)')` checks research
+  R6's six pairs in all six themes (36 tests): 4.5:1 for ink on tile, ink on paper, paper on ink,
+  accent on tile and tile on accent; 3:1 for accent on paper.
+  - **Reported — passes on its first run** (⚠️), as expected: R6 checked the six themes as
+    designed on 2026-11-05. The closest pairs compute as in R6: Midnight blue's accent on tile is
+    4.61, and Bubblegum's accent on paper is 3.59.
+  - **Proven** by a reverted break: Midnight blue's accent lightened to `#E0702B` failed three pairs
+    (`expected 3.036… to be greater than or equal to 4.5`, `expected 2.529… to be greater than or
+    equal to 3`), and the AC-20 table test.
+
+## Edge case: long words in every theme (T071)
+
+- With all six themes, the case now switches through every theme on a 320 × 568 screen and
+  passes on both catalogue phones.
+- **Proven** by a reverted break: Plum and mint's address made very long ("darling, my dearest,
+  most wonderful and patient puzzling friend") failed `Main button is on screen without scrolling`
+  on both phones.
+
+- **Full suite** after AC-20, AC-21 and T071: 238 unit tests; engine 36 passed; phones 183
+  passed, 2 failed (AC-22, not started). Game JS and CSS unchanged.

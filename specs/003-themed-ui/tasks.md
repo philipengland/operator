@@ -247,7 +247,7 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### Edge case: long words in every theme
 
-- [ ] T071 [US3] Edge-case scenario RED/GREEN after US4's theme switch (T074): at 320 × 568 the play screen fits in all six themes. Run it at the end of Phase 6.
+- [X] T071 [US3] Edge-case scenario RED/GREEN after US4's theme switch (T074): at 320 × 568 the play screen fits in all six themes. Run it at the end of Phase 6.
 
 ---
 
@@ -266,8 +266,8 @@ and the theme unit tests pass.
 
 ### AC-20 and AC-21: theme values and contrast (unit tests only)
 
-- [ ] T075 [P] [US4] AC-20 TDD cycles in `src/ui/foundations/themes.spec.ts`, `describe('THEMES (spec-003 AC-20)')`: each of the six themes has exactly the spec Themes table's four colours, address, sign-off and button label; `applyTheme` sets exactly `--ink`, `--paper`, `--tile`, `--accent`.
-- [ ] T076 [P] [US4] AC-21 TDD cycles: `src/ui/foundations/contrast.ts` `contrastRatio(a, b)` (WCAG 2.2 relative luminance; #1A1A1A on #FFFDF6 ≈ 17.1); `themes.spec.ts` `describe('contrast in every theme (spec-003 AC-21)')` checks research R6's pairs for all six themes (4.5:1 for ink/tile, ink/paper, paper/ink, accent/tile, tile/accent; 3:1 for accent/paper).
+- [X] T075 [P] [US4] AC-20 TDD cycles in `src/ui/foundations/themes.spec.ts`, `describe('THEMES (spec-003 AC-20)')`: each of the six themes has exactly the spec Themes table's four colours, address, sign-off and button label; `applyTheme` sets exactly `--ink`, `--paper`, `--tile`, `--accent`.
+- [X] T076 [P] [US4] AC-21 TDD cycles: `src/ui/foundations/contrast.ts` `contrastRatio(a, b)` (WCAG 2.2 relative luminance; #1A1A1A on #FFFDF6 ≈ 17.1); `themes.spec.ts` `describe('contrast in every theme (spec-003 AC-21)')` checks research R6's pairs for all six themes (4.5:1 for ink/tile, ink/paper, paper/ink, accent/tile, tile/accent; 3:1 for accent/paper).
 
 ### AC-22: accessible in every theme
 
