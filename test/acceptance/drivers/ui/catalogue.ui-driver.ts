@@ -3,7 +3,8 @@
 // needed by an implemented criterion return values that cannot pass (spec-003 tasks, T013).
 
 import type { Locator, Page } from '@playwright/test';
-import type { CatalogueSection, LibraryComponent } from '../../dsl/catalogue-vocabulary';
+import type { CatalogueSection, LibraryComponent, Sample } from '../../dsl/catalogue-vocabulary';
+import { NO_BOX, readAppearance, readSampleView } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
 import type { Box } from '../phone.driver';
 import { scanForAccessibilityProblems } from '../../support/axe';
@@ -13,18 +14,18 @@ const CATALOGUE_PAGE = 'catalogue.html';
 const CATALOGUE_TITLE = 'Operator component catalogue';
 const CATALOGUE_SECTIONS: readonly CatalogueSection[] = ['Foundations', 'Simple components', 'Combined components', 'Screens'];
 
-// Unknown positions: NaN compares false, so nothing unread can pass a layout check.
-const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
 
-const NOT_READ_YET: SampleView = {
+// A sample the catalogue does not show yet: nothing shown, nothing heard, no look.
+const NOT_SHOWN: SampleView = {
   text: '',
-  heardAs: '',
+  heardAs: null,
   isButton: false,
   isTextbox: false,
   isUnavailable: false,
   isSelected: false,
   box: NO_BOX,
 };
+const NOT_SHOWN_LOOK: SampleAppearance = { fill: 'other', outline: 'none', outlineColour: 'other', shadow: 'other', hasTailCorner: false };
 
 export class UiCatalogueDriver implements CatalogueDriver {
   constructor(private readonly page: Page) {}
@@ -47,12 +48,23 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return (await regionNames(sectionRegion.getByRole('region'))) as LibraryComponent[];
   }
 
-  async sample(): Promise<SampleView> {
-    return NOT_READ_YET;
+  /** What a sample shows, and what a screen reader hears from it (from the accessibility tree). */
+  async sample(sample: Sample): Promise<SampleView> {
+    const group = this.sampleGroup(sample);
+    if ((await group.count()) === 0) {
+      return NOT_SHOWN;
+    }
+    return readSampleView(group);
   }
 
-  async appearance(): Promise<SampleAppearance> {
-    return { fill: 'other', outline: 'none', outlineColour: 'other', shadow: 'other', hasTailCorner: false };
+  /** How a sample looks, with each colour named by the theme colour it is. */
+  async appearance(sample: Sample): Promise<SampleAppearance> {
+    const group = this.sampleGroup(sample);
+    if ((await group.count()) === 0) {
+      return NOT_SHOWN_LOOK;
+    }
+    const content = group.locator(':scope > *').first();
+    return content.evaluate(readAppearance);
   }
 
   async typeface(): Promise<string> {
@@ -121,6 +133,11 @@ export class UiCatalogueDriver implements CatalogueDriver {
   /** The region named by the component, inside the catalogue. */
   protected componentRegion(component: LibraryComponent): Locator {
     return this.page.getByRole('region', { name: component, exact: true });
+  }
+
+  /** One labelled sample of a component: a group named by its label inside the component's region. */
+  protected sampleGroup({ component, label }: Sample): Locator {
+    return this.componentRegion(component).getByRole('group', { name: label, exact: true });
   }
 }
 
