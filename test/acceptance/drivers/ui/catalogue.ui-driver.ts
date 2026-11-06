@@ -14,6 +14,12 @@ const CATALOGUE_PAGE = 'catalogue.html';
 const CATALOGUE_TITLE = 'Operator component catalogue';
 const CATALOGUE_SECTIONS: readonly CatalogueSection[] = ['Foundations', 'Simple components', 'Combined components', 'Screens'];
 const BUILT_FROM_LINE = /^\s*Built from:\s*/;
+// The fixed 2 × 2 puzzle (spec-001): lines 1 and 2, cells named by corner, row by row.
+const FIXED_PUZZLE_LINES = [1, 2] as const;
+const FIXED_PUZZLE_CELLS = [
+  ['Top-left', 'Top-right'],
+  ['Bottom-left', 'Bottom-right'],
+] as const;
 
 
 // A sample the catalogue does not show yet. It must not pass any check, including "not heard",
@@ -131,8 +137,21 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return this.requestedUrls.filter((url) => /^https?:/.test(url) && new URL(url).origin !== ownOrigin).length;
   }
 
-  async gridLayout(): Promise<GridLayout> {
-    return { columnPills: [], rowPills: [], cells: [], rowWorkings: [], columnWorkings: [], helperText: '' };
+  /** Where the fixed 2 × 2 puzzle's parts sit, each found by its accessible name (play-screen contract). */
+  async gridLayout(sample: Sample): Promise<GridLayout> {
+    // Always the full 2 × 2 structure: a part that cannot be found has an unknown box, so every
+    // position check runs and fails, rather than an empty grid passing with nothing to check.
+    const puzzle = this.sampleGroup(sample).getByRole('group', { name: 'Puzzle', exact: true });
+    const boxesOf = (patterns: readonly RegExp[]) => Promise.all(patterns.map((pattern) => partBox(puzzle, pattern)));
+    const helper = puzzle.getByRole('paragraph').last();
+    return {
+      columnPills: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`Column ${line} target`))),
+      rowPills: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`Row ${line} target`))),
+      cells: await Promise.all(FIXED_PUZZLE_CELLS.map((row) => boxesOf(row.map((cell) => new RegExp(`^${cell} cell`))))),
+      rowWorkings: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`^Row ${line} working, `))),
+      columnWorkings: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`^Column ${line} working, `))),
+      helperText: (await helper.count()) === 0 ? '' : (await helper.innerText()).trim(),
+    };
   }
 
   async keypadRows(): Promise<readonly (readonly string[])[]> {
@@ -187,4 +206,22 @@ export class UiCatalogueDriver implements CatalogueDriver {
 async function regionNames(regions: Locator): Promise<readonly string[]> {
   const names = await regions.evaluateAll((elements) => elements.map((element) => element.getAttribute('aria-label') ?? ''));
   return names.filter((name) => name.length > 0);
+}
+
+/**
+ * The box of the part named by the pattern: a button with that name, or else the element holding
+ * a visually hidden name with that text (shown pills and workings speak through one).
+ */
+async function partBox(within: Locator, name: RegExp): Promise<Box> {
+  const button = within.getByRole('button', { name });
+  if ((await button.count()) > 0) {
+    return boxOf(button.first());
+  }
+  const spokenName = within.getByText(name);
+  return (await spokenName.count()) > 0 ? boxOf(spokenName.first().locator('xpath=..')) : NO_BOX;
+}
+
+async function boxOf(element: Locator): Promise<Box> {
+  const box = await element.boundingBox();
+  return box ? { left: box.x, top: box.y, right: box.x + box.width, bottom: box.y + box.height } : NO_BOX;
 }
