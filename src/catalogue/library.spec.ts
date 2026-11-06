@@ -20,7 +20,6 @@ describe('LIBRARY', () => {
       .map((entry) => `${entry.name}: ${entry.notBuiltYet}`);
 
     expect(notBuiltYet).toEqual([
-      'Speech bubble: Built in part 2.',
       'Operator header: Built in part 2.',
       'Play screen: Built in part 3.',
     ]);
@@ -32,6 +31,7 @@ describe('LIBRARY', () => {
     );
 
     expect(builtFrom).toEqual({
+      'Speech bubble': ['Surface', 'Text'],
       'Solutions counter': ['Surface', 'Text', 'Badge', 'Icon'],
       'Target pill': ['Badge', 'Button', 'Icon'],
       'Grid cell': ['Button'],
