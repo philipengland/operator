@@ -56,3 +56,7 @@
     Commits `db3ee69`, `62e043b`. **To raise**: `acceptance.md` (owner-locked) names
     `src/ui/tiers.spec.ts` for AC-7's second half; the test is now `tools/ui-tiers.spec.ts`, with
     the same title, so `npm run test-results` still counts it.
+- **T010**: coverage gains `src/ui/component.ts`, `src/ui/foundations/**/*.ts` and
+  `src/ui/**/*.model.ts`. Decision: each component splits into a pure `<name>.model.ts`
+  (unit-tested, counted) and a `<name>.ts` renderer (proven through the catalogue on the phones,
+  not counted), so the 90% threshold measures what Node can run.

@@ -28,8 +28,9 @@ order the spec lists them.
 ## Path Conventions
 
 - `src/ui/foundations/`, `simple/`, `combined/`, `screens/`: the library (plan, Project
-  Structure). Each component is `<name>.ts` (pure `<name>Model`, `create<Name>` renderer,
-  `builtFrom`) with `<name>.css` beside it and `<name>.spec.ts` for the model.
+  Structure). Each component is `<name>.model.ts` (pure `<name>Model`, unit-tested in
+  `<name>.model.spec.ts`, counted in coverage) and `<name>.ts` (`create<Name>` renderer and
+  `builtFrom`, re-exporting the model), with `<name>.css` beside it (decided at T010).
 - `src/catalogue/`: the catalogue page (`main.ts`, `samples.ts`, `catalogue.css`), entry
   `catalogue.html` at the repository root.
 - `test/acceptance/library/` (Layer 1, locked), `test/acceptance/dsl/catalogue*.ts` (Layer 2,
@@ -76,7 +77,7 @@ and the test-results generator, so the baseline is green apart from the approved
 - [X] T009 Tier rules (research R2), test-first where testable:
   - `eslint.config.js`: `no-restricted-imports` per tier: `src/ui/foundations/**` imports nothing from `src/`; `src/ui/simple/**` only `../foundations/`, `../component`; `src/ui/combined/**` only `../simple/`, `../combined/`, `../foundations/`, `../component`; `src/ui/screens/**` only `../combined/`, `../simple/button`, `../foundations/`, `../component`; nothing in `src/ui/**` imports `src/engine/` or `src/app/`. Prove each rule with a deliberate, reverted bad import, recorded in the TDD log.
   - `tools/ui-tiers.spec.ts` (*moved from `src/ui/tiers.spec.ts` during T009: Vitest replaces CSS imports with empty strings, so the check reads files from disk with Node, as the exceptions check does*) (`describe('combined components and screens add no styling (spec-003 AC-7)')`): reads every `.css` under `src/ui/combined/` and `src/ui/screens/` and fails on `color`, `background*`, `border` other than `none`, `border-color`, `border-radius`, `box-shadow`, `font-family`, `font-size`, `font-weight`, `outline`. First cycle with a temporary bad fixture in the test itself, then against the real folders (empty so far, so it passes vacuously until part 2; note that in the log).
-- [ ] T010 `vitest.config.ts` coverage gains `src/ui/foundations/**/*.ts` and `src/ui/**/*.ts` models (renderers excluded by a `create*` file split if the threshold needs it: decide at the first component and record it).
+- [X] T010 `vitest.config.ts` coverage gains `src/ui/foundations/**/*.ts` and `src/ui/**/*.ts` models (renderers excluded by a `create*` file split if the threshold needs it: decide at the first component and record it).
 
 **Checkpoint**: lint, types and unit tests green; game build unchanged; part-1 scenarios fail only on the missing driver.
 
