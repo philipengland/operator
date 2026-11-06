@@ -132,9 +132,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-5: tick and cross
 
-- [ ] T026 [US1] AC-5 RED: driver `greyscaleContrast()`: screenshot the sample with `filter: grayscale(1)` and return the WCAG contrast between the icon's darkest and its background's typical luminance. Expected failure: `Icon "Tick" is heard as — Expected: "target reached", Received: null`.
-- [ ] T027 [US1] AC-5 TDD cycles in `src/ui/simple/icon.ts`: `iconModel` for `tick | cross`; with `spokenAs` it is `role="img"` named by it, without it `aria-hidden="true"`; inline SVG strokes in `currentColor`. Samples: Tick ("target reached"), Cross ("not a whole number"), Decorative tick.
-- [ ] T028 [US1] AC-5 GREEN, slice refactor, checkpoint.
+- [X] T026 [US1] AC-5 RED: driver `greyscaleContrast()`: screenshot the sample with `filter: grayscale(1)` and return the WCAG contrast between the icon's darkest and its background's typical luminance. Expected failure: `Icon "Tick" is heard as — Expected: "target reached", Received: null`.
+- [X] T027 [US1] AC-5 TDD cycles in `src/ui/simple/icon.ts`: `iconModel` for `tick | cross`; with `spokenAs` it is `role="img"` named by it, without it `aria-hidden="true"`; inline SVG strokes in `currentColor`. Samples: Tick ("target reached"), Cross ("not a whole number"), Decorative tick.
+- [X] T028 [US1] AC-5 GREEN, slice refactor, checkpoint.
 
 ### AC-6: surfaces, badges, mascot
 

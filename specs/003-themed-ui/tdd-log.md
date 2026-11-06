@@ -206,3 +206,51 @@
 - **Full suite**: 156 unit tests (lines 100%, branches 96.2%); engine 35 passed; phones 107 passed
   (87 game + 20 catalogue: AC-1 to AC-4), 14 failed (7 scenarios not started).
 - **Slice refactor**: none needed.
+
+## AC-5: a tick and a cross, heard only when they mean something
+
+- **Acceptance test**: `simple-components.acceptance-spec.ts` — `[spec-003 AC-5]`, three
+  scenarios on both catalogue phones.
+- **Driver**: `greyscaleContrast()` screenshots the sample and decodes the PNG in the page (from
+  a Blob: the catalogue's CSP blocks `data:` images). Each pixel becomes its relative luminance,
+  the grey WCAG contrast is defined on; the background is the most common grey and the result is
+  the contrast of the grey that stands out most from it. (research.md R8 named a CSS
+  `grayscale(1)` filter; luminance is the same view without the filter's approximation.)
+- **Acceptance RED**: all 6 runs failed for the missing samples, e.g. `Icon "Tick" is heard as —
+  Expected: "target reached", Received: "this sample is not in the catalogue"`. "A decorative
+  tick is not read" now fails at RED too (the sentinel from AC-1's full run).
+
+### Cycle 1 — an icon that carries meaning is heard as it
+
+- **RED**: `iconModel › is heard as what it means when it carries meaning` — `expected { isHeard:
+  false, name: null } to match object { isHeard: true, … }`.
+- **GREEN**: heard, named by `spokenAs` — commit `169cb44`.
+- **REFACTOR**: none needed.
+
+### Cycle 2 — a decorative icon is hidden from screen readers
+
+- **RED**: `iconModel › is hidden from screen readers when it is decoration` — `expected {
+  isHeard: true, name: null } to match object { isHeard: false, name: null }`.
+- **GREEN**: heard only when `spokenAs` is given — commit `b471ee4`.
+- **REFACTOR**: none needed.
+
+### Cycle 3 — an icon carries the shape it is drawn as
+
+- **RED**: `iconModel › carries the tick shape …` and `… cross shape …` — `expected [] to deeply
+  equal [ 'icon', 'icon--tick' ]` (and cross).
+- **GREEN**: classes `icon` and `icon--<shape>` — commit `985f6d7`.
+- **REFACTOR**: none needed.
+
+- **Renderer** (driven by the scenario): `createIcon` — a `<span>`, `role="img"` named by its
+  meaning or `aria-hidden="true"`, around an inline SVG (itself hidden) stroked in
+  `currentColor`; `icon.css`: 28 px, ink, round 4-unit strokes. Samples Tick ("target reached"),
+  Cross ("not a whole number"), Decorative tick. Driver commit `a6521b2`, icon commit `13d324c`.
+- **Driver proven** by reverted breaks: the icon drawn in `--paper` failed `Icon "Tick" contrast
+  in greyscale — Expected: >= 3, Received: 1.007` (Cross: `1`); the decorative tick given a
+  spoken name failed `Icon "Decorative tick" is hidden from screen readers — Received: "tick"`.
+  Reverted.
+- **Acceptance GREEN**: AC-5, 6 runs passed, axe clean.
+- **Full suite**: 160 unit tests (lines 100%, branches 96.25%); engine 35 passed; phones 113
+  passed (87 game + 26 catalogue: AC-1 to AC-5), 8 failed (AC-6's 4 scenarios, not started).
+- **Slice refactor**: none needed. The heard-or-hidden attribute switch in `icon.ts` repeats
+  the pattern of button's `setAttributeOrRemove`; worth sharing once a third component needs it.
