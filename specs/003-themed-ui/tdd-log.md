@@ -484,3 +484,66 @@
   moves from `button.ts` to `component.ts` as `setAttributeOrRemove`. Full suite green again.
   Unit line coverage 100% → 98.9% (branches 95.6%): the helper now sits in a unit-covered file
   but is exercised through the components; above the 90% threshold.
+
+## AC-10: the grid cell in five states
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-10]`, six
+  scenarios on both catalogue phones.
+- **Driver** (T043): `greyscaleImage()` sets `filter: grayscale(1)` on the sample, screenshots
+  it, and restores the filter (research R8). Committed with the RED.
+- **Acceptance RED**: all 12 runs failed for the missing samples: `Grid cell "Given" shows —
+  Expected: "2", Received: ""`, as T043 predicted; "told apart" failed because two missing
+  samples give the same empty image.
+- **Design note**: combined components add no styling, so the cell's looks live in Button: two
+  styles, `cell` and `cell-correct` (design guide: 72 px tall, 22 px corners, 44 px digit; given
+  solid ink; selected accent with a caret when empty; correct-line accent digit and shadow), a
+  selected state (`aria-pressed`), and an optional whole `name`, so a cell is heard "Top-right
+  cell, 8" (play-screen contract) rather than "8, Top-right cell, 8".
+
+### Cycles 1 and 2 — Button: selected, and a whole name
+
+- **1 RED**: `buttonModel › says when it is selected` — `expected false to be true`. **GREEN**:
+  `isSelected`, rendered as `aria-pressed="true"` — `8313bbe`.
+- **2 RED**: `buttonModel › can be given its whole name, which contains its label` — `expected
+  '8' to be 'Top-right cell, 8'`. **GREEN**: `4645b45`.
+- **REFACTOR**: none needed. (The two new styles need no logic: the class is `button--<style>`
+  already, so a test would pass at once; none added.)
+
+### Cycles 3 to 7 — the grid cell model (the Button props that show a cell)
+
+- **3 RED**: `gridCellModel › a given cell shows its digit, cannot be changed, and is heard as
+  "given 2"` — `expected { label: '', style: 'cell' } to deeply equal { label: '2', … }`.
+  **GREEN**: `af628a7`.
+- **4 RED**: `… an empty cell shows nothing and is heard as "empty"` — `expected { label: 'null',
+  … }`. **GREEN**: `heardValue` gives "given 2", "empty" or the digit — `c443b67`. The player's
+  digit ("Top-right cell, 8") follows from the same rule; a test would pass at once, so none.
+- **5 RED**: `… a selected cell is heard as selected` — `expected false to be true`. **GREEN**:
+  `e5d815e`.
+- **6 RED**: `… a cell in a line that reaches its target has the correct-line look` — `expected
+  'cell' to be 'cell-correct'`. **GREEN**: `da0fe83`.
+- **7 RED**: `… a selected cell in a correct line shows the selected look: selected wins` —
+  received style `cell-correct`. **GREEN**: `e841802`.
+- **REFACTOR**: none needed.
+
+### Cycle 8 — the catalogue shows the cell as built (AC-7)
+
+- **RED**: both library tests (not built yet without the cell; built from with `'Grid cell':
+  ['Button']`) — `expected [ …(7) ] to deeply equal [ …(6) ]` and the built-from map. **GREEN**:
+  `45c658d`.
+
+- **Renderer** (driven by the scenarios), commit `ffe5853`: `createGridCell(props, onTap?)` — a
+  Button from `gridCellModel`. Cell styles in `button.css`. Samples Given, Empty, Selected, Your
+  digit, In a correct line, and Selected, in a correct line.
+- **Driver proven** by reverted breaks (iPhone): given cell left changeable failed `"Given" fill —
+  Expected: "ink", Received: "tile"`; selected not selected failed `"Selected" fill — Expected:
+  "accent", Received: "tile"`; correct look lost failed `"In a correct line" shadow — Expected:
+  "accent", Received: "ink"`; Empty drawn as Given failed `"Given" and "Empty" look the same in
+  greyscale`. The first two failed on the fill before the state was read, so the states were
+  proven alone, keeping the look (CSS matching the attribute whatever its value, the button
+  writing `"false"`): `"Given" is heard as unavailable — Received: false` and `"Selected" is
+  heard as selected — Received: false`. Reverted.
+- **Acceptance GREEN**: AC-10, 12 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 184 unit tests (lines 98.9%, branches 96.0%); engine 35 passed; phones 149
+  passed (87 game + 62 catalogue), 12 failed (the 6 part-2 scenarios not started). Game JS and
+  CSS unchanged.
+- **Slice refactor**: none needed.

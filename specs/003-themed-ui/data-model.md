@@ -41,7 +41,7 @@ a **model** (what it shows and says). Names below are the props; full shapes are
 | Component | Tier | Key props | States |
 | --- | --- | --- | --- |
 | Text | simple | `text`, `style: display \| body` | – |
-| Button | simple | `label`, `style: main \| key \| solid \| dashed`, `action?`, `isUnavailable?` | available, unavailable |
+| Button | simple | `label`, `style: main | key | solid | dashed | cell | cell-correct`, `action?`, `name?`, `isUnavailable?`, `isSelected?` | available, unavailable, selected |\| key \| solid \| dashed`, `action?`, `isUnavailable?` | available, unavailable |
 | Text input | simple | `label`, `hint`, `value` | – |
 | Icon | simple | `icon: tick | cross`, `spokenAs?` (glyph ✓ or ✗) | heard, decorative |\| cross`, `spokenAs?` | heard, decorative |
 | Surface | simple | `variant: panel | bubble`, `fill?: tile | accent | ink` | – |\| bubble` | – |

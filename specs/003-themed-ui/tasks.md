@@ -179,9 +179,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-10: grid cell
 
-- [ ] T043 [US2] AC-10 RED: driver `greyscaleImage()`. Expected failure: `Grid cell "Given" shows — Expected: "2", Received: ""`.
-- [ ] T044 [US2] AC-10 TDD cycles in `src/ui/combined/grid-cell.ts`: `gridCellModel` for `given | empty | selected | digit | correct` plus selected-and-correct (selected wins), as the data model's Grid cell table: given → unavailable and heard "…, given 2"; selected → `aria-pressed="true"`; fills and shadows from the table. Built from Button. Samples: Given, Empty, Selected, Your digit, In a correct line, Selected, in a correct line.
-- [ ] T045 [US2] AC-10 GREEN (including greyscale), slice refactor, checkpoint.
+- [X] T043 [US2] AC-10 RED: driver `greyscaleImage()`. Expected failure: `Grid cell "Given" shows — Expected: "2", Received: ""`.
+- [X] T044 [US2] AC-10 TDD cycles in `src/ui/combined/grid-cell.ts`: `gridCellModel` for `given | empty | selected | digit | correct` plus selected-and-correct (selected wins), as the data model's Grid cell table: given → unavailable and heard "…, given 2"; selected → `aria-pressed="true"`; fills and shadows from the table. Built from Button. Samples: Given, Empty, Selected, Your digit, In a correct line, Selected, in a correct line.
+- [X] T045 [US2] AC-10 GREEN (including greyscale), slice refactor, checkpoint.
 
 ### AC-11: line working
 
