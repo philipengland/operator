@@ -80,9 +80,12 @@ export function applyTheme(root: { readonly style: Pick<CSSStyleDeclaration, 'se
 const FNV_OFFSET_BASIS = 0x811c9dc5;
 const FNV_PRIME = 0x01000193;
 
-/** The theme a puzzle is shown in, worked out from its seed; case does not matter (spec-003 FR-323, research R4). */
+/** The theme a puzzle is shown in, worked out from its seed; case does not matter, and no seed gives Classic (spec-003 FR-323, research R4). */
 export function themeForSeed(seed: string | undefined): Theme {
-  return THEMES[fnv1a((seed ?? '').toUpperCase()) % THEMES.length] ?? CLASSIC;
+  if (seed === undefined) {
+    return CLASSIC; // A puzzle with no seed, such as the fixed puzzle (FR-323).
+  }
+  return THEMES[fnv1a(seed.toUpperCase()) % THEMES.length] ?? CLASSIC;
 }
 
 function fnv1a(text: string): number {

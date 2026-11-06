@@ -70,4 +70,8 @@ describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)', () => {
       expect(count, `${label} is given ${count} times`).toBeLessThanOrEqual(130);
     }
   });
+
+  it('shows a puzzle with no seed, such as the fixed puzzle, in Classic (AC-25)', () => {
+    expect(themeForSeed(undefined).label).toBe('Classic');
+  });
 });
