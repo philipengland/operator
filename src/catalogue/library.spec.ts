@@ -13,18 +13,9 @@ describe('LIBRARY', () => {
     });
   });
 
-  it('says which part builds each component not built yet', () => {
-    const notBuiltYet = Object.values(LIBRARY)
-      .flat()
-      .filter((entry) => entry.notBuiltYet)
-      .map((entry) => `${entry.name}: ${entry.notBuiltYet}`);
-
-    expect(notBuiltYet).toEqual([]);
-  });
-
   it('says what each built combined component is built from', () => {
     const builtFrom = Object.fromEntries(
-      LIBRARY['Combined components'].filter((entry) => !entry.notBuiltYet).map((entry) => [entry.name, entry.builtFrom]),
+      LIBRARY['Combined components'].map((entry) => [entry.name, entry.builtFrom]),
     );
 
     expect(builtFrom).toEqual({

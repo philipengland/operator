@@ -24,17 +24,13 @@ function section(name: CatalogueSection): HTMLElement {
   return region(name, heading('h2', name), ...LIBRARY[name].map(componentRegion));
 }
 
-/**
- * One component, named by the component, with its samples; until it is built, which part builds it;
- * once built, for combined components, what it is built from (spec-003 AC-7).
- */
+/** One component, named by the component, with its samples and, for combined components and screens, what it is built from (spec-003 AC-7). */
 function componentRegion(entry: CatalogueEntry): HTMLElement {
-  const placeholder = entry.notBuiltYet ? [paragraph(entry.notBuiltYet)] : [];
   const parts = entry.builtFrom ? [paragraph(`Built from: ${entry.builtFrom.join(', ')}`)] : [];
   const samples = document.createElement('div');
   samples.className = 'samples';
   samples.append(...(SAMPLES[entry.name] ?? []).map(sampleGroup));
-  return region(entry.name, heading('h3', entry.name), ...placeholder, ...parts, samples);
+  return region(entry.name, heading('h3', entry.name), ...parts, samples);
 }
 
 /** A sample: a group named by its label, holding the component first and a visible caption. */

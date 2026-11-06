@@ -17,8 +17,6 @@ export interface CatalogueEntry {
   readonly name: string;
   /** For combined components and screens: the components it is laid out from. */
   readonly builtFrom?: readonly string[];
-  /** Shown in place of samples until the component is built (owner decision 2026-11-06). */
-  readonly notBuiltYet?: string;
 }
 
 const entries = (...names: readonly string[]): readonly CatalogueEntry[] => names.map((name) => ({ name }));
