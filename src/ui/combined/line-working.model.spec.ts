@@ -7,4 +7,10 @@ describe('lineWorkingModel', () => {
 
     expect(model).toEqual({ result: '= ?', icon: null, heardAs: 'Row 1 working, 6 + ?' });
   });
+
+  it('shows a tick after the result when the line reaches its target', () => {
+    const model = lineWorkingModel({ result: '= 8', mark: 'tick', name: 'Row 1 working, 6 + 2 = 8, target reached' });
+
+    expect(model.icon).toBe('tick');
+  });
 });

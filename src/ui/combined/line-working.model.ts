@@ -21,6 +21,6 @@ export interface LineWorkingModel {
   readonly heardAs: string;
 }
 
-export function lineWorkingModel({ result, name }: LineWorkingProps): LineWorkingModel {
-  return { result, icon: null, heardAs: name };
+export function lineWorkingModel({ result, mark, name }: LineWorkingProps): LineWorkingModel {
+  return { result, icon: mark === 'tick' ? 'tick' : null, heardAs: name };
 }
