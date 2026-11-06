@@ -282,16 +282,16 @@ and the theme unit tests pass.
 
 **Independent Test**: unit tests in `src/ui/foundations/themes.spec.ts`.
 
-- [X] T079 [US5] AC-23 to AC-25 TDD cycles in `themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)')`: `themeForSeed(undefined)` is Classic (AC-25); "4F7A21" twice and "4f7a21" give the same theme, and that theme is Plum and mint (golden, research R4) (AC-23); 600 seeds (hex "000000" to "000257") give each theme between 70 and 130 (AC-24). Implementation: 32-bit FNV-1a over the upper-cased seed, remainder by 6, index into `THEMES`.
+- [X] T079 [US5] AC-23 to AC-25 TDD cycles in `themes.spec.ts`, `describe('themeForSeed')` with `(spec-003 AC-n)` in each test title: `themeForSeed(undefined)` is Classic (AC-25); "4F7A21" twice and "4f7a21" give the same theme, and that theme is Plum and mint (golden, research R4) (AC-23); 600 seeds (hex "000000" to "000257") give each theme between 70 and 130 (AC-24). Implementation: 32-bit FNV-1a over the upper-cased seed, remainder by 6, index into `THEMES`.
 
 ---
 
 ## Phase 8: Polish and pull request 3
 
-- [ ] T080 [P] Update `docs/contracts/component-library.md` to match what was built (names, samples, any decisions taken at checkpoints).
-- [ ] T081 [P] `AGENTS.md`: Components gains the component library (`src/ui/`, tiers, catalogue); Build, Test and Run gains `npm run catalogue`, `npm run build:catalogue`; Repository Layout gains `src/ui/`, `src/catalogue/`, `test/acceptance/library/`; Conventions gains "the tiers are enforced by lint and `tools/ui-tiers.spec.ts`" and "catalogue scenarios run only on the catalogue projects", each with its why.
+- [X] T080 [P] Update `docs/contracts/component-library.md` to match what was built (names, samples, any decisions taken at checkpoints).
+- [X] T081 [P] `AGENTS.md`: Components gains the component library (`src/ui/`, tiers, catalogue); Build, Test and Run gains `npm run catalogue`, `npm run build:catalogue`; Repository Layout gains `src/ui/`, `src/catalogue/`, `test/acceptance/library/`; Conventions gains "the tiers are enforced by lint and `tools/ui-tiers.spec.ts`" and "catalogue scenarios run only on the catalogue projects", each with its why.
 - [ ] T082 Run [quickstart.md](quickstart.md) sections 1, 2 and 4; ask the owner to do section 3 on a real phone (SC-301) and record the sign-off in the TDD log.
-- [ ] T083 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with every criterion AC-1 to AC-25 covered. Commit it.
+- [X] T083 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with every criterion AC-1 to AC-25 covered. Commit it.
 - [ ] T084 Push `003-themed-ui-part-3` and open "spec-003 part 3 of 3: play screen and themes" (what, why, how tested, rollback: revert; players unaffected; the Executable Specifications box: no changes to approved files). The owner merges with a merge commit.
 
 ---

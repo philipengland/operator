@@ -1022,3 +1022,32 @@ Unit tests only (`themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-2
   - GREEN: no seed returns Classic before hashing.
 - **Slice refactor**: none needed.
 - **Full suite**: 241 unit tests; engine 36 passed; phones 185 passed. Game JS and CSS unchanged.
+
+## Polish (T080 to T083)
+
+- **T080**: the component-library contract (both copies) and the data model now match the code:
+  - The themes carry `label`, `colours`, `address`, `signOff` and `buttonLabel`. The planned
+    `name` / `ThemeName` was never needed and is dropped.
+  - `MIDNIGHT_BLUE` is listed. `themeForSeed`'s rule, the screen-size tokens and the catalogue's
+    switches, screen view and size-keeping copies are described.
+- **T081**: `AGENTS.md` gains the component library and the catalogue (components, commands and
+  layout), and two conventions with their reasons: tiers enforced by lint and
+  `tools/ui-tiers.spec.ts`, and catalogue scenarios run only on the catalogue projects.
+- **T082, quickstart**:
+  - **Section 1**: every command passed (lint, typecheck, 241 unit tests, both builds, engine 36,
+    phones 185).
+  - **Section 2**: the built catalogue was walked in all six themes at 375 × 667, with
+    screenshots checked:
+    - the play screen, "All found", in each theme;
+    - the whole catalogue in Racing green.
+    Colours, button labels and addresses change in each theme, and nothing is cut off.
+  - **Section 4**: `origin/main` and this branch build byte-identical game files
+    (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`, `index.html`), and nothing in `dist/` mentions the
+    catalogue. Both builds took their version label from the same checkout, so the label was not
+    compared.
+  - **Section 3** (real phone, SC-301): **waiting for the owner's sign-off.**
+- **T083**: `npm run test-results -- 003-themed-ui` first ended `BLOCKED`, with AC-24 and AC-25
+  "NOT COVERED". The tool reads one "spec-003 AC-n" per criterion, and the seed tests shared one
+  describe title naming all three. Each test now names its own criterion (`fe3f0d1`, titles only),
+  and the report ends `OVERALL status: PASS` with AC-1 to AC-25 covered. Coverage: lines 98.97%,
+  branches 94.03%.
