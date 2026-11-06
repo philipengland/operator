@@ -73,3 +73,10 @@
   `src/css.d.ts` declares CSS side-effect imports for TypeScript 6.
 - **T012** catalogue shell: title, a "Theme" switch (Classic pressed), four section regions.
   `npm run build:catalogue` bundles both fonts (19.92 kB, 39.12 kB); `npm run build` unchanged.
+- **T013** drivers: `UiCatalogueDriver` (`open()` goes to `catalogue.html`, waits for the title
+  and scans with axe, per the Playwright standard; every other method returns a value that
+  cannot pass), `engineCatalogueDriver` (reads `dist/` only; browsing throws "Browse the
+  catalogue only with ACCEPTANCE_DRIVER=ui"), shared `published-files.ts`; fixtures wired.
+  Checkpoint run on both catalogue projects: 34 failed, all on assertions (e.g. AC-1 "catalogue
+  sections, in order" and "components in Simple components"; `Received: ""`, `"other"`, `NaN`),
+  none on a missing driver.

@@ -8,10 +8,11 @@ import { CatalogueDsl } from '../dsl/catalogue.dsl';
 import { DeliveryDsl } from '../dsl/delivery.dsl';
 import { GameDsl } from '../dsl/game.dsl';
 import { PhoneDsl } from '../dsl/phone.dsl';
-import type { CatalogueDriver } from '../drivers/catalogue.driver';
+import { engineCatalogueDriver } from '../drivers/engine/catalogue.engine-driver';
 import { PipelineDeliveryDriver } from '../drivers/delivery/delivery.driver';
 import { EngineGameDriver } from '../drivers/engine/game.engine-driver';
 import type { PhoneDriver } from '../drivers/phone.driver';
+import { UiCatalogueDriver } from '../drivers/ui/catalogue.ui-driver';
 import { UiGameDriver } from '../drivers/ui/game.ui-driver';
 import { UiPhoneDriver } from '../drivers/ui/phone.ui-driver';
 
@@ -28,13 +29,6 @@ function noPhoneInEngineRuns(): PhoneDriver {
   throw new Error('Scenarios that use the phone are tagged @ui and run only with ACCEPTANCE_DRIVER=ui.');
 }
 
-// spec-003: the catalogue driver is built by /speckit-implement; until then every catalogue
-// scenario fails here, for the right reason.
-function catalogueDriverNotBuiltYet(): CatalogueDriver {
-  throw new Error('The catalogue driver is not built yet (spec-003, /speckit-implement).');
-}
-
-const catalogue = async ({}, use: (dsl: CatalogueDsl) => Promise<void>) => use(new CatalogueDsl(catalogueDriverNotBuiltYet));
 
 const delivery = async ({}, use: (dsl: DeliveryDsl) => Promise<void>) => {
   const driver = new PipelineDeliveryDriver();
@@ -48,7 +42,8 @@ const engineFixtures = base.extend<AcceptanceFixtures>({
   },
   phone: async ({}, use) => use(new PhoneDsl(noPhoneInEngineRuns)),
   delivery,
-  catalogue,
+  // spec-003: without a browser, the catalogue driver can only read the game's build (AC-18).
+  catalogue: async ({}, use) => use(new CatalogueDsl(() => engineCatalogueDriver)),
 });
 
 const uiFixtures = base.extend<AcceptanceFixtures>({
@@ -61,7 +56,10 @@ const uiFixtures = base.extend<AcceptanceFixtures>({
     await use(new PhoneDsl(() => driver));
   },
   delivery,
-  catalogue,
+  catalogue: async ({ page }, use) => {
+    const driver = new UiCatalogueDriver(page);
+    await use(new CatalogueDsl(() => driver));
+  },
 });
 
 export const test = isUiRun ? uiFixtures : engineFixtures;
