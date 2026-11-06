@@ -6,3 +6,9 @@ export function writeText(target: Pick<Node, 'textContent'>, text: string): void
     target.textContent = text;
   }
 }
+
+/** A rendered component: its element, and a way to show new props in place. */
+export interface Component<Props> {
+  readonly element: HTMLElement;
+  update(props: Props): void;
+}
