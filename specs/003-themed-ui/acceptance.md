@@ -78,7 +78,9 @@ second, `play-screen` and `themes` in the third. The DSL, vocabulary and example
 the criterion, such as `(spec-003 AC-23)`, so `npm run test-results` counts it:
 
 - **AC-7, second half**: combined components and screens add no colours, typefaces, outlines or
-  shadows of their own: `src/ui/tiers.spec.ts` (styling check) and ESLint tier import rules.
+  shadows of their own: `tools/ui-tiers.spec.ts` (styling check; moved from `src/ui/tiers.spec.ts`
+  on 2026-11-06 with the owner's agreement, because Vitest empties CSS imports) and ESLint tier
+  import rules.
 - **AC-20**: each theme sets exactly its four colours, address, sign-off and button label:
   `src/ui/foundations/themes.spec.ts`.
 - **AC-21**: contrast in every theme (research R6 pairs): `src/ui/foundations/themes.spec.ts`.
