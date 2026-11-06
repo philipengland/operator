@@ -152,3 +152,29 @@
 - **Full suite**: 153 unit tests (lines 100%, branches 96.2%); engine 35 passed.
 - **Slice refactor**: `button.ts` sets-or-removes two attributes the same way; named
   `setAttributeOrRemove`. Commit `ef1bf93`.
+
+## AC-3: the text input has a label screen readers hear
+
+- **Acceptance test**: `simple-components.acceptance-spec.ts` — `[spec-003 AC-3]`, one scenario
+  on both catalogue phones.
+- **Driver**: `typeInto()` fills the sample's textbox; `typeface()` waits for fonts, then returns
+  the first family in the computed stack that has loaded (a missing font file falls back and
+  fails). A sample is heard as its first node that is not plain text, so a field's visible label
+  does not hide the field. `firstNodeIn` split in two to stay under the complexity limit.
+- **Acceptance RED**: `Text input "Seed" is a text field — Expected: true, Received: false`.
+  AC-1 and AC-2 still pass.
+
+### Cycle 1 — the field's id comes from its label
+
+- **RED**: `textInputModel › gives the field an id made from its label, for the label to point
+  at` — `expected '' to be 'field-play-from-a-seed'`.
+- **GREEN**: the label, lower-cased, non-letters to hyphens — commit `0989ff0`.
+- **REFACTOR**: none needed.
+
+- **Renderer** (driven by the scenario): `createTextInput` — a real `<label for>` and an
+  `<input type="text">`; `text-input.css`: 52 px field on paper, 4 px ink outline, typed text in
+  `--font-display` (Chewy). Catalogue sample "Seed" ("Play from a seed", "e.g. 4F7A21").
+- **Acceptance GREEN**: AC-3, 2 runs passed, axe clean.
+- **Full suite**: 154 unit tests (lines 100%, branches 96.2%); engine 35 passed; phones 103 passed
+  (87 game + 16 catalogue: AC-1, AC-2, AC-3), 18 failed (9 scenarios not started).
+- **Slice refactor**: none needed.

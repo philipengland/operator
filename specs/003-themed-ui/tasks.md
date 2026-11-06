@@ -120,9 +120,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-3: labelled text input
 
-- [ ] T020 [US1] AC-3 RED: driver `typeInto()`, `typeface()` (the first family in the computed `font-family` that `document.fonts.check` reports loaded), textbox role; the "shows" text of a textbox is its value, or its placeholder when empty. Expected failure: `Text input "Seed" is a text field — Expected: true, Received: false`.
-- [ ] T021 [US1] AC-3 TDD cycles in `src/ui/simple/text-input.ts`: `textInputModel` gives a visible `<label for>` with the label text, the hint as placeholder, and an input id unique per instance; `text-input.css`: paper fill, outline, typed text in `--font-display`. Sample: Seed ("Play from a seed", "e.g. 4F7A21").
-- [ ] T022 [US1] AC-3 GREEN, slice refactor, checkpoint.
+- [X] T020 [US1] AC-3 RED: driver `typeInto()`, `typeface()` (the first family in the computed `font-family` that `document.fonts.check` reports loaded), textbox role; the "shows" text of a textbox is its value, or its placeholder when empty. Expected failure: `Text input "Seed" is a text field — Expected: true, Received: false`.
+- [X] T021 [US1] AC-3 TDD cycles in `src/ui/simple/text-input.ts`: `textInputModel` gives a visible `<label for>` with the label text, the hint as placeholder, and an input id unique per instance; `text-input.css`: paper fill, outline, typed text in `--font-display`. Sample: Seed ("Play from a seed", "e.g. 4F7A21").
+- [X] T022 [US1] AC-3 GREEN, slice refactor, checkpoint.
 
 ### AC-4: the game's typefaces
 
