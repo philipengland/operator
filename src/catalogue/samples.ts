@@ -2,6 +2,7 @@
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
+import { createTargetPill } from '../ui/combined/target-pill';
 import { createBadge } from '../ui/simple/badge';
 import { createButton } from '../ui/simple/button';
 import { createIcon } from '../ui/simple/icon';
@@ -44,6 +45,17 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'In progress', render: () => createSolutionsCounter({ found: 1, total: 2 }).element },
     { label: 'Complete', render: () => createSolutionsCounter({ found: 2, total: 2 }).element },
     { label: 'No total', render: () => createSolutionsCounter({ found: 12 }).element },
+  ],
+  'Target pill': [
+    { label: 'Add', render: () => createTargetPill({ target: 16, operator: '+', isOpen: false, name: 'Row 1 target 16, plus' }).element },
+    { label: 'Subtract', render: () => createTargetPill({ target: 7, operator: '−', isOpen: false, name: 'Row 2 target 7, minus' }).element },
+    { label: 'Multiply', render: () => createTargetPill({ target: 12, operator: '×', isOpen: false, name: 'Column 1 target 12, times' }).element },
+    { label: 'Divide', render: () => createTargetPill({ target: 2, operator: '÷', isOpen: false, name: 'Column 2 target 2, divide' }).element },
+    { label: 'Open', render: () => createTargetPill({ target: 12, operator: null, isOpen: true, name: 'Row 2 target 12, operator not chosen' }).element },
+    {
+      label: 'Line correct',
+      render: () => createTargetPill({ target: 9, operator: '+', isOpen: false, name: 'Row 1 target 9, plus', reachesTarget: true }).element,
+    },
   ],
 };
 

@@ -1,0 +1,6 @@
+/* Target pill: layout only; its look comes from Badge, Button and Icon (FR-303). */
+
+.badge .icon {
+  width: 20px;
+  height: 20px;
+}
