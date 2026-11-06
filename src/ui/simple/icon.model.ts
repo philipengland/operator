@@ -12,8 +12,10 @@ export interface IconProps {
 export interface IconModel {
   readonly isHeard: boolean;
   readonly name: string | null;
+  /** The classes that size and draw the icon (icon.css). */
+  readonly classes: readonly string[];
 }
 
-export function iconModel({ spokenAs }: IconProps): IconModel {
-  return { isHeard: spokenAs !== undefined, name: spokenAs ?? null };
+export function iconModel({ icon, spokenAs }: IconProps): IconModel {
+  return { isHeard: spokenAs !== undefined, name: spokenAs ?? null, classes: ['icon', `icon--${icon}`] };
 }

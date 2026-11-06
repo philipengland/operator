@@ -13,4 +13,8 @@ describe('iconModel', () => {
 
     expect(model).toMatchObject({ isHeard: false, name: null });
   });
+
+  it.each(['tick', 'cross'] as const)('carries the %s shape it is drawn as', (icon) => {
+    expect(iconModel({ icon }).classes).toEqual(['icon', `icon--${icon}`]);
+  });
 });
