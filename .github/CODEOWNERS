@@ -9,8 +9,9 @@
 # NestJS — Layer 1 scenarios, Layer 2 DSL
 /test/acceptance/**/*.acceptance-spec.ts     @philipengland
 /test/acceptance/dsl/                        @philipengland
-# Layer 1 example data the scenarios share (locked by spec-001 and spec-002 approvals)
+# Layer 1 example data the scenarios share (locked by spec-001, spec-002 and spec-003 approvals)
 /test/acceptance/play/examples.ts            @philipengland
+/test/acceptance/library/examples.ts         @philipengland
 # Approval records, and this file
 /specs/*/acceptance.md                       @philipengland
 /.github/CODEOWNERS                          @philipengland

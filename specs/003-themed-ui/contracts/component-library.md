@@ -1,0 +1,82 @@
+# Contract: Component Library
+
+**History**: written for spec-003 on 2026-11-06. Copied to `docs/contracts/component-library.md`
+when implemented, and kept current there.
+
+What screens (spec-004 onwards), the catalogue and the UI driver can rely on. The roles,
+accessible names and tier rules are the contract; class names and internal markup are not.
+
+## Shape of every component
+
+```ts
+interface Component<Props> {
+  readonly element: HTMLElement;
+  update(props: Props): void;   // re-renders in place; writes text only when it changes
+}
+// Each module exports:
+//   create<Name>(props): Component<Props>
+//   <name>Model(props): Model              (pure, unit-tested)
+//   builtFrom: readonly string[]           (empty for simple components)
+```
+
+- Components never import `src/engine/` or `src/app/`. Wording, accessible names and states
+  are passed in.
+- Colours come only from `--ink`, `--paper`, `--tile`, `--accent`, set by `applyTheme`.
+- Interactive components are real `<button>` or `<input>` elements, at least 44 × 44 CSS px,
+  with `touch-action: manipulation`. Unavailable buttons use `aria-disabled="true"` (still
+  focusable) and ignore taps.
+- Under `prefers-reduced-motion: reduce`, nothing transitions or animates.
+
+## Foundations
+
+| Export | Purpose |
+| --- | --- |
+| `THEMES`, `CLASSIC`, `ThemeName`, `Theme` | the six themes (data model) |
+| `applyTheme(root, theme)` | sets the four colour properties on `root` |
+| `themeForSeed(seed?)` | research R4 |
+| `contrastRatio(a, b)` | WCAG 2.2 relative-luminance ratio, for the contrast test |
+| `tokens.css` | typefaces (`--font-display`, `--font-body`), `--outline`, `--shadow-small`, `--shadow-large`, radii, `--gap`, `--touch-target` |
+
+## Simple components
+
+| Component | Role | Accessible name | Notes |
+| --- | --- | --- | --- |
+| Text | none (text) | its text | `display` = Chewy; `body` = Nunito |
+| Button | `button` | `label`, or `label, action` when `action` is given ("Oops, clear cell"; "Put it through!, Check") | styles: main, key, solid, dashed |
+| Text input | `textbox` | its visible `label` (a real `<label for>`) | hint as `placeholder`; typed text in Chewy |
+| Icon | `img` when `spokenAs` is given, otherwise hidden | `spokenAs` ("target reached") | tick, cross |
+| Surface | none | – | panel; bubble (accent shadow, 6 px tail corner) |
+| Badge | none (text) | its text | ink pill |
+| Mascot | hidden (`aria-hidden="true"`) | – | 76 px, original character from the design guide |
+
+## Combined components
+
+| Component | Built from | Role and name | Visible |
+| --- | --- | --- | --- |
+| Speech bubble | Surface, Text | none; title and message read as text | title (display), message (body) |
+| Operator header | Mascot, Speech bubble | none | mascot beside bubble |
+| Solutions counter | Surface, Text, Badge, Icon | text "Found N of M" / "Found N", visible parts hidden | "Solutions found" or "All found!", count pill, tick when complete |
+| Target pill | Badge, Button, Icon | shown: text with `name`; open: `button` named `name` | "+ 8"; dashed "? 6"; tick when `reachesTarget` |
+| Grid cell | Button | `button` named `name`; given → `aria-disabled`; selected → `aria-pressed="true"` | five states (data model) |
+| Line working | Text, Icon | text `name` (spec-002 contract); visible slot hidden | "= ?", "= 8 ✓", "= −3", "✗" |
+| Puzzle grid | Surface, Target pill, Grid cell, Line working, Text | `group` named "Puzzle" | pills top and left, cells, workings at far ends, helper line |
+| Keypad | Button | `group` named "Keypad"; keys named "1"–"9" and "Oops, clear cell" | two rows of five |
+
+## Screens
+
+| Screen | Built from | Layout |
+| --- | --- | --- |
+| Play screen | Operator header, Solutions counter, Puzzle grid, Keypad, Button (main) | top to bottom, inside safe areas; fits 375 × 667 and 320 × 568 without scrolling |
+
+## Catalogue (development only)
+
+- Page title "Operator component catalogue"; `main` landmark.
+- Four `region`s named "Foundations", "Simple components", "Combined components", "Screens".
+- Each component is a `region` named by the component ("Solutions counter") holding its
+  samples, each labelled ("Complete"), and for combined components and screens a "Built from:"
+  line.
+- Theme switch: a `group` named "Theme" with six buttons named by theme label, the current one
+  `aria-pressed="true"`.
+- Screen samples: a `group` named "Screen sample" with buttons "Just opened", "Row 1 correct",
+  "All found".
+- Never in `dist/`; built to `catalogue-dist/` by `npm run build:catalogue`.
