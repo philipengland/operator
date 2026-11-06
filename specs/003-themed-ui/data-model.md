@@ -41,11 +41,11 @@ a **model** (what it shows and says). Names below are the props; full shapes are
 | Component | Tier | Key props | States |
 | --- | --- | --- | --- |
 | Text | simple | `text`, `style: display \| body` | – |
-| Button | simple | `label`, `style: main | key | solid | dashed | cell | cell-correct`, `action?`, `name?`, `isUnavailable?`, `isSelected?` | available, unavailable, selected |\| key \| solid \| dashed`, `action?`, `isUnavailable?` | available, unavailable |
+| Button | simple | `label`, `style: main \| key \| solid \| dashed \| cell \| cell-correct`, `action?`, `name?`, `isUnavailable?`, `isSelected?` | available, unavailable, selected |
 | Text input | simple | `label`, `hint`, `value` | – |
-| Icon | simple | `icon: tick | cross`, `spokenAs?` (glyph ✓ or ✗) | heard, decorative |\| cross`, `spokenAs?` | heard, decorative |
-| Surface | simple | `variant: panel | bubble`, `fill?: tile | accent | ink` | – |\| bubble` | – |
-| Badge | simple | `text`, `style?: ink | light`, `spokenAs?` | – || light` | – |
+| Icon | simple | `icon: tick \| cross`, `spokenAs?` (glyph ✓ or ✗) | heard, decorative |
+| Surface | simple | `variant: panel \| bubble`, `fill?: tile \| accent \| ink` | – |
+| Badge | simple | `text`, `style?: ink \| light`, `spokenAs?` | – |
 | Mascot | simple | – | – |
 | Speech bubble | combined | `title`, `message` | – |
 | Operator header | combined | `title`, `message` | – |
