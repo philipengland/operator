@@ -9,6 +9,7 @@ import { builtFrom as puzzleGridParts } from '../ui/combined/puzzle-grid';
 import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
 import { builtFrom as speechBubbleParts } from '../ui/combined/speech-bubble';
 import { builtFrom as targetPillParts } from '../ui/combined/target-pill';
+import { builtFrom as playScreenParts } from '../ui/screens/play-screen';
 
 export type CatalogueSection = 'Foundations' | 'Simple components' | 'Combined components' | 'Screens';
 
@@ -16,17 +17,9 @@ export interface CatalogueEntry {
   readonly name: string;
   /** For combined components and screens: the components it is laid out from. */
   readonly builtFrom?: readonly string[];
-  /** Shown in place of samples until the component is built (owner decision 2026-11-06). */
-  readonly notBuiltYet?: string;
 }
 
 const entries = (...names: readonly string[]): readonly CatalogueEntry[] => names.map((name) => ({ name }));
-
-// spec-003 is delivered in three pull requests; each placeholder goes when its part is built.
-const builtIn =
-  (part: string) =>
-  (...names: readonly string[]): readonly CatalogueEntry[] =>
-    names.map((name) => ({ name, notBuiltYet: `Built in ${part}.` }));
 
 export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[]>> = {
   Foundations: [],
@@ -41,5 +34,5 @@ export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[
     { name: 'Puzzle grid', builtFrom: puzzleGridParts },
     { name: 'Keypad', builtFrom: keypadParts },
   ],
-  Screens: builtIn('part 3')('Play screen'),
+  Screens: [{ name: 'Play screen', builtFrom: playScreenParts }],
 };

@@ -220,34 +220,34 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 **Independent Test**: Screens section at 375 × 667 and 320 × 568 against the Classic mockup;
 `play-screen.acceptance-spec.ts` passes.
 
-- [ ] T059 [US3] Create `003-themed-ui-part-3` from `main` (after part 2 merges) and bring over `test/acceptance/library/play-screen.acceptance-spec.ts` and `themes.acceptance-spec.ts` from `003-themed-ui`. Run them: all fail on missing samples or behaviour. TDD log.
+- [X] T059 [US3] Create `003-themed-ui-part-3` from `main` (after part 2 merges) and bring over `test/acceptance/library/play-screen.acceptance-spec.ts` and `themes.acceptance-spec.ts` from `003-themed-ui`. Run them: all fail on missing samples or behaviour. TDD log.
 
 ### AC-15: the play screen, top to bottom
 
-- [ ] T060 [US3] AC-15 RED: driver `openScreen(screen, sample)` opens the catalogue's screen view (the screen alone, filling the viewport) and `screenView()` reads the five parts' boxes by role and name. Expected failure: `Operator header is above Solutions counter — Expected: true, Received: false`.
-- [ ] T061 [US3] AC-15 TDD cycles in `src/ui/screens/play-screen.ts`: arranges Operator header, Solutions counter, Puzzle grid, Keypad and the main Button top to bottom; `play-screen.css` lays out only (flex column, gaps, safe-area padding with `env(safe-area-inset-*)`). Built from those five. Catalogue: the Screens section shows the play screen with a "Screen sample" group ("Just opened", "Row 1 correct", "All found") and a way to open it alone at full size (a link to `catalogue.html#play-screen`).
-- [ ] T062 [US3] AC-15 GREEN, slice refactor, checkpoint.
+- [X] T060 [US3] AC-15 RED: driver `openScreen(screen, sample)` opens the catalogue's screen view (the screen alone, filling the viewport) and `screenView()` reads the five parts' boxes by role and name. Expected failure: `Operator header is above Solutions counter — Expected: true, Received: false`.
+- [X] T061 [US3] AC-15 TDD cycles in `src/ui/screens/play-screen.ts`: arranges Operator header, Solutions counter, Puzzle grid, Keypad and the main Button top to bottom; `play-screen.css` lays out only (flex column, gaps, safe-area padding with `env(safe-area-inset-*)`). Built from those five. Catalogue: the Screens section shows the play screen with a "Screen sample" group ("Just opened", "Row 1 correct", "All found") and a way to open it alone at full size (a link to `catalogue.html#play-screen`).
+- [X] T062 [US3] AC-15 GREEN, slice refactor, checkpoint.
 
 ### AC-16: fits a phone
 
-- [ ] T063 [US3] AC-16 RED: driver `useScreen(size)` sets the viewport before opening. Expected failure (if any) names the part off screen at 320 × 568.
-- [ ] T064 [US3] AC-16 TDD cycles: sizes from the tokens scale down at narrow widths (cell height and keypad keys keep 44 px minimum; pill column and gaps shrink) so 320 × 568 fits; any size rule lives in simple components' CSS, not the screen's.
-- [ ] T065 [US3] AC-16 GREEN (both sizes; ⚠️ 375 × 667 may pass at RED), checkpoint.
+- [X] T063 [US3] AC-16 RED: driver `useScreen(size)` sets the viewport before opening. Expected failure (if any) names the part off screen at 320 × 568.
+- [X] T064 [US3] AC-16 TDD cycles: sizes from the tokens scale down at narrow widths (cell height and keypad keys keep 44 px minimum; pill column and gaps shrink) so 320 × 568 fits; any size rule lives in simple components' CSS, not the screen's.
+- [X] T065 [US3] AC-16 GREEN (both sizes; ⚠️ 375 × 667 may pass at RED), checkpoint.
 
 ### AC-17: screen samples
 
-- [ ] T066 [US3] AC-17 RED: driver `chooseScreenSample()` presses the sample button. Expected failure: `Play screen "Row 1 target" shows — Expected: "+ 8 ✓"`.
-- [ ] T067 [US3] AC-17 TDD cycles: `src/catalogue/samples.ts` holds the three play-screen samples (just opened; top-right 2 so Row 1 reaches its target; Solution B after A so the counter is complete); the screen updates in place through each component's `update`, so nothing moves.
-- [ ] T068 [US3] AC-17 GREEN, slice refactor, checkpoint.
+- [X] T066 [US3] AC-17 RED: driver `chooseScreenSample()` presses the sample button. Expected failure: `Play screen "Row 1 target" shows — Expected: "+ 8 ✓"`.
+- [X] T067 [US3] AC-17 TDD cycles: `src/catalogue/samples.ts` holds the three play-screen samples (just opened; top-right 2 so Row 1 reaches its target; Solution B after A so the counter is complete); the screen updates in place through each component's `update`, so nothing moves.
+- [X] T068 [US3] AC-17 GREEN, slice refactor, checkpoint.
 
 ### AC-18: never reaches players ⚠️
 
-- [ ] T069 [US3] AC-18 RED: engine driver `publishedFiles()` lists `dist/` after `npm run build` and marks a file as catalogue if its path or text contains `catalogue`. Likely passes at RED (the build input excludes it): report it and prove the driver with a reverted break that adds `catalogue.html` to the game build's inputs.
-- [ ] T070 [US3] AC-18 GREEN on the engine and phone projects, checkpoint.
+- [X] T069 [US3] AC-18 RED: engine driver `publishedFiles()` lists `dist/` after `npm run build` and marks a file as catalogue if its path or text contains `catalogue`. Likely passes at RED (the build input excludes it): report it and prove the driver with a reverted break that adds `catalogue.html` to the game build's inputs.
+- [X] T070 [US3] AC-18 GREEN on the engine and phone projects, checkpoint.
 
 ### Edge case: long words in every theme
 
-- [ ] T071 [US3] Edge-case scenario RED/GREEN after US4's theme switch (T074): at 320 × 568 the play screen fits in all six themes. Run it at the end of Phase 6.
+- [X] T071 [US3] Edge-case scenario RED/GREEN after US4's theme switch (T074): at 320 × 568 the play screen fits in all six themes. Run it at the end of Phase 6.
 
 ---
 
@@ -260,19 +260,19 @@ and the theme unit tests pass.
 
 ### AC-19: switching to Midnight blue
 
-- [ ] T072 [US4] AC-19 RED: driver `chooseTheme()` presses the theme button; `coloursInUse()` collects every computed colour, background, border and shadow colour on visible elements (ignoring transparent); `layoutOfEverySample()` maps each sample to its box. Expected failure: `#1A1A1A is one of Midnight blue's four colours`.
-- [ ] T073 [US4] AC-19 TDD cycles: the catalogue's theme switch calls `applyTheme` and re-renders samples whose content depends on the theme (main button label, greeting address) through `update`; `src/catalogue/samples.ts` derives "Fill the grid, <address>." and the main button label from the current theme. `aria-pressed` follows the choice.
-- [ ] T074 [US4] AC-19 GREEN (all four scenarios), then the edge case T071, slice refactor, checkpoint.
+- [X] T072 [US4] AC-19 RED: driver `chooseTheme()` presses the theme button; `coloursInUse()` collects every computed colour, background, border and shadow colour on visible elements (ignoring transparent); `layoutOfEverySample()` maps each sample to its box. Expected failure: `#1A1A1A is one of Midnight blue's four colours`.
+- [X] T073 [US4] AC-19 TDD cycles: the catalogue's theme switch calls `applyTheme` and re-renders samples whose content depends on the theme (main button label, greeting address) through `update`; `src/catalogue/samples.ts` derives "Fill the grid, <address>." and the main button label from the current theme. `aria-pressed` follows the choice.
+- [X] T074 [US4] AC-19 GREEN (all four scenarios), then the edge case T071, slice refactor, checkpoint.
 
 ### AC-20 and AC-21: theme values and contrast (unit tests only)
 
-- [ ] T075 [P] [US4] AC-20 TDD cycles in `src/ui/foundations/themes.spec.ts`, `describe('THEMES (spec-003 AC-20)')`: each of the six themes has exactly the spec Themes table's four colours, address, sign-off and button label; `applyTheme` sets exactly `--ink`, `--paper`, `--tile`, `--accent`.
-- [ ] T076 [P] [US4] AC-21 TDD cycles: `src/ui/foundations/contrast.ts` `contrastRatio(a, b)` (WCAG 2.2 relative luminance; #1A1A1A on #FFFDF6 ≈ 17.1); `themes.spec.ts` `describe('contrast in every theme (spec-003 AC-21)')` checks research R6's pairs for all six themes (4.5:1 for ink/tile, ink/paper, paper/ink, accent/tile, tile/accent; 3:1 for accent/paper).
+- [X] T075 [P] [US4] AC-20 TDD cycles in `src/ui/foundations/themes.spec.ts`, `describe('THEMES (spec-003 AC-20)')`: each of the six themes has exactly the spec Themes table's four colours, address, sign-off and button label; `applyTheme` sets exactly `--ink`, `--paper`, `--tile`, `--accent`.
+- [X] T076 [P] [US4] AC-21 TDD cycles: `src/ui/foundations/contrast.ts` `contrastRatio(a, b)` (WCAG 2.2 relative luminance; #1A1A1A on #FFFDF6 ≈ 17.1); `themes.spec.ts` `describe('contrast in every theme (spec-003 AC-21)')` checks research R6's pairs for all six themes (4.5:1 for ink/tile, ink/paper, paper/ink, accent/tile, tile/accent; 3:1 for accent/paper).
 
 ### AC-22: accessible in every theme
 
-- [ ] T077 [US4] AC-22 RED: driver `accessibilityProblems()` uses `test/acceptance/support/axe.ts`'s scan, returning violation summaries. Expected failure lists any violation in a theme; ⚠️ may pass at RED if earlier work was clean: prove with a reverted low-contrast colour.
-- [ ] T078 [US4] AC-22 GREEN, checkpoint.
+- [X] T077 [US4] AC-22 RED: driver `accessibilityProblems()` uses `test/acceptance/support/axe.ts`'s scan, returning violation summaries. Expected failure lists any violation in a theme; ⚠️ may pass at RED if earlier work was clean: prove with a reverted low-contrast colour.
+- [X] T078 [US4] AC-22 GREEN, checkpoint.
 
 ---
 
@@ -282,16 +282,16 @@ and the theme unit tests pass.
 
 **Independent Test**: unit tests in `src/ui/foundations/themes.spec.ts`.
 
-- [ ] T079 [US5] AC-23 to AC-25 TDD cycles in `themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)')`: `themeForSeed(undefined)` is Classic (AC-25); "4F7A21" twice and "4f7a21" give the same theme, and that theme is Plum and mint (golden, research R4) (AC-23); 600 seeds (hex "000000" to "000257") give each theme between 70 and 130 (AC-24). Implementation: 32-bit FNV-1a over the upper-cased seed, remainder by 6, index into `THEMES`.
+- [X] T079 [US5] AC-23 to AC-25 TDD cycles in `themes.spec.ts`, `describe('themeForSeed')` with `(spec-003 AC-n)` in each test title: `themeForSeed(undefined)` is Classic (AC-25); "4F7A21" twice and "4f7a21" give the same theme, and that theme is Plum and mint (golden, research R4) (AC-23); 600 seeds (hex "000000" to "000257") give each theme between 70 and 130 (AC-24). Implementation: 32-bit FNV-1a over the upper-cased seed, remainder by 6, index into `THEMES`.
 
 ---
 
 ## Phase 8: Polish and pull request 3
 
-- [ ] T080 [P] Update `docs/contracts/component-library.md` to match what was built (names, samples, any decisions taken at checkpoints).
-- [ ] T081 [P] `AGENTS.md`: Components gains the component library (`src/ui/`, tiers, catalogue); Build, Test and Run gains `npm run catalogue`, `npm run build:catalogue`; Repository Layout gains `src/ui/`, `src/catalogue/`, `test/acceptance/library/`; Conventions gains "the tiers are enforced by lint and `tools/ui-tiers.spec.ts`" and "catalogue scenarios run only on the catalogue projects", each with its why.
+- [X] T080 [P] Update `docs/contracts/component-library.md` to match what was built (names, samples, any decisions taken at checkpoints).
+- [X] T081 [P] `AGENTS.md`: Components gains the component library (`src/ui/`, tiers, catalogue); Build, Test and Run gains `npm run catalogue`, `npm run build:catalogue`; Repository Layout gains `src/ui/`, `src/catalogue/`, `test/acceptance/library/`; Conventions gains "the tiers are enforced by lint and `tools/ui-tiers.spec.ts`" and "catalogue scenarios run only on the catalogue projects", each with its why.
 - [ ] T082 Run [quickstart.md](quickstart.md) sections 1, 2 and 4; ask the owner to do section 3 on a real phone (SC-301) and record the sign-off in the TDD log.
-- [ ] T083 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with every criterion AC-1 to AC-25 covered. Commit it.
+- [X] T083 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with every criterion AC-1 to AC-25 covered. Commit it.
 - [ ] T084 Push `003-themed-ui-part-3` and open "spec-003 part 3 of 3: play screen and themes" (what, why, how tested, rollback: revert; players unaffected; the Executable Specifications box: no changes to approved files). The owner merges with a merge commit.
 
 ---

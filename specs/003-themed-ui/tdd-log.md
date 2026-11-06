@@ -734,3 +734,320 @@
 - **Test results**: `npm run test-results -- 003-themed-ui` — `OVERALL status: BLOCKED`, as
   expected: AC-1 to AC-14 PASS, AC-15 to AC-25 not covered until part 3.
 - **Pull request**: branch `003-themed-ui-part-2`, "spec-003 part 2 of 3: combined components".
+
+## Part 3: the play screen and themes (T059)
+
+- **Branch**: `003-themed-ui-part-3` from `main` at `095b318` (part 2 merged, PR #10).
+- **Scenarios brought over**: `play-screen.acceptance-spec.ts` (blob `534052c`) and
+  `themes.acceptance-spec.ts` (blob `2610b08`) from `003-themed-ui`, unchanged, as approved in
+  `79718d4`. The DSL and `examples.ts` on `main` are identical to the approved ones.
+- **Baseline** on the two catalogue phones: 22 runs, 18 failed on their assertions for missing
+  samples or behaviour (e.g. `Operator header is above Solutions counter`, `Button "Main" shows —
+  Expected: "Connect me!", Received: "Put it through!"`, `not read yet is one of Classic's four
+  colours`).
+  - **Reported — 4 runs passed at baseline** (⚠️): AC-17 "nothing moves between 'Just opened',
+    'Row 1 correct' and 'All found'" and AC-19 "nothing moves or changes size", on both phones.
+    AC-19 compares `layoutOfEverySample()` before and after a change, a stub returning `{}`, so
+    nothing is compared with nothing. AC-17 compares `screenView()`, a stub giving every part an
+    unknown (NaN) position, and the equality check treats NaN as equal to NaN. (First logged as
+    both being `layoutOfEverySample()`; corrected in AC-15.) Not behaviour that exists; their
+    drivers are made unable to pass while empty and proven with breaks in AC-17 and AC-19.
+
+## AC-15: the play screen, top to bottom
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-15]`, one scenario on
+  both catalogue phones.
+- **Driver** (T060), commit `4a47b4a`:
+  - `openScreen(screen, sample)` opens `catalogue.html#play-screen` (the screen alone at full
+    size), presses the sample in the "Screen sample" switch, and scans with axe;
+    `chooseScreenSample` presses the button, waits for it to be pressed, and returns to the top
+    of the page (the switches sit below the screen); with no such button it leaves the screen as
+    it is, so the scenario's checks decide.
+  - `useScreen(size)` sets the viewport; `screenView()` reads the viewport and the five parts'
+    boxes, each found by its contract name: the header around the "Hello, Operator!" bubble, the
+    counter by its "Found N…" name, the "Puzzle" and "Keypad" groups, the main button as the one
+    named "…, Check". A part found more or less than once has an unknown box.
+  - `sample()` for the play screen reads a part the same way (`readPartView`), so
+    `expectShows('Play screen', 'Solutions counter', …)` and `'Row 1 target'` work.
+- **Acceptance RED**: `Operator header is above Solutions counter — Expected: true, Received:
+  false` on both phones, as T060 predicted.
+
+### Cycle 1 — the catalogue shows the play screen as built (AC-7 for screens)
+
+- **RED**: `LIBRARY › says what the play screen is built from` — `expected [ { name: 'Play
+  screen', … } ] to deeply equal [ { name: 'Play screen', builtFrom: [ 'Operator header', …,
+  'Button' ] } ]`; the placeholder test now expected none left — `expected [ 'Play screen: Built in
+  part 3.' ] to deeply equal []`. **GREEN**: `src/ui/screens/play-screen.ts` declares `builtFrom`;
+  the unused part-placeholder helper goes — `d841b9f`.
+- **REFACTOR** (`dad7308`): every component is built, so the placeholder idea goes: the
+  `notBuiltYet` field, the catalogue's placeholder paragraph, and the library test that only
+  checked none were left (its subject no longer exists; it was passing).
+
+- **Renderer** (driven by the scenario), commit `6d43597`: `createPlayScreen(props, actions)` —
+  the operator header, solutions counter, puzzle grid, keypad and main Button ("Put it through!",
+  named "…, Check"), top to bottom, with safe-area padding (layout-only `play-screen.css`);
+  `onKey` and `onCheck` for spec-004 to connect. Samples in `src/catalogue/screen-samples.ts`:
+  Just opened, Row 1 correct (top-right 2), All found (Solution B), in the play-screen contract's
+  wording. The catalogue's Screens section shows the "Built from:" line, a link to
+  `#play-screen`, a "Screen sample" switch and the screen; `#play-screen` shows the screen alone
+  filling the viewport, with the theme switch, the sample switch and a link back below it. The
+  theme switch and the sample switch share one `switchGroup`.
+  - **Looked at on a phone**: in order and as the design guide draws it, but too tall: the main
+    button ends at 776 px on a 667 px screen and 832 px on 568. Fitting is AC-16.
+- **Driver proven** by reverted breaks (iPhone): the counter above the header failed `Operator
+  header is above Solutions counter`; the main button reading "Check it!" failed `Play screen
+  "Main button" shows — Received: "Check it!"`.
+- **Acceptance GREEN**: AC-15, 2 runs passed, axe clean; earlier catalogue scenarios still pass.
+  - **Reported**: AC-17's first scenario ("Row 1 correct" ticks Row 1, "All found" completes the
+    counter) now passes too, since the switchable samples it uses came with AC-15. Real
+    behaviour, not a stub; its readings are proven with breaks at AC-17.
+- **Full suite**: 191 unit tests (lines 99.0%, branches 96.0%); engine 36 passed (AC-18 now
+  included); phones 171 passed, 14 failed (AC-16, AC-19, AC-22 and the long-words edge case, not
+  started). Game JS and CSS unchanged.
+- **Slice refactor**: none beyond `dad7308`.
+
+## AC-16: the play screen fits a phone
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-16]`, two scenarios
+  (375 × 667 and 320 × 568) on both catalogue phones.
+- **Driver** (T063): `useScreen(size)` was written with AC-15; the scenario sets the size, then
+  opens the screen.
+- **Acceptance RED**: both sizes failed — 375 × 667 `Keypad is on screen without scrolling`;
+  320 × 568 `Puzzle grid is on screen without scrolling` (T065's "375 × 667 may pass at RED"
+  did not happen: the main button ended at 776 px).
+- **No unit cycles**: these are style changes, which unit tests cannot see (Vitest does not load
+  CSS); the scenarios drove them, measured at each step (each part's top and height, every
+  sample, both sizes) and looked at in screenshots.
+  - **Round 1**: sizes become foundation tokens (`--size-cell`, `--size-key`, `--size-main`,
+    `--size-dashed`, `--text-display`, `--space-surface`, `--space-screen`, `--space-between`)
+    with smaller values for screens up to 700 px tall (667 px phones) and up to 600 px (568 px
+    phones), never below the 44 px touch target; the simple components use them; the bubble takes
+    the design guide's own padding (8 px 14 px). 375 × 667 then fitted (main button ends 617 px)
+    and stayed put across samples; 320 × 568 ended at 579 px, the "Row 1 correct" message wrapped
+    (+16 px) and "All found" ticks made the working rows taller (+11 px).
+  - **Round 2**: `--text-body` 14 px and `--text-display` 22 px on screens under 360 px wide (the
+    design guide's bubble message is 14 px); `--space-grid` for the grid, keypad and helper
+    gaps, 4 px on 568 px phones; a working's icon is the size of its result. 320 × 568 then ends
+    at 528–536 px across the samples.
+  - **Looked at**: at 375 close to the design guide, room to spare; at 320 tighter but clear,
+    every tap target at least 44 px, helper line on one line.
+- Commit `a37845d`.
+- **Driver proven** by reverted breaks (iPhone): without the 667 px sizes, 375 × 667 failed
+  `Keypad is on screen without scrolling`; without the 568 px sizes, 320 × 568 failed the same.
+- **Acceptance GREEN**: AC-16, 4 runs passed; AC-1 to AC-17 still pass.
+  - **Reported**: the long-words edge case (fits at 320 × 568 in all six themes) passes too, but
+    only because `chooseTheme` does nothing yet, so it checks Classic six times. It becomes a real
+    check with AC-19.
+- **Full suite**: 191 unit tests; engine 36 passed; phones 177 passed, 8 failed (AC-19 and AC-22,
+  not started). Game JS and CSS unchanged.
+- **Slice refactor**: none needed.
+
+## AC-17: switching the play screen's samples
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-17]`, two scenarios on
+  both catalogue phones. Both already passed: the first with real behaviour since AC-15 (its
+  samples and in-place updates came then; they live in `src/catalogue/screen-samples.ts`, not
+  `samples.ts` as T067 says), the second falsely at the part-3 baseline.
+- **Driver** (T066): `chooseScreenSample()` was written with AC-15. The false pass is closed:
+  - **Shown first**: with the play screen removed from the full-size view, "nothing moves between
+    'Just opened', 'Row 1 correct' and 'All found'" still passed — every part's position was
+    unknown (NaN), and the equality check treats NaN as equal to NaN.
+  - **Fixed** (`dc44d34`): an unreadable part's box now carries its own number as well as NaN
+    edges, so it fails every position check and never equals another unknown box. With the same
+    break the scenario then failed (`the play screen's layout is the same for Just opened, Row 1
+    correct, All found`); with the screen restored, AC-15 to AC-17 passed.
+- **No cycles**: no new behaviour was needed.
+- **Driver proven** by reverted breaks (iPhone): a "Row 1 correct" message long enough to wrap
+  failed `the play screen's layout is the same for …`; Row 1's pill without its tick failed `Play
+  screen "Row 1 target" shows — Expected: "+ 8 ✓", Received: "+ 8"`; "All found" counting 1 of 2
+  failed `Play screen "Solutions counter" shows — Received: "Solutions found 1 of 2"`.
+- **Acceptance GREEN**: AC-17, 4 runs passed.
+
+## AC-18: the catalogue never reaches players
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-18]`, one scenario, run
+  by the engine driver and on both game phones (not a catalogue scenario).
+- **Acceptance RED**: **reported — passes at RED** (⚠️), as T069 predicted: the game's build has
+  only `index.html` as input (research R7), so `dist/` never held the catalogue. The driver
+  (`publishedFiles()`, shared by both drivers since part 1) lists `dist/` and marks any path or
+  text containing "catalogue".
+- **Driver proven** by a reverted break: `catalogue.html` added to the game build's inputs in
+  `vite.config.ts` put `dist/catalogue.html` and its assets in the build, and the scenario failed
+  `dist\catalogue.html is part of the catalogue — Expected: false, Received: true`. Reverted and
+  rebuilt: `dist/` holds `index.html` and `assets/` only, same hashes as before.
+- **Acceptance GREEN** (T070): engine 1 passed; phones (iPhone SE, Pixel 5) 2 passed.
+
+- **Full suite** after AC-17 and AC-18: 191 unit tests; engine 36 passed; phones 177 passed, 8
+  failed (AC-19 and AC-22, not started). Game JS and CSS unchanged.
+
+## AC-19: switching to Midnight blue
+
+- **Acceptance test**: `themes.acceptance-spec.ts` — `[spec-003 AC-19]`, four scenarios on both
+  catalogue phones.
+- **Driver** (T072, `646755e`):
+  - `chooseTheme()` presses the theme's button in the "Theme" switch, waits for it to show as
+    pressed, and scrolls back to the top, as `chooseScreenSample()` does.
+  - `coloursInUse()` reads every colour drawn on the page: text, fill, borders, outlines, shadows
+    and a drawing's fill and stroke. Fully transparent colours are left out. If nothing is read it
+    returns a sentence, so it can never pass on nothing.
+  - `layoutOfEverySample()` reads where every region and named group sits on the page, numbered in
+    document order. If nothing is read it returns an unknown box.
+- **Acceptance RED** (Pixel 5):
+  - `#1A1A1A is one of Midnight blue's four colours`: the expected failure.
+  - `Button "Main" shows — Expected: "Connect me!", Received: "Put it through!"`.
+  - Switching back to Classic failed `#0000EE is one of Classic's four colours`. This is a real
+    defect the scenario found: the catalogue's links were drawn in the browser's own blue.
+  - **Reported — passes at RED** (⚠️): "nothing moves or changes size" passed, because there was
+    no Midnight blue button to press, so nothing changed. It failed for real during the cycles
+    (below).
+- **Cycle 1** (`6d9b51b`) — `THEMES` starts with Classic, then Midnight blue, each with its four
+  colours, address, sign-off and button label (`themes.spec.ts`). RED: `expected [] to deeply
+  equal [ …(2) ]`. GREEN: `Theme` gains `address`, `signOff` and `buttonLabel`; Classic and
+  Midnight blue from the spec's Themes table. The other four come with AC-20.
+- **Cycle 2** (`13f5fd6`) — `screenSamplesFor(theme)` returns the play screen's samples in the
+  theme's voice (`screen-samples.spec.ts`). RED: the messages said "pal" and the button "Put it
+  through!". GREEN: the messages are built from the theme's address and the button from its label.
+  `SCREEN_SAMPLES` is replaced by the function.
+- **Cycle 3** (`a039d57`, wiring; covered by the acceptance scenarios, no unit test, as with
+  `view.ts`):
+  - The theme switch calls `applyTheme` and redraws only what speaks: the play screen (through
+    `update`), and the samples marked `speaksInTheme` (Button "Main", Speech bubble "Row through",
+    Operator header "Greeting").
+  - Catalogue links take the theme's ink.
+  - **"Nothing moves" then failed for real**: the "Main" sample narrowed (222 → 184 px) and "Row
+    through" lost a line, moving every sample below it up 22 px.
+  - **Owner decision (2026-11-06)**: fix the sizes in the catalogue, with no component changes and
+    the scenario unchanged. Each sample that speaks holds invisible copies of itself
+    (`visibility: hidden`, `aria-hidden`) in every theme's words, in the same grid cell. So it is
+    always the size of its longest wording, at any screen width. The shown sample stays first in
+    its group, so the existing readings are unchanged.
+- **Driver proven**:
+  - All three readings failed for real above.
+  - Reverted breaks (Pixel 5): the mascot's light parts painted `#ffffff` failed `#FFFFFF is one of
+    Midnight blue's four colours`; and switching to Classic applying Midnight blue's colours failed
+    `#1B2A4A is one of Classic's four colours`.
+- **Acceptance GREEN** (T074): AC-19, 8 runs passed.
+- **Edge case** (T071): the long-words case now really switches theme. It first failed `Operator
+  header is on screen without scrolling`, because pressing the switch below the screen scrolled
+  the page. `chooseTheme()` now scrolls back to the top, and the case passes. It checks only the
+  two themes that exist so far: choosing a theme that has no button does nothing. T071 stays open
+  until AC-20 adds the other four.
+- **Full suite**: 193 unit tests; engine 36 passed; phones 183 passed, 2 failed (AC-22, not
+  started). Game JS and CSS unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
+- **Slice refactor**: none needed.
+
+## AC-20: the six themes
+
+Unit tests only (`src/ui/foundations/themes.spec.ts`, `describe('THEMES (spec-003 AC-20)')`).
+
+- **Cycle 1** (`58827ed`) — `THEMES` holds the six themes of the spec's Themes table, in order,
+  each with exactly four colours, its address, sign-off and button label. RED: `expected [
+  Array(2) ] to deeply equal [ Array(6) ]`. GREEN: Plum and mint, Amber and teal, Bubblegum and
+  Racing green added from the table.
+- **Refactor** (`6ebcbca`):
+  - The two-theme test from AC-19 is folded into the AC-20 test.
+  - The part-1 `applyTheme` test now runs for all six themes and is titled under AC-20.
+  - **Reported**: the `applyTheme` half of AC-20 was built in part 1 (T011), so this is not a new
+    red.
+
+## AC-21: contrast in every theme
+
+Unit tests only.
+
+- **Cycle 1** (`8cd9cfe`) — `contrastRatio(foreground, background)` gives the WCAG 2.2 contrast
+  (`contrast.spec.ts`; #1A1A1A on #FFFDF6 ≈ 17.1, black on white 21, a colour on itself 1). RED:
+  `expected +0 to be close to 17.1`. GREEN: WCAG relative luminance and contrast ratio, with
+  named constants.
+- **Cycle 2** (`6a243bc`) — `describe('contrast in every theme (spec-003 AC-21)')` checks research
+  R6's six pairs in all six themes (36 tests): 4.5:1 for ink on tile, ink on paper, paper on ink,
+  accent on tile and tile on accent; 3:1 for accent on paper.
+  - **Reported — passes on its first run** (⚠️), as expected: R6 checked the six themes as
+    designed on 2026-11-05. The closest pairs compute as in R6: Midnight blue's accent on tile is
+    4.61, and Bubblegum's accent on paper is 3.59.
+  - **Proven** by a reverted break: Midnight blue's accent lightened to `#E0702B` failed three pairs
+    (`expected 3.036… to be greater than or equal to 4.5`, `expected 2.529… to be greater than or
+    equal to 3`), and the AC-20 table test.
+
+## Edge case: long words in every theme (T071)
+
+- With all six themes, the case now switches through every theme on a 320 × 568 screen and
+  passes on both catalogue phones.
+- **Proven** by a reverted break: Plum and mint's address made very long ("darling, my dearest,
+  most wonderful and patient puzzling friend") failed `Main button is on screen without scrolling`
+  on both phones.
+
+- **Full suite** after AC-20, AC-21 and T071: 238 unit tests; engine 36 passed; phones 183
+  passed, 2 failed (AC-22, not started). Game JS and CSS unchanged.
+
+## AC-22: accessible in every theme
+
+- **Acceptance test**: `themes.acceptance-spec.ts` — `[spec-003 AC-22]`, one scenario on both
+  catalogue phones, choosing each of the six themes in turn.
+- **Driver** (T077, `8a73c2f`):
+  - `accessibilityProblems()` returns what the axe scan finds on the catalogue in the theme now
+    shown (WCAG 2.2 AA tags).
+  - `test/acceptance/support/axe.ts` gains `accessibilityProblems(page)`, which returns one line
+    per violation. The existing `scanForAccessibilityProblems` now throws on that list, so every
+    other page is scanned as before.
+- **Acceptance RED**: **reported — passes at RED** (⚠️), as T077 allowed: the earlier work was
+  clean. The invisible size-keeping copies from AC-19 are `visibility: hidden`, so the scan skips
+  them.
+- **Driver proven** by a reverted break: Bubblegum's ink set to `#AAAAAA` failed on both phones
+  `accessibility problems in Bubblegum — "color-contrast: Elements must meet minimum color contrast
+  ratio thresholds (128 element(s))"`.
+- **No cycles**: no new behaviour was needed.
+- **Acceptance GREEN** (T078): AC-22, 2 runs passed.
+- **Full suite**: 238 unit tests; engine 36 passed; phones 185 passed, none failed. Game JS and
+  CSS unchanged.
+
+## AC-23 to AC-25: a puzzle's theme from its seed
+
+Unit tests only (`themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-24, AC-25)')`).
+
+- **Cycle 1, AC-23** (`afa662b`): "4F7A21" gives Plum and mint every time, and "4f7a21" the same
+  (golden value from research R4).
+  - RED: `expected [ 'Classic', 'Classic', 'Classic' ] to deeply equal [ 'Plum and mint', …(2) ]`
+    (the stub returned Classic).
+  - GREEN: 32-bit FNV-1a over the upper-cased seed (`Math.imul`, unsigned), remainder by 6, index
+    into `THEMES`. It gives Plum and mint, as R4 says.
+- **Cycle 2, AC-24** (`d0c766b`): over seeds "000000" to "000257" (600), each theme is given 70 to
+  130 times.
+  - **Reported — passes on its first run** (⚠️), as expected: R4 measured this rule's spread.
+  - **Proven** by a reverted break. A first attempt, using the seed's last character, left the
+    spread inside the limits (the last hex digit spreads evenly by itself), so it proved nothing.
+    Using the first character instead failed `Classic is given 600 times: expected 600 to be less
+    than or equal to 130`.
+- **Cycle 3, AC-25** (`096cbb3`): a puzzle with no seed is shown in Classic.
+  - RED: `expected 'Midnight blue' to be 'Classic'` (an empty seed hashes to Midnight blue).
+  - GREEN: no seed returns Classic before hashing.
+- **Slice refactor**: none needed.
+- **Full suite**: 241 unit tests; engine 36 passed; phones 185 passed. Game JS and CSS unchanged.
+
+## Polish (T080 to T083)
+
+- **T080**: the component-library contract (both copies) and the data model now match the code:
+  - The themes carry `label`, `colours`, `address`, `signOff` and `buttonLabel`. The planned
+    `name` / `ThemeName` was never needed and is dropped.
+  - `MIDNIGHT_BLUE` is listed. `themeForSeed`'s rule, the screen-size tokens and the catalogue's
+    switches, screen view and size-keeping copies are described.
+- **T081**: `AGENTS.md` gains the component library and the catalogue (components, commands and
+  layout), and two conventions with their reasons: tiers enforced by lint and
+  `tools/ui-tiers.spec.ts`, and catalogue scenarios run only on the catalogue projects.
+- **T082, quickstart**:
+  - **Section 1**: every command passed (lint, typecheck, 241 unit tests, both builds, engine 36,
+    phones 185).
+  - **Section 2**: the built catalogue was walked in all six themes at 375 × 667, with
+    screenshots checked:
+    - the play screen, "All found", in each theme;
+    - the whole catalogue in Racing green.
+    Colours, button labels and addresses change in each theme, and nothing is cut off.
+  - **Section 4**: `origin/main` and this branch build byte-identical game files
+    (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`, `index.html`), and nothing in `dist/` mentions the
+    catalogue. Both builds took their version label from the same checkout, so the label was not
+    compared.
+  - **Section 3** (real phone, SC-301): **waiting for the owner's sign-off.**
+- **T083**: `npm run test-results -- 003-themed-ui` first ended `BLOCKED`, with AC-24 and AC-25
+  "NOT COVERED". The tool reads one "spec-003 AC-n" per criterion, and the seed tests shared one
+  describe title naming all three. Each test now names its own criterion (`fe3f0d1`, titles only),
+  and the report ends `OVERALL status: PASS` with AC-1 to AC-25 covered. Coverage: lines 98.97%,
+  branches 94.03%.

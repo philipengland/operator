@@ -1,0 +1,10 @@
+/* Play screen: layout only; its look comes from its components (FR-304). Top to bottom, inside
+   the phone's safe areas. */
+
+.play-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-between);
+  padding: max(var(--space-screen), env(safe-area-inset-top)) max(var(--space-screen), env(safe-area-inset-right))
+    max(var(--space-screen), env(safe-area-inset-bottom)) max(var(--space-screen), env(safe-area-inset-left));
+}

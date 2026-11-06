@@ -5,7 +5,7 @@ import { createGridCell } from '../ui/combined/grid-cell';
 import { createKeypad } from '../ui/combined/keypad';
 import { createLineWorking } from '../ui/combined/line-working';
 import { createOperatorHeader } from '../ui/combined/operator-header';
-import { createPuzzleGrid, type PuzzleGridProps } from '../ui/combined/puzzle-grid';
+import { createPuzzleGrid } from '../ui/combined/puzzle-grid';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createSpeechBubble } from '../ui/combined/speech-bubble';
 import { createTargetPill } from '../ui/combined/target-pill';
@@ -16,10 +16,15 @@ import { createMascot } from '../ui/simple/mascot';
 import { createSurface } from '../ui/simple/surface';
 import { createText } from '../ui/simple/text';
 import { createTextInput } from '../ui/simple/text-input';
+import type { Theme } from '../ui/foundations/themes';
+import { FIXED_PUZZLE_JUST_OPENED, screenSamplesFor } from './screen-samples';
 
 export interface Sample {
   readonly label: string;
-  render(): HTMLElement;
+  /** Draws the sample; a sample that speaks uses the theme's voice. */
+  render(theme: Theme): HTMLElement;
+  /** True when its words change with the theme, so the catalogue redraws it on a switch (spec-003 AC-19). */
+  readonly speaksInTheme?: boolean;
 }
 
 export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
@@ -28,7 +33,7 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Body', render: () => createText({ text: 'Tap a dashed bubble to swap its operator.', style: 'body' }).element },
   ],
   Button: [
-    { label: 'Main', render: () => createButton({ label: 'Put it through!', style: 'main', action: 'Check' }).element },
+    { label: 'Main', speaksInTheme: true, render: ({ buttonLabel }) => createButton({ label: buttonLabel, style: 'main', action: 'Check' }).element },
     { label: 'Key', render: () => createButton({ label: '5', style: 'key' }).element },
     { label: 'Solid', render: () => createButton({ label: 'Oops', style: 'solid', action: 'clear cell' }).element },
     { label: 'Dashed', render: () => createButton({ label: '? 12', style: 'dashed' }).element },
@@ -47,10 +52,14 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
   Badge: [{ label: 'Badge', render: () => createBadge({ text: '× 12' }).element }],
   Mascot: [{ label: 'Mascot', render: () => createMascot().element }],
   'Speech bubble': [
-    { label: 'Row through', render: () => createSpeechBubble({ title: 'Hello, Operator!', message: "Row one's through, pal. Keep 'em coming!" }).element },
+    {
+      label: 'Row through',
+      speaksInTheme: true,
+      render: ({ address, signOff }) => createSpeechBubble({ title: 'Hello, Operator!', message: `Row one's through, ${address}. ${signOff}!` }).element,
+    },
   ],
   'Operator header': [
-    { label: 'Greeting', render: () => createOperatorHeader({ title: 'Hello, Operator!', message: 'Fill the grid, pal.' }).element },
+    { label: 'Greeting', speaksInTheme: true, render: (theme) => createOperatorHeader(screenSamplesFor(theme)['Just opened'].header).element },
   ],
   'Solutions counter': [
     { label: 'None yet', render: () => createSolutionsCounter({ found: 0, total: 2 }).element },
@@ -100,34 +109,3 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
 function sampleText(text: string): HTMLElement {
   return createText({ text, style: 'body' }).element;
 }
-
-/** spec-001's 2 × 2 puzzle as the game shows it just opened (play-screen contract wording). */
-const FIXED_PUZZLE_JUST_OPENED = {
-  columnPills: [
-    { target: 3, operator: null, isOpen: true, name: 'Column 1 target 3, operator not chosen' },
-    { target: 6, operator: '×', isOpen: false, name: 'Column 2 target 6, times' },
-  ],
-  rowPills: [
-    { target: 8, operator: '+', isOpen: false, name: 'Row 1 target 8, plus' },
-    { target: 6, operator: null, isOpen: true, name: 'Row 2 target 6, operator not chosen' },
-  ],
-  cells: [
-    [
-      { name: 'Top-left cell', digit: 6, isGiven: true },
-      { name: 'Top-right cell', digit: null },
-    ],
-    [
-      { name: 'Bottom-left cell', digit: null },
-      { name: 'Bottom-right cell', digit: null },
-    ],
-  ],
-  rowWorkings: [
-    { result: '= ?', mark: 'none', name: 'Row 1 working, 6 + ?' },
-    { result: '= ?', mark: 'none', name: 'Row 2 working, ? ? ?' },
-  ],
-  columnWorkings: [
-    { result: '= ?', mark: 'none', name: 'Column 1 working, 6 ? ?' },
-    { result: '= ?', mark: 'none', name: 'Column 2 working, ? × ?' },
-  ],
-  helper: 'Tap a dashed bubble to swap its operator.',
-} as const satisfies PuzzleGridProps;

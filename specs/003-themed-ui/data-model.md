@@ -10,8 +10,7 @@ The six themes are fixed data (spec Themes table, research R3).
 
 | Field | Type | Rule |
 | --- | --- | --- |
-| `name` | `ThemeName` | one of `classic`, `midnight-blue`, `plum-and-mint`, `amber-and-teal`, `bubblegum`, `racing-green` |
-| `label` | string | shown in the catalogue switch: "Classic", "Midnight blue" … |
+| `label` | string | the theme's name, shown in the catalogue switch: "Classic", "Midnight blue" … |
 | `colours` | `{ ink, paper, tile, accent }` | `#RRGGBB`; every theme meets research R6's contrast pairs |
 | `address` | string | "pal", "chief" … |
 | `signOff` | string | "Keep 'em coming", "Next, please" … |
@@ -83,8 +82,8 @@ States differ by fill, outline or shadow, not colour alone (FR-316).
 
 | Field | Type | Rule |
 | --- | --- | --- |
-| `theme` | `ThemeName` | starts `classic`; changed by the switch; not remembered (FR-325) |
-| `screenSample` | `just-opened \| row-1-correct \| all-found` | starts `just-opened` |
+| `theme` | `Theme` | starts Classic; changed by the switch; not remembered (FR-325) |
+| `screenSample` | `'Just opened' \| 'Row 1 correct' \| 'All found'` | starts "Just opened" |
 
 Each component module also exports `builtFrom: readonly string[]` (component names), shown by
 the catalogue (AC-7).
