@@ -80,3 +80,38 @@
   Checkpoint run on both catalogue projects: 34 failed, all on assertions (e.g. AC-1 "catalogue
   sections, in order" and "components in Simple components"; `Received: ""`, `"other"`, `NaN`),
   none on a missing driver.
+
+## AC-1: the catalogue is organised by tier
+
+- **Acceptance test**: `test/acceptance/library/simple-components.acceptance-spec.ts` —
+  `[spec-003 AC-1]`, two scenarios, on `catalogue-iphone` and `catalogue-android`.
+- **Driver**: `sections()` and `componentsIn(section)` read region names in document order.
+- **Acceptance RED**: "every component is listed by name in its tier" failed: `components in
+  Simple components — Expected - 9, Received + 1` (an empty list). **Reported**: "it shows
+  Foundations, Simple components, Combined components and Screens, in that order" **passed at
+  RED**, because the T012 shell already draws the four sections. Driver proven by a reverted
+  break (Simple and Combined swapped in `src/catalogue/main.ts`): failed with "catalogue
+  sections, in order". Reverted; no diff.
+
+### Cycle 1 — the catalogue lists the library by tier
+
+- **RED**: `LIBRARY › lists every component by tier, in the design guide's order` in
+  `src/catalogue/library.spec.ts` — failed: `expected { Foundations: [], …(3) } to deeply equal
+  …` (all tiers empty).
+- **GREEN**: `LIBRARY` lists 7 simple, 8 combined and 1 screen — commit `2b07c7f`.
+- **REFACTOR**: none needed.
+
+### Cycle 2 — placeholders for parts 2 and 3 (owner decision 2026-11-06)
+
+- **RED**: `says which part builds each component not built yet` — failed: `expected [] to
+  deeply equal [ …(9) ]`.
+- **GREEN**: combined components "Built in part 2.", play screen "Built in part 3." — commit
+  `92f42b5`.
+- **REFACTOR**: none needed.
+
+- **Renderer** (driven by the scenario): one `region` per component inside its tier, named by
+  the component, with an `h3` and the placeholder line.
+- **Acceptance GREEN**: AC-1, 4 runs passed (axe clean on each open). Full suite: 146 unit tests
+  (lines 100%, branches 96.12%); engine 35 passed; phones 91 passed (87 game + 4 AC-1) and 30
+  failed (the 15 part-1 scenarios not yet started, on two phones).
+- **Slice refactor**: none needed.

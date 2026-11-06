@@ -11,6 +11,7 @@ import { publishedFiles } from '../published-files';
 
 const CATALOGUE_PAGE = 'catalogue.html';
 const CATALOGUE_TITLE = 'Operator component catalogue';
+const CATALOGUE_SECTIONS: readonly CatalogueSection[] = ['Foundations', 'Simple components', 'Combined components', 'Screens'];
 
 // Unknown positions: NaN compares false, so nothing unread can pass a layout check.
 const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
@@ -34,12 +35,16 @@ export class UiCatalogueDriver implements CatalogueDriver {
     await scanForAccessibilityProblems(this.page);
   }
 
+  /** The catalogue's tier sections, in the order they appear. */
   async sections(): Promise<readonly CatalogueSection[]> {
-    return [];
+    const names = await regionNames(this.page.getByRole('main').getByRole('region'));
+    return names.filter((name): name is CatalogueSection => (CATALOGUE_SECTIONS as readonly string[]).includes(name));
   }
 
-  async componentsIn(): Promise<readonly LibraryComponent[]> {
-    return [];
+  /** The components a tier section lists, in the order they appear. */
+  async componentsIn(section: CatalogueSection): Promise<readonly LibraryComponent[]> {
+    const sectionRegion = this.page.getByRole('region', { name: section, exact: true });
+    return (await regionNames(sectionRegion.getByRole('region'))) as LibraryComponent[];
   }
 
   async sample(): Promise<SampleView> {
@@ -117,4 +122,10 @@ export class UiCatalogueDriver implements CatalogueDriver {
   protected componentRegion(component: LibraryComponent): Locator {
     return this.page.getByRole('region', { name: component, exact: true });
   }
+}
+
+/** The accessible names of these regions, in document order (the catalogue names regions with aria-label). */
+async function regionNames(regions: Locator): Promise<readonly string[]> {
+  const names = await regions.evaluateAll((elements) => elements.map((element) => element.getAttribute('aria-label') ?? ''));
+  return names.filter((name) => name.length > 0);
 }

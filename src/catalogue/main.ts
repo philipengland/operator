@@ -4,9 +4,8 @@
 import '../ui/foundations/tokens.css';
 import './catalogue.css';
 import { applyTheme, CLASSIC, type Theme } from '../ui/foundations/themes';
+import { LIBRARY, type CatalogueEntry, type CatalogueSection } from './library';
 
-// The tiers, in the order the catalogue shows them (spec-003 AC-1).
-const SECTIONS = ['Foundations', 'Simple components', 'Combined components', 'Screens'] as const;
 
 // Every theme the catalogue can switch to; the other five arrive with User Story 4.
 const THEMES: readonly Theme[] = [CLASSIC];
@@ -17,13 +16,30 @@ if (!root) {
 }
 
 applyTheme(document.documentElement, CLASSIC);
-root.replaceChildren(heading('h1', 'Operator component catalogue'), themeSwitch(CLASSIC), ...SECTIONS.map(section));
+root.replaceChildren(heading('h1', 'Operator component catalogue'), themeSwitch(CLASSIC), ...(Object.keys(LIBRARY) as CatalogueSection[]).map(section));
 
-function section(name: string): HTMLElement {
-  const region = document.createElement('section');
-  region.setAttribute('aria-label', name);
-  region.append(heading('h2', name));
-  return region;
+/** A tier: its heading, then one region per component (spec-003 AC-1). */
+function section(name: CatalogueSection): HTMLElement {
+  return region(name, heading('h2', name), ...LIBRARY[name].map(componentRegion));
+}
+
+/** One component, named by the component; until it is built, a line saying which part builds it. */
+function componentRegion(entry: CatalogueEntry): HTMLElement {
+  const placeholder = entry.notBuiltYet ? [paragraph(entry.notBuiltYet)] : [];
+  return region(entry.name, heading('h3', entry.name), ...placeholder);
+}
+
+function region(name: string, ...children: readonly HTMLElement[]): HTMLElement {
+  const element = document.createElement('section');
+  element.setAttribute('aria-label', name);
+  element.append(...children);
+  return element;
+}
+
+function paragraph(text: string): HTMLElement {
+  const element = document.createElement('p');
+  element.textContent = text;
+  return element;
 }
 
 /** A group named "Theme" with one button per theme; the shown theme is pressed (FR-325). */
@@ -44,7 +60,7 @@ function themeSwitch(current: Theme): HTMLElement {
   return group;
 }
 
-function heading(level: 'h1' | 'h2', text: string): HTMLElement {
+function heading(level: 'h1' | 'h2' | 'h3', text: string): HTMLElement {
   const element = document.createElement(level);
   element.textContent = text;
   return element;

@@ -108,9 +108,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-1: organised by tier
 
-- [ ] T014 [US1] AC-1 RED: driver `sections()` reads the four section regions in document order; `componentsIn(section)` reads the component regions inside one. Expected failure: `components in Simple components — Expected: ["Text", …], Received: []`.
-- [ ] T015 [US1] AC-1 TDD cycles: `src/catalogue/samples.ts` lists the whole library by tier (`CATALOGUE_SECTIONS`: simple `Text, Button, Text input, Icon, Surface, Badge, Mascot`; combined `Speech bubble, Operator header, Solutions counter, Target pill, Grid cell, Line working, Puzzle grid, Keypad`; screens `Play screen`). Render one component region per entry. A component not built yet shows as a named region with the line "Built in part 2." or "Built in part 3." and no samples (owner decision 2026-11-06), so AC-1 passes from part 1; parts 2 and 3 replace each placeholder with real samples.
-- [ ] T016 [US1] AC-1 GREEN (both scenarios), slice refactor, checkpoint.
+- [X] T014 [US1] AC-1 RED: driver `sections()` reads the four section regions in document order; `componentsIn(section)` reads the component regions inside one. Expected failure: `components in Simple components — Expected: ["Text", …], Received: []`.
+- [X] T015 [US1] AC-1 TDD cycles: `src/catalogue/samples.ts` lists the whole library by tier (`CATALOGUE_SECTIONS`: simple `Text, Button, Text input, Icon, Surface, Badge, Mascot`; combined `Speech bubble, Operator header, Solutions counter, Target pill, Grid cell, Line working, Puzzle grid, Keypad`; screens `Play screen`). Render one component region per entry. A component not built yet shows as a named region with the line "Built in part 2." or "Built in part 3." and no samples (owner decision 2026-11-06), so AC-1 passes from part 1; parts 2 and 3 replace each placeholder with real samples.
+- [X] T016 [US1] AC-1 GREEN (both scenarios), slice refactor, checkpoint.
 
 ### AC-2: buttons in four styles
 
