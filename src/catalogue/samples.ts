@@ -5,7 +5,7 @@ import { createGridCell } from '../ui/combined/grid-cell';
 import { createKeypad } from '../ui/combined/keypad';
 import { createLineWorking } from '../ui/combined/line-working';
 import { createOperatorHeader } from '../ui/combined/operator-header';
-import { createPuzzleGrid, type PuzzleGridProps } from '../ui/combined/puzzle-grid';
+import { createPuzzleGrid } from '../ui/combined/puzzle-grid';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createSpeechBubble } from '../ui/combined/speech-bubble';
 import { createTargetPill } from '../ui/combined/target-pill';
@@ -16,6 +16,7 @@ import { createMascot } from '../ui/simple/mascot';
 import { createSurface } from '../ui/simple/surface';
 import { createText } from '../ui/simple/text';
 import { createTextInput } from '../ui/simple/text-input';
+import { FIXED_PUZZLE_JUST_OPENED } from './screen-samples';
 
 export interface Sample {
   readonly label: string;
@@ -100,34 +101,3 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
 function sampleText(text: string): HTMLElement {
   return createText({ text, style: 'body' }).element;
 }
-
-/** spec-001's 2 × 2 puzzle as the game shows it just opened (play-screen contract wording). */
-const FIXED_PUZZLE_JUST_OPENED = {
-  columnPills: [
-    { target: 3, operator: null, isOpen: true, name: 'Column 1 target 3, operator not chosen' },
-    { target: 6, operator: '×', isOpen: false, name: 'Column 2 target 6, times' },
-  ],
-  rowPills: [
-    { target: 8, operator: '+', isOpen: false, name: 'Row 1 target 8, plus' },
-    { target: 6, operator: null, isOpen: true, name: 'Row 2 target 6, operator not chosen' },
-  ],
-  cells: [
-    [
-      { name: 'Top-left cell', digit: 6, isGiven: true },
-      { name: 'Top-right cell', digit: null },
-    ],
-    [
-      { name: 'Bottom-left cell', digit: null },
-      { name: 'Bottom-right cell', digit: null },
-    ],
-  ],
-  rowWorkings: [
-    { result: '= ?', mark: 'none', name: 'Row 1 working, 6 + ?' },
-    { result: '= ?', mark: 'none', name: 'Row 2 working, ? ? ?' },
-  ],
-  columnWorkings: [
-    { result: '= ?', mark: 'none', name: 'Column 1 working, 6 ? ?' },
-    { result: '= ?', mark: 'none', name: 'Column 2 working, ? × ?' },
-  ],
-  helper: 'Tap a dashed bubble to swap its operator.',
-} as const satisfies PuzzleGridProps;
