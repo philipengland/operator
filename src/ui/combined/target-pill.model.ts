@@ -24,7 +24,14 @@ export interface TargetPillModel {
 }
 
 const NOT_CHOSEN = '?';
+// Same wording as a line working that reaches its target (play-screen contract, spec-002).
+const TARGET_REACHED = ', target reached';
 
-export function targetPillModel({ target, operator, isOpen, name }: TargetPillProps): TargetPillModel {
-  return { kind: isOpen ? 'button' : 'badge', text: `${operator ?? NOT_CHOSEN} ${target}`, heardAs: name, hasTick: false };
+export function targetPillModel({ target, operator, isOpen, name, reachesTarget = false }: TargetPillProps): TargetPillModel {
+  return {
+    kind: isOpen ? 'button' : 'badge',
+    text: `${operator ?? NOT_CHOSEN} ${target}`,
+    heardAs: reachesTarget ? `${name}${TARGET_REACHED}` : name,
+    hasTick: reachesTarget,
+  };
 }

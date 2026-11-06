@@ -13,4 +13,10 @@ describe('targetPillModel', () => {
 
     expect(model).toEqual({ kind: 'button', text: '? 12', heardAs: 'Row 2 target 12, operator not chosen', hasTick: false });
   });
+
+  it('a line that reaches its target gains a tick, heard with "target reached"', () => {
+    const model = targetPillModel({ target: 9, operator: '+', isOpen: false, name: 'Row 1 target 9, plus', reachesTarget: true });
+
+    expect(model).toMatchObject({ hasTick: true, heardAs: 'Row 1 target 9, plus, target reached' });
+  });
 });
