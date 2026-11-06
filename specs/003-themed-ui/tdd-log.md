@@ -254,3 +254,56 @@
   passed (87 game + 26 catalogue: AC-1 to AC-5), 8 failed (AC-6's 4 scenarios, not started).
 - **Slice refactor**: none needed. The heard-or-hidden attribute switch in `icon.ts` repeats
   the pattern of button's `setAttributeOrRemove`; worth sharing once a third component needs it.
+
+## AC-6: surfaces, badges and the mascot
+
+- **Acceptance test**: `simple-components.acceptance-spec.ts` — `[spec-003 AC-6]`, four
+  scenarios on both catalogue phones.
+- **Driver**: nothing new. `appearance().hasTailCorner` (T029) was already read by
+  `readAppearance` (bottom-left radius smaller than the other three), written with the driver
+  contract.
+- **Acceptance RED**: all 8 runs failed for the missing samples: `Surface "Panel" fill — Expected:
+  "tile", Received: "other"` (and Bubble), `Badge "Badge" shows — Expected: "× 12", Received: ""`,
+  `Mascot "Mascot" sizeInPixels — Expected: 76, Received: NaN`.
+
+### Cycle 1 — a surface carries its panel or bubble variant
+
+- **RED**: `surfaceModel › carries the panel variant …` and `… bubble variant …` — `expected []
+  to deeply equal [ 'surface', 'surface--panel' ]` (and bubble).
+- **GREEN**: classes `surface` and `surface--<variant>` — commit `594ceac`.
+- **REFACTOR**: none needed.
+
+### Cycle 2 — a badge shows its text as a pill
+
+- **RED**: `badgeModel › shows its text as a pill` — `expected { text: '', classes: [] } to
+  deeply equal { text: '× 12', classes: [ 'badge' ] }`.
+- **GREEN**: the text and class `badge` — commit `3a8f1e4`.
+- **REFACTOR**: none needed.
+
+### Cycle 3 — the mascot is drawn at 76 pixels in the theme's colours
+
+- **RED**: `mascotModel › is drawn at 76 pixels in the theme colours only …` — `expected 0 to be
+  76`.
+- **GREEN**: the design guide's small mascot (`ComponentLibrary`, "Small · 76px"), shape for
+  shape, with its #1A1A1A, #F1E6CF and #BF1E1E mapped to ink, paper and accent so every theme
+  repaints it — commit `def4e6d`.
+- **REFACTOR**: none needed.
+
+- **Renderers** (driven by the scenarios), commit `9edd358`:
+  - `createSurface(props, content)` — a `<div>` holding its content; `surface.css`: tile fill,
+    4 px ink outline; panel 30 px corners and a 6 px ink shadow; bubble 26 px corners with a
+    6 px tail corner bottom-left and a 6 px accent shadow.
+  - `createBadge` — a `<span>`: ink pill, paper text, display typeface.
+  - `createMascot` — an `aria-hidden` `<span>`, 76 px, around the SVG; each shape's paint is a
+    class (`mascot__fill--ink`, …) so the theme's custom properties colour it. The design guide's
+    own markup is `role="img"`; FR-311 and the contract say hidden, so hidden it is.
+  - Samples Panel, Bubble (each with body text inside), Badge ("× 12"), Mascot.
+- **Driver proven** by reverted breaks: bubble with even corners failed `hasTailCorner — Expected:
+  true, Received: false`; panel with an accent shadow failed `shadow — Expected: "ink", Received:
+  "accent"`; accent badge failed `fill — Expected: "ink", Received: "accent"`; a 60 px mascot
+  failed `sizeInPixels — Expected: 76, Received: 60`; and, separately, a mascot named "Operator
+  mascot" failed `is hidden from screen readers — Received: "Operator mascot"`. Reverted.
+- **Acceptance GREEN**: AC-6, 8 runs passed, axe clean.
+- **Full suite**: 164 unit tests (lines 100%, branches 96.25%); engine 35 passed; phones 121
+  passed (87 game + 34 catalogue: AC-1 to AC-6), none failed. Game bundle unchanged (same hashes).
+- **Slice refactor**: none needed.

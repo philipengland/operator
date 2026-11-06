@@ -138,9 +138,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-6: surfaces, badges, mascot
 
-- [ ] T029 [US1] AC-6 RED: driver `appearance().hasTailCorner` (bottom-left radius smaller than the others). Expected failure: `Surface "Panel" fill — Expected: "tile", Received: "other"`.
-- [ ] T030 [US1] AC-6 TDD cycles: `src/ui/simple/surface.ts` (`panel`: tile fill, outline, large ink shadow, panel radius; `bubble`: tile fill, outline, large accent shadow, bubble radius with the 6px tail corner); `src/ui/simple/badge.ts` (ink pill, paper text, display typeface); `src/ui/simple/mascot.ts` (the design guide's original mascot SVG, 76 px, ink head, paper face, accent mouth and headset from the tokens, `aria-hidden="true"`). Samples: Panel, Bubble, Badge ("× 12"), Mascot.
-- [ ] T031 [US1] AC-6 GREEN, slice refactor, checkpoint.
+- [X] T029 [US1] AC-6 RED: driver `appearance().hasTailCorner` (bottom-left radius smaller than the others). Expected failure: `Surface "Panel" fill — Expected: "tile", Received: "other"`.
+- [X] T030 [US1] AC-6 TDD cycles: `src/ui/simple/surface.ts` (`panel`: tile fill, outline, large ink shadow, panel radius; `bubble`: tile fill, outline, large accent shadow, bubble radius with the 6px tail corner); `src/ui/simple/badge.ts` (ink pill, paper text, display typeface); `src/ui/simple/mascot.ts` (the design guide's original mascot SVG, 76 px, ink head, paper face, accent mouth and headset from the tokens, `aria-hidden="true"`). Samples: Panel, Bubble, Badge ("× 12"), Mascot.
+- [X] T031 [US1] AC-6 GREEN, slice refactor, checkpoint.
 
 ### Pull request 1
 
