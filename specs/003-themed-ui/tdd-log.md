@@ -726,3 +726,11 @@
 - **Full suite** (part 2's criteria all green): 191 unit tests (lines 99.0%, branches 96.0%);
   engine 35 passed; phones 161 passed (87 game + 74 catalogue), none failed. Game JS and CSS
   unchanged.
+
+## Part 2 complete (T058)
+
+- **Full suite** at `5ba3108`: lint and types clean; 191 unit tests (lines 99.0%, branches
+  96.0%); `dist/` JS and CSS unchanged; engine 35 passed; phones 161 passed, none failed.
+- **Test results**: `npm run test-results -- 003-themed-ui` — `OVERALL status: BLOCKED`, as
+  expected: AC-1 to AC-14 PASS, AC-15 to AC-25 not covered until part 3.
+- **Pull request**: branch `003-themed-ui-part-2`, "spec-003 part 2 of 3: combined components".

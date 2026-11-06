@@ -209,7 +209,7 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### Pull request 2
 
-- [ ] T058 [US2] Full suite and TDD log as T032. Push `003-themed-ui-part-2` and open "spec-003 part 2 of 3: combined components". The owner merges with a merge commit.
+- [X] T058 [US2] Full suite and TDD log as T032. Push `003-themed-ui-part-2` and open "spec-003 part 2 of 3: combined components". The owner merges with a merge commit.
 
 ---
 
