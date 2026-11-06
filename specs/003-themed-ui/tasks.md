@@ -167,9 +167,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-8: solutions counter
 
-- [ ] T037 [US2] AC-8 RED: no new driver code expected. Expected failure: `Solutions counter "None yet" shows — Expected: "Solutions found 0 of 2", Received: ""`.
-- [ ] T038 [US2] AC-8 TDD cycles in `src/ui/combined/solutions-counter.ts`: `solutionsCounterModel({ found, total? })` gives title "Solutions found" or "All found!" (complete when `total` is given and `found === total`), count "N of M" or "N", fill accent or ink, tick when complete, heard "Found N of M" or "Found N" (visible parts hidden, one visually hidden name). Built from Surface, Text, Badge, Icon. Samples: None yet, In progress, Complete, No total.
-- [ ] T039 [US2] AC-8 GREEN, slice refactor, checkpoint.
+- [X] T037 [US2] AC-8 RED: no new driver code expected. Expected failure: `Solutions counter "None yet" shows — Expected: "Solutions found 0 of 2", Received: ""`.
+- [X] T038 [US2] AC-8 TDD cycles in `src/ui/combined/solutions-counter.ts`: `solutionsCounterModel({ found, total? })` gives title "Solutions found" or "All found!" (complete when `total` is given and `found === total`), count "N of M" or "N", fill accent or ink, tick when complete, heard "Found N of M" or "Found N" (visible parts hidden, one visually hidden name). Built from Surface, Text, Badge, Icon. Samples: None yet, In progress, Complete, No total.
+- [X] T039 [US2] AC-8 GREEN, slice refactor, checkpoint.
 
 ### AC-9: target pill
 

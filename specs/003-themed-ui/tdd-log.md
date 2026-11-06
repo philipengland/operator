@@ -338,3 +338,88 @@
   from:" and splits the rest on commas; no line gives none.
 - **Acceptance RED**: `what Speech bubble is built from — Expected: ["Surface", "Text"],
   Received: []` on both phones, as T034 predicted.
+
+## AC-8: the solutions counter
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-8]`, four
+  scenarios on both catalogue phones.
+- **Acceptance RED**: all 8 runs failed for the missing samples, e.g. `Solutions counter "None
+  yet" shows — Expected: "Solutions found 0 of 2", Received: ""`, as T037 predicted.
+- **Owner decisions (2026-11-06)**, asked before the cycles:
+  1. The scenarios expect the tick in the shown text ("All found! 2 of 2 ✓"; AC-11 likewise),
+     but the design guide and part 1's Icon draw it as SVG. Decision: keep the SVG and add the
+     ✓ or ✗ inside the icon as visually hidden text.
+  2. The design guide's count is a light pill on the accent or ink counter; part 1's Badge was
+     ink only and would vanish on the ink Complete counter. Decision: Badge gets a light style.
+  - Following from the tier rule (combined components add no styling): the accent and ink fills
+    come from Surface (a `fill` option), and Text now inherits its colour from what it sits on.
+    Reported at the checkpoint.
+
+### Cycle 1 — an icon carries the character its drawing stands for
+
+- **RED**: `iconModel › carries the tick as the character ✓ …` (and cross ✗) — `expected '' to
+  be '✓'`. **GREEN**: `6c3d8c1`. **REFACTOR**: none needed.
+
+### Cycle 2 — a badge can be light, for a count on a coloured surface
+
+- **RED**: `badgeModel › can be light …` — `expected [ 'badge' ] to deeply equal [ 'badge',
+  'badge--light' ]`. **GREEN**: `11275d8` (ink stays the default; AC-6 unchanged). **REFACTOR**:
+  none needed.
+
+### Cycle 3 — a surface can be filled with the accent or ink
+
+- **RED**: `surfaceModel › can be filled with the accent …` (and ink) — `expected [ 'surface',
+  'surface--panel' ] to deeply equal [ …, 'surface--accent' ]`. **GREEN**: `4fffd80`; the ink
+  fill casts an accent shadow so it still stands out; `.text` now `color: inherit`.
+  **REFACTOR**: none needed.
+
+### Cycles 4 to 6 — the solutions counter model
+
+- **4 RED**: `solutionsCounterModel › while searching shows "Solutions found" and "1 of 2" on the
+  accent …` — `expected { title: '', count: '', … } to deeply equal { title: 'Solutions found', …
+  }`. **GREEN**: `45cc78b`.
+- **5 RED**: `… when every solution is found shows "All found!" on ink …` — received title
+  "Solutions found". **GREEN**: complete when `found === total` — `05a3f16`.
+- **6 RED**: `… with no total known shows the count alone …` — received count "12 of undefined".
+  **GREEN**: `7ec5155`.
+- **REFACTOR**: none needed.
+
+### Cycles 7 and 8 — the catalogue shows the counter as built (AC-7)
+
+- **7 RED**: `LIBRARY › says which part builds each component not built yet`, expectation updated
+  to leave out the counter — `expected [ …(9) ] to deeply equal [ …(8) ]`. **GREEN**: `533bc24`.
+- **8 RED**: `LIBRARY › says what each built combined component is built from` — `expected {
+  'Solutions counter': undefined } to deeply equal { 'Solutions counter': [ …(4) ] }`. **GREEN**:
+  the entry takes `builtFrom` from `solutions-counter.ts` — `43daea2`. **REFACTOR**: the file's
+  description back above its imports — `6b2d718`.
+
+- **Renderer** (driven by the scenarios), commit `9ec7799`: `createSolutionsCounter` — a Surface
+  (panel, accent or ink) holding a visually hidden name ("Found 1 of 2") and an `aria-hidden`
+  row of the title Text (display) and a light Badge with a decorative tick Icon after its text,
+  hidden unless complete. Layout-only `solutions-counter.css`. Foundations gain `.visually-hidden`
+  and `[hidden] { display: none !important }` (the Icon's own `display` would otherwise beat
+  `hidden`). Icon renders its glyph as hidden text; Badge takes nodes to place after its text.
+  The catalogue shows "Built from: Surface, Text, Badge, Icon". Samples None yet, In progress,
+  Complete, No total.
+- **Driver** (commit `c02b7b5`):
+  - shown text leaves out words that are visually hidden and heard (not inside `aria-hidden` or
+    an `img`), so the counter's name is not "shown" but an icon's ✓ is;
+  - a group whose only content is text is written by Playwright on one line (`- group "None
+    yet": Found 0 of 2`); that text is now what is heard;
+  - where a sample holds only text, all of it is heard, in order (before, only the first text
+    counted, so unhidden visible parts would have passed).
+  - A temporary log line used to see the snapshot was removed with `git checkout`, which also
+    dropped the uncommitted driver change; restored from a copy taken first.
+- **Driver proven** by reverted breaks (iPhone): name made visible failed `"None yet" shows —
+  Received: "Found 0 of 2 Solutions found 0 of 2"`; visible parts no longer hidden failed
+  `"In progress" is heard as — Received: "Found 1 of 2 Solutions found 1 of 2"`; no glyph failed
+  `"Complete" shows — Received: "All found! 2 of 2"`; complete left on the accent failed
+  `"Complete" fill — Expected: "ink", Received: "accent"`.
+- **Tier rules proven on a real combined component** (T035): `background: var(--accent)` in
+  `solutions-counter.css` failed `combined components and screens add no styling` with that
+  declaration; importing `../../app/labels` failed lint twice (FR-305, FR-303). Reverted.
+- **Acceptance GREEN**: AC-8, 8 runs passed, axe clean; part-1 catalogue scenarios still pass.
+- **Full suite**: 173 unit tests (lines 100%, branches 96.51%); engine 35 passed; phones 129
+  passed (87 game + 42 catalogue), 32 failed (the 16 part-2 scenarios not started). Game JS and
+  CSS unchanged (same hashes).
+- **Slice refactor**: none beyond `6b2d718`.
