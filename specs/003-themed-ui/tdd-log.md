@@ -317,3 +317,420 @@
   AC-25 not covered until parts 2 and 3.
 - **Pull request**: branch `003-themed-ui-part-1`, "spec-003 part 1 of 3: foundations and simple
   components".
+
+## Part 2: combined components (T033)
+
+- **Branch**: `003-themed-ui-part-2` from `main` at `36815b0` (part 1 merged, PR #9).
+- **Scenarios brought over**: `test/acceptance/library/combined-components.acceptance-spec.ts`
+  from `003-themed-ui`, unchanged: blob `868c4d9`, as approved in `79718d4`. The DSL and
+  `examples.ts` on `main` are identical to the approved ones.
+- **Baseline**: 20 scenarios, 40 runs on the two catalogue phones, all failed on their
+  assertions for missing samples or driver stubs (e.g. `Solutions counter "None yet" shows`,
+  `keypad keys, row by row`, `what Speech bubble is built from`); none crashed. The rest of the
+  suite is as at the end of part 1.
+
+## AC-7: each combined component says what it is built from (opened)
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-7]`, one scenario
+  on both catalogue phones. By plan it goes green last in part 2 (T036), once all eight combined
+  components exist; its cycles run with each component's criterion.
+- **Driver** (T034): `builtFrom(component)` finds the component region's text starting "Built
+  from:" and splits the rest on commas; no line gives none.
+- **Acceptance RED**: `what Speech bubble is built from — Expected: ["Surface", "Text"],
+  Received: []` on both phones, as T034 predicted.
+
+## AC-8: the solutions counter
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-8]`, four
+  scenarios on both catalogue phones.
+- **Acceptance RED**: all 8 runs failed for the missing samples, e.g. `Solutions counter "None
+  yet" shows — Expected: "Solutions found 0 of 2", Received: ""`, as T037 predicted.
+- **Owner decisions (2026-11-06)**, asked before the cycles:
+  1. The scenarios expect the tick in the shown text ("All found! 2 of 2 ✓"; AC-11 likewise),
+     but the design guide and part 1's Icon draw it as SVG. Decision: keep the SVG and add the
+     ✓ or ✗ inside the icon as visually hidden text.
+  2. The design guide's count is a light pill on the accent or ink counter; part 1's Badge was
+     ink only and would vanish on the ink Complete counter. Decision: Badge gets a light style.
+  - Following from the tier rule (combined components add no styling): the accent and ink fills
+    come from Surface (a `fill` option), and Text now inherits its colour from what it sits on.
+    Reported at the checkpoint.
+
+### Cycle 1 — an icon carries the character its drawing stands for
+
+- **RED**: `iconModel › carries the tick as the character ✓ …` (and cross ✗) — `expected '' to
+  be '✓'`. **GREEN**: `6c3d8c1`. **REFACTOR**: none needed.
+
+### Cycle 2 — a badge can be light, for a count on a coloured surface
+
+- **RED**: `badgeModel › can be light …` — `expected [ 'badge' ] to deeply equal [ 'badge',
+  'badge--light' ]`. **GREEN**: `11275d8` (ink stays the default; AC-6 unchanged). **REFACTOR**:
+  none needed.
+
+### Cycle 3 — a surface can be filled with the accent or ink
+
+- **RED**: `surfaceModel › can be filled with the accent …` (and ink) — `expected [ 'surface',
+  'surface--panel' ] to deeply equal [ …, 'surface--accent' ]`. **GREEN**: `4fffd80`; the ink
+  fill casts an accent shadow so it still stands out; `.text` now `color: inherit`.
+  **REFACTOR**: none needed.
+
+### Cycles 4 to 6 — the solutions counter model
+
+- **4 RED**: `solutionsCounterModel › while searching shows "Solutions found" and "1 of 2" on the
+  accent …` — `expected { title: '', count: '', … } to deeply equal { title: 'Solutions found', …
+  }`. **GREEN**: `45cc78b`.
+- **5 RED**: `… when every solution is found shows "All found!" on ink …` — received title
+  "Solutions found". **GREEN**: complete when `found === total` — `05a3f16`.
+- **6 RED**: `… with no total known shows the count alone …` — received count "12 of undefined".
+  **GREEN**: `7ec5155`.
+- **REFACTOR**: none needed.
+
+### Cycles 7 and 8 — the catalogue shows the counter as built (AC-7)
+
+- **7 RED**: `LIBRARY › says which part builds each component not built yet`, expectation updated
+  to leave out the counter — `expected [ …(9) ] to deeply equal [ …(8) ]`. **GREEN**: `533bc24`.
+- **8 RED**: `LIBRARY › says what each built combined component is built from` — `expected {
+  'Solutions counter': undefined } to deeply equal { 'Solutions counter': [ …(4) ] }`. **GREEN**:
+  the entry takes `builtFrom` from `solutions-counter.ts` — `43daea2`. **REFACTOR**: the file's
+  description back above its imports — `6b2d718`.
+
+- **Renderer** (driven by the scenarios), commit `9ec7799`: `createSolutionsCounter` — a Surface
+  (panel, accent or ink) holding a visually hidden name ("Found 1 of 2") and an `aria-hidden`
+  row of the title Text (display) and a light Badge with a decorative tick Icon after its text,
+  hidden unless complete. Layout-only `solutions-counter.css`. Foundations gain `.visually-hidden`
+  and `[hidden] { display: none !important }` (the Icon's own `display` would otherwise beat
+  `hidden`). Icon renders its glyph as hidden text; Badge takes nodes to place after its text.
+  The catalogue shows "Built from: Surface, Text, Badge, Icon". Samples None yet, In progress,
+  Complete, No total.
+- **Driver** (commit `c02b7b5`):
+  - shown text leaves out words that are visually hidden and heard (not inside `aria-hidden` or
+    an `img`), so the counter's name is not "shown" but an icon's ✓ is;
+  - a group whose only content is text is written by Playwright on one line (`- group "None
+    yet": Found 0 of 2`); that text is now what is heard;
+  - where a sample holds only text, all of it is heard, in order (before, only the first text
+    counted, so unhidden visible parts would have passed).
+  - A temporary log line used to see the snapshot was removed with `git checkout`, which also
+    dropped the uncommitted driver change; restored from a copy taken first.
+- **Driver proven** by reverted breaks (iPhone): name made visible failed `"None yet" shows —
+  Received: "Found 0 of 2 Solutions found 0 of 2"`; visible parts no longer hidden failed
+  `"In progress" is heard as — Received: "Found 1 of 2 Solutions found 1 of 2"`; no glyph failed
+  `"Complete" shows — Received: "All found! 2 of 2"`; complete left on the accent failed
+  `"Complete" fill — Expected: "ink", Received: "accent"`.
+- **Tier rules proven on a real combined component** (T035): `background: var(--accent)` in
+  `solutions-counter.css` failed `combined components and screens add no styling` with that
+  declaration; importing `../../app/labels` failed lint twice (FR-305, FR-303). Reverted.
+- **Acceptance GREEN**: AC-8, 8 runs passed, axe clean; part-1 catalogue scenarios still pass.
+- **Full suite**: 173 unit tests (lines 100%, branches 96.51%); engine 35 passed; phones 129
+  passed (87 game + 42 catalogue), 32 failed (the 16 part-2 scenarios not started). Game JS and
+  CSS unchanged (same hashes).
+- **Slice refactor**: none beyond `6b2d718`.
+
+## AC-9: the target pill
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-9]`, four
+  scenarios on both catalogue phones.
+- **Acceptance RED**: all 8 runs failed for the missing samples: `Target pill "Add" shows —
+  Expected: "+ 16", Received: ""`, as T040 predicted.
+- **Design note**: the look check reads a sample's outermost element, which must be the ink badge
+  itself, so the pill cannot wrap it. Badge therefore gains `spokenAs` (as Icon has): its visible
+  text is hidden from screen readers and a visually hidden name speaks. Icon now takes the colour
+  of what it sits on, so the tick shows on the ink badge.
+
+### Cycle 1 — a badge can be heard as something other than its text
+
+- **RED**: `badgeModel › can be heard as something other than its text` — `expected '+ 16' to be
+  'Row 1 target 16, plus'`. (The first badge test now also states it is heard as its text.)
+  **GREEN**: `369575c`. **REFACTOR**: none needed.
+
+### Cycles 2 to 4 — the target pill model
+
+- **2 RED**: `targetPillModel › a shown operator is a badge showing "+ 16", heard by its line's
+  name` — `expected { kind: 'button', text: '', … } to deeply equal { kind: 'badge', text: '+ 16',
+  … }`. **GREEN**: `908bfe2`.
+- **3 RED**: `… an open operator not yet chosen is a button showing "? 12"` — received the badge.
+  **GREEN**: open is a button; no operator shows "?" — `d68b80a`. A chosen open operator ("× 12"
+  on the button) follows from the same rule; a test for it would pass at once, so none was added.
+- **4 RED**: `… a line that reaches its target gains a tick, heard with "target reached"` —
+  received `hasTick: false`. **GREEN**: tick, and ", target reached" (spec-002's wording) —
+  `fc5d4ad`.
+- **REFACTOR**: none needed.
+
+### Cycle 5 — the catalogue shows the pill as built (AC-7)
+
+- **RED**: `LIBRARY › says which part builds each component not built yet` without the pill, and
+  `… what each built combined component is built from` with `'Target pill': ['Badge', 'Button',
+  'Icon']` — both describe the pill being built, so both changed in one RED: `expected [ …(8) ] to
+  deeply equal [ …(7) ]` and `expected { 'Solutions counter': … } to deeply equal { …, 'Target
+  pill': … }`. **GREEN**: `cf16154`. **REFACTOR**: none needed.
+
+- **Renderer** (driven by the scenarios), commit `24a0c5f`: `createTargetPill(props, onChoose?)`
+  — shown: a Badge spoken by the line's name with a decorative tick Icon inside, hidden unless
+  the line reaches its target; open: a dashed Button labelled "? 12" whose name is "? 12, Row 2
+  target 12, operator not chosen" (label first, WCAG 2.5.3), calling `onChoose` when tapped.
+  Shown or open is fixed for a puzzle, so it is chosen at creation. Layout-only
+  `target-pill.css` sizes the tick to the pill. Badge renders its spoken name; `aria-hidden` set
+  to `"true"` (a first try with `toggleAttribute` wrote `""`, which hides nothing; fixed before
+  the run). Samples Add, Subtract, Multiply, Divide, Open, Line correct.
+  - **Known limit**: an open pill whose line reaches its target is heard with "target reached"
+    but shows no tick, since Button holds only its label. The play screen shows the ✓ in the
+    line's working (AC-11); raised at the checkpoint.
+- **Driver proven** by reverted breaks (iPhone): no tick failed `"Line correct" shows — Received:
+  "+ 9"`; open pill as a key failed `"Open" outline — Expected: "dashed", Received: "solid"`;
+  badge not spoken by name failed `"Add" is heard to include "plus" — Received: "+ 16"`; light
+  badge failed `"Add" fill — Expected: "ink", Received: "tile"`.
+- **Acceptance GREEN**: AC-9, 8 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 177 unit tests; engine 35 passed; phones 137 passed (87 game + 50 catalogue),
+  24 failed (the 12 part-2 scenarios not started). Game JS and CSS unchanged.
+- **Slice refactor** (`60cb210`): setting or removing an attribute, now in Button, Icon and Badge,
+  moves from `button.ts` to `component.ts` as `setAttributeOrRemove`. Full suite green again.
+  Unit line coverage 100% → 98.9% (branches 95.6%): the helper now sits in a unit-covered file
+  but is exercised through the components; above the 90% threshold.
+
+## AC-10: the grid cell in five states
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-10]`, six
+  scenarios on both catalogue phones.
+- **Driver** (T043): `greyscaleImage()` sets `filter: grayscale(1)` on the sample, screenshots
+  it, and restores the filter (research R8). Committed with the RED.
+- **Acceptance RED**: all 12 runs failed for the missing samples: `Grid cell "Given" shows —
+  Expected: "2", Received: ""`, as T043 predicted; "told apart" failed because two missing
+  samples give the same empty image.
+- **Design note**: combined components add no styling, so the cell's looks live in Button: two
+  styles, `cell` and `cell-correct` (design guide: 72 px tall, 22 px corners, 44 px digit; given
+  solid ink; selected accent with a caret when empty; correct-line accent digit and shadow), a
+  selected state (`aria-pressed`), and an optional whole `name`, so a cell is heard "Top-right
+  cell, 8" (play-screen contract) rather than "8, Top-right cell, 8".
+
+### Cycles 1 and 2 — Button: selected, and a whole name
+
+- **1 RED**: `buttonModel › says when it is selected` — `expected false to be true`. **GREEN**:
+  `isSelected`, rendered as `aria-pressed="true"` — `8313bbe`.
+- **2 RED**: `buttonModel › can be given its whole name, which contains its label` — `expected
+  '8' to be 'Top-right cell, 8'`. **GREEN**: `4645b45`.
+- **REFACTOR**: none needed. (The two new styles need no logic: the class is `button--<style>`
+  already, so a test would pass at once; none added.)
+
+### Cycles 3 to 7 — the grid cell model (the Button props that show a cell)
+
+- **3 RED**: `gridCellModel › a given cell shows its digit, cannot be changed, and is heard as
+  "given 2"` — `expected { label: '', style: 'cell' } to deeply equal { label: '2', … }`.
+  **GREEN**: `af628a7`.
+- **4 RED**: `… an empty cell shows nothing and is heard as "empty"` — `expected { label: 'null',
+  … }`. **GREEN**: `heardValue` gives "given 2", "empty" or the digit — `c443b67`. The player's
+  digit ("Top-right cell, 8") follows from the same rule; a test would pass at once, so none.
+- **5 RED**: `… a selected cell is heard as selected` — `expected false to be true`. **GREEN**:
+  `e5d815e`.
+- **6 RED**: `… a cell in a line that reaches its target has the correct-line look` — `expected
+  'cell' to be 'cell-correct'`. **GREEN**: `da0fe83`.
+- **7 RED**: `… a selected cell in a correct line shows the selected look: selected wins` —
+  received style `cell-correct`. **GREEN**: `e841802`.
+- **REFACTOR**: none needed.
+
+### Cycle 8 — the catalogue shows the cell as built (AC-7)
+
+- **RED**: both library tests (not built yet without the cell; built from with `'Grid cell':
+  ['Button']`) — `expected [ …(7) ] to deeply equal [ …(6) ]` and the built-from map. **GREEN**:
+  `45c658d`.
+
+- **Renderer** (driven by the scenarios), commit `ffe5853`: `createGridCell(props, onTap?)` — a
+  Button from `gridCellModel`. Cell styles in `button.css`. Samples Given, Empty, Selected, Your
+  digit, In a correct line, and Selected, in a correct line.
+- **Driver proven** by reverted breaks (iPhone): given cell left changeable failed `"Given" fill —
+  Expected: "ink", Received: "tile"`; selected not selected failed `"Selected" fill — Expected:
+  "accent", Received: "tile"`; correct look lost failed `"In a correct line" shadow — Expected:
+  "accent", Received: "ink"`; Empty drawn as Given failed `"Given" and "Empty" look the same in
+  greyscale`. The first two failed on the fill before the state was read, so the states were
+  proven alone, keeping the look (CSS matching the attribute whatever its value, the button
+  writing `"false"`): `"Given" is heard as unavailable — Received: false` and `"Selected" is
+  heard as selected — Received: false`. Reverted.
+- **Acceptance GREEN**: AC-10, 12 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 184 unit tests (lines 98.9%, branches 96.0%); engine 35 passed; phones 149
+  passed (87 game + 62 catalogue), 12 failed (the 6 part-2 scenarios not started). Game JS and
+  CSS unchanged.
+- **Slice refactor**: none needed.
+
+## AC-11: the line working
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-11]`, two
+  scenarios on both catalogue phones.
+- **Acceptance RED**: all 4 runs failed for the missing samples: `Line working "Incomplete" shows
+  — Expected: "= ?", Received: ""`, as T046 predicted.
+- **Owner decision (2026-11-06)**: T047 carried over spec-002's "marked slots heavier as well as
+  the symbol", but Chewy, the display face, has one weight. Decision: the result slot is display
+  text like the pills and cells beside it, and a mark is shown by its ✓ or ✗ only (already more
+  than colour alone).
+
+### Cycles 1 to 3 — the line working model
+
+- **1 RED**: `lineWorkingModel › shows an unmarked result slot with no icon, heard by the whole
+  working` — `expected { result: '', icon: null, heardAs: '' } to deeply equal { result: '= ?', …
+  }`. **GREEN**: `6c18afd`.
+- **2 RED**: `… shows a tick after the result when the line reaches its target` — `expected null
+  to be 'tick'`. **GREEN**: `bcbd0b1`.
+- **3 RED**: `… shows a cross when a division is not whole` — `expected null to be 'cross'`.
+  **GREEN**: the mark is the icon, none is no icon — `3301fda`.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the catalogue shows the working as built (AC-7)
+
+- **RED**: both library tests (not built yet without it; built from with `'Line working':
+  ['Text', 'Icon']`) — `expected [ …(6) ] to deeply equal [ …(5) ]` and the built-from map.
+  **GREEN**: `9599056`.
+
+- **Renderer** (driven by the scenarios), commit `0c818ed`: `createLineWorking` — a visually
+  hidden name ("Row 1 working, 6 + 2 = 8, target reached") and an `aria-hidden` row of the result
+  as display Text and the mark Icon (decorative, its ✓ or ✗ kept as text), hidden when there is
+  no mark. Layout-only `line-working.css`. Samples Incomplete, Target reached, Below zero, Not
+  whole, named in the play-screen contract's wording. The data model's prop is `result`.
+- **Driver proven** by reverted breaks (iPhone): no tick failed `"Target reached" shows —
+  Received: "= 8"`; no spoken name failed `"Target reached" is heard to include "6 + 2 = 8" —
+  Received: ""`; no cross failed `"Not whole" shows — Received: ""`.
+- **Acceptance GREEN**: AC-11, 4 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 187 unit tests (lines 98.9%, branches 96.0%); engine 35 passed; phones 153
+  passed (87 game + 66 catalogue), 8 failed (the 4 part-2 scenarios not started). Game JS and
+  CSS unchanged.
+- **Slice refactor**: none. The hidden name speaking for a hidden visible row now appears in the
+  solutions counter and the line working; worth sharing if a third combined component needs it.
+
+## AC-12: the puzzle grid
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-12]`, one
+  scenario on both catalogue phones.
+- **Driver** (T049): `gridLayout()` finds the group named "Puzzle" in the sample and reads each
+  part's box by its accessible name (play-screen contract): a button with that name (open pills,
+  cells) or else the element holding a visually hidden name with that text (shown pills,
+  workings); the helper line is the grid's last paragraph.
+  - **Found at RED**: with no puzzle the first draft returned no cells, so the DSL's position
+    checks looped over nothing and only the helper line failed; a grid with no cells and the
+    right helper would have passed. The driver now always reports the fixed 2 × 2 structure,
+    each missing part an unknown box, so every check runs.
+- **Acceptance RED**: `column pill 1 is above the cell at row 1, column 1 — Expected: true,
+  Received: false` on both phones (T049 predicted `No box at position 1`; the same cause, a
+  missing part, reported by the first check).
+
+### Cycles 1 to 3 — where each part sits (`puzzleGridPlaces`)
+
+- **1 RED**: `puzzleGridPlaces › puts the cells below the row of column pills and right of the
+  column of row pills` — `expected [ { row: +0, column: +0 }, … ] to deeply equal [ { row: 2,
+  column: 2 }, … ]`. **GREEN**: `3757a68`. (The size parameter, unused until cycle 3, failed
+  lint, so it came in with the cycle that needs it.)
+- **2 RED**: `… puts each column pill on top, above its column, and each row pill at the left,
+  beside its row` — received `{ row: +0, column: +0 }`. **GREEN**: `1185b61`.
+- **3 RED**: `… puts each row's working at the far right of its row, and each column's working
+  below its column` — received `{ row: +0, column: +0 }`. **GREEN**: the line just past the last
+  cell — `be33c98`.
+- **REFACTOR**: none needed.
+
+### Cycle 4 — the catalogue shows the grid as built (AC-7)
+
+- **RED**: both library tests (not built yet without it; built from with `'Puzzle grid':
+  ['Surface', 'Target pill', 'Grid cell', 'Line working', 'Text']`). **GREEN**: `15f0119`.
+
+- **Renderer** (driven by the scenario), commit `54754c1`: `createPuzzleGrid` — a panel Surface
+  named "Puzzle" (`role="group"`), a CSS grid whose parts are placed by `puzzleGridPlaces`
+  (`gridRow` and `gridColumn` set from script, which the CSP allows), and the helper line, a
+  paragraph of body Text. Layout-only `puzzle-grid.css`: a pill column of at least 64 px, cell
+  columns from 44 px (touch target) to 84 px (design guide), the working column; cells fill
+  their column. Sample Fixed puzzle: spec-001's puzzle just opened, in the play-screen contract's
+  wording.
+  - **Looked at on a phone** (screenshots at 375 and 320 px, no horizontal scroll at either): at
+    320 px the open pill's "? 3" and the workings' "= ?" wrapped onto two lines; the grid now
+    keeps its parts' text on one line (`white-space: nowrap`) and the cells give way.
+- **Driver proven** by reverted breaks (iPhone): row workings placed on the left failed `row 1's
+  working is right of the cell at row 1, column 1`; column pills placed below failed `column pill
+  1 is above the cell at row 1, column 1`; no helper line failed `helper line — Received: ""`.
+- **Acceptance GREEN**: AC-12, 2 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 190 unit tests (lines 99.0%, branches 96.0%); engine 35 passed; phones 155
+  passed (87 game + 68 catalogue), 6 failed (AC-7, AC-13, AC-14 not finished). Game JS and CSS
+  unchanged.
+- **Slice refactor** (`a863bc8`): the helper line's construction named as `createHelperLine`,
+  shortening `createPuzzleGrid`. Catalogue scenarios and unit tests green again.
+
+## AC-13: the keypad
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-13]`, one
+  scenario on both catalogue phones.
+- **Driver** (T052): `keypadRows()` reads each button in the sample by name (its `aria-label`,
+  or its text) and box, groups them into rows by top edge, top to bottom, and orders each row
+  left to right.
+- **Acceptance RED**: `keypad keys, row by row — Received: []` on both phones, as T052 predicted.
+
+### Cycle 1 — the keypad's keys
+
+- **RED**: `keypadKeys › are the digits 1 to 9 as keys, then a solid "Oops" that clears the cell`
+  — `expected [] to deeply equal [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 'clear' ]`. **GREEN**: digit keys
+  from 1 to the largest digit, then the Oops key (`no-magic-numbers` refused a literal list of
+  digits) — `5ba7228`. **REFACTOR**: none needed.
+
+### Cycle 2 — the catalogue shows the keypad as built (AC-7)
+
+- **RED**: both library tests (not built yet without it; built from with `Keypad: ['Button']`).
+  **GREEN**: `2a054d5`. Only the speech bubble and operator header (AC-14) and the play screen
+  (part 3) still say where they are built.
+
+- **Renderer** (driven by the scenario), commit `33a84e6`: `createKeypad(onKey?)` — a group named
+  "Keypad", a five-column grid of the key Buttons, each calling `onKey` with its digit or
+  'clear'. Layout-only `keypad.css`: columns share the width and never go below the 44 px touch
+  target; keys keep their label on one line. Sample Keypad. Screenshots at 375 and 320 px: two
+  rows of five, "Oops" fits its key, no horizontal scroll.
+- **Driver proven** by reverted breaks (iPhone): Oops first failed `keypad keys, row by row` with
+  "Oops, clear cell" at the start of row 1; ten columns failed with one row instead of two.
+- **Acceptance GREEN**: AC-13, 2 runs passed, axe clean; earlier catalogue scenarios still pass.
+- **Full suite**: 191 unit tests (lines 99.0%, branches 96.0%); engine 35 passed; phones 157
+  passed (87 game + 70 catalogue), 4 failed (AC-7 and AC-14). Game JS and CSS unchanged.
+- **Slice refactor**: none needed.
+
+## AC-14: the operator header
+
+- **Acceptance test**: `combined-components.acceptance-spec.ts` — `[spec-003 AC-14]`, one
+  scenario on both catalogue phones.
+- **Driver** (T055): `mascotAndBubble()` reads the header's two parts. The mascot is hidden from
+  screen readers by design and has no name to find it by, so the header's hidden part is the
+  mascot and its heard part the bubble; anything else gives unknown boxes.
+- **Acceptance RED**: `the mascot is beside the speech bubble — Expected: true, Received: false`
+  on both phones (the scenario's first check; T055 named the "shows" check after it, same cause).
+- Neither component has logic of its own, so there is no model to unit-test; their unit cycles
+  are the catalogue's, and the scenario drives the renderers.
+
+### Cycles 1 and 2 — the catalogue shows the bubble and the header as built (AC-7)
+
+- **1 RED**: library tests without "Speech bubble: Built in part 2." and with `'Speech bubble':
+  ['Surface', 'Text']`. **GREEN**: `fbb861a`.
+- **2 RED**: without "Operator header: Built in part 2." (`expected [ …(2) ] to deeply equal [
+  'Play screen: Built in part 3.' ]`) and with `'Operator header': ['Mascot', 'Speech bubble']`.
+  **GREEN**: every combined component is now built — `d9ba0d2`.
+
+- **Renderers** (driven by the scenario), commit `1a8628b`: `createSpeechBubble({ title,
+  message })` — a bubble Surface stacking display Text over body Text; `createOperatorHeader` —
+  the Mascot at its fixed size beside the bubble, which takes the rest of the width. Layout-only
+  stylesheets. Samples: Speech bubble "Row through" (the design guide's "Row one's through, pal.
+  Keep 'em coming!"), Operator header "Greeting" ("Hello, Operator!", "Fill the grid, pal.").
+  - **Looked at on a phone**: no horizontal scroll at 375 or 320 px. At 375 px it matches the
+    design guide; at 320 px the title wraps to two lines ("Hello, / Operator!"), which part 3
+    must allow for when the play screen has to fit 320 × 568 without scrolling.
+- **Driver proven** by reverted breaks (iPhone): mascot after the bubble failed `the mascot is
+  beside the speech bubble`; no message failed `"Greeting" shows — Received: "Hello, Operator!"`;
+  words only a screen reader gets, added inside the bubble, failed `"Greeting" is heard as —
+  Received: "Hello, Operator! Fill the grid, pal. Operator mascot"`. (Giving the mascot a name
+  failed earlier, on "beside": the driver could no longer tell the parts apart.)
+- **Acceptance GREEN**: AC-14, 2 runs passed, axe clean.
+- **Slice refactor** (`d3229e8`): the catalogue library's imports sorted.
+
+## AC-7: each combined component says what it is built from (closed)
+
+- **Acceptance GREEN** (T036, T057): with all eight combined components built, the scenario
+  passes on both phones. Its cycles ran with each component (AC-8 to AC-14): every module
+  exports `builtFrom`, the catalogue lists it, and the tier rules were proven on a real combined
+  stylesheet and import in AC-8.
+- **Driver proven** by a reverted break: the keypad claiming `['Button', 'Text']` failed `what
+  Keypad is built from` with "Text" received but not expected.
+- **Full suite** (part 2's criteria all green): 191 unit tests (lines 99.0%, branches 96.0%);
+  engine 35 passed; phones 161 passed (87 game + 74 catalogue), none failed. Game JS and CSS
+  unchanged.
+
+## Part 2 complete (T058)
+
+- **Full suite** at `5ba3108`: lint and types clean; 191 unit tests (lines 99.0%, branches
+  96.0%); `dist/` JS and CSS unchanged; engine 35 passed; phones 161 passed, none failed.
+- **Test results**: `npm run test-results -- 003-themed-ui` — `OVERALL status: BLOCKED`, as
+  expected: AC-1 to AC-14 PASS, AC-15 to AC-25 not covered until part 3.
+- **Pull request**: branch `003-themed-ui-part-2`, "spec-003 part 2 of 3: combined components".

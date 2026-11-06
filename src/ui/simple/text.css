@@ -1,7 +1,7 @@
 /* Text (design guide, Foundations: display type Chewy; text type Nunito 700 and 800). */
 
 .text {
-  color: var(--ink);
+  color: inherit;
 }
 
 .text--display {

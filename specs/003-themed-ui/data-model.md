@@ -41,18 +41,18 @@ a **model** (what it shows and says). Names below are the props; full shapes are
 | Component | Tier | Key props | States |
 | --- | --- | --- | --- |
 | Text | simple | `text`, `style: display \| body` | – |
-| Button | simple | `label`, `style: main \| key \| solid \| dashed`, `action?`, `isUnavailable?` | available, unavailable |
+| Button | simple | `label`, `style: main \| key \| solid \| dashed \| cell \| cell-correct`, `action?`, `name?`, `isUnavailable?`, `isSelected?` | available, unavailable, selected |
 | Text input | simple | `label`, `hint`, `value` | – |
-| Icon | simple | `icon: tick \| cross`, `spokenAs?` | heard, decorative |
-| Surface | simple | `variant: panel \| bubble` | – |
-| Badge | simple | `text` | – |
+| Icon | simple | `icon: tick \| cross`, `spokenAs?` (glyph ✓ or ✗) | heard, decorative |
+| Surface | simple | `variant: panel \| bubble`, `fill?: tile \| accent \| ink` | – |
+| Badge | simple | `text`, `style?: ink \| light`, `spokenAs?` | – |
 | Mascot | simple | – | – |
 | Speech bubble | combined | `title`, `message` | – |
 | Operator header | combined | `title`, `message` | – |
 | Solutions counter | combined | `found`, `total?` | searching, complete, no total |
 | Target pill | combined | `line`, `operator: + − × ÷ \| open`, `chosen?`, `target`, `reachesTarget`, `name` | shown, open, ticked |
 | Grid cell | combined | `state`, `digit?`, `name` | given, empty, selected, your digit, in a correct line (+ selected and correct) |
-| Line working | combined | `text`, `mark: none \| tick \| cross`, `name` | – |
+| Line working | combined | `result`, `mark: none \| tick \| cross`, `name` | – |
 | Puzzle grid | combined | `columns`, `columnPills`, `rowPills`, `cells`, `workings`, `helper` | – |
 | Keypad | combined | `keys` (1–9 and Oops) | – |
 | Play screen | screen | `header`, `counter`, `grid`, `keypad`, `mainButton` | sample: just opened, Row 1 correct, all found |

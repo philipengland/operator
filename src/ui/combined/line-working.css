@@ -1,0 +1,12 @@
+/* Line working: layout only; its look comes from Text and Icon (FR-303). */
+
+.line-working {
+  position: relative;
+  display: inline-flex;
+}
+
+.line-working__shown {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

@@ -13,6 +13,13 @@ import { publishedFiles } from '../published-files';
 const CATALOGUE_PAGE = 'catalogue.html';
 const CATALOGUE_TITLE = 'Operator component catalogue';
 const CATALOGUE_SECTIONS: readonly CatalogueSection[] = ['Foundations', 'Simple components', 'Combined components', 'Screens'];
+const BUILT_FROM_LINE = /^\s*Built from:\s*/;
+// The fixed 2 × 2 puzzle (spec-001): lines 1 and 2, cells named by corner, row by row.
+const FIXED_PUZZLE_LINES = [1, 2] as const;
+const FIXED_PUZZLE_CELLS = [
+  ['Top-left', 'Top-right'],
+  ['Bottom-left', 'Bottom-right'],
+] as const;
 
 
 // A sample the catalogue does not show yet. It must not pass any check, including "not heard",
@@ -96,12 +103,32 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return this.page.evaluate(readGreyscaleContrast, screenshot.toString('base64'));
   }
 
-  async greyscaleImage(): Promise<Uint8Array> {
-    return new Uint8Array();
+  /** A screenshot of the sample with colour removed (CSS grayscale filter), to compare states. */
+  async greyscaleImage(sample: Sample): Promise<Uint8Array> {
+    const group = this.sampleGroup(sample);
+    if ((await group.count()) === 0) {
+      return new Uint8Array();
+    }
+    const content = group.locator(':scope > *').first();
+    const previousFilter = await content.evaluate((element) => {
+      const style = (element as HTMLElement).style;
+      const before = style.filter;
+      style.filter = 'grayscale(1)';
+      return before;
+    });
+    const image = await content.screenshot({ animations: 'disabled' });
+    await content.evaluate((element, before) => ((element as HTMLElement).style.filter = before), previousFilter);
+    return new Uint8Array(image);
   }
 
-  async builtFrom(): Promise<readonly LibraryComponent[]> {
-    return [];
+  /** The components named on a component's "Built from:" line; none when it has no such line. */
+  async builtFrom(component: LibraryComponent): Promise<readonly LibraryComponent[]> {
+    const line = this.componentRegion(component).getByText(BUILT_FROM_LINE);
+    if ((await line.count()) === 0) {
+      return [];
+    }
+    const text = (await line.first().innerText()).replace(BUILT_FROM_LINE, '');
+    return text.split(',').map((name) => name.trim()).filter((name) => name.length > 0) as LibraryComponent[];
   }
 
   /** Requests since the page was created to any origin but the catalogue's own. */
@@ -110,16 +137,49 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return this.requestedUrls.filter((url) => /^https?:/.test(url) && new URL(url).origin !== ownOrigin).length;
   }
 
-  async gridLayout(): Promise<GridLayout> {
-    return { columnPills: [], rowPills: [], cells: [], rowWorkings: [], columnWorkings: [], helperText: '' };
+  /** Where the fixed 2 × 2 puzzle's parts sit, each found by its accessible name (play-screen contract). */
+  async gridLayout(sample: Sample): Promise<GridLayout> {
+    // Always the full 2 × 2 structure: a part that cannot be found has an unknown box, so every
+    // position check runs and fails, rather than an empty grid passing with nothing to check.
+    const puzzle = this.sampleGroup(sample).getByRole('group', { name: 'Puzzle', exact: true });
+    const boxesOf = (patterns: readonly RegExp[]) => Promise.all(patterns.map((pattern) => partBox(puzzle, pattern)));
+    const helper = puzzle.getByRole('paragraph').last();
+    return {
+      columnPills: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`Column ${line} target`))),
+      rowPills: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`Row ${line} target`))),
+      cells: await Promise.all(FIXED_PUZZLE_CELLS.map((row) => boxesOf(row.map((cell) => new RegExp(`^${cell} cell`))))),
+      rowWorkings: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`^Row ${line} working, `))),
+      columnWorkings: await boxesOf(FIXED_PUZZLE_LINES.map((line) => new RegExp(`^Column ${line} working, `))),
+      helperText: (await helper.count()) === 0 ? '' : (await helper.innerText()).trim(),
+    };
   }
 
-  async keypadRows(): Promise<readonly (readonly string[])[]> {
-    return [];
+  /** The sample's buttons by name, row by row as they sit on screen: grouped by top edge, left to right. */
+  async keypadRows(sample: Sample): Promise<readonly (readonly string[])[]> {
+    const keys = this.sampleGroup(sample).getByRole('button');
+    const placed = await Promise.all(
+      (await keys.all()).map(async (key) => ({ name: (await key.getAttribute('aria-label')) ?? (await key.innerText()).trim(), box: await boxOf(key) })),
+    );
+    const rows = new Map<number, { name: string; box: Box }[]>();
+    placed.forEach((key) => {
+      const top = Math.round(key.box.top);
+      rows.set(top, [...(rows.get(top) ?? []), key]);
+    });
+    return [...rows.entries()]
+      .sort(([firstTop], [secondTop]) => firstTop - secondTop)
+      .map(([, row]) => row.sort((first, second) => first.box.left - second.box.left).map((key) => key.name));
   }
 
-  async mascotAndBubble(): Promise<{ readonly mascot: Box; readonly bubble: Box }> {
-    return { mascot: NO_BOX, bubble: NO_BOX };
+  /**
+   * Where the header's mascot and speech bubble sit. The mascot is hidden from screen readers and
+   * has no name to find it by, so the header's hidden part is the mascot and its heard part the bubble.
+   */
+  async mascotAndBubble(sample: Sample): Promise<{ readonly mascot: Box; readonly bubble: Box }> {
+    const header = this.sampleGroup(sample).locator(':scope > *').first();
+    const mascot = header.locator(':scope > [aria-hidden="true"]');
+    const bubble = header.locator(':scope > :not([aria-hidden="true"])');
+    const firstBox = async (part: Locator) => ((await part.count()) === 1 ? boxOf(part) : NO_BOX);
+    return { mascot: await firstBox(mascot), bubble: await firstBox(bubble) };
   }
 
   async openScreen(): Promise<void> {}
@@ -166,4 +226,22 @@ export class UiCatalogueDriver implements CatalogueDriver {
 async function regionNames(regions: Locator): Promise<readonly string[]> {
   const names = await regions.evaluateAll((elements) => elements.map((element) => element.getAttribute('aria-label') ?? ''));
   return names.filter((name) => name.length > 0);
+}
+
+/**
+ * The box of the part named by the pattern: a button with that name, or else the element holding
+ * a visually hidden name with that text (shown pills and workings speak through one).
+ */
+async function partBox(within: Locator, name: RegExp): Promise<Box> {
+  const button = within.getByRole('button', { name });
+  if ((await button.count()) > 0) {
+    return boxOf(button.first());
+  }
+  const spokenName = within.getByText(name);
+  return (await spokenName.count()) > 0 ? boxOf(spokenName.first().locator('xpath=..')) : NO_BOX;
+}
+
+async function boxOf(element: Locator): Promise<Box> {
+  const box = await element.boundingBox();
+  return box ? { left: box.x, top: box.y, right: box.x + box.width, bottom: box.y + box.height } : NO_BOX;
 }

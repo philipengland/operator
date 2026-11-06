@@ -157,59 +157,59 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 **Independent Test**: Combined components section against the design guide; the 20 scenarios in
 `combined-components.acceptance-spec.ts` pass on both catalogue phones.
 
-- [ ] T033 [US2] Create `003-themed-ui-part-2` from `main` (after part 1 merges) and bring over `test/acceptance/library/combined-components.acceptance-spec.ts` from `003-themed-ui`. Run it: 20 scenarios fail on missing samples. TDD log.
+- [X] T033 [US2] Create `003-themed-ui-part-2` from `main` (after part 1 merges) and bring over `test/acceptance/library/combined-components.acceptance-spec.ts` from `003-themed-ui`. Run it: 20 scenarios fail on missing samples. TDD log.
 
 ### AC-7: built from
 
-- [ ] T034 [US2] AC-7 RED: driver `builtFrom(component)` reads the component region's "Built from:" line. Expected failure on the first combined component without a sample.
-- [ ] T035 [US2] AC-7 TDD cycles: each combined module exports `builtFrom` matching the contract table, and imports exactly those simple or combined components (the lint rules from T009 and `tools/ui-tiers.spec.ts` now check real files: confirm it fails on a reverted bad declaration in a combined stylesheet).
-- [ ] T036 [US2] AC-7 GREEN once all eight combined components exist (it is the last criterion in this phase to go green); checkpoint.
+- [X] T034 [US2] AC-7 RED: driver `builtFrom(component)` reads the component region's "Built from:" line. Expected failure on the first combined component without a sample.
+- [X] T035 [US2] AC-7 TDD cycles: each combined module exports `builtFrom` matching the contract table, and imports exactly those simple or combined components (the lint rules from T009 and `tools/ui-tiers.spec.ts` now check real files: confirm it fails on a reverted bad declaration in a combined stylesheet).
+- [X] T036 [US2] AC-7 GREEN once all eight combined components exist (it is the last criterion in this phase to go green); checkpoint.
 
 ### AC-8: solutions counter
 
-- [ ] T037 [US2] AC-8 RED: no new driver code expected. Expected failure: `Solutions counter "None yet" shows — Expected: "Solutions found 0 of 2", Received: ""`.
-- [ ] T038 [US2] AC-8 TDD cycles in `src/ui/combined/solutions-counter.ts`: `solutionsCounterModel({ found, total? })` gives title "Solutions found" or "All found!" (complete when `total` is given and `found === total`), count "N of M" or "N", fill accent or ink, tick when complete, heard "Found N of M" or "Found N" (visible parts hidden, one visually hidden name). Built from Surface, Text, Badge, Icon. Samples: None yet, In progress, Complete, No total.
-- [ ] T039 [US2] AC-8 GREEN, slice refactor, checkpoint.
+- [X] T037 [US2] AC-8 RED: no new driver code expected. Expected failure: `Solutions counter "None yet" shows — Expected: "Solutions found 0 of 2", Received: ""`.
+- [X] T038 [US2] AC-8 TDD cycles in `src/ui/combined/solutions-counter.ts`: `solutionsCounterModel({ found, total? })` gives title "Solutions found" or "All found!" (complete when `total` is given and `found === total`), count "N of M" or "N", fill accent or ink, tick when complete, heard "Found N of M" or "Found N" (visible parts hidden, one visually hidden name). Built from Surface, Text, Badge, Icon. Samples: None yet, In progress, Complete, No total.
+- [X] T039 [US2] AC-8 GREEN, slice refactor, checkpoint.
 
 ### AC-9: target pill
 
-- [ ] T040 [US2] AC-9 RED. Expected failure: `Target pill "Add" shows — Expected: "+ 16", Received: ""`.
-- [ ] T041 [US2] AC-9 TDD cycles in `src/ui/combined/target-pill.ts`: shown operator → Badge with "<op> <target>", heard by the given `name`; open → dashed Button showing "? <target>" or the chosen operator; `reachesTarget` adds a heard Icon tick ("target reached"). Built from Badge, Button, Icon. Samples: Add, Subtract, Multiply, Divide, Open, Line correct, with sample names containing the operator word and target ("Row 1 target 16, plus").
-- [ ] T042 [US2] AC-9 GREEN, slice refactor, checkpoint.
+- [X] T040 [US2] AC-9 RED. Expected failure: `Target pill "Add" shows — Expected: "+ 16", Received: ""`.
+- [X] T041 [US2] AC-9 TDD cycles in `src/ui/combined/target-pill.ts`: shown operator → Badge with "<op> <target>", heard by the given `name`; open → dashed Button showing "? <target>" or the chosen operator; `reachesTarget` adds a heard Icon tick ("target reached"). Built from Badge, Button, Icon. Samples: Add, Subtract, Multiply, Divide, Open, Line correct, with sample names containing the operator word and target ("Row 1 target 16, plus").
+- [X] T042 [US2] AC-9 GREEN, slice refactor, checkpoint.
 
 ### AC-10: grid cell
 
-- [ ] T043 [US2] AC-10 RED: driver `greyscaleImage()`. Expected failure: `Grid cell "Given" shows — Expected: "2", Received: ""`.
-- [ ] T044 [US2] AC-10 TDD cycles in `src/ui/combined/grid-cell.ts`: `gridCellModel` for `given | empty | selected | digit | correct` plus selected-and-correct (selected wins), as the data model's Grid cell table: given → unavailable and heard "…, given 2"; selected → `aria-pressed="true"`; fills and shadows from the table. Built from Button. Samples: Given, Empty, Selected, Your digit, In a correct line, Selected, in a correct line.
-- [ ] T045 [US2] AC-10 GREEN (including greyscale), slice refactor, checkpoint.
+- [X] T043 [US2] AC-10 RED: driver `greyscaleImage()`. Expected failure: `Grid cell "Given" shows — Expected: "2", Received: ""`.
+- [X] T044 [US2] AC-10 TDD cycles in `src/ui/combined/grid-cell.ts`: `gridCellModel` for `given | empty | selected | digit | correct` plus selected-and-correct (selected wins), as the data model's Grid cell table: given → unavailable and heard "…, given 2"; selected → `aria-pressed="true"`; fills and shadows from the table. Built from Button. Samples: Given, Empty, Selected, Your digit, In a correct line, Selected, in a correct line.
+- [X] T045 [US2] AC-10 GREEN (including greyscale), slice refactor, checkpoint.
 
 ### AC-11: line working
 
-- [ ] T046 [US2] AC-11 RED. Expected failure: `Line working "Incomplete" shows — Expected: "= ?", Received: ""`.
-- [ ] T047 [US2] AC-11 TDD cycles in `src/ui/combined/line-working.ts`: shows the given result text and mark ("= ?", "= 8 ✓", "= −3", "✗"), the visible slot hidden, heard by the given `name` ("Row 1 working, 6 + 2 = 8, target reached"); marked slots heavier as well as the symbol. Built from Text, Icon.
-- [ ] T048 [US2] AC-11 GREEN, slice refactor, checkpoint.
+- [X] T046 [US2] AC-11 RED. Expected failure: `Line working "Incomplete" shows — Expected: "= ?", Received: ""`.
+- [X] T047 [US2] AC-11 TDD cycles in `src/ui/combined/line-working.ts`: shows the given result text and mark ("= ?", "= 8 ✓", "= −3", "✗"), the visible slot hidden, heard by the given `name` ("Row 1 working, 6 + 2 = 8, target reached"); marked slots heavier as well as the symbol. Built from Text, Icon.
+- [X] T048 [US2] AC-11 GREEN, slice refactor, checkpoint.
 
 ### AC-12: puzzle grid
 
-- [ ] T049 [US2] AC-12 RED: driver `gridLayout()` reads, inside the sample, the pills, cells and workings by role and name pattern (column pills, row pills, cells by row and column, workings) and the helper text. Expected failure: `No box at position 1`.
-- [ ] T050 [US2] AC-12 TDD cycles in `src/ui/combined/puzzle-grid.ts`: a `group` named "Puzzle" on a panel Surface; CSS grid of 64px pill column, the cells, and a working column, with a pill row on top and a working row below; helper line as body Text ("Tap a dashed bubble to swap its operator."). `puzzle-grid.css` lays out only. Built from Surface, Target pill, Grid cell, Line working, Text. Sample: Fixed puzzle (spec-001's puzzle, just opened).
-- [ ] T051 [US2] AC-12 GREEN, slice refactor, checkpoint.
+- [X] T049 [US2] AC-12 RED: driver `gridLayout()` reads, inside the sample, the pills, cells and workings by role and name pattern (column pills, row pills, cells by row and column, workings) and the helper text. Expected failure: `No box at position 1`.
+- [X] T050 [US2] AC-12 TDD cycles in `src/ui/combined/puzzle-grid.ts`: a `group` named "Puzzle" on a panel Surface; CSS grid of 64px pill column, the cells, and a working column, with a pill row on top and a working row below; helper line as body Text ("Tap a dashed bubble to swap its operator."). `puzzle-grid.css` lays out only. Built from Surface, Target pill, Grid cell, Line working, Text. Sample: Fixed puzzle (spec-001's puzzle, just opened).
+- [X] T051 [US2] AC-12 GREEN, slice refactor, checkpoint.
 
 ### AC-13: keypad
 
-- [ ] T052 [US2] AC-13 RED: driver `keypadRows()` groups the sample's buttons by their top edge. Expected failure: `keypad keys, row by row — Received: []`.
-- [ ] T053 [US2] AC-13 TDD cycles in `src/ui/combined/keypad.ts`: a `group` named "Keypad" of key Buttons 1–9 and a solid Button "Oops" with action "clear cell", in a five-column grid. Built from Button.
-- [ ] T054 [US2] AC-13 GREEN, slice refactor, checkpoint.
+- [X] T052 [US2] AC-13 RED: driver `keypadRows()` groups the sample's buttons by their top edge. Expected failure: `keypad keys, row by row — Received: []`.
+- [X] T053 [US2] AC-13 TDD cycles in `src/ui/combined/keypad.ts`: a `group` named "Keypad" of key Buttons 1–9 and a solid Button "Oops" with action "clear cell", in a five-column grid. Built from Button.
+- [X] T054 [US2] AC-13 GREEN, slice refactor, checkpoint.
 
 ### AC-14: operator header
 
-- [ ] T055 [US2] AC-14 RED: driver `mascotAndBubble()`. Expected failure: `Operator header "Greeting" shows — Expected: "Hello, Operator! Fill the grid, pal.", Received: ""`.
-- [ ] T056 [US2] AC-14 TDD cycles: `src/ui/combined/speech-bubble.ts` (bubble Surface, display title, body message; built from Surface, Text) and `src/ui/combined/operator-header.ts` (Mascot beside Speech bubble; built from Mascot, Speech bubble). Sample: Greeting ("Hello, Operator!", "Fill the grid, pal." in Classic; the address comes from the theme in US4).
-- [ ] T057 [US2] AC-14 GREEN, AC-7 GREEN (T036), slice refactor, checkpoint.
+- [X] T055 [US2] AC-14 RED: driver `mascotAndBubble()`. Expected failure: `Operator header "Greeting" shows — Expected: "Hello, Operator! Fill the grid, pal.", Received: ""`.
+- [X] T056 [US2] AC-14 TDD cycles: `src/ui/combined/speech-bubble.ts` (bubble Surface, display title, body message; built from Surface, Text) and `src/ui/combined/operator-header.ts` (Mascot beside Speech bubble; built from Mascot, Speech bubble). Sample: Greeting ("Hello, Operator!", "Fill the grid, pal." in Classic; the address comes from the theme in US4).
+- [X] T057 [US2] AC-14 GREEN, AC-7 GREEN (T036), slice refactor, checkpoint.
 
 ### Pull request 2
 
-- [ ] T058 [US2] Full suite and TDD log as T032. Push `003-themed-ui-part-2` and open "spec-003 part 2 of 3: combined components". The owner merges with a merge commit.
+- [X] T058 [US2] Full suite and TDD log as T032. Push `003-themed-ui-part-2` and open "spec-003 part 2 of 3: combined components". The owner merges with a merge commit.
 
 ---
 

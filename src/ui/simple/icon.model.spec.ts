@@ -17,4 +17,11 @@ describe('iconModel', () => {
   it.each(['tick', 'cross'] as const)('carries the %s shape it is drawn as', (icon) => {
     expect(iconModel({ icon }).classes).toEqual(['icon', `icon--${icon}`]);
   });
+
+  it.each([
+    ['tick', '✓'],
+    ['cross', '✗'],
+  ] as const)('carries the %s as the character %s, its text in place of the drawing', (icon, glyph) => {
+    expect(iconModel({ icon }).glyph).toBe(glyph);
+  });
 });

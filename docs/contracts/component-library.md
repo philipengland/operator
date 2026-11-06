@@ -41,11 +41,11 @@ interface Component<Props> {
 | Component | Role | Accessible name | Notes |
 | --- | --- | --- | --- |
 | Text | none (text) | its text | `display` = Chewy; `body` = Nunito |
-| Button | `button` | `label`, or `label, action` when `action` is given ("Oops, clear cell"; "Put it through!, Check") | styles: main, key, solid, dashed |
+| Button | `button`; `aria-pressed="true"` when selected | `label`, or `label, action` when `action` is given ("Oops, clear cell"; "Put it through!, Check"), or a whole `name` containing the label ("Top-right cell, 8") | styles: main, key, solid, dashed, cell, cell-correct |
 | Text input | `textbox` | its visible `label` (a real `<label for>`) | hint as `placeholder`; typed text in Chewy |
-| Icon | `img` when `spokenAs` is given, otherwise hidden | `spokenAs` ("target reached") | tick, cross |
-| Surface | none | – | panel; bubble (accent shadow, 6 px tail corner) |
-| Badge | none (text) | its text | ink pill |
+| Icon | `img` when `spokenAs` is given, otherwise hidden | `spokenAs` ("target reached") | tick, cross (drawn; the ✓ or ✗ kept as visually hidden text) |
+| Surface | none | – | panel; bubble (accent shadow, 6 px tail corner); fill tile, accent or ink (ink casts an accent shadow) |
+| Badge | none (text) | its text, or `spokenAs` (visible text then hidden) | ink pill; light pill (tile, ink outline) for a count on a coloured surface |
 | Mascot | hidden (`aria-hidden="true"`) | – | 76 px, original character from the design guide |
 
 ## Combined components

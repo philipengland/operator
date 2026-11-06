@@ -20,15 +20,24 @@ describe('LIBRARY', () => {
       .map((entry) => `${entry.name}: ${entry.notBuiltYet}`);
 
     expect(notBuiltYet).toEqual([
-      'Speech bubble: Built in part 2.',
-      'Operator header: Built in part 2.',
-      'Solutions counter: Built in part 2.',
-      'Target pill: Built in part 2.',
-      'Grid cell: Built in part 2.',
-      'Line working: Built in part 2.',
-      'Puzzle grid: Built in part 2.',
-      'Keypad: Built in part 2.',
       'Play screen: Built in part 3.',
     ]);
+  });
+
+  it('says what each built combined component is built from', () => {
+    const builtFrom = Object.fromEntries(
+      LIBRARY['Combined components'].filter((entry) => !entry.notBuiltYet).map((entry) => [entry.name, entry.builtFrom]),
+    );
+
+    expect(builtFrom).toEqual({
+      'Speech bubble': ['Surface', 'Text'],
+      'Operator header': ['Mascot', 'Speech bubble'],
+      'Solutions counter': ['Surface', 'Text', 'Badge', 'Icon'],
+      'Target pill': ['Badge', 'Button', 'Icon'],
+      'Grid cell': ['Button'],
+      'Line working': ['Text', 'Icon'],
+      'Puzzle grid': ['Surface', 'Target pill', 'Grid cell', 'Line working', 'Text'],
+      Keypad: ['Button'],
+    });
   });
 });

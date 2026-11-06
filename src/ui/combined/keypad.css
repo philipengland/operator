@@ -1,0 +1,15 @@
+/* Keypad: layout only; its look comes from Button (FR-303). Two rows of five keys that share the
+   width, never narrower than a touch target. */
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(var(--touch-target), 1fr));
+  gap: var(--gap);
+}
+
+.keypad > .button {
+  width: 100%;
+  min-width: 0;
+  padding: 0 4px;
+  white-space: nowrap;
+}

@@ -11,5 +11,13 @@
   font-weight: 400;
   font-size: 22px;
   line-height: 1.2;
+  gap: 6px;
   white-space: nowrap;
+}
+
+/* A count on an accent or ink surface (design guide: solutions counter). */
+.badge--light {
+  border: var(--outline-thin) solid var(--ink);
+  background: var(--tile);
+  color: var(--ink);
 }

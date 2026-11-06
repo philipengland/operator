@@ -48,6 +48,21 @@
   --touch-target: 44px; /* constitution IV */
 }
 
+/* Hidden means hidden, whatever display a component gives itself. */
+[hidden] {
+  display: none !important;
+}
+
+/* Words for screen readers only, or an icon's character kept as its text. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

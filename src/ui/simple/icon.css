@@ -1,10 +1,9 @@
-/* Icon (design guide: the chunky tick and cross). Foundations only. */
+/* Icon (design guide: the chunky tick and cross), in the colour of what it sits on. Foundations only. */
 
 .icon {
   display: inline-flex;
   width: 28px;
   height: 28px;
-  color: var(--ink);
 }
 
 .icon svg {

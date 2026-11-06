@@ -1,0 +1,8 @@
+/* Solutions counter: layout only; its look comes from Surface, Text, Badge and Icon (FR-303). */
+
+.solutions-counter__shown {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
