@@ -296,5 +296,17 @@ function namedPart(within: Locator, name: RegExp): Locator {
 
 /** The box of the only element matched; unknown when there is none or more than one. */
 async function boxIfOne(element: Locator): Promise<Box> {
-  return (await element.count()) === 1 ? boxOf(element) : NO_BOX;
+  return (await element.count()) === 1 ? boxOf(element) : unknownBox();
+}
+
+let unknownBoxesGiven = 0;
+
+/**
+ * A box for a part that cannot be read. Its NaN edges fail every position check, and its own
+ * number means it never equals another unknown box, so "nothing moved" cannot pass on parts
+ * that are not there (NaN alone compares equal in toEqual).
+ */
+function unknownBox(): Box {
+  unknownBoxesGiven += 1;
+  return Object.assign({}, NO_BOX, { unknown: unknownBoxesGiven });
 }
