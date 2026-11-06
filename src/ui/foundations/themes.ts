@@ -34,8 +34,40 @@ export const MIDNIGHT_BLUE: Theme = {
   buttonLabel: 'Connect me!',
 };
 
+const PLUM_AND_MINT: Theme = {
+  label: 'Plum and mint',
+  colours: { ink: '#2B1B3D', paper: '#D5F0E0', tile: '#F5FBF7', accent: '#C42A63' },
+  address: 'darling',
+  signOff: 'Do continue',
+  buttonLabel: 'Ring it through!',
+};
+
+const AMBER_AND_TEAL: Theme = {
+  label: 'Amber and teal',
+  colours: { ink: '#3A1C12', paper: '#FFD9A0', tile: '#FFF6E4', accent: '#0E7C7B' },
+  address: 'friend',
+  signOff: 'Carry on',
+  buttonLabel: 'Dial it in!',
+};
+
+const BUBBLEGUM: Theme = {
+  label: 'Bubblegum',
+  colours: { ink: '#1A1A1A', paper: '#FFC8DD', tile: '#FFF0F6', accent: '#2E5BFF' },
+  address: 'sweetheart',
+  signOff: 'More, more',
+  buttonLabel: 'Make the call!',
+};
+
+const RACING_GREEN: Theme = {
+  label: 'Racing green',
+  colours: { ink: '#0F3D2E', paper: '#E8E2B8', tile: '#FAF7E2', accent: '#B5382B' },
+  address: 'old sport',
+  signOff: 'Press on',
+  buttonLabel: 'Plug it in!',
+};
+
 /** The themes in order; the order is part of the seed rule (research R4). */
-export const THEMES: readonly Theme[] = [CLASSIC, MIDNIGHT_BLUE];
+export const THEMES: readonly Theme[] = [CLASSIC, MIDNIGHT_BLUE, PLUM_AND_MINT, AMBER_AND_TEAL, BUBBLEGUM, RACING_GREEN];
 
 /** Sets the theme's four colours on the root every component sits under. */
 export function applyTheme(root: { readonly style: Pick<CSSStyleDeclaration, 'setProperty'> }, theme: Theme): void {
