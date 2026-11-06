@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { contrastRatio } from './contrast';
 import { applyTheme, THEMES } from './themes';
 
 describe('THEMES (spec-003 AC-20)', () => {
@@ -25,4 +26,25 @@ describe('THEMES (spec-003 AC-20)', () => {
     const { ink, paper, tile, accent } = theme.colours;
     expect(set).toEqual({ '--ink': ink, '--paper': paper, '--tile': tile, '--accent': accent });
   });
+});
+
+// Research R6: the colour pairs the components draw, and the contrast each needs.
+const TEXT_CONTRAST = 4.5;
+const GRAPHIC_CONTRAST = 3;
+const PAIRS = [
+  ['ink', 'tile', TEXT_CONTRAST],
+  ['ink', 'paper', TEXT_CONTRAST],
+  ['paper', 'ink', TEXT_CONTRAST],
+  ['accent', 'tile', TEXT_CONTRAST],
+  ['tile', 'accent', TEXT_CONTRAST],
+  ['accent', 'paper', GRAPHIC_CONTRAST],
+] as const;
+
+describe('contrast in every theme (spec-003 AC-21)', () => {
+  it.each(THEMES.flatMap((theme) => PAIRS.map(([foreground, background, required]) => [theme.label, foreground, background, required, theme] as const)))(
+    '%s: %s on %s reaches %s:1',
+    (_label, foreground, background, required, { colours }) => {
+      expect(contrastRatio(colours[foreground], colours[background])).toBeGreaterThanOrEqual(required);
+    },
+  );
 });
