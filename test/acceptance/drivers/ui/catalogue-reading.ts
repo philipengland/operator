@@ -114,3 +114,37 @@ export function readAppearance(element: Element): SampleAppearance {
     hasTailCorner: others.every((corner) => radius(style.borderBottomLeftRadius) < corner),
   };
 }
+
+/**
+ * Runs in the page: the WCAG contrast seen in a PNG screenshot with colour removed. Each pixel
+ * becomes its relative luminance (the grey WCAG measures); the background is the most common
+ * grey, and the sample is the grey that stands out most from it. Decoded from a Blob, which the
+ * catalogue's content security policy allows (a data: URL would be blocked).
+ */
+export async function readGreyscaleContrast(pngBase64: string): Promise<number> {
+  const bytes = Uint8Array.from(atob(pngBase64), (character) => character.charCodeAt(0));
+  const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
+  const canvas = document.createElement('canvas');
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const context = canvas.getContext('2d');
+  if (!context || bitmap.width === 0) {
+    return 0;
+  }
+  context.drawImage(bitmap, 0, 0);
+  const { data } = context.getImageData(0, 0, bitmap.width, bitmap.height);
+  const linear = (channel: number) => {
+    const value = channel / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  };
+  const counts = new Map<number, number>();
+  for (let index = 0; index < data.length; index += 4) {
+    const luminance = 0.2126 * linear(data[index] ?? 0) + 0.7152 * linear(data[index + 1] ?? 0) + 0.0722 * linear(data[index + 2] ?? 0);
+    const grey = Math.round(luminance * 1000) / 1000;
+    counts.set(grey, (counts.get(grey) ?? 0) + 1);
+  }
+  const greys = [...counts.keys()];
+  const background = greys.reduce((most, grey) => ((counts.get(grey) ?? 0) > (counts.get(most) ?? 0) ? grey : most));
+  const contrastWith = (grey: number) => (Math.max(grey, background) + 0.05) / (Math.min(grey, background) + 0.05);
+  return Math.max(...greys.map(contrastWith));
+}

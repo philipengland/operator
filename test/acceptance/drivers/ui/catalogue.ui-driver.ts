@@ -4,7 +4,7 @@
 
 import type { Locator, Page } from '@playwright/test';
 import type { CatalogueSection, LibraryComponent, Sample } from '../../dsl/catalogue-vocabulary';
-import { NO_BOX, readAppearance, readSampleView, readTypeface, textElement } from './catalogue-reading';
+import { NO_BOX, readAppearance, readGreyscaleContrast, readSampleView, readTypeface, textElement } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
 import type { Box } from '../phone.driver';
 import { scanForAccessibilityProblems } from '../../support/axe';
@@ -86,8 +86,14 @@ export class UiCatalogueDriver implements CatalogueDriver {
     await this.sampleGroup(sample).getByRole('textbox').fill(text);
   }
 
-  async greyscaleContrast(): Promise<number> {
-    return 0;
+  /** WCAG contrast of the sample against what it sits on, read from a screenshot in greyscale. */
+  async greyscaleContrast(sample: Sample): Promise<number> {
+    const group = this.sampleGroup(sample);
+    if ((await group.count()) === 0) {
+      return 0;
+    }
+    const screenshot = await group.locator(':scope > *').first().screenshot({ animations: 'disabled' });
+    return this.page.evaluate(readGreyscaleContrast, screenshot.toString('base64'));
   }
 
   async greyscaleImage(): Promise<Uint8Array> {
