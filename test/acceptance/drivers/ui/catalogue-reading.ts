@@ -22,8 +22,18 @@ export function firstNodeIn(snapshot: string): HeardNode | null {
   const children = snapshot.split('\n').filter((line) => /^\s{2,}- /.test(line));
   // A field's visible label is read as text before the field: prefer the first node that is not
   // plain text, so a sample is heard as the control it shows.
-  const child = children.find((line) => !/^\s*- text\b/.test(line)) ?? children[0];
-  return child === undefined ? null : parseNode(child);
+  const control = children.find((line) => !/^\s*- text\b/.test(line));
+  if (control !== undefined) {
+    return parseNode(control);
+  }
+  if (children.length > 0) {
+    // Only text: a screen reader reads all of it, in order.
+    const words = children.map((line) => parseNode(line)?.name ?? '').filter((name) => name !== '');
+    return { role: 'text', name: words.join(' '), states: [] };
+  }
+  // A group whose only content is text is written on one line: `- group "None yet": Found 0 of 2`.
+  const inlineText = snapshot.split('\n')[0]?.match(/^- [a-z]+(?: "(?:[^"\\]|\\.)*")?(?: \[[^\]]+\])*: (.+)$/)?.[1];
+  return inlineText === undefined ? null : { role: 'text', name: inlineText, states: [] };
 }
 
 /** One line of an ARIA snapshot: role, quoted name or text, and [states]. */
@@ -58,11 +68,26 @@ async function boxOf(element: Locator): Promise<Box> {
   return box ? { left: box.x, top: box.y, right: box.x + box.width, bottom: box.y + box.height } : NO_BOX;
 }
 
-/** The text a sample shows: a field's value, or its hint when empty; otherwise its visible text. */
+/**
+ * The text a sample shows: a field's value, or its hint when empty; otherwise its rendered text,
+ * leaving out words only a screen reader gets (visually hidden and heard). An icon's character,
+ * hidden inside an icon that is named as a whole or hidden, stands for its drawing and counts.
+ */
 export async function shownText(content: Locator): Promise<string> {
   return content.evaluate((element) => {
     const field = element instanceof HTMLInputElement ? element : element.querySelector('input');
-    const text = field ? field.value || field.placeholder : (element as HTMLElement).innerText;
+    if (field) {
+      return field.value || field.placeholder;
+    }
+    const isHeardOnly = (part: Element) => {
+      const box = part.getBoundingClientRect();
+      return box.width <= 1 && box.height <= 1 && part.textContent !== '' && !part.closest('[aria-hidden="true"], [role="img"]');
+    };
+    const heardOnly = Array.from(element.querySelectorAll<HTMLElement>('*')).filter(isHeardOnly);
+    const displays = heardOnly.map((part) => part.style.display);
+    heardOnly.forEach((part) => (part.style.display = 'none'));
+    const text = (element as HTMLElement).innerText;
+    heardOnly.forEach((part, index) => (part.style.display = displays[index] ?? ''));
     return text.replace(/\s+/g, ' ').trim();
   });
 }
