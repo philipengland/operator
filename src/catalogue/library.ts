@@ -3,6 +3,7 @@
 
 import { builtFrom as gridCellParts } from '../ui/combined/grid-cell';
 import { builtFrom as keypadParts } from '../ui/combined/keypad';
+import { builtFrom as operatorHeaderParts } from '../ui/combined/operator-header';
 import { builtFrom as lineWorkingParts } from '../ui/combined/line-working';
 import { builtFrom as puzzleGridParts } from '../ui/combined/puzzle-grid';
 import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
@@ -32,7 +33,7 @@ export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[
   'Simple components': entries('Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot'),
   'Combined components': [
     { name: 'Speech bubble', builtFrom: speechBubbleParts },
-    ...builtIn('part 2')('Operator header'),
+    { name: 'Operator header', builtFrom: operatorHeaderParts },
     { name: 'Solutions counter', builtFrom: solutionsCounterParts },
     { name: 'Target pill', builtFrom: targetPillParts },
     { name: 'Grid cell', builtFrom: gridCellParts },
