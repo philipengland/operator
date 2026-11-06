@@ -23,6 +23,8 @@ export interface TargetPillModel {
   readonly hasTick: boolean;
 }
 
-export function targetPillModel({ target, operator, name }: TargetPillProps): TargetPillModel {
-  return { kind: 'badge', text: `${operator} ${target}`, heardAs: name, hasTick: false };
+const NOT_CHOSEN = '?';
+
+export function targetPillModel({ target, operator, isOpen, name }: TargetPillProps): TargetPillModel {
+  return { kind: isOpen ? 'button' : 'badge', text: `${operator ?? NOT_CHOSEN} ${target}`, heardAs: name, hasTick: false };
 }

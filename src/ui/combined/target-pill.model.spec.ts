@@ -7,4 +7,10 @@ describe('targetPillModel', () => {
 
     expect(model).toEqual({ kind: 'badge', text: '+ 16', heardAs: 'Row 1 target 16, plus', hasTick: false });
   });
+
+  it('an open operator not yet chosen is a button showing "? 12"', () => {
+    const model = targetPillModel({ target: 12, operator: null, isOpen: true, name: 'Row 2 target 12, operator not chosen' });
+
+    expect(model).toEqual({ kind: 'button', text: '? 12', heardAs: 'Row 2 target 12, operator not chosen', hasTick: false });
+  });
 });
