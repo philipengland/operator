@@ -841,3 +841,41 @@
 - **Full suite**: 191 unit tests; engine 36 passed; phones 177 passed, 8 failed (AC-19 and AC-22,
   not started). Game JS and CSS unchanged.
 - **Slice refactor**: none needed.
+
+## AC-17: switching the play screen's samples
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-17]`, two scenarios on
+  both catalogue phones. Both already passed: the first with real behaviour since AC-15 (its
+  samples and in-place updates came then; they live in `src/catalogue/screen-samples.ts`, not
+  `samples.ts` as T067 says), the second falsely at the part-3 baseline.
+- **Driver** (T066): `chooseScreenSample()` was written with AC-15. The false pass is closed:
+  - **Shown first**: with the play screen removed from the full-size view, "nothing moves between
+    'Just opened', 'Row 1 correct' and 'All found'" still passed — every part's position was
+    unknown (NaN), and the equality check treats NaN as equal to NaN.
+  - **Fixed** (`dc44d34`): an unreadable part's box now carries its own number as well as NaN
+    edges, so it fails every position check and never equals another unknown box. With the same
+    break the scenario then failed (`the play screen's layout is the same for Just opened, Row 1
+    correct, All found`); with the screen restored, AC-15 to AC-17 passed.
+- **No cycles**: no new behaviour was needed.
+- **Driver proven** by reverted breaks (iPhone): a "Row 1 correct" message long enough to wrap
+  failed `the play screen's layout is the same for …`; Row 1's pill without its tick failed `Play
+  screen "Row 1 target" shows — Expected: "+ 8 ✓", Received: "+ 8"`; "All found" counting 1 of 2
+  failed `Play screen "Solutions counter" shows — Received: "Solutions found 1 of 2"`.
+- **Acceptance GREEN**: AC-17, 4 runs passed.
+
+## AC-18: the catalogue never reaches players
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-18]`, one scenario, run
+  by the engine driver and on both game phones (not a catalogue scenario).
+- **Acceptance RED**: **reported — passes at RED** (⚠️), as T069 predicted: the game's build has
+  only `index.html` as input (research R7), so `dist/` never held the catalogue. The driver
+  (`publishedFiles()`, shared by both drivers since part 1) lists `dist/` and marks any path or
+  text containing "catalogue".
+- **Driver proven** by a reverted break: `catalogue.html` added to the game build's inputs in
+  `vite.config.ts` put `dist/catalogue.html` and its assets in the build, and the scenario failed
+  `dist\catalogue.html is part of the catalogue — Expected: false, Received: true`. Reverted and
+  rebuilt: `dist/` holds `index.html` and `assets/` only, same hashes as before.
+- **Acceptance GREEN** (T070): engine 1 passed; phones (iPhone SE, Pixel 5) 2 passed.
+
+- **Full suite** after AC-17 and AC-18: 191 unit tests; engine 36 passed; phones 177 passed, 8
+  failed (AC-19 and AC-22, not started). Game JS and CSS unchanged.

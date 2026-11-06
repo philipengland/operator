@@ -236,14 +236,14 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-17: screen samples
 
-- [ ] T066 [US3] AC-17 RED: driver `chooseScreenSample()` presses the sample button. Expected failure: `Play screen "Row 1 target" shows — Expected: "+ 8 ✓"`.
-- [ ] T067 [US3] AC-17 TDD cycles: `src/catalogue/samples.ts` holds the three play-screen samples (just opened; top-right 2 so Row 1 reaches its target; Solution B after A so the counter is complete); the screen updates in place through each component's `update`, so nothing moves.
-- [ ] T068 [US3] AC-17 GREEN, slice refactor, checkpoint.
+- [X] T066 [US3] AC-17 RED: driver `chooseScreenSample()` presses the sample button. Expected failure: `Play screen "Row 1 target" shows — Expected: "+ 8 ✓"`.
+- [X] T067 [US3] AC-17 TDD cycles: `src/catalogue/samples.ts` holds the three play-screen samples (just opened; top-right 2 so Row 1 reaches its target; Solution B after A so the counter is complete); the screen updates in place through each component's `update`, so nothing moves.
+- [X] T068 [US3] AC-17 GREEN, slice refactor, checkpoint.
 
 ### AC-18: never reaches players ⚠️
 
-- [ ] T069 [US3] AC-18 RED: engine driver `publishedFiles()` lists `dist/` after `npm run build` and marks a file as catalogue if its path or text contains `catalogue`. Likely passes at RED (the build input excludes it): report it and prove the driver with a reverted break that adds `catalogue.html` to the game build's inputs.
-- [ ] T070 [US3] AC-18 GREEN on the engine and phone projects, checkpoint.
+- [X] T069 [US3] AC-18 RED: engine driver `publishedFiles()` lists `dist/` after `npm run build` and marks a file as catalogue if its path or text contains `catalogue`. Likely passes at RED (the build input excludes it): report it and prove the driver with a reverted break that adds `catalogue.html` to the game build's inputs.
+- [X] T070 [US3] AC-18 GREEN on the engine and phone projects, checkpoint.
 
 ### Edge case: long words in every theme
 
