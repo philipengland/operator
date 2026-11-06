@@ -747,6 +747,61 @@
   colours`).
   - **Reported — 4 runs passed at baseline** (⚠️): AC-17 "nothing moves between 'Just opened',
     'Row 1 correct' and 'All found'" and AC-19 "nothing moves or changes size", on both phones.
-    Both compare `layoutOfEverySample()` before and after a change, and that driver method is
-    still a stub returning `{}`, so nothing is compared with nothing. Not behaviour that exists;
-    their drivers are built (unable to pass while empty) and proven with breaks in AC-17 and AC-19.
+    AC-19 compares `layoutOfEverySample()` before and after a change, a stub returning `{}`, so
+    nothing is compared with nothing. AC-17 compares `screenView()`, a stub giving every part an
+    unknown (NaN) position, and the equality check treats NaN as equal to NaN. (First logged as
+    both being `layoutOfEverySample()`; corrected in AC-15.) Not behaviour that exists; their
+    drivers are made unable to pass while empty and proven with breaks in AC-17 and AC-19.
+
+## AC-15: the play screen, top to bottom
+
+- **Acceptance test**: `play-screen.acceptance-spec.ts` — `[spec-003 AC-15]`, one scenario on
+  both catalogue phones.
+- **Driver** (T060), commit `4a47b4a`:
+  - `openScreen(screen, sample)` opens `catalogue.html#play-screen` (the screen alone at full
+    size), presses the sample in the "Screen sample" switch, and scans with axe;
+    `chooseScreenSample` presses the button, waits for it to be pressed, and returns to the top
+    of the page (the switches sit below the screen); with no such button it leaves the screen as
+    it is, so the scenario's checks decide.
+  - `useScreen(size)` sets the viewport; `screenView()` reads the viewport and the five parts'
+    boxes, each found by its contract name: the header around the "Hello, Operator!" bubble, the
+    counter by its "Found N…" name, the "Puzzle" and "Keypad" groups, the main button as the one
+    named "…, Check". A part found more or less than once has an unknown box.
+  - `sample()` for the play screen reads a part the same way (`readPartView`), so
+    `expectShows('Play screen', 'Solutions counter', …)` and `'Row 1 target'` work.
+- **Acceptance RED**: `Operator header is above Solutions counter — Expected: true, Received:
+  false` on both phones, as T060 predicted.
+
+### Cycle 1 — the catalogue shows the play screen as built (AC-7 for screens)
+
+- **RED**: `LIBRARY › says what the play screen is built from` — `expected [ { name: 'Play
+  screen', … } ] to deeply equal [ { name: 'Play screen', builtFrom: [ 'Operator header', …,
+  'Button' ] } ]`; the placeholder test now expected none left — `expected [ 'Play screen: Built in
+  part 3.' ] to deeply equal []`. **GREEN**: `src/ui/screens/play-screen.ts` declares `builtFrom`;
+  the unused part-placeholder helper goes — `d841b9f`.
+- **REFACTOR** (`dad7308`): every component is built, so the placeholder idea goes: the
+  `notBuiltYet` field, the catalogue's placeholder paragraph, and the library test that only
+  checked none were left (its subject no longer exists; it was passing).
+
+- **Renderer** (driven by the scenario), commit `6d43597`: `createPlayScreen(props, actions)` —
+  the operator header, solutions counter, puzzle grid, keypad and main Button ("Put it through!",
+  named "…, Check"), top to bottom, with safe-area padding (layout-only `play-screen.css`);
+  `onKey` and `onCheck` for spec-004 to connect. Samples in `src/catalogue/screen-samples.ts`:
+  Just opened, Row 1 correct (top-right 2), All found (Solution B), in the play-screen contract's
+  wording. The catalogue's Screens section shows the "Built from:" line, a link to
+  `#play-screen`, a "Screen sample" switch and the screen; `#play-screen` shows the screen alone
+  filling the viewport, with the theme switch, the sample switch and a link back below it. The
+  theme switch and the sample switch share one `switchGroup`.
+  - **Looked at on a phone**: in order and as the design guide draws it, but too tall: the main
+    button ends at 776 px on a 667 px screen and 832 px on 568. Fitting is AC-16.
+- **Driver proven** by reverted breaks (iPhone): the counter above the header failed `Operator
+  header is above Solutions counter`; the main button reading "Check it!" failed `Play screen
+  "Main button" shows — Received: "Check it!"`.
+- **Acceptance GREEN**: AC-15, 2 runs passed, axe clean; earlier catalogue scenarios still pass.
+  - **Reported**: AC-17's first scenario ("Row 1 correct" ticks Row 1, "All found" completes the
+    counter) now passes too, since the switchable samples it uses came with AC-15. Real
+    behaviour, not a stub; its readings are proven with breaks at AC-17.
+- **Full suite**: 191 unit tests (lines 99.0%, branches 96.0%); engine 36 passed (AC-18 now
+  included); phones 171 passed, 14 failed (AC-16, AC-19, AC-22 and the long-words edge case, not
+  started). Game JS and CSS unchanged.
+- **Slice refactor**: none beyond `dad7308`.

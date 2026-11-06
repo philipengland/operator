@@ -224,9 +224,9 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### AC-15: the play screen, top to bottom
 
-- [ ] T060 [US3] AC-15 RED: driver `openScreen(screen, sample)` opens the catalogue's screen view (the screen alone, filling the viewport) and `screenView()` reads the five parts' boxes by role and name. Expected failure: `Operator header is above Solutions counter — Expected: true, Received: false`.
-- [ ] T061 [US3] AC-15 TDD cycles in `src/ui/screens/play-screen.ts`: arranges Operator header, Solutions counter, Puzzle grid, Keypad and the main Button top to bottom; `play-screen.css` lays out only (flex column, gaps, safe-area padding with `env(safe-area-inset-*)`). Built from those five. Catalogue: the Screens section shows the play screen with a "Screen sample" group ("Just opened", "Row 1 correct", "All found") and a way to open it alone at full size (a link to `catalogue.html#play-screen`).
-- [ ] T062 [US3] AC-15 GREEN, slice refactor, checkpoint.
+- [X] T060 [US3] AC-15 RED: driver `openScreen(screen, sample)` opens the catalogue's screen view (the screen alone, filling the viewport) and `screenView()` reads the five parts' boxes by role and name. Expected failure: `Operator header is above Solutions counter — Expected: true, Received: false`.
+- [X] T061 [US3] AC-15 TDD cycles in `src/ui/screens/play-screen.ts`: arranges Operator header, Solutions counter, Puzzle grid, Keypad and the main Button top to bottom; `play-screen.css` lays out only (flex column, gaps, safe-area padding with `env(safe-area-inset-*)`). Built from those five. Catalogue: the Screens section shows the play screen with a "Screen sample" group ("Just opened", "Row 1 correct", "All found") and a way to open it alone at full size (a link to `catalogue.html#play-screen`).
+- [X] T062 [US3] AC-15 GREEN, slice refactor, checkpoint.
 
 ### AC-16: fits a phone
 
