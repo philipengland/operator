@@ -60,3 +60,16 @@
   `src/ui/**/*.model.ts`. Decision: each component splits into a pure `<name>.model.ts`
   (unit-tested, counted) and a `<name>.ts` renderer (proven through the catalogue on the phones,
   not counted), so the 90% threshold measures what Node can run.
+
+## Foundational (part 1)
+
+- **T011** `src/ui/component.ts`: `writeText` writes new text (RED `expected 'Found 0 of 2' to be
+  'Found 1 of 2'`), and leaves the same text alone (RED `expected 1 to be +0`, one write counted);
+  `Component<Props>` type. `src/ui/foundations/themes.ts`: `applyTheme` sets Classic's four
+  colours and only those (RED `expected {} to deeply equal { '--ink': '#1A1A1A', …(3) }`).
+  Only Classic, and only its colours: the other themes and each theme's voice are added when a
+  test asks (AC-14, US4). `tokens.css`: fonts by `@font-face` with `font-display: swap`, outline,
+  shadow, radius, gap and touch-target values; reduced motion turns off transitions.
+  `src/css.d.ts` declares CSS side-effect imports for TypeScript 6.
+- **T012** catalogue shell: title, a "Theme" switch (Classic pressed), four section regions.
+  `npm run build:catalogue` bundles both fonts (19.92 kB, 39.12 kB); `npm run build` unchanged.
