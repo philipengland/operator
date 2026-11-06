@@ -307,3 +307,13 @@
 - **Full suite**: 164 unit tests (lines 100%, branches 96.25%); engine 35 passed; phones 121
   passed (87 game + 34 catalogue: AC-1 to AC-6), none failed. Game bundle unchanged (same hashes).
 - **Slice refactor**: none needed.
+
+## Part 1 complete (T032)
+
+- **Full suite** at `e41adcd`: exceptions check, lint and types clean; 164 unit tests (lines 100%,
+  branches 96.25%); `dist/` unchanged; engine 35 passed; phones 121 passed, none failed.
+- **Test results**: `npm run test-results -- 003-themed-ui` — `OVERALL status: BLOCKED`, as
+  expected: AC-1 to AC-7 PASS (AC-7 by its unit tests; its scenarios come with part 2), AC-8 to
+  AC-25 not covered until parts 2 and 3.
+- **Pull request**: branch `003-themed-ui-part-1`, "spec-003 part 1 of 3: foundations and simple
+  components".

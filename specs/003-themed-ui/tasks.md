@@ -144,7 +144,7 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### Pull request 1
 
-- [ ] T032 [US1] Full suite: lint, types, unit, `npm run build` (unchanged `dist/`), engine and all phone projects; TDD log; `npm run test-results -- 003-themed-ui` (expected BLOCKED: later criteria not yet covered). Push `003-themed-ui-part-1` and open "spec-003 part 1 of 3: foundations and simple components" (what, why, how tested, rollback: revert the merge; players unaffected), with the attribution line. The owner merges with a merge commit.
+- [X] T032 [US1] Full suite: lint, types, unit, `npm run build` (unchanged `dist/`), engine and all phone projects; TDD log; `npm run test-results -- 003-themed-ui` (expected BLOCKED: later criteria not yet covered). Push `003-themed-ui-part-1` and open "spec-003 part 1 of 3: foundations and simple components" (what, why, how tested, rollback: revert the merge; players unaffected), with the attribution line. The owner merges with a merge commit.
 
 **Checkpoint**: part 1 merged; the catalogue shows every simple component.
 
