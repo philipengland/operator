@@ -8,13 +8,16 @@ export interface ButtonProps {
   readonly style: ButtonStyle;
   /** What the button does, when its label alone does not say: "clear cell", "Check". */
   readonly action?: string;
+  /** Shown but cannot be used: heard as unavailable, ignores taps, still focusable. */
+  readonly isUnavailable?: boolean;
 }
 
 export interface ButtonModel {
   readonly label: string;
   readonly name: string;
+  readonly isUnavailable: boolean;
 }
 
-export function buttonModel({ label, action }: ButtonProps): ButtonModel {
-  return { label, name: action ? `${label}, ${action}` : label };
+export function buttonModel({ label, action, isUnavailable = false }: ButtonProps): ButtonModel {
+  return { label, name: action ? `${label}, ${action}` : label, isUnavailable };
 }

@@ -9,4 +9,8 @@ describe('buttonModel', () => {
   it('is heard by its label, then what it does: "Oops, clear cell"', () => {
     expect(buttonModel({ label: 'Oops', style: 'solid', action: 'clear cell' }).name).toBe('Oops, clear cell');
   });
+
+  it('says when it is unavailable', () => {
+    expect(buttonModel({ label: 'Check', style: 'key', isUnavailable: true }).isUnavailable).toBe(true);
+  });
 });
