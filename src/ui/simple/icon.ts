@@ -1,8 +1,9 @@
 // Icon (simple component): an inline SVG tick or cross stroked in the text colour
-// (docs/contracts/component-library.md). Heard as its meaning, or hidden when decoration.
+// (docs/contracts/component-library.md). Heard as its meaning, or hidden when decoration. Its ✓ or ✗
+// is kept as hidden text, so copied text and unstyled pages still carry it (owner decision 2026-11-06).
 
 import './icon.css';
-import type { Component } from '../component';
+import { writeText, type Component } from '../component';
 import { iconModel, type IconProps, type IconShape } from './icon.model';
 
 export { iconModel, type IconProps, type IconShape } from './icon.model';
@@ -25,11 +26,14 @@ export function createIcon(props: IconProps): Component<IconProps> {
   svg.setAttribute('focusable', 'false');
   const stroke = document.createElementNS(SVG_NAMESPACE, 'path');
   svg.append(stroke);
-  element.append(svg);
+  const glyph = document.createElement('span');
+  glyph.className = 'visually-hidden';
+  element.append(svg, glyph);
   const update = (next: IconProps): void => {
     const model = iconModel(next);
     element.className = model.classes.join(' ');
     stroke.setAttribute('d', STROKES[next.icon]);
+    writeText(glyph, model.glyph);
     if (model.isHeard) {
       element.setAttribute('role', 'img');
       element.setAttribute('aria-label', model.name ?? '');

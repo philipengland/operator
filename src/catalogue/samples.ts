@@ -1,6 +1,7 @@
 // The catalogue's samples: each component in every state the design guide lists (spec-003 FR-324).
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
+import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createBadge } from '../ui/simple/badge';
 import { createButton } from '../ui/simple/button';
 import { createIcon } from '../ui/simple/icon';
@@ -38,6 +39,12 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
   ],
   Badge: [{ label: 'Badge', render: () => createBadge({ text: '× 12' }).element }],
   Mascot: [{ label: 'Mascot', render: () => createMascot().element }],
+  'Solutions counter': [
+    { label: 'None yet', render: () => createSolutionsCounter({ found: 0, total: 2 }).element },
+    { label: 'In progress', render: () => createSolutionsCounter({ found: 1, total: 2 }).element },
+    { label: 'Complete', render: () => createSolutionsCounter({ found: 2, total: 2 }).element },
+    { label: 'No total', render: () => createSolutionsCounter({ found: 12 }).element },
+  ],
 };
 
 /** Body text to show inside a surface sample. */

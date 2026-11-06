@@ -10,12 +10,14 @@ export { badgeModel, type BadgeProps, type BadgeStyle } from './badge.model';
 /** Simple components are built from the foundations only. */
 export const builtFrom: readonly string[] = [];
 
-export function createBadge(props: BadgeProps): Component<BadgeProps> {
+export function createBadge(props: BadgeProps, after: readonly Node[] = []): Component<BadgeProps> {
   const element = document.createElement('span');
+  const text = document.createElement('span');
+  element.append(text, ...after);
   const update = (next: BadgeProps): void => {
     const model = badgeModel(next);
     element.className = model.classes.join(' ');
-    writeText(element, model.text);
+    writeText(text, model.text);
   };
   update(props);
   return { element, update };
