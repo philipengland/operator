@@ -7,6 +7,15 @@ export function writeText(target: Pick<Node, 'textContent'>, text: string): void
   }
 }
 
+/** Sets an attribute, or removes it when there is no value. */
+export function setAttributeOrRemove(element: Element, name: string, value: string | null): void {
+  if (value === null) {
+    element.removeAttribute(name);
+  } else {
+    element.setAttribute(name, value);
+  }
+}
+
 /** A rendered component: its element, and a way to show new props in place. */
 export interface Component<Props> {
   readonly element: HTMLElement;

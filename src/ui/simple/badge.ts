@@ -1,8 +1,8 @@
-// Badge (simple component): an ink pill for short text, heard as its text
-// (docs/contracts/component-library.md).
+// Badge (simple component): an ink or light pill for short text, heard as its text or as
+// `spokenAs` (docs/contracts/component-library.md).
 
 import './badge.css';
-import { writeText, type Component } from '../component';
+import { setAttributeOrRemove, writeText, type Component } from '../component';
 import { badgeModel, type BadgeProps } from './badge.model';
 
 export { badgeModel, type BadgeProps, type BadgeStyle } from './badge.model';
@@ -22,11 +22,7 @@ export function createBadge(props: BadgeProps, after: readonly Node[] = []): Com
     element.className = model.classes.join(' ');
     writeText(text, model.text);
     // Heard differently: the visible text is hidden from screen readers and a hidden name speaks.
-    if (isSpokenDifferently) {
-      text.setAttribute('aria-hidden', 'true');
-    } else {
-      text.removeAttribute('aria-hidden');
-    }
+    setAttributeOrRemove(text, 'aria-hidden', isSpokenDifferently ? 'true' : null);
     writeText(spokenName, isSpokenDifferently ? model.heardAs : '');
   };
   update(props);

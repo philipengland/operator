@@ -3,7 +3,7 @@
 // is kept as hidden text, so copied text and unstyled pages still carry it (owner decision 2026-11-06).
 
 import './icon.css';
-import { writeText, type Component } from '../component';
+import { setAttributeOrRemove, writeText, type Component } from '../component';
 import { iconModel, type IconProps, type IconShape } from './icon.model';
 
 export { iconModel, type IconProps, type IconShape } from './icon.model';
@@ -34,15 +34,9 @@ export function createIcon(props: IconProps): Component<IconProps> {
     element.className = model.classes.join(' ');
     stroke.setAttribute('d', STROKES[next.icon]);
     writeText(glyph, model.glyph);
-    if (model.isHeard) {
-      element.setAttribute('role', 'img');
-      element.setAttribute('aria-label', model.name ?? '');
-      element.removeAttribute('aria-hidden');
-    } else {
-      element.removeAttribute('role');
-      element.removeAttribute('aria-label');
-      element.setAttribute('aria-hidden', 'true');
-    }
+    setAttributeOrRemove(element, 'role', model.isHeard ? 'img' : null);
+    setAttributeOrRemove(element, 'aria-label', model.name);
+    setAttributeOrRemove(element, 'aria-hidden', model.isHeard ? null : 'true');
   };
   update(props);
   return { element, update };
