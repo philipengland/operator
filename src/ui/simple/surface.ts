@@ -5,7 +5,7 @@ import './surface.css';
 import type { Component } from '../component';
 import { surfaceModel, type SurfaceProps } from './surface.model';
 
-export { surfaceModel, type SurfaceProps, type SurfaceVariant } from './surface.model';
+export { surfaceModel, type SurfaceFill, type SurfaceProps, type SurfaceVariant } from './surface.model';
 
 /** Simple components are built from the foundations only. */
 export const builtFrom: readonly string[] = [];

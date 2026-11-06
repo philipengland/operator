@@ -18,3 +18,16 @@
   border-radius: var(--radius-bubble) var(--radius-bubble) var(--radius-bubble) var(--radius-tail);
   box-shadow: var(--shadow-large) var(--shadow-large) 0 var(--accent);
 }
+
+/* A surface that reports progress: accent while searching, with tile words... */
+.surface--accent {
+  background: var(--accent);
+  color: var(--tile);
+}
+
+/* ...and ink when done, with paper words and an accent shadow so it still stands out. */
+.surface--ink {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: var(--shadow-large) var(--shadow-large) 0 var(--accent);
+}

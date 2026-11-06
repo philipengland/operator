@@ -3,8 +3,12 @@
 
 export type SurfaceVariant = 'panel' | 'bubble';
 
+/** Tile (the default) for panels; accent or ink for a surface that reports progress. */
+export type SurfaceFill = 'tile' | 'accent' | 'ink';
+
 export interface SurfaceProps {
   readonly variant: SurfaceVariant;
+  readonly fill?: SurfaceFill;
 }
 
 export interface SurfaceModel {
@@ -12,6 +16,7 @@ export interface SurfaceModel {
   readonly classes: readonly string[];
 }
 
-export function surfaceModel({ variant }: SurfaceProps): SurfaceModel {
-  return { classes: ['surface', `surface--${variant}`] };
+export function surfaceModel({ variant, fill = 'tile' }: SurfaceProps): SurfaceModel {
+  const classes = ['surface', `surface--${variant}`];
+  return { classes: fill === 'tile' ? classes : [...classes, `surface--${fill}`] };
 }
