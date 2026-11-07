@@ -3,6 +3,7 @@
 // `catalogue.html#play-screen` shows the play screen alone at full size, its switches below it.
 
 import '../ui/foundations/tokens.css';
+import '../ui/foundations/page.css';
 import './catalogue.css';
 import { applyTheme, CLASSIC, THEMES, type Theme } from '../ui/foundations/themes';
 import { createPlayScreen } from '../ui/screens/play-screen';
