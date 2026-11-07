@@ -290,7 +290,7 @@ and the theme unit tests pass.
 
 - [X] T080 [P] Update `docs/contracts/component-library.md` to match what was built (names, samples, any decisions taken at checkpoints).
 - [X] T081 [P] `AGENTS.md`: Components gains the component library (`src/ui/`, tiers, catalogue); Build, Test and Run gains `npm run catalogue`, `npm run build:catalogue`; Repository Layout gains `src/ui/`, `src/catalogue/`, `test/acceptance/library/`; Conventions gains "the tiers are enforced by lint and `tools/ui-tiers.spec.ts`" and "catalogue scenarios run only on the catalogue projects", each with its why.
-- [ ] T082 Run [quickstart.md](quickstart.md) sections 1, 2 and 4; ask the owner to do section 3 on a real phone (SC-301) and record the sign-off in the TDD log.
+- [X] T082 Run [quickstart.md](quickstart.md) sections 1, 2 and 4; ask the owner to do section 3 on a real phone (SC-301) and record the sign-off in the TDD log.
 - [X] T083 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with every criterion AC-1 to AC-25 covered. Commit it.
 - [X] T084 Push `003-themed-ui-part-3` and open "spec-003 part 3 of 3: play screen and themes" (what, why, how tested, rollback: revert; players unaffected; the Executable Specifications box: no changes to approved files). The owner merges with a merge commit.
 
@@ -352,7 +352,7 @@ page seen *between* them (between the keys, around the mascot) is page, and is d
 ### Polish and pull request 4
 
 - [X] T093 [P] `docs/contracts/component-library.md`: Foundations gains `blend` and `page.css`, as in the spec's copy. `AGENTS.md`: the Component library line lists `page.css` among the foundations.
-- [ ] T094 Run [quickstart.md](quickstart.md):
+- [X] T094 Run [quickstart.md](quickstart.md):
   - Section 1, and section 2's step 6: compare the dots with `docs/design/1930s Midnight blue@2x.png`.
   - Section 4: the game's `dist/` is unchanged from `main`.
   - Ask the owner for section 3 on a real phone, now with the dots. This also closes T082. Record the sign-off in the TDD log.

@@ -1191,3 +1191,20 @@ Added 2026-11-07 after the owner's review of part 3. Scenarios approved 2026-11-
 - **Merging beside #12** (the catalogue styles fix): a trial merge of `fix/catalogue-styles`
   into this branch had no conflicts (`AGENTS.md`, quickstart and research merge automatically);
   it was undone.
+
+## Owner sign-off on a real phone (SC-301; T082, T094)
+
+- **Signed off by** Philip England, product owner, on 2026-11-07, after merges #11, #12 and #13
+  (`main` at `aff2403`).
+- **How**: quickstart section 3. The built catalogue was served from the development computer
+  (`vite preview --host`) and opened on the owner's phone over the same Wi-Fi:
+  - `http://<computer>:4173/catalogue.html`
+  - `…#play-screen`
+- **Owner's words**: "looks good. happy to sign off".
+- **On the way, two problems with the catalogue on a phone, both resolved**:
+  - Under Vite's dev server the catalogue had no styles or fonts, because its content security
+    policy blocks injected styles. Fixed in #12, which serves the build.
+  - The development computer's address changes with the network (192.168.1.66 on one Wi-Fi,
+    192.168.0.50 on another). Use the `Network:` address `npm run catalogue -- --host` prints.
+- spec-003's User Stories 1 to 6 are delivered: AC-1 to AC-28 pass on `main`, the public site
+  serves `aff2403` (spec-001 AC-17), and the catalogue is not published.
