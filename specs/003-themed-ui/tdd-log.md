@@ -1051,3 +1051,23 @@ Unit tests only (`themes.spec.ts`, `describe('themeForSeed (spec-003 AC-23, AC-2
   describe title naming all three. Each test now names its own criterion (`fe3f0d1`, titles only),
   and the report ends `OVERALL status: PASS` with AC-1 to AC-25 covered. Coverage: lines 98.97%,
   branches 94.03%.
+
+---
+
+# Part 4: User Story 6, Ben-Day dots on the page (branch `003-themed-ui-part-4`)
+
+Added 2026-11-07 after the owner's review of part 3. Scenarios approved 2026-11-07 (`ff41333`).
+
+## Baseline (T085)
+
+- **Placeholder readings**: the approved driver interface gained `pageDots` and `showsDots`.
+  - UI driver: `pageDots()` returns null and `showsDots()` returns true, values that cannot
+    pass.
+  - Engine driver: both say "browse only with the UI driver".
+  - Typecheck and lint clean.
+- **Full suite**: 241 unit tests (lines 98.97%, branches 94.03%); engine 36 passed; phones 187
+  passed and 10 failed. The 10 are all User Story 6, not started: AC-26 ×3, AC-27's first
+  scenario, and AC-28, on each phone.
+- **Reported**: AC-27's "apart from the dots, every colour drawn is still one of Midnight blue's
+  four" already passes on both phones, as recorded at approval. It is proven by a break in T090.
+- Game JS and CSS unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).

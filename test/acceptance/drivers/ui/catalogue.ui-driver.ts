@@ -3,7 +3,7 @@
 // needed by an implemented criterion return values that cannot pass (spec-003 tasks, T013).
 
 import type { Locator, Page } from '@playwright/test';
-import type { CatalogueSection, LibraryComponent, LibraryScreen, PlayScreenPart, Sample, ScreenSample, ThemeName } from '../../dsl/catalogue-vocabulary';
+import type { CatalogueSection, LibraryComponent, LibraryScreen, PageDots, PlayScreenPart, Sample, ScreenSample, ThemeName } from '../../dsl/catalogue-vocabulary';
 import { NO_BOX, readAppearance, readColoursInUse, readGreyscaleContrast, readPartView, readSampleView, readTypeface, textElement } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
 import type { Box, ScreenSize } from '../phone.driver';
@@ -267,6 +267,16 @@ export class UiCatalogueDriver implements CatalogueDriver {
   /** What the accessibility scan finds on the catalogue in the theme now shown. */
   async accessibilityProblems(): Promise<readonly string[]> {
     return accessibilityProblems(this.page);
+  }
+
+  /** Not read yet (spec-003 T086): no dots, so no "dots are drawn" check can pass. */
+  async pageDots(): Promise<PageDots | null> {
+    return null;
+  }
+
+  /** Not read yet (spec-003 T086): every part shows dots, so "no dots on" cannot pass. */
+  async showsDots(): Promise<boolean> {
+    return true;
   }
 
   async publishedFiles(): Promise<readonly PublishedFile[]> {

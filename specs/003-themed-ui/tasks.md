@@ -315,7 +315,7 @@ page seen *between* them (between the keys, around the mascot) is page, and is d
 
 ### Before AC-26
 
-- [ ] T085 [US6] Driver stubs so the approved interface compiles: in `test/acceptance/drivers/ui/catalogue.ui-driver.ts`, `pageDots()` returns `null` and `showsDots()` returns `true` (values that cannot pass); in `test/acceptance/drivers/engine/catalogue.engine-driver.ts`, both are `browseOnlyWithTheUiDriver`. `npm run typecheck` is green again. Run the full suite as the part-4 baseline and record it in `specs/003-themed-ui/tdd-log.md`, reporting the two AC-27 runs ("apart from the dots…") that already pass.
+- [X] T085 [US6] Driver stubs so the approved interface compiles: in `test/acceptance/drivers/ui/catalogue.ui-driver.ts`, `pageDots()` returns `null` and `showsDots()` returns `true` (values that cannot pass); in `test/acceptance/drivers/engine/catalogue.engine-driver.ts`, both are `browseOnlyWithTheUiDriver`. `npm run typecheck` is green again. Run the full suite as the part-4 baseline and record it in `specs/003-themed-ui/tdd-log.md`, reporting the two AC-27 runs ("apart from the dots…") that already pass.
 
 ### AC-26: Ben-Day dots behind the play screen
 
