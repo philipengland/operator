@@ -133,8 +133,10 @@ accent on paper (3.59:1).
 **Decision**: a second HTML entry, `catalogue.html`, at the repository root, with its own
 script `src/catalogue/main.ts`. It is built only by `npm run build:catalogue` (Vite
 `--mode catalogue`, output to `catalogue-dist/`, git-ignored) and served by
-`npm run catalogue` (Vite dev server, add `--host` to open it on a phone on the same
-network). `npm run build` keeps its single `index.html` input, so nothing of the catalogue
+`npm run catalogue` (add `--host` to open it on a phone on the same network). Corrected
+2026-11-07: `npm run catalogue` first served the Vite dev server, whose injected `<style>` tags
+the catalogue's content security policy blocks, so it showed no styles or fonts; it now builds
+the catalogue and serves the build with `vite preview`. `npm run build` keeps its single `index.html` input, so nothing of the catalogue
 reaches `dist/` (FR-328). A unit or acceptance check confirms `dist/` holds no catalogue file
 and no catalogue text after a build (AC-18).
 

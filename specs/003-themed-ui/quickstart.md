@@ -24,7 +24,7 @@ covered (AC-20, AC-21, AC-23 to AC-25 by unit tests).
 ## 2. Browse the catalogue
 
 ```bash
-npm run catalogue                # http://localhost:5173/catalogue.html
+npm run catalogue                # builds it, then serves http://localhost:4173/catalogue.html
 ```
 
 Check against the design guide (*Component library.pdf*):
@@ -42,7 +42,7 @@ Check against the design guide (*Component library.pdf*):
 ## 3. On a real phone (SC-301)
 
 ```bash
-npm run catalogue -- --host      # prints a network address, e.g. http://192.168.1.20:5173
+npm run catalogue -- --host      # prints a network address, e.g. http://192.168.1.20:4173
 ```
 
 Open `<address>/catalogue.html` on the phone, on the same network. Sign off each section in all

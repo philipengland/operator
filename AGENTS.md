@@ -80,7 +80,8 @@ npm run test:acceptance:engine -- -g "spec-001 AC-8]"   # one acceptance criteri
 npm run test-results -- <feature-folder> [--public-url <url>] [--note "<text>"]
 
 # Component catalogue (development only; never in dist/)
-npm run catalogue               # dev server, opens /catalogue.html (add -- --host to view on a phone)
+npm run catalogue               # builds it, then serves the build at http://localhost:4173/catalogue.html
+                                # (add -- --host to view on a phone: http://<this computer's address>:4173/catalogue.html)
 npm run build:catalogue         # builds to catalogue-dist/ (git-ignored); the UI driver serves it on its own port
 
 # Run locally
@@ -153,5 +154,9 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
   game's phone projects skip them, and `catalogue-iphone` / `catalogue-android` run only them
   against the catalogue build on its own port. Why: the catalogue is a separate build that must
   never reach `dist/` (spec-003 AC-18, research R8).
+- **The catalogue is served from its build, never by Vite's dev server.** Why: its content
+  security policy (`default-src 'self'`) blocks the `<style>` tags the dev server injects, so
+  under `vite` it showed no styles or fonts (found on a phone, 2026-11-07;
+  `tools/catalogue-script.spec.ts`).
 - **Run TypeScript tools with** `node --experimental-strip-types` (see `exceptions:check`).
   Why: no extra dependency is needed to run a `.ts` tool on Node 22.
