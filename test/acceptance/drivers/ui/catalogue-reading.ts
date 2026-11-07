@@ -316,7 +316,7 @@ export interface Rectangle {
  * Runs in the page: the inside of every surface drawn in a part (the part itself and every element
  * in it that has a fill or an outline, at least 8 pixels each way), in viewport pixels. An
  * outlined shape counts even if its fill is missing, so a missing fill is seen. Each is kept
- * inside its outline, and clear of its rounded corners on the left and right.
+ * inside its outline and its rounded corners.
  */
 export function readDrawnSurfaces(part: Element): readonly Rectangle[] {
   const isDrawn = (element: Element) => {
@@ -326,13 +326,16 @@ export function readDrawnSurfaces(part: Element): readonly Rectangle[] {
     const hasOutline = style.borderTopStyle !== 'none' && Number.parseFloat(style.borderTopWidth) > 0;
     return hasFill || hasOutline;
   };
+  // The largest rectangle inside a rounded shape stays 30% of the corner radius in from each side
+  // (1 − 1/√2 ≈ 0.29), so even a pill-shaped key keeps most of its inside.
+  const cornerShare = 0.3;
   const inside = (element: Element): Rectangle => {
     const style = getComputedStyle(element);
     const box = element.getBoundingClientRect();
     const outline = Number.parseFloat(style.borderTopWidth) || 0;
-    const corner = Math.min(Number.parseFloat(style.borderTopLeftRadius) || 0, box.height / 2);
-    const side = outline + corner;
-    return { x: box.left + side, y: box.top + outline + 1, width: box.width - 2 * side, height: box.height - 2 * outline - 2 };
+    const corner = Math.min(Number.parseFloat(style.borderTopLeftRadius) || 0, box.width / 2, box.height / 2);
+    const inset = outline + corner * cornerShare + 1;
+    return { x: box.left + inset, y: box.top + inset, width: box.width - 2 * inset, height: box.height - 2 * inset };
   };
   const smallest = 8;
   return [part, ...Array.from(part.querySelectorAll('*'))]

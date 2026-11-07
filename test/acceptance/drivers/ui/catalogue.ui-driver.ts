@@ -274,7 +274,7 @@ export class UiCatalogueDriver implements CatalogueDriver {
   /**
    * The page's Ben-Day dots at the top or the bottom of the page: the paper, size and spacing as
    * the root element declares them, and the dot colour as drawn, from a screenshot of one tile of
-   * the dot grid there. Null when the page declares no dots.
+   * the dot grid there. Null when the page declares no dots, or none is drawn there.
    */
   async pageDots(place: PagePlace): Promise<PageDots | null> {
     const isBottom = place === 'bottom of the page';
@@ -287,7 +287,7 @@ export class UiCatalogueDriver implements CatalogueDriver {
     const y = isBottom ? await this.lastWholeTileOnScreen(tile) : 0;
     const screenshot = await this.page.screenshot({ clip: { x: 0, y, width: tile, height: tile }, animations: 'disabled' });
     const drawn = await this.page.evaluate(readDotColour, [screenshot.toString('base64'), declared.paper] as const);
-    return { dotColour: drawn ?? declared.paper, paper: declared.paper, sizeInPixels: declared.sizeInPixels, everyPixels: declared.everyPixels };
+    return drawn ? { dotColour: drawn, paper: declared.paper, sizeInPixels: declared.sizeInPixels, everyPixels: declared.everyPixels } : null;
   }
 
   /**
