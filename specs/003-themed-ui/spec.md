@@ -68,6 +68,18 @@ library's simple components, and join the catalogue then.
   screen to the game. The text input is built here as the owner listed inputs explicitly; the
   game first uses it in F7's seed field.
 
+### Session 2026-11-07
+
+- Owner feedback after part 3: the design's page background has Ben-Day dots, which the
+  library left out (the page was plain paper). Added as User Story 6, in this spec.
+- Q: Where do the dots appear? → A: On the page background only. Panels, bubbles, pills and
+  buttons stay plain, so no text or digit sits on the dots.
+- Q: What colour are the dots? → A: The theme's tile on its paper, at full strength, so every
+  theme still draws only its four colours.
+- Q: What size and spacing? → A: As the design guide; the owner is adding the design files to
+  the repository. [NEEDS CLARIFICATION: dot size, spacing and grid (straight or offset) from
+  the design files]
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Simple components (Priority: P1)
@@ -243,6 +255,36 @@ puzzles exist, so it is proved by unit tests on the rule alone.
 
 ---
 
+### User Story 6 - Ben-Day dots on the page (Priority: P2)
+
+> **As the** owner,
+> **I want** the page behind every screen to carry the design guide's Ben-Day dots, in each
+> theme's own colours,
+> **So that** the screens have the printed, 1930s comic-strip look of the mockups, not a flat
+> fill.
+
+**Why this priority**: the dots are part of the visual identity, found missing at the owner's
+review after part 3. They change only the page background, so they need nothing else first.
+
+**Independent Test**: open the catalogue and the play screen alone in each of the six themes;
+the page shows tile-coloured dots on paper, every panel and button stays plain, and the colour,
+contrast and accessibility checks still pass.
+
+**Acceptance Scenarios**:
+
+1. **AC-26** — **Given** the catalogue in Classic, **When** the owner opens the play screen
+   alone, **Then** the page behind it shows cream (tile, #FFFDF6) dots on its sand (paper,
+   #F1E6CF) background, and the header bubble, counter, grid, keypad and main button show no
+   dots.
+2. **AC-27** — **Given** the catalogue shows Classic, **When** the owner chooses Midnight blue,
+   **Then** the dots become Midnight blue's tile (#F4F9FC) on its paper (#D8E6F0), and every
+   colour drawn, dots included, is one of Midnight blue's four.
+3. **AC-28** — **Given** the dotted page in each of the six themes, **When** the catalogue is
+   checked, **Then** the accessibility scan reports no issues, and nothing moves or changes size
+   compared with the plain page.
+
+---
+
 ### Edge Cases
 
 - **States that combine**: a selected cell in a correct line shows the selected style; the
@@ -258,6 +300,11 @@ puzzles exist, so it is proved by unit tests on the rule alone.
 - **Reduced motion**: nothing moves or animates when the setting is on.
 - **A theme that fails contrast**: AC-21 fails the build; the owner adjusts that theme's
   values. The six themes as designed were checked on 2026-11-05 and pass.
+- **A long page**: the dots cover the whole page as it scrolls, with no plain band below the
+  first screenful.
+- **Text on the page itself** (the catalogue's headings and captions): it sits over the dots.
+  Ink on tile and ink on paper both already meet 4.5:1 in every theme (AC-21), so it stays
+  readable.
 
 ## Requirements *(mandatory)*
 
@@ -352,6 +399,10 @@ puzzles exist, so it is proved by unit tests on the rule alone.
   are shown as fixed samples.
 - **FR-328**: The catalogue MUST NOT be published: not reachable at the public address and not
   in the published files. The published game MUST be unchanged by this spec.
+- **FR-329**: The page background MUST show Ben-Day dots in the theme's tile on its paper,
+  drawn by the foundations (no image files, so the content security policy is unchanged), on
+  the page only: no surface, bubble, pill, button or cell shows them. [NEEDS CLARIFICATION:
+  dot size, spacing and grid from the design files]
 
 ### Themes
 
@@ -420,6 +471,7 @@ puzzles exist, so it is proved by unit tests on the rule alone.
 | Seed | "4F7A21", "4f7a21" | same theme each time | AC-23 |
 | Spread | 600 seeds | each theme 70–130 times | AC-24 |
 | No seed | the fixed puzzle | Classic | AC-25 |
+| Dots | Classic: #FFFDF6 dots on #F1E6CF; Midnight blue: #F4F9FC on #D8E6F0 | dots on the page only, theme colours only | AC-26, AC-27 |
 
 ## Non-Functional Requirements *(mandatory — org baseline)*
 
