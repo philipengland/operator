@@ -22,7 +22,7 @@ screens. And then screens themselves."
 the pipeline, not to be enjoyed. The owner has commissioned a visual identity, "Hello,
 Operator!": a 1930s rubber-hose look with a telephone-operator mascot, a component library
 and six colour themes (design guide: *Component library.pdf*, *Hello, Operator! 1930s UI.pdf*
-and *ComponentLibrary.dc.html*, supplied 2026-11-05). spec-002 put "the visual redesign from
+and *ComponentLibrary.dc.html*, supplied 2026-11-05; in `docs/design/` from 2026-11-07). spec-002 put "the visual redesign from
 the mockups" out of scope as a separate feature.
 
 **What this spec covers.** A component library in three tiers, built on shared foundations,
@@ -74,11 +74,14 @@ library's simple components, and join the catalogue then.
   library left out (the page was plain paper). Added as User Story 6, in this spec.
 - Q: Where do the dots appear? → A: On the page background only. Panels, bubbles, pills and
   buttons stay plain, so no text or digit sits on the dots.
-- Q: What colour are the dots? → A: The theme's tile on its paper, at full strength, so every
-  theme still draws only its four colours.
-- Q: What size and spacing? → A: As the design guide; the owner is adding the design files to
-  the repository. [NEEDS CLARIFICATION: dot size, spacing and grid (straight or offset) from
-  the design files]
+- Q: What colour are the dots? → A: First answered "the theme's tile on its paper". The design
+  files (added to `docs/design/` on 2026-11-07) show darker dots: in *1930s Midnight blue@2x.png*
+  they are #BDCBD8 on paper #D8E6F0, the theme's ink at about 15% over its paper. Owner's final
+  answer: match the mockup, ink at 15% over paper. This is the one colour drawn that is not one of
+  the theme's four. It is worked out from that theme's own ink and paper, so it still needs no
+  value of its own per theme.
+- Q: What size and spacing? → A: As the mockup: round dots 3 pixels across, every 9 pixels, in a
+  straight (not offset) grid. Measured at 2× as 6-pixel dots every 18 pixels.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -267,18 +270,18 @@ puzzles exist, so it is proved by unit tests on the rule alone.
 review after part 3. They change only the page background, so they need nothing else first.
 
 **Independent Test**: open the catalogue and the play screen alone in each of the six themes;
-the page shows tile-coloured dots on paper, every panel and button stays plain, and the colour,
-contrast and accessibility checks still pass.
+the page shows the theme's ink dots, faint, on its paper; every panel and button stays plain;
+and the colour, contrast and accessibility checks still pass.
 
 **Acceptance Scenarios**:
 
 1. **AC-26** — **Given** the catalogue in Classic, **When** the owner opens the play screen
-   alone, **Then** the page behind it shows cream (tile, #FFFDF6) dots on its sand (paper,
-   #F1E6CF) background, and the header bubble, counter, grid, keypad and main button show no
-   dots.
+   alone, **Then** the page behind it shows round dots 3 pixels across, every 9 pixels, in the
+   colour #D1C7B4 (Classic's ink at 15% over its paper) on its paper (#F1E6CF), and the header
+   bubble, counter, grid, keypad and main button show no dots.
 2. **AC-27** — **Given** the catalogue shows Classic, **When** the owner chooses Midnight blue,
-   **Then** the dots become Midnight blue's tile (#F4F9FC) on its paper (#D8E6F0), and every
-   colour drawn, dots included, is one of Midnight blue's four.
+   **Then** the dots become #BCCAD7 (Midnight blue's ink at 15% over its paper) on its paper
+   (#D8E6F0); apart from the dots, every colour drawn is still one of Midnight blue's four.
 3. **AC-28** — **Given** the dotted page in each of the six themes, **When** the catalogue is
    checked, **Then** the accessibility scan reports no issues, and nothing moves or changes size
    compared with the plain page.
@@ -303,8 +306,9 @@ contrast and accessibility checks still pass.
 - **A long page**: the dots cover the whole page as it scrolls, with no plain band below the
   first screenful.
 - **Text on the page itself** (the catalogue's headings and captions): it sits over the dots.
-  Ink on tile and ink on paper both already meet 4.5:1 in every theme (AC-21), so it stays
-  readable.
+  Ink on the dot colour must still meet 4.5:1 in every theme. The dots are a 15% step from paper
+  towards ink, so ink on them is close to ink on paper, which already passes (AC-21). The
+  contrast check gains this pair.
 
 ## Requirements *(mandatory)*
 
@@ -399,10 +403,12 @@ contrast and accessibility checks still pass.
   are shown as fixed samples.
 - **FR-328**: The catalogue MUST NOT be published: not reachable at the public address and not
   in the published files. The published game MUST be unchanged by this spec.
-- **FR-329**: The page background MUST show Ben-Day dots in the theme's tile on its paper,
-  drawn by the foundations (no image files, so the content security policy is unchanged), on
-  the page only: no surface, bubble, pill, button or cell shows them. [NEEDS CLARIFICATION:
-  dot size, spacing and grid from the design files]
+- **FR-329**: The page background MUST show Ben-Day dots: round, 3 pixels across, every 9
+  pixels in a straight grid, in the theme's ink at 15% over its paper, on the paper. They MUST be
+  drawn by the foundations (no image files, so the content security policy is unchanged), and on
+  the page only: no surface, bubble, pill, button or cell shows them. The dot colour is the one
+  colour drawn that is not one of the theme's four (FR-321); it is worked out from the theme's
+  ink and paper.
 
 ### Themes
 
@@ -471,7 +477,7 @@ contrast and accessibility checks still pass.
 | Seed | "4F7A21", "4f7a21" | same theme each time | AC-23 |
 | Spread | 600 seeds | each theme 70–130 times | AC-24 |
 | No seed | the fixed puzzle | Classic | AC-25 |
-| Dots | Classic: #FFFDF6 dots on #F1E6CF; Midnight blue: #F4F9FC on #D8E6F0 | dots on the page only, theme colours only | AC-26, AC-27 |
+| Dots | 3 px every 9 px; Classic #D1C7B4 on #F1E6CF; Midnight blue #BCCAD7 on #D8E6F0 (ink at 15% over paper) | dots on the page only; no other colour besides the theme's four | AC-26, AC-27 |
 
 ## Non-Functional Requirements *(mandatory — org baseline)*
 
