@@ -25,7 +25,10 @@ export default defineConfig({
   reporter: 'list',
   use: {
     baseURL,
-    trace: 'on-first-retry',
+    // CI retries, so it records a trace on the retry. Local runs do not retry, so they keep the
+    // trace of any failure instead: a one-off failure can then be diagnosed (spec-001 AC-12
+    // failed once on the iPhone, 2026-11-07, and could not be reproduced).
+    trace: isCi ? 'on-first-retry' : 'retain-on-failure',
   },
   projects: isUiRun
     ? [
