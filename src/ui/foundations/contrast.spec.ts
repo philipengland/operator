@@ -16,4 +16,8 @@ describe('blend', () => {
   it("gives Classic's dots: its ink at 15% over its paper is #D1C7B4 (spec-003 AC-26)", () => {
     expect(blend('#1A1A1A', '#F1E6CF', 0.15)).toBe('#D1C7B4');
   });
+
+  it("gives Midnight blue's dots: its ink at 15% over its paper is #BCCAD7 (spec-003 AC-27)", () => {
+    expect(blend('#1B2A4A', '#D8E6F0', 0.15)).toBe('#BCCAD7');
+  });
 });
