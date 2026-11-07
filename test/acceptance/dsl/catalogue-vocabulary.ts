@@ -39,6 +39,17 @@ export interface Sample {
   readonly label: string;
 }
 
+/** Where on the page the Ben-Day dots are looked at (spec-003 User Story 6). */
+export type PagePlace = 'top of the page' | 'bottom of the page';
+
+/** The page's Ben-Day dots: their colour and the paper they sit on (#RRGGBB), their size and spacing. */
+export interface PageDots {
+  readonly dotColour: string;
+  readonly paper: string;
+  readonly sizeInPixels: number;
+  readonly everyPixels: number;
+}
+
 /** How a sample looks, in the theme's own terms. Only the parts a scenario names are checked. */
 export interface Look {
   readonly fill?: ColourToken | 'none';

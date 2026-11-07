@@ -9,6 +9,8 @@ import type {
   LibraryComponent,
   LibraryScreen,
   Look,
+  PageDots,
+  PagePlace,
   PlayScreenPart,
   Sample,
   ScreenSample,
@@ -22,6 +24,12 @@ const SMALLEST_TOUCH_TARGET = 44;
 
 /** WCAG 2.2 non-text contrast: icons must stand out 3:1, seen in greyscale. */
 const NON_TEXT_CONTRAST = 3;
+
+/**
+ * spec-003 research R10: a browser may round a mixed colour by one level in each of red, green
+ * and blue, so a dot colour within one level per channel is the spec's colour.
+ */
+const DOT_COLOUR_ROUNDING = 1;
 
 export class CatalogueDsl {
   private rememberedLayout: Readonly<Record<string, Box>> | undefined;
@@ -219,6 +227,33 @@ export class CatalogueDsl {
     expect(await this.driver().accessibilityProblems(), `accessibility problems in ${theme}`).toEqual([]);
   }
 
+  // The page's Ben-Day dots (User Story 6).
+
+  /** The page shows dots of this colour, size and spacing, on this paper, at this place. */
+  async expectPageDots(place: PagePlace, dots: PageDots): Promise<void> {
+    const drawn = await this.driver().pageDots(place);
+    expect(drawn, `dots are drawn at the ${place}`).not.toBeNull();
+    if (!drawn) {
+      return;
+    }
+    expect(channelsApart(drawn.dotColour, dots.dotColour), `the dots are ${dots.dotColour} (drawn ${drawn.dotColour})`).toBeLessThanOrEqual(DOT_COLOUR_ROUNDING);
+    expect(drawn.paper.toUpperCase(), 'the paper behind the dots').toBe(dots.paper.toUpperCase());
+    expect(drawn.sizeInPixels, 'each dot is this many pixels across').toBeCloseTo(dots.sizeInPixels, 0);
+    expect(drawn.everyPixels, 'the dots are this many pixels apart').toBeCloseTo(dots.everyPixels, 0);
+  }
+
+  /** Some dots are drawn on the page, in whatever theme is shown. */
+  async expectPageDotsShown(theme: ThemeName): Promise<void> {
+    expect(await this.driver().pageDots('top of the page'), `dots are drawn in ${theme}`).not.toBeNull();
+  }
+
+  /** None of these parts of the play screen shows a dot: each has its own plain fill. */
+  async expectNoDotsOn(parts: readonly PlayScreenPart[]): Promise<void> {
+    for (const part of parts) {
+      expect(await this.driver().showsDots(part), `${part} shows dots`).toBe(false);
+    }
+  }
+
   // Publishing.
 
   async expectNotPublished(): Promise<void> {
@@ -244,6 +279,13 @@ function at(boxes: readonly Box[], index: number): Box {
     throw new Error(`No box at position ${index + 1}`);
   }
   return box;
+}
+
+/** The largest difference in red, green or blue between two #RRGGBB colours. */
+function channelsApart(first: string, second: string): number {
+  const channels = (colour: string) => (colour.match(/[0-9a-f]{2}/gi) ?? []).map((pair) => Number.parseInt(pair, 16));
+  const [a, b] = [channels(first), channels(second)];
+  return a.length === 3 && b.length === 3 ? Math.max(...a.map((value, index) => Math.abs(value - (b[index] ?? 0)))) : Number.POSITIVE_INFINITY;
 }
 
 function width(box: Box): number {

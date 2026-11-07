@@ -2,7 +2,7 @@
 // /speckit-implement builds the Playwright driver. Every method but publishedFiles needs a
 // browser, so scenarios that browse the catalogue are tagged @ui and @catalogue.
 
-import type { CatalogueSection, ColourToken, LibraryComponent, LibraryScreen, PlayScreenPart, Sample, ScreenSample, ThemeName, Typeface } from '../dsl/catalogue-vocabulary';
+import type { CatalogueSection, ColourToken, LibraryComponent, LibraryScreen, PageDots, PagePlace, PlayScreenPart, Sample, ScreenSample, ThemeName, Typeface } from '../dsl/catalogue-vocabulary';
 import type { Box, ScreenSize } from './phone.driver';
 
 /** What a sample shows and what a screen reader hears from it. */
@@ -74,6 +74,10 @@ export interface CatalogueDriver {
   /** Where every sample sits, keyed "<component> · <label>". */
   layoutOfEverySample(): Promise<Readonly<Record<string, Box>>>;
   accessibilityProblems(): Promise<readonly string[]>;
+  /** The page's Ben-Day dots as drawn at this place, colours as #RRGGBB; null when no dots are drawn there. */
+  pageDots(place: PagePlace): Promise<PageDots | null>;
+  /** Whether any dot shows on this part of the play screen; true when the part cannot be found, so a missing part never passes. */
+  showsDots(part: PlayScreenPart): Promise<boolean>;
   /** The files the game build publishes (dist/). */
   publishedFiles(): Promise<readonly PublishedFile[]>;
 }
