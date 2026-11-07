@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { contrastRatio } from './contrast';
+import { blend, contrastRatio } from './contrast';
 import { applyTheme, THEMES, themeForSeed } from './themes';
 
 describe('THEMES (spec-003 AC-20)', () => {
@@ -73,5 +73,14 @@ describe('themeForSeed', () => {
 
   it('shows a puzzle with no seed, such as the fixed puzzle, in Classic (spec-003 AC-25)', () => {
     expect(themeForSeed(undefined).label).toBe('Classic');
+  });
+});
+
+// spec-003 FR-329: the page's dots are the theme's ink at 15% over its paper.
+const DOT_STRENGTH = 0.15;
+
+describe('contrast on the dotted page (spec-003 AC-28)', () => {
+  it.each(THEMES.map((theme) => [theme.label, theme] as const))('%s: ink on the dots reaches 4.5:1', (_label, { colours: { ink, paper } }) => {
+    expect(contrastRatio(ink, blend(ink, paper, DOT_STRENGTH))).toBeGreaterThanOrEqual(TEXT_CONTRAST);
   });
 });
