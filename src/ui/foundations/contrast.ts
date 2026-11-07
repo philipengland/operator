@@ -20,7 +20,7 @@ export function contrastRatio(foreground: string, background: string): number {
 }
 
 function relativeLuminance(colour: string): number {
-  const [red = 0, green = 0, blue = 0] = (colour.match(/[0-9a-f]{2}/gi) ?? []).map((pair) => linear(Number.parseInt(pair, HEX_BASE) / CHANNEL_MAX));
+  const [red = 0, green = 0, blue = 0] = channelsOf(colour).map((channel) => linear(channel / CHANNEL_MAX));
   return RED_WEIGHT * red + GREEN_WEIGHT * green + BLUE_WEIGHT * blue;
 }
 
