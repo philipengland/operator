@@ -74,6 +74,7 @@ npm run test:acceptance:engine                     # fast, no browser
 npm run test:acceptance:ui                         # iPhone SE (WebKit) and Pixel 5 (Chromium) at 375 × 667; run npm run build first
 npm run test:acceptance:engine -- -g "spec-001 AC-8]"   # one acceptance criterion
 # After deploy only: ACCEPTANCE_PUBLIC_URL=<url> npm run test:acceptance:engine   (AC-17)
+# A scenario that fails locally keeps its trace: npx playwright show-trace test-results/<scenario>/trace.zip
 
 # Test evidence: runs every suite and writes specs/<feature>/test-results.md, which the
 # Spec Kit Dashboard shows under Supporting Artifacts (last line: "OVERALL status: PASS")
