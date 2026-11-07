@@ -357,11 +357,11 @@ page seen *between* them (between the keys, around the mascot) is page, and is d
   - Section 4: the game's `dist/` is unchanged from `main`.
   - Ask the owner for section 3 on a real phone, now with the dots. This also closes T082. Record the sign-off in the TDD log.
 - [X] T095 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with AC-1 to AC-28 covered. Commit it.
-- [ ] T096 Push `003-themed-ui-part-4` and open "spec-003 part 4: Ben-Day dots":
+- [X] T096 Push `003-themed-ui-part-4` and open "spec-003 part 4: Ben-Day dots":
   - Cover what, why (the owner's review of part 3), how tested, and rollback (revert; players unaffected).
   - Also note the design reference committed and the `docs/design/` lint ignore.
   - In the Executable Specifications box: changes included, `page-background.acceptance-spec.ts` and the DSL additions approved 2026-11-07.
-  - The owner merges with a merge commit.
+  - The owner merges with a merge commit. (Opened 2026-11-07 as #13.)
 
 ---
 
