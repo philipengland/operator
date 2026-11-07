@@ -20,6 +20,20 @@ The six themes are fixed data (spec Themes table, research R3).
   golden tests.
 - `CLASSIC` is the default and the theme for a puzzle with no seed.
 
+## Page dots (User Story 6)
+
+Derived, not stored: no theme gains a value (FR-321, AC-20). Research R10.
+
+| Field | Rule |
+| --- | --- |
+| dot colour | the theme's ink at 15% over its paper, each channel rounded: Classic #D1C7B4, Midnight blue #BCCAD7, Plum and mint #BBD0C8, Amber and teal #E1BD8B, Bubblegum #DDAEC0, Racing green #C7C9A3 |
+| dot size | round, 3 px across |
+| spacing | every 9 px, straight grid from the page's top-left |
+| where | the page background only; every surface, bubble, pill, button and cell has its own solid fill |
+
+`blend(foreground, background, share)` gives the dot colour in TypeScript for the unit tests:
+`blend(ink, paper, 0.15)`.
+
 ## Seed → theme
 
 `themeForSeed(seed: string | undefined): Theme`

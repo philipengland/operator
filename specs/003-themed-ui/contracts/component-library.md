@@ -35,6 +35,8 @@ interface Component<Props> {
 | `applyTheme(root, theme)` | sets the four colour properties on `root`, and nothing else |
 | `themeForSeed(seed: string \| undefined)` | research R4: 32-bit FNV-1a over the upper-cased seed, remainder by 6; no seed gives Classic |
 | `contrastRatio(foreground, background)` | WCAG 2.2 relative-luminance ratio, for the contrast test |
+| `blend(foreground, background, share)` | the colour of `share` of `foreground` over `background`, as `#RRGGBB` (User Story 6: the dot colour is `blend(ink, paper, 0.15)`) |
+| `page.css` | the page background: paper with Ben-Day dots, 3 px every 9 px, in the theme's ink at 15% over paper (`color-mix`), on the root element only; a page using it keeps `body` and its wrappers transparent (User Story 6) |
 | `tokens.css` | typefaces (`--font-display`, `--font-body`, weights), outlines, shadows, radii, `--gap`, `--touch-target`; screen sizes `--size-cell`, `--size-key`, `--size-main`, `--size-dashed`, `--text-display`, `--text-body`, `--space-surface`, `--space-screen`, `--space-between`, `--space-grid`, which shrink on screens up to 700 and 600 px tall and up to 359 px wide, so the play screen fits 375 × 667 and 320 × 568 |
 
 ## Simple components

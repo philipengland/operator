@@ -282,9 +282,9 @@ and the colour, contrast and accessibility checks still pass.
 2. **AC-27** — **Given** the catalogue shows Classic, **When** the owner chooses Midnight blue,
    **Then** the dots become #BCCAD7 (Midnight blue's ink at 15% over its paper) on its paper
    (#D8E6F0); apart from the dots, every colour drawn is still one of Midnight blue's four.
-3. **AC-28** — **Given** the dotted page in each of the six themes, **When** the catalogue is
-   checked, **Then** the accessibility scan reports no issues, and nothing moves or changes size
-   compared with the plain page.
+3. **AC-28** — **Given** the dotted page in each of the six themes, **When** it is checked,
+   **Then** the accessibility scan of the catalogue reports no issues, and ink on the dot colour
+   meets 4.5:1, so text set directly on the page stays readable.
 
 ---
 
@@ -306,9 +306,8 @@ and the colour, contrast and accessibility checks still pass.
 - **A long page**: the dots cover the whole page as it scrolls, with no plain band below the
   first screenful.
 - **Text on the page itself** (the catalogue's headings and captions): it sits over the dots.
-  Ink on the dot colour must still meet 4.5:1 in every theme. The dots are a 15% step from paper
-  towards ink, so ink on them is close to ink on paper, which already passes (AC-21). The
-  contrast check gains this pair.
+  Ink on the dot colour must still meet 4.5:1 in every theme (AC-28). Worked out on 2026-11-07:
+  the lowest is Racing green at 7.13:1, the highest Classic at 10.39:1.
 
 ## Requirements *(mandatory)*
 

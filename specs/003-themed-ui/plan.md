@@ -1,6 +1,6 @@
 # Implementation Plan: Themed Component Library
 
-**Branch**: `003-themed-ui` | **Date**: 2026-11-06 | **Spec**: [spec.md](spec.md)
+**Branch**: `003-themed-ui` (User Story 6: `003-themed-ui-part-4`) | **Date**: 2026-11-06; User Story 6 added 2026-11-07 | **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `specs/003-themed-ui/spec.md`
 
@@ -12,6 +12,10 @@ components (text, button, text input, icon, surface, badge, mascot), combined co
 puzzle grid, keypad) and the play screen, with six themes and the seed-to-theme rule. A
 development-only catalogue shows everything in every state and theme. Players see no change;
 spec-004 puts the play screen into the game.
+
+**Added 2026-11-07, User Story 6**: the page background carries the design's Ben-Day dots,
+3 px every 9 px, in the theme's ink at 15% over its paper, drawn by a new foundations
+stylesheet with a CSS gradient (research R10). Delivered as a fourth pull request (R11).
 
 Technically: plain TypeScript components (no framework), each a pure **model** unit-tested in
 Node plus a DOM **renderer** proven through the catalogue on both phones (research R1). The
@@ -47,9 +51,9 @@ reduced motion; 375 × 667 and 320 × 568 without scrolling; no network requests
 unchanged); no framework or new dependency.
 
 **Scale/Scope**: 7 simple components, 8 combined components, 1 screen, 6 themes, 1 catalogue
-page.
+page, and the page background (User Story 6).
 
-No NEEDS CLARIFICATION items remain; research R1–R9 resolve each design question.
+No NEEDS CLARIFICATION items remain; research R1–R11 resolve each design question.
 
 ## Constitution Check
 
@@ -57,7 +61,7 @@ No NEEDS CLARIFICATION items remain; research R1–R9 resolve each design questi
 
 | Principle | Check | Result |
 | --- | --- | --- |
-| I. Client-side and offline | Fonts committed and served from the same origin; no requests; CSP unchanged (R5). | Pass |
+| I. Client-side and offline | Fonts committed and served from the same origin; no requests; CSP unchanged (R5). The dots are a CSS gradient, not a fetched image (R10). | Pass |
 | II. Pure puzzle engine | `src/ui/` may not import the engine or the app (lint, R2); components are told what to show and never work out a rule (FR-305). The engine is untouched. | Pass |
 | III. Deterministic generation | No generation. The seed-to-theme rule is pure and pinned by golden tests (R4). | Pass |
 | IV. Mobile, touch and accessible | Real buttons, 44 × 44, `aria-disabled` and `aria-pressed`; states by fill and shadow, not colour; contrast checked for every theme (R6); axe per theme; reduced motion; small screens checked. | Pass |
@@ -78,6 +82,11 @@ No NEEDS CLARIFICATION items remain; research R1–R9 resolve each design questi
 Re-checked after [data-model.md](data-model.md), [contracts/](contracts/component-library.md)
 and [quickstart.md](quickstart.md). No new violations. The tier rules are enforced by the
 build, not by review alone, which also meets SC-304.
+
+Re-checked for User Story 6 on 2026-11-07 (research R10): no new violations. No dependency,
+no image asset, CSP unchanged; `applyTheme` still sets four colours; the dots live in the
+foundations, so no combined component or screen gains styling; contrast of ink on the dots is
+unit-tested in all six themes.
 
 ## Project Structure
 
@@ -108,7 +117,8 @@ src/ui/                             # NEW: the component library
 │   ├── tokens.css                  # typefaces, outline, shadows, radii, spacing, touch target
 │   ├── fonts/                      # Chewy 400, Nunito variable (WOFF2), licences, README
 │   ├── themes.ts                   # THEMES, applyTheme, themeForSeed
-│   └── contrast.ts                 # contrastRatio
+│   ├── contrast.ts                 # contrastRatio; blend (US6)
+│   └── page.css                    # NEW (US6): the page background, paper with Ben-Day dots (R10)
 ├── simple/                         # text, button, text-input, icon, surface, badge, mascot
 │   └── <name>.ts, <name>.css       # model + renderer; styles from tokens only
 ├── combined/                       # speech-bubble, operator-header, solutions-counter,
@@ -121,7 +131,7 @@ src/ui/                             # NEW: the component library
 src/catalogue/                      # NEW: the catalogue page (development only)
 ├── main.ts                         # sections, theme switch, screen samples
 ├── samples.ts                      # sample props for every state
-└── catalogue.css                   # catalogue's own layout
+└── catalogue.css                   # catalogue's own layout; US6: body transparent so the dots show
 
 src/app/, src/engine/               # UNCHANGED (spec-004 connects the play screen)
 
@@ -191,6 +201,8 @@ app, so spec-004 changes only `src/app/` to use it.
 | AC-20 Theme sets only its values | Unit | `src/ui/foundations/themes.spec.ts` |
 | AC-21 Contrast | Unit | `src/ui/foundations/themes.spec.ts`, `contrast.spec.ts` |
 | AC-23 to AC-25 Seed rule | Unit (golden seeds and spread) | `src/ui/foundations/themes.spec.ts` |
+| AC-26, AC-27 Dots on the page in Classic and Midnight blue | Acceptance (catalogue, both phones: drawn dot colour, size and spacing; no dots on the play screen's parts); unit (`blend` gives the spec's values) | `test/acceptance/library/` (file named at `/speckit-acceptance`); `src/ui/foundations/contrast.spec.ts` |
+| AC-28 Dots stay accessible | Acceptance (axe, as AC-22); unit (ink on dots at least 4.5:1 in all six themes) | as above; `src/ui/foundations/themes.spec.ts` |
 | SC-301 Owner sign-off on a phone | Manual | [quickstart.md](quickstart.md) section 3 |
 | SC-302 Every spec-001 and spec-002 criterion | Existing acceptance suite, unchanged | `test/acceptance/play/`, `delivery/` |
 | SC-305 Game unchanged | Build comparison | [quickstart.md](quickstart.md) section 4 |
@@ -206,8 +218,17 @@ R9), each adding only the approved Layer 1 files it makes pass:
 2. **Combined components** (US2, AC-7 to AC-14).
 3. **Play screen and themes** (US3 to US5, AC-15 to AC-25), the current-state contract in
    `docs/contracts/`, `AGENTS.md`, and `test-results.md`.
+4. **Ben-Day dots** (US6, AC-26 to AC-28, added 2026-11-07 after the owner's review of part 3;
+   R11): `page.css`, `blend`, the catalogue's transparent body, the design reference in
+   `docs/design/`, and `test-results.md`.
 
 ## Open Items for a Human
+
+User Story 6 (2026-11-07): none open. Decided by the owner: dots on the page only; ink at 15%
+over paper, as the mockup; size and spacing from the mockup; the design reference committed as
+the PNGs and `ComponentLibrary.dc.html` only.
+
+Parts 1 to 3:
 
 All decided by the owner on 2026-11-06, as recommended:
 
