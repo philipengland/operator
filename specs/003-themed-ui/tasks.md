@@ -335,7 +335,7 @@ page seen *between* them (between the keys, around the mascot) is page, and is d
 
 ### AC-27: the dots follow the theme
 
-- [ ] T090 [US6] AC-27 RED/GREEN.
+- [X] T090 [US6] AC-27 RED/GREEN.
   - ⚠️ Both scenarios are expected to pass at RED once AC-26 is built, because the dot colour is mixed from the theme's own ink and paper. Report them, and prove each with a reverted break:
     - The dot colour fixed to Classic's `#D1C7B4` must fail `the dots are #BCCAD7`.
     - A non-theme colour (e.g. `#777777`) on a sample's border must fail `#777777 is one of Midnight blue's four colours`. This shows the dots leave the four-colour reading working.
@@ -343,8 +343,8 @@ page seen *between* them (between the keys, around the mascot) is page, and is d
 
 ### AC-28: the dotted page stays accessible
 
-- [ ] T091 [P] [US6] AC-28 unit test in `src/ui/foundations/themes.spec.ts`, `describe('contrast on the dotted page (spec-003 AC-28)')`: for each of the six themes, `contrastRatio(ink, blend(ink, paper, 0.15))` is at least 4.5. ⚠️ Expected to pass on its first run (research R10: the lowest is Racing green at 7.13:1). Prove it with a reverted break: the strength raised to 0.6 must fail at least one theme.
-- [ ] T092 [US6] AC-28 acceptance RED/GREEN.
+- [X] T091 [P] [US6] AC-28 unit test in `src/ui/foundations/themes.spec.ts`, `describe('contrast on the dotted page (spec-003 AC-28)')`: for each of the six themes, `contrastRatio(ink, blend(ink, paper, 0.15))` is at least 4.5. ⚠️ Expected to pass on its first run (research R10: the lowest is Racing green at 7.13:1). Prove it with a reverted break: the strength raised to 0.6 must fail at least one theme.
+- [X] T092 [US6] AC-28 acceptance RED/GREEN.
   - ⚠️ Expected to pass once the dots exist. The axe scan skips colour contrast over background images (it reports them as "needs review", not as violations), so the dots alone cannot fail it.
   - Prove the scenario's own guard with a reverted break: `page.css` not imported must fail `dots are drawn in Classic`. Record the axe limitation in the TDD log.
   - Then: **checkpoint**.

@@ -1130,3 +1130,44 @@ Added 2026-11-07 after the owner's review of part 3. Scenarios approved 2026-11-
   request. Game JS and CSS unchanged.
 - **Slice refactor**: none beyond `9223ab4`. The screenshot decoding is repeated in three page
   functions on purpose, because a function run in the page cannot call another.
+
+## AC-27: the dots follow the theme
+
+- **Acceptance test**: `page-background.acceptance-spec.ts` — `[spec-003 AC-27]`, two scenarios
+  on both catalogue phones.
+- **Acceptance RED**: **reported — both pass at RED** (⚠️, as T090 predicted). The dot colour is
+  mixed in CSS from the theme's own ink and paper, so once AC-26 drew the dots, switching theme
+  recoloured them with no further work. The second scenario re-checks AC-19's four-colour rule,
+  which already held.
+- **Unit test** (`a270190`): `blend('#1B2A4A', '#D8E6F0', 0.15)` is `#BCCAD7` (spec-003 AC-27).
+  **Passed on its first run**, because `blend` was already general. Proven by a reverted break:
+  `blend` with its green and blue swapped failed `expected '#BCD7CA' to be '#BCCAD7'` (and
+  Classic's test too).
+- **Driver proven** by reverted breaks, on both phones, each after rebuilding the catalogue:
+  - The dot colour fixed to Classic's `#d1c7b4` failed `the dots are #BCCAD7 (drawn #D1C7B4)`.
+  - A `#777777` border on the sample captions failed `#777777 is one of Midnight blue's four
+    colours`. The four-colour reading still works with the dots on the page.
+- **No cycles**: no new behaviour was needed.
+- **Acceptance GREEN** (T090): AC-27, 4 runs passed.
+
+## AC-28: the dotted page stays accessible
+
+- **Acceptance test**: `page-background.acceptance-spec.ts` — `[spec-003 AC-28]`, one scenario on
+  both catalogue phones, through all six themes.
+- **Unit test** (`a12fe7a`, T091): `describe('contrast on the dotted page (spec-003 AC-28)')`:
+  ink on `blend(ink, paper, 0.15)` reaches 4.5:1 in each of the six themes. **Passed on its first
+  run**, as expected (research R10: lowest Racing green 7.13:1). Proven by a reverted break: the
+  strength at 0.6 failed Classic, Midnight blue, Plum and mint, Amber and teal, and more.
+- **Acceptance RED**: **reported — passes at RED** (⚠️, as T092 predicted), because the dots
+  existed from AC-26.
+  - **The scan cannot judge the dots**, checked 2026-11-07. axe reports no violations and marks
+    78 pieces of text as "needs review" with the reason `bgGradient`: it does not measure
+    contrast over a background image. AC-28's contrast guarantee is the unit test above; the
+    scan still guards everything else.
+  - **The scenario's own guard proven** by a reverted break: `page.css` not imported failed `dots
+    are drawn in Classic — Received: null` on both phones.
+- **Acceptance GREEN** (T092): AC-28, 2 runs passed.
+- **Full suite** after AC-27 and AC-28: 249 unit tests (lines 98.98%, branches 93.63%); engine 36
+  passed; phones 197 passed, none failed. Game JS and CSS unchanged. This run started its own
+  catalogue server, so the catalogue was freshly built.
+- **Slice refactor**: none needed.
