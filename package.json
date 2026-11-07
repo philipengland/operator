@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "catalogue": "vite --open /catalogue.html",
+    "catalogue": "vite build --mode catalogue && vite preview --outDir catalogue-dist --open /catalogue.html",
     "build:catalogue": "vite build --mode catalogue",
     "preview": "vite preview",
     "lint": "eslint .",
