@@ -82,6 +82,11 @@ library's simple components, and join the catalogue then.
   value of its own per theme.
 - Q: What size and spacing? → A: As the mockup: round dots 3 pixels across, every 9 pixels, in a
   straight (not offset) grid. Measured at 2× as 6-pixel dots every 18 pixels.
+- Q: Must accent-coloured parts that sit directly on the page reach 3:1 against the dots as well
+  as the paper? → A: No, against the paper only. The dots cover about 9% of the page, and every
+  accent part on the page also has an ink outline (ink on the dots is at least 7.13:1). Against
+  the dots alone, accent would be below 3:1 in Midnight blue (2.92), Amber and teal (2.83) and
+  Bubblegum (2.68); the themes and the dot strength stay as designed.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -308,6 +313,9 @@ and the colour, contrast and accessibility checks still pass.
 - **Text on the page itself** (the catalogue's headings and captions): it sits over the dots.
   Ink on the dot colour must still meet 4.5:1 in every theme (AC-28). Worked out on 2026-11-07:
   the lowest is Racing green at 7.13:1, the highest Classic at 10.39:1.
+- **Accent next to the page** (the bubble's shadow, the counter, the main button): its 3:1 is
+  measured against the paper only (AC-21), not against the dots. Every accent part on the page
+  has an ink outline, so it never depends on the dots to be seen.
 
 ## Requirements *(mandatory)*
 
