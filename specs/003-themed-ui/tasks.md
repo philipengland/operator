@@ -15,7 +15,7 @@ examples listed in [acceptance.md](acceptance.md) are **locked**: tasks run them
 edit, skip or delete them. Each acceptance criterion is an outer loop of red-green-refactor inner
 loops, recorded in `specs/003-themed-ui/tdd-log.md`.
 
-**Organisation**: three pull requests (plan, Delivery; research R9), each on its own branch and
+**Organisation** (part 4 added 2026-11-07 for User Story 6, Phase 9): three pull requests (plan, Delivery; research R9), each on its own branch and
 carrying only the approved Layer 1 file it makes pass: part 1 is User Story 1, part 2 is User
 Story 2, part 3 is User Stories 3 to 5. Within a story, one group per acceptance criterion in the
 order the spec lists them.
@@ -23,7 +23,7 @@ order the spec lists them.
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: can run in parallel (different files, no dependency on an unfinished task).
-- **[Story]**: the user story the task belongs to (US1 to US5).
+- **[Story]**: the user story the task belongs to (US1 to US6).
 
 ## Path Conventions
 
@@ -144,7 +144,7 @@ the 17 scenarios in `simple-components.acceptance-spec.ts` pass on both catalogu
 
 ### Pull request 1
 
-- [X] T032 [US1] Full suite: lint, types, unit, `npm run build` (unchanged `dist/`), engine and all phone projects; TDD log; `npm run test-results -- 003-themed-ui` (expected BLOCKED: later criteria not yet covered). Push `003-themed-ui-part-1` and open "spec-003 part 1 of 3: foundations and simple components" (what, why, how tested, rollback: revert the merge; players unaffected), with the attribution line. The owner merges with a merge commit.
+- [X] T032 [US1] Full suite: lint, types, unit, `npm run build` (unchanged `dist/`), engine and all phone projects; TDD log; `npm run test-results -- 003-themed-ui` (expected BLOCKED: later criteria not yet covered). Push `003-themed-ui-part-1` and open "spec-003 part 1 of 3: foundations and simple components" (what, why, how tested, rollback: revert the merge; players unaffected), with the attribution line. The owner merges with a merge commit. (Merged 2026-11-06 as #11, merge commit `159207b`.)
 
 **Checkpoint**: part 1 merged; the catalogue shows every simple component.
 
@@ -292,7 +292,76 @@ and the theme unit tests pass.
 - [X] T081 [P] `AGENTS.md`: Components gains the component library (`src/ui/`, tiers, catalogue); Build, Test and Run gains `npm run catalogue`, `npm run build:catalogue`; Repository Layout gains `src/ui/`, `src/catalogue/`, `test/acceptance/library/`; Conventions gains "the tiers are enforced by lint and `tools/ui-tiers.spec.ts`" and "catalogue scenarios run only on the catalogue projects", each with its why.
 - [ ] T082 Run [quickstart.md](quickstart.md) sections 1, 2 and 4; ask the owner to do section 3 on a real phone (SC-301) and record the sign-off in the TDD log.
 - [X] T083 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with every criterion AC-1 to AC-25 covered. Commit it.
-- [ ] T084 Push `003-themed-ui-part-3` and open "spec-003 part 3 of 3: play screen and themes" (what, why, how tested, rollback: revert; players unaffected; the Executable Specifications box: no changes to approved files). The owner merges with a merge commit.
+- [X] T084 Push `003-themed-ui-part-3` and open "spec-003 part 3 of 3: play screen and themes" (what, why, how tested, rollback: revert; players unaffected; the Executable Specifications box: no changes to approved files). The owner merges with a merge commit.
+
+---
+
+## Phase 9: User Story 6 — Ben-Day dots on the page (Priority: P2) (pull request 4)
+
+**Added 2026-11-07** after the owner's review of part 3. Branch `003-themed-ui-part-4`, from
+`main` after #11. Scenarios approved 2026-11-07 ([acceptance.md](acceptance.md), User Story 6).
+
+**Goal**: the page behind every screen carries the design's Ben-Day dots: round, 3 px across,
+every 9 px in a straight grid, in the theme's ink at 15% over its paper, drawn by the foundations
+(research R10). Every surface, bubble, pill, button and cell stays plain.
+
+**Independent Test**: `page-background.acceptance-spec.ts` passes on both catalogue phones; the
+contrast unit test for ink on the dots passes in all six themes.
+
+**Reading "no dots on a part"** (AC-26's second scenario, FR-329): a part shows no dots on its
+own filled surfaces: the bubble, the counter, the grid panel, each key and the main button. The
+page seen *between* them (between the keys, around the mascot) is page, and is dotted, as in
+`docs/design/1930s Midnight blue@2x.png`.
+
+### Before AC-26
+
+- [ ] T085 [US6] Driver stubs so the approved interface compiles: in `test/acceptance/drivers/ui/catalogue.ui-driver.ts`, `pageDots()` returns `null` and `showsDots()` returns `true` (values that cannot pass); in `test/acceptance/drivers/engine/catalogue.engine-driver.ts`, both are `browseOnlyWithTheUiDriver`. `npm run typecheck` is green again. Run the full suite as the part-4 baseline and record it in `specs/003-themed-ui/tdd-log.md`, reporting the two AC-27 runs ("apart from the dots…") that already pass.
+
+### AC-26: Ben-Day dots behind the play screen
+
+- [ ] T086 [US6] AC-26 RED: driver readings in `catalogue.ui-driver.ts` (with any page-side helpers in `catalogue-reading.ts`):
+  - `pageDots(place)`: scroll to the top or the bottom of the page; read the root element's computed `background-color` (paper), `background-image` and `background-size`. Null unless the image is a `radial-gradient`. The dot colour is the gradient's first stop, converted to `#RRGGBB` from `rgb()` or `color(srgb …)`. The size is twice the first stop's radius, and the spacing is the `background-size`. Also confirm the reading with a screenshot of a 9 × 9 patch of page at that place, so the drawn colour, not only the declared one, is checked.
+  - `showsDots(part)`: find the part as `FIND_SCREEN_PART` does; true when it is missing. For each of its filled surfaces (elements with an opaque `background-color`), screenshot the box inside its outline and corners and look for the dot colour (within one level per channel). True if any is found.
+  - Expected failure: `dots are drawn at the top of the page — Expected: not null`.
+- [ ] T087 [P] [US6] AC-26 TDD cycle in `src/ui/foundations/contrast.spec.ts`: `blend(foreground, background, share)` returns `#RRGGBB`, each channel `round(share × foreground + (1 − share) × background)`. Tests: `blend('#1A1A1A', '#F1E6CF', 0.15)` is `#D1C7B4` (title `(spec-003 AC-26)`) and `blend('#1B2A4A', '#D8E6F0', 0.15)` is `#BCCAD7` (title `(spec-003 AC-27)`). Implement in `src/ui/foundations/contrast.ts` and export it.
+- [ ] T088 [US6] AC-26 build, driven by the scenarios:
+  - New `src/ui/foundations/page.css`. `html` gets `background-color: var(--paper)` and `--dots: color-mix(in srgb, var(--ink) 15%, var(--paper))`. Its `background-image` is a `radial-gradient(circle, var(--dots) 1.5px, transparent <1.5px plus a fraction>)`, with `background-size: 9px 9px` and `background-position: 0 0`.
+  - Import `page.css` in `src/catalogue/main.ts`.
+  - In `src/catalogue/catalogue.css`, `html` loses its own fill (`page.css` gives it), and `body`, `main` and the screen view stay transparent so the dots show through.
+  - `applyTheme` is unchanged: AC-20 still holds.
+- [ ] T089 [US6] AC-26 GREEN (three scenarios, both phones).
+  - ⚠️ "No dots on the parts" may pass as soon as the stubs give way to real readings, because the parts already have fills. Prove it with a reverted break: the keypad keys' fill made transparent, which must fail `Keypad shows dots`.
+  - Then: slice refactor, `tdd-log.md` entry, and a **checkpoint**.
+
+### AC-27: the dots follow the theme
+
+- [ ] T090 [US6] AC-27 RED/GREEN.
+  - ⚠️ Both scenarios are expected to pass at RED once AC-26 is built, because the dot colour is mixed from the theme's own ink and paper. Report them, and prove each with a reverted break:
+    - The dot colour fixed to Classic's `#D1C7B4` must fail `the dots are #BCCAD7`.
+    - A non-theme colour (e.g. `#777777`) on a sample's border must fail `#777777 is one of Midnight blue's four colours`. This shows the dots leave the four-colour reading working.
+  - Then: `tdd-log.md` entry and a **checkpoint**.
+
+### AC-28: the dotted page stays accessible
+
+- [ ] T091 [P] [US6] AC-28 unit test in `src/ui/foundations/themes.spec.ts`, `describe('contrast on the dotted page (spec-003 AC-28)')`: for each of the six themes, `contrastRatio(ink, blend(ink, paper, 0.15))` is at least 4.5. ⚠️ Expected to pass on its first run (research R10: the lowest is Racing green at 7.13:1). Prove it with a reverted break: the strength raised to 0.6 must fail at least one theme.
+- [ ] T092 [US6] AC-28 acceptance RED/GREEN.
+  - ⚠️ Expected to pass once the dots exist. The axe scan skips colour contrast over background images (it reports them as "needs review", not as violations), so the dots alone cannot fail it.
+  - Prove the scenario's own guard with a reverted break: `page.css` not imported must fail `dots are drawn in Classic`. Record the axe limitation in the TDD log.
+  - Then: **checkpoint**.
+
+### Polish and pull request 4
+
+- [ ] T093 [P] `docs/contracts/component-library.md`: Foundations gains `blend` and `page.css`, as in the spec's copy. `AGENTS.md`: the Component library line lists `page.css` among the foundations.
+- [ ] T094 Run [quickstart.md](quickstart.md):
+  - Section 1, and section 2's step 6: compare the dots with `docs/design/1930s Midnight blue@2x.png`.
+  - Section 4: the game's `dist/` is unchanged from `main`.
+  - Ask the owner for section 3 on a real phone, now with the dots. This also closes T082. Record the sign-off in the TDD log.
+- [ ] T095 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with AC-1 to AC-28 covered. Commit it.
+- [ ] T096 Push `003-themed-ui-part-4` and open "spec-003 part 4: Ben-Day dots":
+  - Cover what, why (the owner's review of part 3), how tested, and rollback (revert; players unaffected).
+  - Also note the design reference committed and the `docs/design/` lint ignore.
+  - In the Executable Specifications box: changes included, `page-background.acceptance-spec.ts` and the DSL additions approved 2026-11-07.
+  - The owner merges with a merge commit.
 
 ---
 
@@ -302,16 +371,20 @@ and the theme unit tests pass.
 - **Foundational (T011–T013)** blocks every story.
 - **US1 (part 1)** → **US2 (part 2)** → **US3 to US5 (part 3)**: each part branches from `main` after the previous merges. US2's components are built from US1's; the play screen from US2's.
 - **US4's** AC-20, AC-21 (T075, T076) and **US5** (T079) are pure unit work and can run any time after T011, but ship in part 3.
+- **US6 (part 4)** branches from `main` after part 3 (#11). T085 comes first, because the approved interface does not compile until both drivers have the two readings. Then AC-26 → AC-27 → AC-28, because AC-27 and AC-28 read the dots AC-26 builds.
 - **AC-1 across parts**: the catalogue lists every component from part 1, with placeholders for those built in parts 2 and 3 (owner decision 2026-11-06, T015), so each part can merge with `verify` green.
 
 ## Parallel Opportunities
 
 - T003, T004, T005 (different files) in Setup.
 - T075, T076 and T079 alongside any part-3 screen work (different files, unit tests only).
+- T087 (`blend`) and T091 (contrast on the dots) are unit work in different files from the
+  driver and CSS work, so they can run beside T086 and T088.
 - Within a story, criteria run in order because every checkpoint waits for the owner.
 
 ## Implementation Strategy
 
 - **MVP**: part 1, the foundations and simple components, visible in the catalogue.
 - **Incremental**: part 2 adds the play screen's parts; part 3 assembles the screen and turns on
-  the themes. Players see no change at any point; spec-004 takes the play screen to them.
+  the themes; part 4 adds the page's Ben-Day dots. Players see no change at any point; spec-004
+  takes the play screen, and the dotted page, to them.
