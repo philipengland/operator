@@ -11,3 +11,9 @@ playwright-report/
 dist/
 catalogue-dist/
 coverage/
+
+# Design source files kept outside the repository (spec-003, 2026-11-07): the PDFs and the
+# mockup's runtime. The PNG mockups and ComponentLibrary.dc.html are committed as the reference.
+docs/design/*.pdf
+docs/design/component library/support.js
+docs/design/component library/vendor/

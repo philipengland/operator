@@ -193,3 +193,70 @@ the pull request that makes it pass, so `verify` stays green on every merge (AGE
 "Split a feature into pull requests only where every approved scenario can pass").
 
 **Alternative**: one branch and one pull request reviewed in parts, as spec-002 did.
+
+## R10. Ben-Day dots on the page (User Story 6, added 2026-11-07)
+
+**Decision**: the foundations draw the dots in CSS on the page's root element, in a new
+`src/ui/foundations/page.css`:
+
+- The page (`html`) is filled with paper, with one `radial-gradient` repeated over it
+  (`background-size` 9 px): a round dot 3 px across (radius 1.5 px, softened by a fraction of a
+  pixel so it is not jagged), in a straight grid from the top-left corner. It scrolls with the
+  page and covers all of it, however long.
+- The dot colour is `color-mix(in srgb, var(--ink) 15%, var(--paper))`, set as a custom property
+  (`--dots`) **inside** `page.css`, not by `applyTheme`. Switching theme rewrites the four
+  colours, and the dots follow with no extra work.
+- `body` and every page wrapper stay transparent, so the dots show through. Surfaces, bubbles,
+  pills, buttons and cells already have solid fills, so no dot shows through them (FR-329), with
+  no change to any component.
+- A pure `blend(foreground, background, share)` in `contrast.ts` works out the same colour in
+  TypeScript, so unit tests can check AC-26 and AC-27's values and AC-28's contrast in every
+  theme. The acceptance scenarios read the colour the browser actually draws, which proves the
+  CSS and the TypeScript agree.
+
+**Rationale**:
+- **A CSS gradient is not a fetch**, so the content security policy and "no network requests"
+  (constitution I) are unchanged; there is no image file to ship or cache.
+- **AC-20 holds**: `applyTheme` still sets exactly the four colours. The dot colour is derived in
+  CSS, so no theme gains a fifth value (FR-321).
+- **One place**: the page look lives in the foundations, so the catalogue now, and the game in
+  spec-004, get it by importing one stylesheet. Combined components and screens gain no styling
+  (AC-7 and the tier check are untouched).
+- `color-mix()` is supported by current Safari (16.2 and later) and Chrome (111 and later), the
+  spec's targets (SC-302).
+
+**Values, worked out on 2026-11-07** (ink at 15% over paper, each channel rounded):
+
+| Theme | Paper | Dots | Ink on dots | Dots against paper |
+| --- | --- | --- | --- | --- |
+| Classic | #F1E6CF | #D1C7B4 | 10.39:1 | 1.35:1 |
+| Midnight blue | #D8E6F0 | #BCCAD7 | 8.51:1 | 1.31:1 |
+| Plum and mint | #D5F0E0 | #BBD0C8 | 9.77:1 | 1.34:1 |
+| Amber and teal | #FFD9A0 | #E1BD8B | 8.75:1 | 1.32:1 |
+| Bubblegum | #FFC8DD | #DDAEC0 | 9.03:1 | 1.34:1 |
+| Racing green | #E8E2B8 | #C7C9A3 | 7.13:1 | 1.30:1 |
+
+The mockup measures #BDCBD8 for Midnight blue's dots against the computed #BCCAD7: one level per
+channel, from antialiasing in the image. The browser's `color-mix` may also round by one level,
+so the acceptance driver compares the drawn colour with the spec's value allowing a difference of
+one per channel, and says so where it reads it.
+
+**Reading the dots in the acceptance tests**: the driver reads the page root's computed
+`background-image` and `background-size` (dot colour, dot size, spacing) and, for each play-screen
+part, whether it has a solid fill of its own, so no dots show on it. The existing `coloursInUse()`
+reading (AC-19) reads fills, text, borders and shadows, not background images, so the dots do not
+count against the four colours there; that is what AC-27's "apart from the dots" means.
+
+**Alternatives considered**:
+- **Tile dots on paper** (the owner's first answer): strictly four colours, but lighter than the
+  page, unlike the mockup. Replaced by the owner's final answer.
+- **A fifth colour property set by `applyTheme`**: breaks AC-20's "sets exactly the four colours".
+- **An SVG or PNG tile**: an asset to ship and, for an SVG data URL, a CSP change (`img-src data:`).
+- **Dots in the catalogue's own stylesheet**: would leave the game (spec-004) to copy them; the
+  page look belongs to the foundations.
+
+## R11. Delivering User Story 6
+
+**Decision**: a fourth pull request, "spec-003 part 4: Ben-Day dots", on branch
+`003-themed-ui-part-4`, with User Story 6's approved scenarios, the design reference files, and
+the spec and plan changes. Small enough to review in under 30 minutes (R9's rule).

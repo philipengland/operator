@@ -35,6 +35,9 @@ Check against the design guide (*Component library.pdf*):
 3. Each combined component and the play screen show a "Built from:" line.
 4. Switch through all six themes: colours, button label and address change; nothing moves.
 5. Switch the play screen through "Just opened", "Row 1 correct" and "All found".
+6. (User Story 6) The page shows faint Ben-Day dots, 3 px every 9 px, darker than the paper, in
+   every theme; no panel, bubble, pill, button or cell shows them. Compare Midnight blue with
+   `docs/design/1930s Midnight blue@2x.png`.
 
 ## 3. On a real phone (SC-301)
 

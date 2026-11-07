@@ -1,0 +1,16 @@
+/*
+ * The page every screen sits on (spec-003 User Story 6, FR-329, research R10): the theme's paper
+ * with the design's Ben-Day dots, round, 3 px across, every 9 px in a straight grid, in the
+ * theme's ink at 15% over its paper. Drawn as a gradient, not an image, so nothing is fetched.
+ * The dot colour is mixed here from the four theme colours, so a theme needs no fifth value.
+ * A page using this keeps body and its wrappers transparent so the dots show through.
+ */
+
+html {
+  --dots: color-mix(in srgb, var(--ink) 15%, var(--paper));
+
+  background-color: var(--paper);
+  background-image: radial-gradient(circle, var(--dots) 1.5px, transparent 1.75px);
+  background-position: 0 0;
+  background-size: 9px 9px;
+}

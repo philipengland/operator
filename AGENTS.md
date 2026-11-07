@@ -29,7 +29,7 @@ development-only catalogue; spec-004 applies it to the game. Sources: `docs/brie
   - Play screen — `src/app/` — session state (`session.ts`), wording and accessible names
     (`labels.ts`), DOM rendering (`view.ts`), wiring (`main.ts`).
   - Component library — `src/ui/` — in tiers: `foundations/` (themes, `themeForSeed`,
-    `contrastRatio`, `tokens.css`), `simple/`, `combined/`, `screens/`. Each component has a pure
+    `contrastRatio`, `blend`, `tokens.css`, and `page.css`: the page's paper with Ben-Day dots), `simple/`, `combined/`, `screens/`. Each component has a pure
     `*.model.ts` and a renderer `create<Name>(props) → { element, update }`. Not yet used by the
     game (spec-004).
   - Catalogue — `src/catalogue/`, `catalogue.html` — every component in every state and theme,

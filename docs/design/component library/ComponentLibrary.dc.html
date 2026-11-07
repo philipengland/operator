@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Component library</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chewy&amp;family=Nunito:wght@700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1280px; box-sizing: border-box; padding: 48px; background-color: #F1E6CF; background-image: radial-gradient(circle, rgba(26,26,26,0.14) 1.3px, rgba(26,26,26,0) 1.8px); background-size: 9px 9px; color: #1A1A1A; font-family: Nunito, system-ui, sans-serif; display: flex; flex-direction: column; gap: 32px">
+
+  <div style="display: flex; align-items: center; gap: 24px">
+    <svg width="110" height="110" viewBox="0 0 84 84" role="img" aria-label="Operator mascot" style="flex: none">
+      <circle cx="20" cy="18" r="11" fill="#1A1A1A"></circle>
+      <circle cx="64" cy="18" r="11" fill="#1A1A1A"></circle>
+      <circle cx="42" cy="46" r="31" fill="#1A1A1A"></circle>
+      <ellipse cx="42" cy="54" rx="21" ry="17" fill="#F1E6CF"></ellipse>
+      <circle cx="32" cy="38" r="9" fill="#F1E6CF" stroke="#1A1A1A" stroke-width="2"></circle>
+      <circle cx="54" cy="38" r="9" fill="#F1E6CF" stroke="#1A1A1A" stroke-width="2"></circle>
+      <path d="M32 38 L41 38 A9 9 0 0 1 32 47 Z" fill="#1A1A1A"></path>
+      <path d="M54 38 L63 38 A9 9 0 0 1 54 47 Z" fill="#1A1A1A"></path>
+      <ellipse cx="42" cy="50" rx="5" ry="3.5" fill="#1A1A1A"></ellipse>
+      <path d="M31 58 Q42 72 53 58 Z" fill="#BF1E1E" stroke="#1A1A1A" stroke-width="2.5" stroke-linejoin="round"></path>
+      <path d="M11 44 Q8 8 42 8 Q76 8 73 44" fill="none" stroke="#BF1E1E" stroke-width="5" stroke-linecap="round"></path>
+      <rect x="4" y="38" width="12" height="18" rx="6" fill="#BF1E1E" stroke="#F1E6CF" stroke-width="2"></rect>
+      <rect x="68" y="38" width="12" height="18" rx="6" fill="#BF1E1E" stroke="#F1E6CF" stroke-width="2"></rect>
+    </svg>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-family: Chewy, cursive; font-size: 64px; line-height: 68px">Hello, Operator!</span>
+      <span style="font-weight: 800; font-size: 20px; letter-spacing: 3px; text-transform: uppercase">1930s rubber-hose · component library</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start">
+
+    <!-- Foundations -->
+    <div style="grid-column: span 2; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Foundations</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">tokens</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">Every component is built from four colour tokens, so a theme is four values. The six themes below swap them without touching layout.</p>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 150px; height: 64px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 16px; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px">#1A1A1A</div><span style="font-weight: 800; font-size: 14px">ink · outlines, text, shown operators</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 150px; height: 64px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 16px; background: #F1E6CF; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px">#F1E6CF</div><span style="font-weight: 800; font-size: 14px">paper · page background</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 150px; height: 64px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 16px; background: #FFFDF6; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px">#FFFDF6</div><span style="font-weight: 800; font-size: 14px">tile · cards, cells, keys</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 150px; height: 64px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 16px; background: #BF1E1E; color: #FFFDF6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px">#BF1E1E</div><span style="font-weight: 800; font-size: 14px">accent · what you can change</span></div>
+        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 15px; line-height: 21px">
+          <span><b>Display type:</b> Chewy. Titles, targets, digits, buttons.</span>
+          <span><b>Text type:</b> Nunito 700 and 800. Helper text, labels, tags.</span>
+          <span><b>Outline:</b> 4px ink on every component. Dashed means editable.</span>
+          <span><b>Shadow:</b> hard offset, no blur. 3 to 4px small, 5 to 6px large.</span>
+          <span><b>Radius:</b> pills 24, cells 22, keys 26, panels 30, bubble 26 with a 6px tail corner.</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; border-top: 3px dashed #1A1A1A; padding-top: 14px; align-items: center">
+        <span style="font-weight: 800; font-size: 14px; letter-spacing: 1px; text-transform: uppercase">Themes</span>
+        <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px"><span style="display: flex"><span style="width: 22px; height: 22px; border-radius: 50%; background: #1A1A1A; border: 2px solid #1A1A1A"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #F1E6CF; border: 2px solid #1A1A1A; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #FFFDF6; border: 2px solid #1A1A1A; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #BF1E1E; border: 2px solid #1A1A1A; margin-left: -6px"></span></span>Classic</div>
+        <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px"><span style="display: flex"><span style="width: 22px; height: 22px; border-radius: 50%; background: #1B2A4A; border: 2px solid #1B2A4A"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #D8E6F0; border: 2px solid #1B2A4A; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #F4F9FC; border: 2px solid #1B2A4A; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #C8441B; border: 2px solid #1B2A4A; margin-left: -6px"></span></span>Midnight blue</div>
+        <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px"><span style="display: flex"><span style="width: 22px; height: 22px; border-radius: 50%; background: #2B1B3D; border: 2px solid #2B1B3D"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #D5F0E0; border: 2px solid #2B1B3D; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #F5FBF7; border: 2px solid #2B1B3D; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #C42A63; border: 2px solid #2B1B3D; margin-left: -6px"></span></span>Plum and mint</div>
+        <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px"><span style="display: flex"><span style="width: 22px; height: 22px; border-radius: 50%; background: #3A1C12; border: 2px solid #3A1C12"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #FFD9A0; border: 2px solid #3A1C12; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #FFF6E4; border: 2px solid #3A1C12; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #0E7C7B; border: 2px solid #3A1C12; margin-left: -6px"></span></span>Amber and teal</div>
+        <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px"><span style="display: flex"><span style="width: 22px; height: 22px; border-radius: 50%; background: #1A1A1A; border: 2px solid #1A1A1A"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #FFC8DD; border: 2px solid #1A1A1A; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #FFF0F6; border: 2px solid #1A1A1A; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #2E5BFF; border: 2px solid #1A1A1A; margin-left: -6px"></span></span>Bubblegum</div>
+        <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px"><span style="display: flex"><span style="width: 22px; height: 22px; border-radius: 50%; background: #0F3D2E; border: 2px solid #0F3D2E"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #E8E2B8; border: 2px solid #0F3D2E; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #FAF7E2; border: 2px solid #0F3D2E; margin-left: -6px"></span><span style="width: 22px; height: 22px; border-radius: 50%; background: #B5382B; border: 2px solid #0F3D2E; margin-left: -6px"></span></span>Racing green</div>
+      </div>
+    </div>
+
+    <!-- Mascot -->
+    <div style="background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Operator mascot</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">operator-mascot</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">The host of the app. Two sizes: large for the choose screen, small for the play screen.</p>
+      <div style="display: flex; gap: 28px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+          <svg width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="Operator mascot, large"><circle cx="20" cy="18" r="11" fill="#1A1A1A"></circle><circle cx="64" cy="18" r="11" fill="#1A1A1A"></circle><circle cx="42" cy="46" r="31" fill="#1A1A1A"></circle><ellipse cx="42" cy="54" rx="21" ry="17" fill="#F1E6CF"></ellipse><circle cx="32" cy="38" r="9" fill="#F1E6CF" stroke="#1A1A1A" stroke-width="2"></circle><circle cx="54" cy="38" r="9" fill="#F1E6CF" stroke="#1A1A1A" stroke-width="2"></circle><path d="M32 38 L41 38 A9 9 0 0 1 32 47 Z" fill="#1A1A1A"></path><path d="M54 38 L63 38 A9 9 0 0 1 54 47 Z" fill="#1A1A1A"></path><ellipse cx="42" cy="50" rx="5" ry="3.5" fill="#1A1A1A"></ellipse><path d="M31 58 Q42 72 53 58 Z" fill="#BF1E1E" stroke="#1A1A1A" stroke-width="2.5" stroke-linejoin="round"></path><path d="M11 44 Q8 8 42 8 Q76 8 73 44" fill="none" stroke="#BF1E1E" stroke-width="5" stroke-linecap="round"></path><rect x="4" y="38" width="12" height="18" rx="6" fill="#BF1E1E" stroke="#F1E6CF" stroke-width="2"></rect><rect x="68" y="38" width="12" height="18" rx="6" fill="#BF1E1E" stroke="#F1E6CF" stroke-width="2"></rect></svg>
+          <span style="font-weight: 800; font-size: 14px">Large · 84px</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+          <svg width="76" height="76" viewBox="0 0 84 84" role="img" aria-label="Operator mascot, small"><circle cx="20" cy="18" r="11" fill="#1A1A1A"></circle><circle cx="64" cy="18" r="11" fill="#1A1A1A"></circle><circle cx="42" cy="46" r="31" fill="#1A1A1A"></circle><ellipse cx="42" cy="54" rx="21" ry="17" fill="#F1E6CF"></ellipse><circle cx="32" cy="38" r="9" fill="#F1E6CF" stroke="#1A1A1A" stroke-width="2"></circle><circle cx="54" cy="38" r="9" fill="#F1E6CF" stroke="#1A1A1A" stroke-width="2"></circle><path d="M32 38 L41 38 A9 9 0 0 1 32 47 Z" fill="#1A1A1A"></path><path d="M54 38 L63 38 A9 9 0 0 1 54 47 Z" fill="#1A1A1A"></path><ellipse cx="42" cy="50" rx="5" ry="3.5" fill="#1A1A1A"></ellipse><path d="M31 58 Q42 72 53 58 Z" fill="#BF1E1E" stroke="#1A1A1A" stroke-width="2.5" stroke-linejoin="round"></path><path d="M11 44 Q8 8 42 8 Q76 8 73 44" fill="none" stroke="#BF1E1E" stroke-width="5" stroke-linecap="round"></path><rect x="4" y="38" width="12" height="18" rx="6" fill="#BF1E1E" stroke="#F1E6CF" stroke-width="2"></rect><rect x="68" y="38" width="12" height="18" rx="6" fill="#BF1E1E" stroke="#F1E6CF" stroke-width="2"></rect></svg>
+          <span style="font-weight: 800; font-size: 14px">Small · 76px</span>
+        </div>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> Black head and ears, paper face patch, pie-cut eyes. Accent on the mouth and headset. Decorative, so keep a text alternative.</div>
+    </div>
+
+    <!-- Speech bubble -->
+    <div style="background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Speech bubble</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">speech-bubble</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">The mascot's voice: a title line and one line of feedback.</p>
+      <div style="width: 330px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 26px 26px 26px 6px; box-shadow: 5px 5px 0 #BF1E1E; padding: 8px 14px; display: flex; flex-direction: column">
+        <span style="font-family: Chewy, cursive; font-size: 28px; line-height: 32px">Hello, Operator!</span>
+        <span style="font-weight: 700; font-size: 14px; line-height: 18px">Row one's through, pal. Keep 'em coming!</span>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> Tile fill, 4px outline, 26px radius with a 6px bottom-left corner, 5px accent shadow. Props: title, message.</div>
+    </div>
+
+    <!-- Icon button -->
+    <div style="background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Icon button</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">icon-button</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">Round button with a single icon. Used for Back.</p>
+      <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start">
+        <div style="width: 44px; height: 44px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 50%; background: #FFFDF6; color: #1A1A1A; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Back"><path d="M15 5l-7 7 7 7"></path></svg></div>
+        <span style="font-weight: 800; font-size: 14px">Default</span>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> 44 × 44px, fully round, tile fill, 20px icon at 4px stroke. Needs an aria-label.</div>
+    </div>
+
+    <!-- Tags -->
+    <div style="background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Difficulty tag and seed tag</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">tag</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">The play screen always shows the preset and the puzzle's seed.</p>
+      <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><span style="font-family: Chewy, cursive; font-size: 20px; background: #1A1A1A; color: #F1E6CF; border-radius: 20px; padding: 4px 16px">Easy</span><span style="font-weight: 800; font-size: 14px">Difficulty</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="height: 44px; box-sizing: border-box; display: flex; align-items: center; gap: 8px; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 22px; padding: 0 14px"><span style="font-weight: 800; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase">Seed</span><span style="font-family: Chewy, cursive; font-size: 22px; line-height: 24px">4F7A21</span></div><span style="font-weight: 800; font-size: 14px">Seed</span></div>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> Difficulty: ink fill, 20px Chewy. Seed: 44px tall, tile fill, 4px outline, code in 22px Chewy. Props: label, code.</div>
+    </div>
+
+    <!-- Solutions counter -->
+    <div style="grid-column: span 2; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Solutions counter</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">solutions-counter</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">Shows how many distinct solutions the player has found. The total is shown only when it is 100 or fewer.</p>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 8px"><div style="width: 358px; height: 52px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; background: #BF1E1E; border: 4px solid #1A1A1A; border-radius: 26px; box-shadow: 4px 4px 0 #1A1A1A; padding: 0 8px 0 18px"><span style="font-family: Chewy, cursive; font-size: 24px; color: #FFFDF6">Solutions found</span><span style="min-width: 70px; height: 34px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #FFFDF6; color: #1A1A1A; border: 3px solid #1A1A1A; border-radius: 17px; font-family: Chewy, cursive; font-size: 22px; padding: 0 10px">0 of 2</span></div><span style="font-weight: 800; font-size: 14px">None yet</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div style="width: 358px; height: 52px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; background: #BF1E1E; border: 4px solid #1A1A1A; border-radius: 26px; box-shadow: 4px 4px 0 #1A1A1A; padding: 0 8px 0 18px"><span style="font-family: Chewy, cursive; font-size: 24px; color: #FFFDF6">Solutions found</span><span style="min-width: 70px; height: 34px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #FFFDF6; color: #1A1A1A; border: 3px solid #1A1A1A; border-radius: 17px; font-family: Chewy, cursive; font-size: 22px; padding: 0 10px">1 of 2</span></div><span style="font-weight: 800; font-size: 14px">In progress</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div style="width: 358px; height: 52px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; background: #1A1A1A; border: 4px solid #1A1A1A; border-radius: 26px; box-shadow: 4px 4px 0 #BF1E1E; padding: 0 8px 0 18px"><span style="font-family: Chewy, cursive; font-size: 24px; color: #F1E6CF">All found!</span><span style="min-width: 70px; height: 34px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 6px; background: #FFFDF6; color: #1A1A1A; border: 3px solid #FFFDF6; border-radius: 17px; font-family: Chewy, cursive; font-size: 22px; padding: 0 10px">2 of 2<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BF1E1E" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Complete"><path d="M4 13l5 5L20 5"></path></svg></span></div><span style="font-weight: 800; font-size: 14px">Complete</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><div style="width: 358px; height: 52px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; background: #BF1E1E; border: 4px solid #1A1A1A; border-radius: 26px; box-shadow: 4px 4px 0 #1A1A1A; padding: 0 8px 0 18px"><span style="font-family: Chewy, cursive; font-size: 24px; color: #FFFDF6">Solutions found</span><span style="min-width: 70px; height: 34px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; background: #FFFDF6; color: #1A1A1A; border: 3px solid #1A1A1A; border-radius: 17px; font-family: Chewy, cursive; font-size: 22px; padding: 0 10px">12</span></div><span style="font-weight: 800; font-size: 14px">Large puzzle (over 100 solutions, no total shown)</span></div>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> 52px tall, full width, accent fill while searching and ink fill when complete. Props: found, total (optional). The count only rises when a new, distinct solution is submitted.</div>
+    </div>
+
+    <!-- Target pill -->
+    <div style="grid-column: span 2; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Target pill</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">target-pill</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">The target for a row or column, with its operator. A dashed pill means the player chooses the operator.</p>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 104px; height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>+</span><span>16</span></div><span style="font-weight: 800; font-size: 14px">Add</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 104px; height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>−</span><span>7</span></div><span style="font-weight: 800; font-size: 14px">Subtract</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 104px; height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>×</span><span>12</span></div><span style="font-weight: 800; font-size: 14px">Multiply</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 104px; height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>÷</span><span>2</span></div><span style="font-weight: 800; font-size: 14px">Divide</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 104px; height: 48px; box-sizing: border-box; border: 4px dashed #BF1E1E; color: #BF1E1E; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>?</span><span style="color: #1A1A1A">12</span></div><span style="font-weight: 800; font-size: 14px">Open (tap to change)</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 104px; height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 3px; font-family: Chewy, cursive; font-size: 24px"><span>+</span><span>9</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F1E6CF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Correct"><path d="M4 13l5 5L20 5"></path></svg></div><span style="font-weight: 800; font-size: 14px">Line correct</span></div>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> 48px tall, fully round. Shown: ink fill. Open: 4px dashed accent outline with an accent "?". Correct adds a tick, so state never relies on colour. Props: operator (+ − × ÷ or open), target, correct.</div>
+    </div>
+
+    <!-- Cell -->
+    <div style="grid-column: span 2; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Grid cell</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">cell</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">One digit, 1 to 9. Five states.</p>
+      <div style="display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 84px; height: 72px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 44px">2</div><span style="font-weight: 800; font-size: 14px">Given</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 84px; height: 72px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 22px; box-shadow: 4px 4px 0 #1A1A1A"></div><span style="font-weight: 800; font-size: 14px">Empty</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 84px; height: 72px; box-sizing: border-box; background: #BF1E1E; border: 4px solid #1A1A1A; border-radius: 22px; box-shadow: 4px 4px 0 #1A1A1A; display: flex; align-items: center; justify-content: center"><div style="width: 6px; height: 34px; background: #FFFDF6; border-radius: 3px"></div></div><span style="font-weight: 800; font-size: 14px">Selected</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 84px; height: 72px; box-sizing: border-box; background: #FFFDF6; color: #1A1A1A; border: 4px solid #1A1A1A; border-radius: 22px; box-shadow: 4px 4px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 44px">8</div><span style="font-weight: 800; font-size: 14px">Your digit</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 84px; height: 72px; box-sizing: border-box; background: #FFFDF6; color: #BF1E1E; border: 4px solid #1A1A1A; border-radius: 22px; box-shadow: 4px 4px 0 #BF1E1E; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 44px">4</div><span style="font-weight: 800; font-size: 14px">In a correct line</span></div>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> 72px tall, 22px radius, 44px Chewy digit. Given cells are solid ink and cannot be edited. Own digits sit on tile with a hard shadow; the shadow turns accent when the line is correct. Props: state, digit.</div>
+    </div>
+
+    <!-- Grid -->
+    <div style="grid-column: span 2; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Puzzle grid</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">puzzle-grid</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">A panel holding target pills along the top and left, with cells in between. Shown here as 2 × 2; the real grid runs from 3 × 3 up to 8 × 6.</p>
+      <div style="display: flex; gap: 32px; align-items: center; flex-wrap: wrap">
+        <div style="width: 326px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 14px; display: grid; grid-template-columns: 64px repeat(2, minmax(0, 1fr)); gap: 8px; align-items: center">
+          <div></div>
+          <div style="height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>×</span><span>12</span></div>
+          <div style="height: 48px; box-sizing: border-box; border: 4px dashed #BF1E1E; color: #BF1E1E; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>?</span><span style="color: #1A1A1A">1</span></div>
+          <div style="height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>+</span><span>9</span></div>
+          <div style="height: 72px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 44px">2</div>
+          <div style="height: 72px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 22px; box-shadow: 4px 4px 0 #1A1A1A"></div>
+          <div style="height: 48px; box-sizing: border-box; background: #1A1A1A; color: #F1E6CF; border-radius: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: Chewy, cursive; font-size: 24px"><span>÷</span><span>2</span></div>
+          <div style="height: 72px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 22px; box-shadow: 4px 4px 0 #1A1A1A"></div>
+          <div style="height: 72px; box-sizing: border-box; background: #BF1E1E; border: 4px solid #1A1A1A; border-radius: 22px; box-shadow: 4px 4px 0 #1A1A1A"></div>
+        </div>
+        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 8px; font-weight: 700; font-size: 15px; line-height: 21px">
+          <span><b>Column targets</b> sit along the top row, one pill per column.</span>
+          <span><b>Row targets</b> sit in the left column, one pill per row.</span>
+          <span><b>Cells</b> fill the rest. Each cell is checked in its row and its column.</span>
+          <span><b>Left column</b> is 64px; cells share the remaining width equally with 8px gaps.</span>
+          <span><b>Panel</b> is tile fill, 4px outline, 30px radius, 6px hard shadow, 14px padding.</span>
+          <span><b>Helper line</b> under the grid: "Tap a dashed red bubble to swap its operator."</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keys -->
+    <div style="grid-column: span 2; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Keypad and keys</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">keypad-key · keypad</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">Digits 1 to 9 plus a clear key, in two rows of five.</p>
+      <div style="display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 66px; height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">5</div><span style="font-weight: 800; font-size: 14px">Digit key</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center"><div style="width: 66px; height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 20px">Oops</div><span style="font-weight: 800; font-size: 14px">Clear key</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+          <div style="width: 358px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px">
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">1</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">2</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">3</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">4</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">5</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">6</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">7</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">8</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #FFFDF6; box-shadow: 3px 3px 0 #1A1A1A; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 28px">9</div>
+            <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 20px">Oops</div>
+          </div>
+          <span style="font-weight: 800; font-size: 14px">Keypad · 5 × 2</span>
+        </div>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> Keys 52px tall, 26px radius, 3px hard shadow, 28px Chewy digit. The clear key is solid ink. Keys must be real buttons; the clear key needs an aria-label.</div>
+    </div>
+
+    <!-- Primary button -->
+    <div style="background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Main button</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">primary-button</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">The one action per screen: submit a solution.</p>
+      <div style="width: 300px; height: 60px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 30px; background: #BF1E1E; box-shadow: 5px 5px 0 #1A1A1A; color: #FFFDF6; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 30px">Put it through!</div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> 60px tall, full width on phones, accent fill, 5px hard shadow. Label is themeable copy.</div>
+    </div>
+
+    <!-- Seed field -->
+    <div style="background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Seed field</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">seed-field</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">Starts a specific puzzle from its seed code.</p>
+      <div style="width: 340px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+        <label for="libseed" style="font-weight: 800; font-size: 16px">Play from a seed</label>
+        <div style="display: flex; gap: 8px">
+          <input id="libseed" type="text" placeholder="e.g. 4F7A21" style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; padding: 0 18px; background: #F1E6CF; color: #1A1A1A; font-family: Chewy, cursive; font-size: 22px">
+          <div style="height: 52px; box-sizing: border-box; border: 4px solid #1A1A1A; border-radius: 26px; padding: 0 22px; background: #BF1E1E; box-shadow: 3px 3px 0 #1A1A1A; color: #FFFDF6; display: flex; align-items: center; font-family: Chewy, cursive; font-size: 24px">Play</div>
+        </div>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> A visible label, a 52px input on paper fill and a Play button. Seeds are case-insensitive.</div>
+    </div>
+
+    <!-- Chips -->
+    <div style="background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Operator chip and size chip</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">operator-chip · size-chip</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">Small labels used on preset cards.</p>
+      <div style="display: flex; gap: 8px; align-items: center">
+        <span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">+</span>
+        <span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">−</span>
+        <span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">×</span>
+        <span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">÷</span>
+        <span style="width: 26px; height: 26px; box-sizing: border-box; border-radius: 50%; border: 3px dashed #BF1E1E; color: #BF1E1E; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 15px">?</span>
+        <span style="font-family: Chewy, cursive; font-size: 18px; background: #1A1A1A; color: #F1E6CF; border-radius: 16px; padding: 1px 12px; margin-left: 12px">5 × 4</span>
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> Operator chip: 26px circle, ink fill, dashed accent for open. Size chip: ink pill, 18px Chewy, written as rows × columns.</div>
+    </div>
+
+    <!-- Preset card -->
+    <div style="grid-column: span 2; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 30px; box-shadow: 6px 6px 0 #1A1A1A; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: baseline; gap: 12px"><span style="font-family: Chewy, cursive; font-size: 30px">Preset card</span><span style="font-weight: 800; font-size: 13px; letter-spacing: 1px; background: #1A1A1A; color: #F1E6CF; border-radius: 12px; padding: 2px 10px">preset-card</span></div>
+      <p style="margin: 0; font-weight: 700; font-size: 16px; line-height: 22px">One tappable card per difficulty on the Choose a puzzle screen. Collector is the odd one out, with a dashed accent outline.</p>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap">
+
+        <div style="width: 358px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 28px; box-shadow: 5px 5px 0 #1A1A1A; padding: 12px 14px 12px 18px; display: flex; align-items: center; gap: 12px">
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; align-items: center; gap: 10px"><span style="font-family: Chewy, cursive; font-size: 30px; line-height: 32px">Easy</span><span style="font-family: Chewy, cursive; font-size: 18px; background: #1A1A1A; color: #F1E6CF; border-radius: 16px; padding: 1px 12px">3 × 3</span></div>
+            <div style="display: flex; gap: 6px"><span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">+</span><span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">−</span></div>
+            <span style="font-weight: 700; font-size: 14px; line-height: 18px">All operators shown. About half the cells given.</span>
+          </div>
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 50%; background: #BF1E1E; border: 4px solid #1A1A1A; box-sizing: border-box; color: #FFFDF6; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></span>
+        </div>
+
+        <div style="width: 358px; box-sizing: border-box; background: #FFFDF6; border: 4px solid #1A1A1A; border-radius: 28px; box-shadow: 5px 5px 0 #1A1A1A; padding: 12px 14px 12px 18px; display: flex; align-items: center; gap: 12px">
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; align-items: center; gap: 10px"><span style="font-family: Chewy, cursive; font-size: 30px; line-height: 32px">Hard</span><span style="font-family: Chewy, cursive; font-size: 18px; background: #1A1A1A; color: #F1E6CF; border-radius: 16px; padding: 1px 12px">7 × 5</span></div>
+            <div style="display: flex; gap: 6px"><span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">+</span><span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">−</span><span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">×</span><span style="width: 26px; height: 26px; border-radius: 50%; background: #1A1A1A; color: #F1E6CF; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 17px">÷</span></div>
+            <span style="font-weight: 700; font-size: 14px; line-height: 18px">One or two operators open. About 10% of cells given.</span>
+          </div>
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 50%; background: #BF1E1E; border: 4px solid #1A1A1A; box-sizing: border-box; color: #FFFDF6; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></span>
+        </div>
+
+        <div style="width: 358px; box-sizing: border-box; background: #FFFDF6; border: 4px dashed #BF1E1E; border-radius: 28px; box-shadow: 5px 5px 0 #1A1A1A; padding: 12px 14px 12px 18px; display: flex; align-items: center; gap: 12px">
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; align-items: center; gap: 10px"><span style="font-family: Chewy, cursive; font-size: 30px; line-height: 32px">Collector</span><span style="font-family: Chewy, cursive; font-size: 18px; background: #1A1A1A; color: #F1E6CF; border-radius: 16px; padding: 1px 12px">4 × 3</span></div>
+            <div style="display: flex; gap: 6px"><span style="width: 26px; height: 26px; box-sizing: border-box; border-radius: 50%; border: 3px dashed #BF1E1E; color: #BF1E1E; display: flex; align-items: center; justify-content: center; font-family: Chewy, cursive; font-size: 15px">?</span></div>
+            <span style="font-weight: 700; font-size: 14px; line-height: 18px">Every operator open, nothing given. Built for finding lots of solutions.</span>
+          </div>
+          <span style="width: 44px; height: 44px; flex: none; border-radius: 50%; background: #BF1E1E; border: 4px solid #1A1A1A; box-sizing: border-box; color: #FFFDF6; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></span>
+        </div>
+
+      </div>
+      <div style="font-weight: 700; font-size: 14px; line-height: 20px; border-top: 3px dashed #1A1A1A; padding-top: 12px"><b>Spec.</b> Whole card is one link, at least 44px tall. 28px radius, 5px hard shadow, 30px Chewy name, size chip, operator chips, one line of description and a round accent arrow. Medium follows the same pattern with three operator chips. Props: name, size, operators, description, collector (dashed).</div>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -170,3 +170,79 @@ including `catalogue.driver.ts`, and `test/acceptance/support/`.
 
 `.github/CODEOWNERS` gains `/test/acceptance/library/examples.ts` in the approval commit, so the
 new example data is locked like `play/examples.ts` (owner's approval, 2026-11-06).
+
+---
+
+# User Story 6 — Ben-Day dots on the page (added 2026-11-07)
+
+Drafted after the owner's review of part 3 (spec clarifications, session 2026-11-07; plan
+research R10). Delivered in a fourth pull request (R11). Same projects and tags as the rest of
+spec-003: `@ui @catalogue`, run on iPhone SE and Pixel 5 against the built catalogue.
+
+## Scenarios
+
+| Criterion | Scenario | File |
+|---|---|---|
+| AC-26: dots behind the play screen | In Classic, #D1C7B4 dots 3 pixels across, every 9 pixels, on #F1E6CF paper | `test/acceptance/library/page-background.acceptance-spec.ts` |
+| AC-26 | The header, counter, grid, keypad and main button show no dots | same |
+| AC-26 | On a long page (the whole catalogue), the dots reach the very bottom (spec edge case "A long page") | same |
+| AC-27: the dots follow the theme | Choosing Midnight blue turns the dots #BCCAD7 on #D8E6F0 paper | same |
+| AC-27 | Apart from the dots, every colour drawn is still one of Midnight blue's four | same |
+| AC-28: the dotted page stays accessible | In each of the six themes, dots are drawn and the accessibility scan finds no problems | same |
+
+**Checked by unit tests, not by these scenarios**:
+
+- **AC-28, contrast half**: ink on the dot colour reaches 4.5:1 in all six themes:
+  `src/ui/foundations/themes.spec.ts`, with the dot colour from `blend(ink, paper, 0.15)`
+  (`src/ui/foundations/contrast.spec.ts` checks `blend` gives AC-26's and AC-27's values).
+
+**Values**: from the spec's Acceptance Criteria as Examples ("Dots"). A drawn dot colour within
+one level of red, green and blue counts as the spec's colour, because a browser may round a mixed
+colour (research R10); the DSL says so where it checks.
+
+**Not drafted as a scenario**: "accent next to the page reaches 3:1 against the paper, not the
+dots" (clarification, 2026-11-07). AC-21's unit tests already check accent on paper in every
+theme, and the dots change nothing there.
+
+## DSL Added or Changed
+
+`test/acceptance/dsl/catalogue.dsl.ts`, class `CatalogueDsl` (an approved file, changed only by
+adding these, for approval):
+
+| Method | Purpose |
+|---|---|
+| `expectPageDots(place, dots)` | At the top or bottom of the page, dots of this colour (within one level per channel), size and spacing are drawn on this paper. |
+| `expectPageDotsShown(theme)` | Some dots are drawn, so an accessibility scan is of the dotted page. |
+| `expectNoDotsOn(parts)` | None of these play-screen parts shows a dot. |
+
+`test/acceptance/dsl/catalogue-vocabulary.ts` gains `PagePlace` ("top of the page", "bottom of
+the page") and `PageDots` (dot colour, paper, size, spacing).
+
+## Driver Interface Required
+
+`test/acceptance/drivers/catalogue.driver.ts` (`CatalogueDriver`) gains two signatures:
+
+- `pageDots(place)`: the dots as drawn at that place, or null when none are drawn there.
+- `showsDots(part)`: whether a dot shows on a play-screen part; true when the part cannot be found,
+  so a missing part never passes.
+
+The engine and UI drivers do not implement them yet, so `npm run typecheck` fails on those two
+drivers until the first implementation task adds them.
+
+**RED run, 2026-11-07** (phones): 12 runs, 10 failed and 2 passed.
+- Failed: `TypeError: this.driver(...).pageDots is not a function` (8) and `…showsDots is not a
+  function` (2), because the driver readings are not built.
+- **Passed (reported)**: AC-27's "apart from the dots, every colour drawn is still one of Midnight
+  blue's four", on both phones. It re-checks AC-19's colour rule, which already holds. It is kept
+  because, once the dots exist, it shows they add no colour the rule would catch and change
+  nothing else on the page. During implementation it is proven by a deliberate, reverted break.
+
+## Approval (User Story 6)
+
+- **Approved by**: Philip England, product owner and solo developer
+- **Date**: 2026-11-07
+- **Locked files** (already covered by `.github/CODEOWNERS`: `**/*.acceptance-spec.ts` and
+  `test/acceptance/dsl/`):
+  - Layer 1: `test/acceptance/library/page-background.acceptance-spec.ts` (new)
+  - Layer 2: `test/acceptance/dsl/catalogue.dsl.ts`, `test/acceptance/dsl/catalogue-vocabulary.ts`
+    (additions above)

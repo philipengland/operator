@@ -4,10 +4,11 @@
   box-sizing: border-box;
 }
 
+/* The page itself, paper with Ben-Day dots, comes from the foundations' page.css; body stays
+   transparent so the dots show through. */
 html,
 body {
   margin: 0;
-  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
   font-weight: var(--weight-body);

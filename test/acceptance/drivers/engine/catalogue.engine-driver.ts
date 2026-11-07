@@ -32,4 +32,6 @@ export const engineCatalogueDriver: CatalogueDriver = {
   coloursInUse: browseOnlyWithTheUiDriver,
   layoutOfEverySample: browseOnlyWithTheUiDriver,
   accessibilityProblems: browseOnlyWithTheUiDriver,
+  pageDots: browseOnlyWithTheUiDriver,
+  showsDots: browseOnlyWithTheUiDriver,
 };
