@@ -27,3 +27,15 @@ function relativeLuminance(colour: string): number {
 function linear(value: number): number {
   return value <= LINEAR_THRESHOLD ? value / LINEAR_SLOPE : ((value + GAMMA_OFFSET) / GAMMA_SCALE) ** GAMMA;
 }
+
+/** The colour of `share` of `foreground` laid over `background`, as #RRGGBB. */
+export function blend(foreground: string, background: string, share: number): string {
+  const [front, back] = [channelsOf(foreground), channelsOf(background)];
+  const mixed = front.map((channel, index) => Math.round(share * channel + (1 - share) * (back[index] ?? 0)));
+  return `#${mixed.map((channel) => channel.toString(HEX_BASE).padStart(2, '0')).join('')}`.toUpperCase();
+}
+
+/** Red, green and blue of a #RRGGBB colour, 0 to 255. */
+function channelsOf(colour: string): readonly number[] {
+  return (colour.match(/[0-9a-f]{2}/gi) ?? []).map((pair) => Number.parseInt(pair, HEX_BASE));
+}
