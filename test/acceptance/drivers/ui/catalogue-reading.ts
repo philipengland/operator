@@ -214,3 +214,129 @@ export function readColoursInUse(): readonly string[] {
   const colours = new Set(elements.flatMap(drawnBy).map(asHex).filter((colour): colour is string => colour !== null));
   return [...colours];
 }
+
+/** The page's dots as declared on the root element: its paper, and the dot size and spacing. */
+export interface DeclaredDots {
+  readonly paper: string;
+  readonly hasDots: boolean;
+  readonly sizeInPixels: number;
+  readonly everyPixels: number;
+}
+
+/**
+ * Runs in the page: the root element's paper (#RRGGBB) and, when its background image is a
+ * radial gradient, the dot's size (twice the first stop's radius) and spacing (the tile size).
+ */
+export function readDeclaredDots(): DeclaredDots {
+  const style = getComputedStyle(document.documentElement);
+  const [red = 0, green = 0, blue = 0] = style.backgroundColor.match(/[\d.]+/g)?.map(Number) ?? [];
+  const paper = `#${[red, green, blue].map((channel) => Math.round(channel).toString(16).padStart(2, '0')).join('')}`.toUpperCase();
+  const hasDots = style.backgroundImage.startsWith('radial-gradient');
+  const firstStopRadius = Number.parseFloat(style.backgroundImage.match(/\)\s+([\d.]+)px/)?.[1] ?? 'NaN');
+  const tile = Number.parseFloat(style.backgroundSize);
+  return { paper, hasDots, sizeInPixels: firstStopRadius * 2, everyPixels: tile };
+}
+
+/**
+ * Runs in the page: the colour at the middle of a screenshot of one tile of the dot grid, which
+ * is the middle of a dot, as #RRGGBB; null when it is the paper (no dot drawn there). The middle,
+ * not the darkest pixel: WebKit draws a darker 2 × 2 speck at the very corner of the document.
+ */
+export async function readDotColour([pngBase64, paper]: readonly [string, string]): Promise<string | null> {
+  // Decoded here, inside the page function: a function run in the page cannot call others.
+  const bytes = Uint8Array.from(atob(pngBase64), (character) => character.charCodeAt(0));
+  const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
+  const canvas = document.createElement('canvas');
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const context = canvas.getContext('2d');
+  context?.drawImage(bitmap, 0, 0);
+  const middle = context?.getImageData(Math.floor(bitmap.width / 2), Math.floor(bitmap.height / 2), 1, 1).data ?? new Uint8ClampedArray(4);
+  const colour = `#${Array.from(middle.slice(0, 3), (channel) => channel.toString(16).padStart(2, '0')).join('')}`.toUpperCase();
+  return colour === paper.toUpperCase() ? null : colour;
+}
+
+/** What to look for when asking whether the page's dots show through part of the screen. */
+export interface DotSearch {
+  readonly pngBase64: string;
+  readonly area: Rectangle;
+  readonly dotColour: string;
+  readonly paper: string;
+  readonly tile: number;
+}
+
+/**
+ * Runs in the page: whether a screenshot of an area shows the page's dot pattern, meaning a point
+ * of the page's dot grid that is the dot colour with paper 3 pixels to each side (within one level
+ * per channel). Text edges can be the dot colour too, but never in that pattern.
+ */
+export async function readDotsShowing({ pngBase64, area, dotColour, paper, tile }: DotSearch): Promise<boolean> {
+  // Decoded here, inside the page function: a function run in the page cannot call others.
+  const bytes = Uint8Array.from(atob(pngBase64), (character) => character.charCodeAt(0));
+  const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
+  const canvas = document.createElement('canvas');
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const context = canvas.getContext('2d');
+  context?.drawImage(bitmap, 0, 0);
+  const data = context?.getImageData(0, 0, bitmap.width, bitmap.height).data ?? new Uint8ClampedArray();
+  const channelsOf = (colour: string) => (colour.match(/[0-9a-f]{2}/gi) ?? []).map((pair) => Number.parseInt(pair, 16));
+  const [dot, page] = [channelsOf(dotColour), channelsOf(paper)];
+  const scale = bitmap.width / area.width;
+  const isColourAt = (x: number, y: number, colour: readonly number[]) => {
+    const [column, row] = [Math.floor((x - area.x) * scale), Math.floor((y - area.y) * scale)];
+    if (column < 0 || row < 0 || column >= bitmap.width || row >= bitmap.height) {
+      return false;
+    }
+    const index = (row * bitmap.width + column) * 4;
+    return colour.every((value, channel) => Math.abs((data[index + channel] ?? 0) - value) <= 1);
+  };
+  const gap = 3;
+  const firstCentre = (from: number, scroll: number) => Math.ceil((from + scroll - tile / 2) / tile) * tile + tile / 2 - scroll;
+  for (let y = firstCentre(area.y, window.scrollY); y < area.y + area.height; y += tile) {
+    for (let x = firstCentre(area.x, window.scrollX); x < area.x + area.width; x += tile) {
+      const isDot = isColourAt(x, y, dot);
+      const hasPaperAround = [[gap, 0], [-gap, 0], [0, gap], [0, -gap]].every(([dx = 0, dy = 0]) => isColourAt(x + dx, y + dy, page));
+      if (isDot && hasPaperAround) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export interface Rectangle {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * Runs in the page: the inside of every surface drawn in a part (the part itself and every element
+ * in it that has a fill or an outline, at least 8 pixels each way), in viewport pixels. An
+ * outlined shape counts even if its fill is missing, so a missing fill is seen. Each is kept
+ * inside its outline, and clear of its rounded corners on the left and right.
+ */
+export function readDrawnSurfaces(part: Element): readonly Rectangle[] {
+  const isDrawn = (element: Element) => {
+    const style = getComputedStyle(element);
+    const fill = style.backgroundColor;
+    const hasFill = fill !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(fill) && !/\/\s*0\)$/.test(fill);
+    const hasOutline = style.borderTopStyle !== 'none' && Number.parseFloat(style.borderTopWidth) > 0;
+    return hasFill || hasOutline;
+  };
+  const inside = (element: Element): Rectangle => {
+    const style = getComputedStyle(element);
+    const box = element.getBoundingClientRect();
+    const outline = Number.parseFloat(style.borderTopWidth) || 0;
+    const corner = Math.min(Number.parseFloat(style.borderTopLeftRadius) || 0, box.height / 2);
+    const side = outline + corner;
+    return { x: box.left + side, y: box.top + outline + 1, width: box.width - 2 * side, height: box.height - 2 * outline - 2 };
+  };
+  const smallest = 8;
+  return [part, ...Array.from(part.querySelectorAll('*'))]
+    .filter(isDrawn)
+    .map(inside)
+    .filter((rectangle) => rectangle.width >= smallest && rectangle.height >= smallest);
+}

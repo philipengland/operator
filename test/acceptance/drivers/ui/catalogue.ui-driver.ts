@@ -3,8 +3,8 @@
 // needed by an implemented criterion return values that cannot pass (spec-003 tasks, T013).
 
 import type { Locator, Page } from '@playwright/test';
-import type { CatalogueSection, LibraryComponent, LibraryScreen, PageDots, PlayScreenPart, Sample, ScreenSample, ThemeName } from '../../dsl/catalogue-vocabulary';
-import { NO_BOX, readAppearance, readColoursInUse, readGreyscaleContrast, readPartView, readSampleView, readTypeface, textElement } from './catalogue-reading';
+import type { CatalogueSection, LibraryComponent, LibraryScreen, PageDots, PagePlace, PlayScreenPart, Sample, ScreenSample, ThemeName } from '../../dsl/catalogue-vocabulary';
+import { NO_BOX, readAppearance, readColoursInUse, readDeclaredDots, readDotColour, readDotsShowing, readDrawnSurfaces, readGreyscaleContrast, readPartView, readSampleView, readTypeface, textElement } from './catalogue-reading';
 import type { CatalogueDriver, GridLayout, PublishedFile, SampleAppearance, SampleView, ScreenView } from '../catalogue.driver';
 import type { Box, ScreenSize } from '../phone.driver';
 import { accessibilityProblems, scanForAccessibilityProblems } from '../../support/axe';
@@ -27,6 +27,8 @@ const FIND_SCREEN_PART: Readonly<Record<string, (screen: Locator) => Locator>> =
   'Row 1 target': (screen) => namedPart(screen, /Row 1 target/),
 };
 const BUILT_FROM_LINE = /^\s*Built from:\s*/;
+// The dot grid's tile when the page does not say (spec-003 FR-329: a dot every 9 pixels).
+const DEFAULT_TILE = 9;
 // The fixed 2 × 2 puzzle (spec-001): lines 1 and 2, cells named by corner, row by row.
 const FIXED_PUZZLE_LINES = [1, 2] as const;
 const FIXED_PUZZLE_CELLS = [
@@ -269,14 +271,57 @@ export class UiCatalogueDriver implements CatalogueDriver {
     return accessibilityProblems(this.page);
   }
 
-  /** Not read yet (spec-003 T086): no dots, so no "dots are drawn" check can pass. */
-  async pageDots(): Promise<PageDots | null> {
-    return null;
+  /**
+   * The page's Ben-Day dots at the top or the bottom of the page: the paper, size and spacing as
+   * the root element declares them, and the dot colour as drawn, from a screenshot of one tile of
+   * the dot grid there. Null when the page declares no dots.
+   */
+  async pageDots(place: PagePlace): Promise<PageDots | null> {
+    const isBottom = place === 'bottom of the page';
+    await this.page.evaluate((toBottom) => window.scrollTo(0, toBottom ? document.documentElement.scrollHeight : 0), isBottom);
+    const declared = await this.page.evaluate(readDeclaredDots);
+    if (!declared.hasDots) {
+      return null;
+    }
+    const tile = Number.isFinite(declared.everyPixels) && declared.everyPixels > 0 ? declared.everyPixels : DEFAULT_TILE;
+    const y = isBottom ? await this.lastWholeTileOnScreen(tile) : 0;
+    const screenshot = await this.page.screenshot({ clip: { x: 0, y, width: tile, height: tile }, animations: 'disabled' });
+    const drawn = await this.page.evaluate(readDotColour, [screenshot.toString('base64'), declared.paper] as const);
+    return { dotColour: drawn ?? declared.paper, paper: declared.paper, sizeInPixels: declared.sizeInPixels, everyPixels: declared.everyPixels };
   }
 
-  /** Not read yet (spec-003 T086): every part shows dots, so "no dots on" cannot pass. */
-  async showsDots(): Promise<boolean> {
-    return true;
+  /**
+   * Whether the page's dots show on any of a play-screen part's own surfaces (its bubble, panel,
+   * pills, cells, keys or button: anything with a fill or an outline), looking for the dot pattern
+   * drawn on the page. The page seen between them is not the part. True when the part cannot be
+   * found, so a missing part never passes.
+   */
+  async showsDots(part: PlayScreenPart): Promise<boolean> {
+    const element = this.screenPart(part);
+    if ((await element.count()) !== 1) {
+      return true;
+    }
+    const dots = await this.pageDots('top of the page');
+    if (!dots) {
+      return false;
+    }
+    for (const area of await element.evaluate(readDrawnSurfaces)) {
+      const pngBase64 = (await this.page.screenshot({ clip: area, animations: 'disabled' })).toString('base64');
+      const search = { pngBase64, area, dotColour: dots.dotColour, paper: dots.paper, tile: dots.everyPixels };
+      if (await this.page.evaluate(readDotsShowing, search)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Where, on the screen, the last whole tile of the dot grid starts, with the page scrolled to its bottom. */
+  private async lastWholeTileOnScreen(tile: number): Promise<number> {
+    return this.page.evaluate((size) => {
+      const pageHeight = document.documentElement.scrollHeight;
+      const lastTileTop = Math.floor((pageHeight - size) / size) * size;
+      return lastTileTop - window.scrollY;
+    }, tile);
   }
 
   async publishedFiles(): Promise<readonly PublishedFile[]> {
