@@ -1071,3 +1071,62 @@ Added 2026-11-07 after the owner's review of part 3. Scenarios approved 2026-11-
 - **Reported**: AC-27's "apart from the dots, every colour drawn is still one of Midnight blue's
   four" already passes on both phones, as recorded at approval. It is proven by a break in T090.
 - Game JS and CSS unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
+
+## AC-26: Ben-Day dots behind the play screen
+
+- **Acceptance test**: `page-background.acceptance-spec.ts` — `[spec-003 AC-26]`, three scenarios
+  on both catalogue phones.
+- **Driver** (T086, `477d816`, corrected in `3e128af`):
+  - `pageDots(place)`: scrolls to the top or the bottom. It reads the root's declared paper, dot
+    size (twice the first gradient stop's radius) and spacing (the tile size). The dot colour is
+    the middle pixel of a screenshot of one whole tile of the dot grid, so it is the colour as
+    drawn. Null when no dots are declared or drawn there.
+  - `showsDots(part)`: for every surface drawn in the part (anything with a fill **or** an
+    outline), screenshots the largest rectangle inside its outline and rounded corners. It
+    looks for the dot *pattern*: a point of the page's 9 px grid in the dot colour with paper
+    3 px to each side. True when the part is missing.
+- **Acceptance RED** (both phones): `dots are drawn at the top of the page — Received: null`, and
+  the same at the bottom.
+  - **Reported — passes at RED** (⚠️, as T089 predicted): "the header, counter, grid, keypad and
+    main button show no dots", because with no dots on the page no part can show one. Proven
+    below.
+- **Cycle 1** (`5ea7457`, T087): `blend(foreground, background, share)` gives `#RRGGBB`. Test:
+  `blend('#1A1A1A', '#F1E6CF', 0.15)` is `#D1C7B4` (spec-003 AC-26). RED: `expected '' to be
+  '#D1C7B4'`. GREEN: each channel rounded from `share × front + (1 − share) × back`.
+  - **Refactor** (`9223ab4`): `relativeLuminance` reads channels through the same `channelsOf`.
+- **Build** (`418886d`, T088): new `src/ui/foundations/page.css`.
+  - `html` gets paper, `--dots: color-mix(in srgb, var(--ink) 15%, var(--paper))`, and a
+    `radial-gradient(circle, var(--dots) 1.5px, transparent 1.75px)` 9 px tile from 0 0.
+  - The catalogue imports it, and its `body` no longer paints paper over it. `applyTheme` is
+    unchanged.
+  - Chromium and WebKit both compute the dot as `color(srgb 0.8186 0.7820 0.7053)`, which is
+    `#D1C7B4`.
+- **Driver faults found and fixed on the way** (each shown failing, then fixed):
+  - Page functions cannot call other functions in the module (`pixelsOf is not defined`), so each
+    decodes its own screenshot. WebKit has no `OffscreenCanvas` here, so they use a plain canvas.
+  - The darkest pixel is not the dot colour. WebKit draws a darker 2 × 2 speck (`#CDC4B0`) at the
+    very top-left corner of the document only; other tile corners are clean. The reading takes
+    the middle of the tile, where the dot is.
+  - Matching the dot colour alone gave a false "Puzzle grid shows dots". The dot colour is ink at
+    15% over paper, so the soft edges of paper-coloured text on ink ("+ 8", the given 6) are that
+    colour too. The reading looks for the dot pattern instead.
+  - A pill-shaped key's inside was cut to under 8 px and skipped, so a key without a fill was
+    never looked at. Surfaces with an outline now count even without a fill, and the inside is
+    the largest rectangle within the rounded shape.
+- **A stale catalogue hid the first breaks.** A `vite preview` of the catalogue was already
+  listening on port 4174 (with `--host`, from the phone check), so the runner reused it and
+  skipped its rebuild. Every break below was run after `vite build --mode catalogue`.
+- **Driver proven** by reverted breaks (Pixel 5):
+  - Keys with no fill failed `Keypad shows dots — Received: true`.
+  - Dots mixed at 25% failed `the dots are #D1C7B4 (drawn #BBB3A1)`.
+  - Dots 2 px across failed `each dot is this many pixels across — Received: 2`.
+  - The catalogue's `main` painted with paper failed `dots are drawn at the top of the page` and
+    `…at the bottom of the page — Received: null`.
+- **Acceptance GREEN** (T089): AC-26, 6 runs passed. AC-27 and AC-28 also pass now; they are
+  proven in their own sections.
+- **Full suite**: 242 unit tests; engine 36 passed; phones 196 passed, 1 failed. The failure was
+  `[iphone] spec-001 AC-12` (Solution B after Solution A), in the game, whose files are
+  unchanged. It passed 3 runs out of 3 on its own: a one-off flaky failure, noted for the pull
+  request. Game JS and CSS unchanged.
+- **Slice refactor**: none beyond `9223ab4`. The screenshot decoding is repeated in three page
+  functions on purpose, because a function run in the page cannot call another.

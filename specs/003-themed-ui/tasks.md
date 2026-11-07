@@ -319,17 +319,17 @@ page seen *between* them (between the keys, around the mascot) is page, and is d
 
 ### AC-26: Ben-Day dots behind the play screen
 
-- [ ] T086 [US6] AC-26 RED: driver readings in `catalogue.ui-driver.ts` (with any page-side helpers in `catalogue-reading.ts`):
+- [X] T086 [US6] AC-26 RED: driver readings in `catalogue.ui-driver.ts` (with any page-side helpers in `catalogue-reading.ts`):
   - `pageDots(place)`: scroll to the top or the bottom of the page; read the root element's computed `background-color` (paper), `background-image` and `background-size`. Null unless the image is a `radial-gradient`. The dot colour is the gradient's first stop, converted to `#RRGGBB` from `rgb()` or `color(srgb …)`. The size is twice the first stop's radius, and the spacing is the `background-size`. Also confirm the reading with a screenshot of a 9 × 9 patch of page at that place, so the drawn colour, not only the declared one, is checked.
   - `showsDots(part)`: find the part as `FIND_SCREEN_PART` does; true when it is missing. For each of its filled surfaces (elements with an opaque `background-color`), screenshot the box inside its outline and corners and look for the dot colour (within one level per channel). True if any is found.
   - Expected failure: `dots are drawn at the top of the page — Expected: not null`.
-- [ ] T087 [P] [US6] AC-26 TDD cycle in `src/ui/foundations/contrast.spec.ts`: `blend(foreground, background, share)` returns `#RRGGBB`, each channel `round(share × foreground + (1 − share) × background)`. Tests: `blend('#1A1A1A', '#F1E6CF', 0.15)` is `#D1C7B4` (title `(spec-003 AC-26)`) and `blend('#1B2A4A', '#D8E6F0', 0.15)` is `#BCCAD7` (title `(spec-003 AC-27)`). Implement in `src/ui/foundations/contrast.ts` and export it.
-- [ ] T088 [US6] AC-26 build, driven by the scenarios:
+- [X] T087 [P] [US6] AC-26 TDD cycle in `src/ui/foundations/contrast.spec.ts`: `blend(foreground, background, share)` returns `#RRGGBB`, each channel `round(share × foreground + (1 − share) × background)`. Tests: `blend('#1A1A1A', '#F1E6CF', 0.15)` is `#D1C7B4` (title `(spec-003 AC-26)`) and `blend('#1B2A4A', '#D8E6F0', 0.15)` is `#BCCAD7` (title `(spec-003 AC-27)`). Implement in `src/ui/foundations/contrast.ts` and export it.
+- [X] T088 [US6] AC-26 build, driven by the scenarios:
   - New `src/ui/foundations/page.css`. `html` gets `background-color: var(--paper)` and `--dots: color-mix(in srgb, var(--ink) 15%, var(--paper))`. Its `background-image` is a `radial-gradient(circle, var(--dots) 1.5px, transparent <1.5px plus a fraction>)`, with `background-size: 9px 9px` and `background-position: 0 0`.
   - Import `page.css` in `src/catalogue/main.ts`.
   - In `src/catalogue/catalogue.css`, `html` loses its own fill (`page.css` gives it), and `body`, `main` and the screen view stay transparent so the dots show through.
   - `applyTheme` is unchanged: AC-20 still holds.
-- [ ] T089 [US6] AC-26 GREEN (three scenarios, both phones).
+- [X] T089 [US6] AC-26 GREEN (three scenarios, both phones).
   - ⚠️ "No dots on the parts" may pass as soon as the stubs give way to real readings, because the parts already have fills. Prove it with a reverted break: the keypad keys' fill made transparent, which must fail `Keypad shows dots`.
   - Then: slice refactor, `tdd-log.md` entry, and a **checkpoint**.
 
