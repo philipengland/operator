@@ -1171,3 +1171,23 @@ Added 2026-11-07 after the owner's review of part 3. Scenarios approved 2026-11-
   passed; phones 197 passed, none failed. Game JS and CSS unchanged. This run started its own
   catalogue server, so the catalogue was freshly built.
 - **Slice refactor**: none needed.
+
+## Polish and pull request 4 (T093 to T096)
+
+- **T093** (`1996256`): `docs/contracts/component-library.md` gains `blend` and `page.css`, as in
+  the spec's copy. `AGENTS.md` lists `blend` and `page.css` among the foundations.
+- **T094, quickstart**:
+  - Section 1 passed (lint, typecheck, 249 unit tests, both builds, engine 36, phones 197).
+  - Section 2, step 6: the Midnight blue play screen ("Row 1 correct", 390 × 844 at 2×) was
+    compared with `docs/design/1930s Midnight blue@2x.png`. Same faint dots, darker than the
+    paper, on the same 9 px grid. Dots on the page between the parts; none on the bubble,
+    counter, panel, pills, cells, keys or button.
+  - Section 4: the game builds `index-BUmz0kWH.js` and `index-CT2KBeTK.css`, the files found
+    byte-identical to `main` in part 3. Players see no change.
+  - **Section 3** (real phone, SC-301, now with the dots): **waiting for the owner's sign-off**;
+    T082 and T094 stay open until then.
+- **T095**: `npm run test-results -- 003-themed-ui` ends `OVERALL status: PASS`, with AC-1 to
+  AC-28 covered. Coverage: lines 98.98%, branches 93.63%.
+- **Merging beside #12** (the catalogue styles fix): a trial merge of `fix/catalogue-styles`
+  into this branch had no conflicts (`AGENTS.md`, quickstart and research merge automatically);
+  it was undone.

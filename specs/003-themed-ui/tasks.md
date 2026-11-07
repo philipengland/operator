@@ -351,12 +351,12 @@ page seen *between* them (between the keys, around the mascot) is page, and is d
 
 ### Polish and pull request 4
 
-- [ ] T093 [P] `docs/contracts/component-library.md`: Foundations gains `blend` and `page.css`, as in the spec's copy. `AGENTS.md`: the Component library line lists `page.css` among the foundations.
+- [X] T093 [P] `docs/contracts/component-library.md`: Foundations gains `blend` and `page.css`, as in the spec's copy. `AGENTS.md`: the Component library line lists `page.css` among the foundations.
 - [ ] T094 Run [quickstart.md](quickstart.md):
   - Section 1, and section 2's step 6: compare the dots with `docs/design/1930s Midnight blue@2x.png`.
   - Section 4: the game's `dist/` is unchanged from `main`.
   - Ask the owner for section 3 on a real phone, now with the dots. This also closes T082. Record the sign-off in the TDD log.
-- [ ] T095 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with AC-1 to AC-28 covered. Commit it.
+- [X] T095 `npm run test-results -- 003-themed-ui`: `specs/003-themed-ui/test-results.md` must end `OVERALL status: PASS` with AC-1 to AC-28 covered. Commit it.
 - [ ] T096 Push `003-themed-ui-part-4` and open "spec-003 part 4: Ben-Day dots":
   - Cover what, why (the owner's review of part 3), how tested, and rollback (revert; players unaffected).
   - Also note the design reference committed and the `docs/design/` lint ignore.
