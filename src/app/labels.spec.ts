@@ -173,4 +173,8 @@ describe('bubbleLine', () => {
   it("greets the player in the theme's voice while there is no result", () => {
     expect(bubbleLine(null, MIDNIGHT_BLUE)).toBe('Fill the grid, chief.');
   });
+
+  it("shows the game's existing message after a check, until the voice is released", () => {
+    expect(bubbleLine('not-solved', MIDNIGHT_BLUE)).toBe('Not solved yet.');
+  });
 });

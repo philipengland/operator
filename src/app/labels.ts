@@ -142,6 +142,6 @@ export function messageText(kind: MessageKind): string {
 }
 
 /** The line in the speech bubble (spec-004 FR-408). */
-export function bubbleLine(_kind: MessageKind | null, { address }: Theme): string {
-  return `Fill the grid, ${address}.`;
+export function bubbleLine(kind: MessageKind | null, { address }: Theme): string {
+  return kind === null ? `Fill the grid, ${address}.` : MESSAGES[kind];
 }
