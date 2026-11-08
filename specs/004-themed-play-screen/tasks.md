@@ -158,13 +158,13 @@ off; released by a one-line pull request.
 **Independent Test**: on the flags-on build, submit each kind of grid and read the bubble;
 `operator-voice.acceptance-spec.ts` passes on the flagged phones; the Midnight blue unit tests pass.
 
-- [ ] T040 [US3] Create branch `004-themed-play-screen-part-4` from `main` after the keypad's release merges. Bring over `test/acceptance/play/operator-voice.acceptance-spec.ts` unchanged from `f4da139` (confirm by blob). Remove the `keypad` flag (it is released and signed off, and this part touches the same files): `src/app/features.ts`, `screen.ts`, `playwright.config.ts`.
-- [ ] T041 [US3] AC-15 RED/GREEN. ⚠️ The greeting and "nothing announced" pass from Phase 2: report, and prove with a reverted break (the greeting placed in the status).
-- [ ] T042 [US3] AC-16 RED, then TDD in `src/app/labels.spec.ts`: `bubbleLine` with the voice on gives each line of the Messages table with the theme's address and sign-off; `announcement` with the voice on is spec-001's message, the line, then the count when it changed. GREEN on the flagged phones; checkpoint.
-- [ ] T043 [US3] AC-17 RED/GREEN. ⚠️ May pass after AC-16: report, and prove with a reverted break. Checkpoint.
-- [ ] T044 [US3] AC-18 RED/GREEN: the status is emptied silently and the bubble returns to the greeting. ⚠️ May pass: report, and prove with a reverted break. Checkpoint.
-- [ ] T045 [P] [US3] AC-19 TDD in `src/app/labels.spec.ts`, title `(spec-004 AC-19)`: "Fill the grid, chief." and "You're connected! Next, please, chief!" for Midnight blue.
-- [ ] T046 [US3] Confirm `npm run build` gives players the plain messages (flag off), and the flags-on build passes `operator-voice.acceptance-spec.ts`. Push and open "spec-004 part 4 of 4: the voice (flag off)". The owner merges with a merge commit; no change for players.
+- [X] T040 [US3] Create branch `004-themed-play-screen-part-4` from `main` after the keypad's release merges. Bring over `test/acceptance/play/operator-voice.acceptance-spec.ts` unchanged from `f4da139` (confirm by blob). Remove the `keypad` flag (it is released and signed off, and this part touches the same files): `src/app/features.ts`, `screen.ts`, `playwright.config.ts`.
+- [X] T041 [US3] AC-15 RED/GREEN. ⚠️ The greeting and "nothing announced" pass from Phase 2: report, and prove with a reverted break (the greeting placed in the status).
+- [X] T042 [US3] AC-16 RED, then TDD in `src/app/labels.spec.ts`: `bubbleLine` with the voice on gives each line of the Messages table with the theme's address and sign-off; `announcement` with the voice on is spec-001's message, the line, then the count when it changed. GREEN on the flagged phones; checkpoint.
+- [X] T043 [US3] AC-17 RED/GREEN. ⚠️ May pass after AC-16: report, and prove with a reverted break. Checkpoint.
+- [X] T044 [US3] AC-18 RED/GREEN: the status is emptied silently and the bubble returns to the greeting. ⚠️ May pass: report, and prove with a reverted break. Checkpoint.
+- [X] T045 [P] [US3] AC-19 TDD in `src/app/labels.spec.ts`, title `(spec-004 AC-19)`: "Fill the grid, chief." and "You're connected! Next, please, chief!" for Midnight blue.
+- [X] T046 [US3] Confirm `npm run build` gives players the plain messages (flag off), and the flags-on build passes `operator-voice.acceptance-spec.ts`. Push and open "spec-004 part 4 of 4: the voice (flag off)". The owner merges with a merge commit; no change for players.
 - [ ] T047 [US3] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `voice` true in `src/app/features.ts` ("release the voice"). The owner merges; **players get the voice**.
 
 ---
