@@ -4,7 +4,7 @@
 // A mark is shown by its symbol, not colour or weight (owner decision 2026-11-06: Chewy has one weight).
 
 import './line-working.css';
-import { writeText, type Component } from '../component';
+import { showKeepingItsPlace, writeText, type Component } from '../component';
 import { createIcon } from '../simple/icon';
 import { createText } from '../simple/text';
 import { lineWorkingModel, type LineWorkingProps } from './line-working.model';
@@ -30,7 +30,7 @@ export function createLineWorking(props: LineWorkingProps): Component<LineWorkin
     const model = lineWorkingModel(next);
     writeText(name, model.heardAs);
     result.update({ text: model.result, style: 'display' });
-    mark.element.hidden = model.icon === null;
+    showKeepingItsPlace(mark.element, model.icon !== null);
     if (model.icon !== null) {
       mark.update({ icon: model.icon });
     }

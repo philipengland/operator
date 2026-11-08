@@ -16,6 +16,11 @@ export function setAttributeOrRemove(element: Element, name: string, value: stri
   }
 }
 
+/** Shows or hides an element while it keeps its space, so nothing beside it moves. */
+export function showKeepingItsPlace(element: HTMLElement, isShown: boolean): void {
+  element.style.visibility = isShown ? '' : 'hidden';
+}
+
 /** A rendered component: its element, and a way to show new props in place. */
 export interface Component<Props> {
   readonly element: HTMLElement;
