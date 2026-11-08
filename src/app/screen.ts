@@ -4,12 +4,12 @@
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import type { Theme } from '../ui/foundations/themes';
 import type { Features } from './features';
-import { bubbleLine, cellTitle, pillName, workingName, workingSlot } from './labels';
+import { announcement, bubbleLine, cellTitle, pillName, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { LineWorkingProps } from '../ui/combined/line-working';
 import type { TargetPillProps } from '../ui/combined/target-pill';
-import { lineWorkings, type SessionState } from './session';
+import { counterText, lineWorkings, type SessionState } from './session';
 
 const TITLE = 'Hello, Operator!';
 const HELPER_LINE = 'Tap a dashed bubble to swap its operator.';
@@ -56,5 +56,6 @@ export function playScreenProps(state: SessionState, theme: Theme, features: Fea
     },
     mainButtonLabel: theme.buttonLabel,
     isKeypadShown: features.keypad,
+    announcement: announcement(state.message, counterText(state)),
   };
 }

@@ -55,4 +55,13 @@ describe('playScreenProps', () => {
     expect(props.isKeypadShown).toBe(false);
   });
 
+
+  it('announces a new solution with its count, and shows the result in the bubble', () => {
+    const session = { ...startSession(), found: new Set(['a'] as never[]), message: 'new-solution' as const };
+
+    const props = playScreenProps(session, CLASSIC, NO_FLAGS);
+
+    expect(props.header.message).toBe('New solution found!');
+    expect(props.announcement).toBe('New solution found! Found 1 of 2');
+  });
 });
