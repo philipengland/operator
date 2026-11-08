@@ -245,3 +245,55 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
 - **Wiring**: `main.ts` sends keys to the session (the phones prove it).
 - **Acceptance GREEN** (T030): AC-9, 3 runs passed. Screen checked by eye.
 - **Slice refactor**: none needed.
+
+## AC-10: Oops empties the selected cell
+
+- **Acceptance RED** (engine and phones): the cell stayed at 7.
+- **Cycle** (`bfe7ad8`): `clear` empties the selected cell. RED: `expected 7 to be null`.
+- **Acceptance GREEN** (T031).
+
+## AC-11: one cell is selected at a time
+
+- **Reported — passes at RED** (⚠️): AC-8's `selected` already follows the last tap. Proven by a
+  reverted break: the first cell staying selected failed `the selected cell — Expected:
+  "bottom-right", Received: "top-right"`. **GREEN** (T032).
+
+## AC-12: the keypad before a cell is selected
+
+- **Cycle** (`4fa79e8`): the keys are available only once a cell is selected. RED on its assertion.
+- **Unit test** (`33cfa98`): a key with nothing selected changes nothing. **Reported — passed on its
+  first run** (the guard came with AC-9). A first break, removing the guard, proved nothing: with
+  no position to match, no cell changes anyway. Proven properly: a key with nothing selected filling
+  top-right failed `top-right cell — Expected: "empty", Received: 5`.
+- **Proven on the phones**: keys that are never unavailable failed `"1" is unavailable`.
+- **GREEN** (T033).
+
+## AC-13, AC-14 and the edge cases
+
+**Reported — all passed at RED** (⚠️), from AC-8 to AC-12's behaviour. Each proven by a reverted break:
+
+| Criterion | Break | Failure |
+| --- | --- | --- |
+| AC-13 | the given 6 can be selected | `the selected cell — Expected: "bottom-left", Received: "top-left"` |
+| AC-14 | every key enters a 1 | `what the game says — Expected: "new solution", Received: "not solved yet"` |
+| Edge | tapping the selected cell deselects it | `the selected cell — Received: null` |
+| Edge | an operator tap clears the selection | `the selected cell — Received: null` |
+| Edge | checking clears the selection | `the selected cell — Received: null` |
+| Edge (FR-407) | a key says something | `what the game says — Received: "not solved yet"` |
+
+**GREEN** (T034, T035, T037).
+
+## AC-20: the keypad on the screen
+
+- **Reported — passes at RED** (⚠️): the keypad was already in the play screen, sized by spec-003.
+- **Proven** by a reverted break: keys 200 px tall failed `Keypad is on screen without scrolling`, at
+  both screen sizes.
+- **Measured**, with the longest message: the main button ends at 660 of 667 px and 545 of 568 px.
+- **GREEN** (T036). Screens checked by eye at 375 × 667 and 320 × 568.
+
+## Flag off (T038)
+
+The `npm run build` game shows no keypad group and no selected cell after a tap, so players see no
+change on merging. The game's own phone projects pass with the flag off.
+
+- **Slice refactor**: none needed beyond AC-8's.
