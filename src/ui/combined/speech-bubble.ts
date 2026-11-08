@@ -2,7 +2,7 @@
 // of feedback in body Text, on a bubble Surface (docs/contracts/component-library.md). Read as text.
 
 import './speech-bubble.css';
-import type { Component } from '../component';
+import { setAttributeOrRemove, type Component } from '../component';
 import { createSurface } from '../simple/surface';
 import { createText } from '../simple/text';
 
@@ -12,6 +12,8 @@ export const builtFrom: readonly string[] = ['Surface', 'Text'];
 export interface SpeechBubbleProps {
   readonly title: string;
   readonly message: string;
+  /** False while another part of the screen reads this line out, so it is not heard twice. */
+  readonly isMessageHeard?: boolean;
 }
 
 export function createSpeechBubble(props: SpeechBubbleProps): Component<SpeechBubbleProps> {
@@ -22,6 +24,8 @@ export function createSpeechBubble(props: SpeechBubbleProps): Component<SpeechBu
   const update = (next: SpeechBubbleProps): void => {
     title.update({ text: next.title, style: 'display' });
     message.update({ text: next.message, style: 'body' });
+    setAttributeOrRemove(message.element, 'aria-hidden', next.isMessageHeard === false ? 'true' : null);
   };
+  update(props);
   return { element: bubble.element, update };
 }

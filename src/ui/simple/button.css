@@ -26,6 +26,13 @@
   cursor: default;
 }
 
+/* Keys that cannot be used yet: faded and flat, so it is not told by colour alone (spec-004 FR-405). */
+.button--key[aria-disabled='true'],
+.button--solid[aria-disabled='true'] {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
 /* The one action per screen: accent fill, large and full width on phones. */
 .button--main {
   width: 100%;
