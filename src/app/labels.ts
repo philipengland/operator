@@ -3,6 +3,7 @@
 
 import {
   lineOperator,
+  lineSpec,
   type CellPosition,
   type Entry,
   type LineOutcome,
@@ -11,6 +12,7 @@ import {
   type Operator,
   type Puzzle,
 } from '../engine';
+import type { Theme } from '../ui/foundations/themes';
 import type { MessageKind } from './session';
 
 const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
@@ -25,17 +27,16 @@ const GAP_MARK = '?';
 
 const MINUS_SIGN = '−';
 
-// Shown after a result that reaches its target (spec-002 FR-204).
-const TARGET_REACHED_MARK = '✓';
-
-// Shown instead of a result when a division is not whole (spec-002 FR-205).
-const NOT_WHOLE_MARK = '✗';
-
 // F0's grid is 2 × 2, so each cell is a corner (spec "The Puzzle").
 const CORNER_NAMES: readonly (readonly string[])[] = [
   ['Top-left', 'Top-right'],
   ['Bottom-left', 'Bottom-right'],
 ];
+
+/** Which cell this is, as a screen reader hears it first: "Top-left cell". */
+export function cellTitle(position: CellPosition): string {
+  return `${CORNER_NAMES[position.row]?.[position.column]} cell`;
+}
 
 export function cellName(puzzle: Puzzle, entry: Entry, position: CellPosition): string {
   const corner = CORNER_NAMES[position.row]?.[position.column];
@@ -51,9 +52,11 @@ export function lineName(line: LinePosition): string {
   return `${line.axis === 'row' ? 'Row' : 'Column'} ${line.index + 1}`;
 }
 
-export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
+/** A target pill's name: the line, its target and its operator (spec-004 contract). */
+export function pillName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
   const operator = lineOperator(puzzle, entry, line);
-  return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
+  const heard = operator === null ? 'operator not chosen' : OPERATOR_WORDS[operator];
+  return `${lineName(line)} target ${lineSpec(puzzle, line)?.target}, ${heard}`;
 }
 
 /** A line's working as the player reads it: "6 + ?", "6 + 2 = 8" (spec-002 FR-201). */
@@ -90,16 +93,15 @@ function spokenNumber(value: number): string {
   return value < 0 ? `minus ${-value}` : String(value);
 }
 
-/** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
-export function resultText({ outcome }: LineWorking): string {
+/** A line's result slot for the library's Line working: the mark is drawn, so not in the text. */
+export function workingSlot({ outcome }: LineWorking): { readonly result: string; readonly mark: 'none' | 'tick' | 'cross' } {
   if (outcome.kind === 'not-whole') {
-    return NOT_WHOLE_MARK;
+    return { result: '', mark: 'cross' };
   }
   if (outcome.kind !== 'result') {
-    return `= ${GAP_MARK}`;
+    return { result: `= ${GAP_MARK}`, mark: 'none' };
   }
-  const result = `= ${shownNumber(outcome.value)}`;
-  return outcome.reachesTarget ? `${result} ${TARGET_REACHED_MARK}` : result;
+  return { result: `= ${shownNumber(outcome.value)}`, mark: outcome.reachesTarget ? 'tick' : 'none' };
 }
 
 // Every message kind must have wording; the compiler enforces it.
@@ -114,4 +116,17 @@ const MESSAGES: Readonly<Record<MessageKind, string>> = {
 /** What the game says after Check (FR-014). */
 export function messageText(kind: MessageKind): string {
   return MESSAGES[kind];
+}
+
+/** The line in the speech bubble (spec-004 FR-408). */
+export function bubbleLine(kind: MessageKind | null, { address }: Theme): string {
+  return kind === null ? `Fill the grid, ${address}.` : MESSAGES[kind];
+}
+
+/** What a screen reader is told after a check; empty when there is no result (spec-004 FR-409, FR-413). */
+export function announcement(kind: MessageKind | null, counter: string): string {
+  if (kind === null) {
+    return '';
+  }
+  return kind === 'new-solution' || kind === 'all-found' ? `${MESSAGES[kind]} ${counter}` : MESSAGES[kind];
 }

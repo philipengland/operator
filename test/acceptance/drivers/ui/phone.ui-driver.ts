@@ -1,15 +1,18 @@
 // Layer 3 — the phone around the game: screen, connection, looks and speed.
 
 import type { Locator, Page } from '@playwright/test';
-import type { Cell, Line } from '../../dsl/vocabulary';
+import type { Cell, Line, TypefacedText } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
-import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern, workingNamePattern } from './screen-names';
+import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour, readTypeface } from './catalogue-reading';
+import { cellNamePattern, COUNTER_PATTERN, pillIn, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
-import type { Box, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
+import type { PageDots, PlayScreenPart, Typeface } from '../../dsl/catalogue-vocabulary';
+import type { Box, CellAppearance, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
 
 // Set on the page before a reload; a page that really reloads no longer has it.
 const PAGE_BEFORE_RELOAD = 'operatorPageBeforeReload';
 
+const GAME_TYPEFACE = /\.woff2$/;
 const MILLISECONDS_PER_SECOND = 1000;
 const BITS_PER_BYTE = 8;
 
@@ -45,6 +48,59 @@ export class UiPhoneDriver implements PhoneDriver {
     page.on('load', () => {
       this.requestsWhenOpened = this.requests.length;
     });
+  }
+
+  // spec-004: the themed screen, read as the catalogue reads it.
+
+  /** The screen's size and where its parts sit; a part that is not there has no position. */
+  async playScreenParts(): Promise<{ readonly screen: ScreenSize; readonly parts: Readonly<Record<PlayScreenPart, Box>> }> {
+    const screen = this.page.viewportSize() ?? { width: 0, height: 0 };
+    const main = this.page.getByRole('main');
+    const parts: Record<PlayScreenPart, Locator> = {
+      'Operator header': main.getByText('Hello, Operator!', { exact: true }).locator('xpath=../..'),
+      'Solutions counter': main.getByText(COUNTER_PATTERN).locator('xpath=..'),
+      'Puzzle grid': main.getByRole('group', { name: 'Puzzle', exact: true }),
+      Keypad: main.getByRole('group', { name: 'Keypad', exact: true }),
+      'Main button': main.getByRole('button', { name: /Check/ }),
+    };
+    const boxes = await Promise.all((Object.entries(parts) as [PlayScreenPart, Locator][]).map(async ([part, found]) => [part, await boxOf(found)] as const));
+    return { screen, parts: Object.fromEntries(boxes) as Record<PlayScreenPart, Box> };
+  }
+
+  async cellAppearance(cell: Cell): Promise<CellAppearance> {
+    const button = this.page.getByRole('group', { name: 'Puzzle' }).getByRole('button', { name: cellNamePattern(cell) });
+    return (await button.count()) === 1 ? button.evaluate(readCellAppearance) : { fill: 'other', digit: 'other', shadow: 'other' };
+  }
+
+  async isPillDashed(line: Line): Promise<boolean> {
+    const pill = pillIn(this.page.getByRole('group', { name: 'Puzzle' }), line);
+    return (await pill.count()) === 1 && (await pill.evaluate((element) => getComputedStyle(element).borderTopStyle === 'dashed'));
+  }
+
+  async coloursInUse(): Promise<readonly string[]> {
+    const colours = await this.page.evaluate(readColoursInUse);
+    return colours.length > 0 ? colours : ['no colours were read'];
+  }
+
+  async pageDots(): Promise<PageDots | null> {
+    await this.page.evaluate(() => window.scrollTo(0, 0));
+    const declared = await this.page.evaluate(readDeclaredDots);
+    if (!declared.hasDots) {
+      return null;
+    }
+    const screenshot = await this.page.screenshot({ clip: { x: 0, y: 0, width: declared.everyPixels, height: declared.everyPixels }, animations: 'disabled' });
+    const drawn = await this.page.evaluate(readDotColour, [screenshot.toString('base64'), declared.paper] as const);
+    return drawn ? { dotColour: drawn, paper: declared.paper, sizeInPixels: declared.sizeInPixels, everyPixels: declared.everyPixels } : null;
+  }
+
+  /** The first family in this text's font stack that has loaded, once loading has finished. */
+  async typeface(text: TypefacedText): Promise<Typeface | string> {
+    await this.page.evaluate(() => document.fonts.ready);
+    const found: Record<TypefacedText, Locator> = {
+      'speech bubble title': this.page.getByText('Hello, Operator!', { exact: true }),
+      'helper line': this.page.getByRole('group', { name: 'Puzzle' }).getByRole('paragraph'),
+    };
+    return (await found[text].count()) === 1 ? found[text].evaluate(readTypeface) : 'not on the screen';
   }
 
   async useScreen(size: ScreenSize): Promise<void> {
@@ -92,8 +148,12 @@ export class UiPhoneDriver implements PhoneDriver {
     return !isOldPage && (await this.page.getByRole('group', { name: 'Puzzle' }).isVisible());
   }
 
+  /**
+   * The game's own typefaces are part of opening: a slower browser asks for them just after the
+   * load event, when it first lays the text out (found on CI, spec-004). Anything else counts.
+   */
   async networkRequestsSinceOpening(): Promise<number> {
-    return this.requests.length - this.requestsWhenOpened;
+    return this.requests.slice(this.requestsWhenOpened).filter((url) => !GAME_TYPEFACE.test(url)).length;
   }
 
   async look(cell: Cell): Promise<CellLook> {
@@ -107,6 +167,8 @@ export class UiPhoneDriver implements PhoneDriver {
           `font ${style.fontWeight} ${style.fontStyle}`,
           `pattern ${style.backgroundImage}`,
           `decoration ${style.textDecorationLine}`,
+          // A raised shadow is a shape, not a colour: the themed cells differ by it (spec-003 AC-10).
+          `shadow ${style.boxShadow === 'none' ? 'none' : 'raised'}`,
         ].join(' | '),
       };
     });
@@ -123,8 +185,9 @@ export class UiPhoneDriver implements PhoneDriver {
     const operators = {} as Record<Line, Box>;
     const workings = {} as Record<Line, Box>;
     for (const line of LINES) {
-      targets[line] = await boxOf(puzzle.getByText(targetTextPattern(line)));
-      operators[line] = await boxOf(puzzle.getByRole('button', { name: operatorNamePattern(line) }));
+      // A pill is the line's target and operator together (spec-004 contract).
+      targets[line] = await boxOf(pillIn(puzzle, line));
+      operators[line] = targets[line];
       // The name is visually hidden; the working's slot on screen is the element around it.
       workings[line] = await boxOf(puzzle.getByText(workingNamePattern(line)).locator('..'));
     }
@@ -134,7 +197,7 @@ export class UiPhoneDriver implements PhoneDriver {
       targets,
       operators,
       workings,
-      counter: await boxOf(this.page.getByRole('status').getByText(COUNTER_PATTERN)),
+      counter: await boxOf(this.page.getByText(COUNTER_PATTERN).locator('xpath=..')),
       checkButton: await boxOf(this.page.getByRole('button', { name: 'Check' })),
     };
   }

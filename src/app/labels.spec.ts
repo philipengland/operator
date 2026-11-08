@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
-import { cellName, lineName, messageText, operatorName, resultText, workingName, workingText } from './labels';
+import { MIDNIGHT_BLUE } from '../ui/foundations/themes';
+import { announcement, bubbleLine, cellName, lineName, messageText, workingName, workingSlot, workingText } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -27,28 +28,6 @@ describe('lineName', () => {
     { axis: 'column', index: 1, name: 'Column 2' },
   ] as const)('names $axis $index "$name"', ({ axis, index, name }) => {
     expect(lineName({ axis, index })).toBe(name);
-  });
-});
-
-describe('operatorName', () => {
-  it.each([
-    { axis: 'row', index: 0, name: 'Row 1 operator, plus' },
-    { axis: 'row', index: 1, name: 'Row 2 operator, not chosen' },
-    { axis: 'column', index: 0, name: 'Column 1 operator, not chosen' },
-    { axis: 'column', index: 1, name: 'Column 2 operator, times' },
-  ] as const)('names $axis $index "$name" when the game opens', ({ axis, index, name }) => {
-    expect(operatorName(workedExample, emptyEntry(workedExample), { axis, index })).toBe(name);
-  });
-
-  it.each([
-    ['+', 'plus'],
-    ['−', 'minus'],
-    ['×', 'times'],
-    ['÷', 'divide'],
-  ] as const)('names an open operator by the choice %s as "%s"', (choice, word) => {
-    const entry = { ...emptyEntry(workedExample), rowOperators: [null, choice] };
-
-    expect(operatorName(workedExample, entry, { axis: 'row', index: 1 })).toBe(`Row 2 operator, ${word}`);
   });
 });
 
@@ -122,30 +101,6 @@ describe('workingName', () => {
   });
 });
 
-describe('resultText', () => {
-  it('shows "= ?" in the result slot while a line is unfinished', () => {
-    expect(resultText(ROW_1_ON_OPENING)).toBe('= ?');
-  });
-
-  it('shows the result of a line that misses its target: "= 9"', () => {
-    const missing: LineWorking = { ...ROW_1_ON_OPENING, digits: [6, 3], outcome: { kind: 'result', value: 9, reachesTarget: false } };
-
-    expect(resultText(missing)).toBe('= 9');
-  });
-
-  it('marks a line that reaches its target with a tick: "= 8 ✓"', () => {
-    expect(resultText(ROW_1_WITH_TOP_RIGHT_2)).toBe('= 8 ✓');
-  });
-
-  it('shows a result below zero with the minus sign: "= −1"', () => {
-    expect(resultText(ROW_2_GOING_BELOW_ZERO)).toBe('= −1');
-  });
-
-  it('shows a cross and no result when a division is not whole: "✗"', () => {
-    expect(resultText(COLUMN_1_NOT_WHOLE)).toBe('✗');
-  });
-});
-
 describe('messageText', () => {
   it('says "New solution found!" for a new solution', () => {
     expect(messageText('new-solution')).toBe('New solution found!');
@@ -165,5 +120,40 @@ describe('messageText', () => {
 
   it('asks for every cell and operator to be filled when the grid has a gap', () => {
     expect(messageText('incomplete')).toBe('Fill every cell and choose every operator before checking.');
+  });
+});
+
+describe('bubbleLine', () => {
+  it("greets the player in the theme's voice while there is no result", () => {
+    expect(bubbleLine(null, MIDNIGHT_BLUE)).toBe('Fill the grid, chief.');
+  });
+
+  it("shows the game's existing message after a check, until the voice is released", () => {
+    expect(bubbleLine('not-solved', MIDNIGHT_BLUE)).toBe('Not solved yet.');
+  });
+});
+
+describe('announcement', () => {
+  it('says nothing while there is no result', () => {
+    expect(announcement(null, 'Found 0 of 2')).toBe('');
+  });
+
+  it('says the result, then the count when a new solution changed it (spec-004 AC-4)', () => {
+    expect(announcement('new-solution', 'Found 1 of 2')).toBe('New solution found! Found 1 of 2');
+  });
+
+  it('leaves the count out when it did not change', () => {
+    expect(announcement('not-solved', 'Found 0 of 2')).toBe('Not solved yet.');
+  });
+});
+
+describe('workingSlot', () => {
+  it.each([
+    ['nothing to work out yet', ROW_1_ON_OPENING, { result: '= ?', mark: 'none' }],
+    ['a line reaching its target (spec-004 AC-3)', ROW_1_WITH_TOP_RIGHT_2, { result: '= 8', mark: 'tick' }],
+    ['a result below zero', ROW_2_GOING_BELOW_ZERO, { result: '= −1', mark: 'none' }],
+    ['a division that is not whole', COLUMN_1_NOT_WHOLE, { result: '', mark: 'cross' }],
+  ] as const)('shows %s', (_case, working, slot) => {
+    expect(workingSlot(working)).toEqual(slot);
   });
 });

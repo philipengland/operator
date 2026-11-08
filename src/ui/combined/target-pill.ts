@@ -3,7 +3,7 @@
 // Whether a line's operator is shown or open is fixed for a puzzle, so it is chosen once.
 
 import './target-pill.css';
-import type { Component } from '../component';
+import { showKeepingItsPlace, type Component } from '../component';
 import { createBadge } from '../simple/badge';
 import { createButton } from '../simple/button';
 import { createIcon } from '../simple/icon';
@@ -25,7 +25,7 @@ function shownPill(props: TargetPillProps): Component<TargetPillProps> {
   const update = (next: TargetPillProps): void => {
     const model = targetPillModel(next);
     badge.update({ text: model.text, spokenAs: model.heardAs });
-    tick.element.hidden = !model.hasTick;
+    showKeepingItsPlace(tick.element, model.hasTick);
   };
   update(props);
   return { element: badge.element, update };
@@ -37,7 +37,7 @@ function openPill(props: TargetPillProps, onChoose?: () => void): Component<Targ
   const update = (next: TargetPillProps): void => {
     const model = targetPillModel(next);
     button.update({ label: model.text, style: 'dashed', action: model.heardAs });
-    tick.element.hidden = !model.hasTick;
+    showKeepingItsPlace(tick.element, model.hasTick);
   };
   update(props);
   return { element: button.element, update };

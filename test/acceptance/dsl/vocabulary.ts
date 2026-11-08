@@ -38,3 +38,9 @@ export type Working = string;
 
 /** How a line's working is marked (spec-002 FR-204, FR-205). */
 export type WorkingMark = 'target reached' | 'not a whole number' | 'none';
+
+/** A key on the keypad (spec-004): a digit, or Oops, which empties the selected cell. */
+export type KeypadKey = Digit | 'Oops';
+
+/** Text on the play screen whose typeface a scenario checks (spec-004 AC-7). */
+export type TypefacedText = 'speech bubble title' | 'helper line';

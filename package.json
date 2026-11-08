@@ -8,10 +8,11 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build && vite preview --open",
     "build": "vite build",
     "catalogue": "vite build --mode catalogue && vite preview --outDir catalogue-dist --open /catalogue.html",
     "build:catalogue": "vite build --mode catalogue",
+    "build:flags-on": "vite build --mode flags-on",
     "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc --project tsconfig.json && tsc --project src/engine/tsconfig.json && tsc --project test/acceptance/tsconfig.json && tsc --project tools/tsconfig.json",

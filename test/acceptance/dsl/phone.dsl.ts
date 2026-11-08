@@ -2,7 +2,21 @@
 
 import { expect } from '@playwright/test';
 import type { Box, PhoneDriver, ScreenLayout } from '../drivers/phone.driver';
-import type { Cell, Line } from './vocabulary';
+import type { ColourToken, PageDots, PlayScreenPart, ThemeColours, ThemeName, Typeface } from './catalogue-vocabulary';
+import type { Cell, Line, TypefacedText } from './vocabulary';
+
+/**
+ * spec-003 research R10: a browser may round a mixed colour by one level in each of red, green
+ * and blue, so a dot colour within one level per channel is the spec's colour.
+ */
+const DOT_COLOUR_ROUNDING = 1;
+
+/** How a cell looks in the theme's own colour names. Only the parts a scenario names are checked. */
+export interface CellLookInTheme {
+  readonly fill?: ColourToken;
+  readonly digit?: ColourToken;
+  readonly shadow?: ColourToken;
+}
 
 const ROWS: Readonly<Record<'Row 1' | 'Row 2', readonly Cell[]>> = {
   'Row 1': ['top-left', 'top-right'],
@@ -107,6 +121,60 @@ export class PhoneDsl {
     }
   }
 
+  // spec-004 — the themed screen.
+
+  async expectPartsTopToBottom(parts: readonly PlayScreenPart[]): Promise<void> {
+    const { parts: boxes } = await this.driver().playScreenParts();
+    parts.slice(1).forEach((part, index) => {
+      const above = parts[index] as PlayScreenPart;
+      expect(isAbove(boxes[above], boxes[part]), `${above} is above ${part}`).toBe(true);
+    });
+  }
+
+  async expectPartsOnScreen(parts: readonly PlayScreenPart[]): Promise<void> {
+    const { screen, parts: boxes } = await this.driver().playScreenParts();
+    for (const part of parts) {
+      const box = boxes[part];
+      const isVisible = box.left >= 0 && box.top >= 0 && box.right <= screen.width && box.bottom <= screen.height;
+      expect(isVisible, `${part} is on screen without scrolling`).toBe(true);
+    }
+  }
+
+  async expectCellLook(cell: Cell, look: CellLookInTheme): Promise<void> {
+    const shown = await this.driver().cellAppearance(cell);
+    for (const [part, colour] of Object.entries(look)) {
+      expect(shown[part as keyof CellLookInTheme], `${cell} cell's ${part}`).toBe(colour);
+    }
+  }
+
+  async expectPillDashed(line: Line): Promise<void> {
+    expect(await this.driver().isPillDashed(line), `${line} pill is dashed`).toBe(true);
+  }
+
+  /** Every colour drawn is one of the theme's four. The page's dots are not among them (spec-003 AC-27). */
+  async expectOnlyThemeColours(theme: ThemeName, colours: ThemeColours): Promise<void> {
+    const allowed = Object.values(colours).map((colour) => colour.toUpperCase());
+    for (const colour of await this.driver().coloursInUse()) {
+      expect(allowed, `${colour} is one of ${theme}'s four colours`).toContain(colour.toUpperCase());
+    }
+  }
+
+  async expectPageDots(dots: PageDots): Promise<void> {
+    const drawn = await this.driver().pageDots();
+    expect(drawn, 'dots are drawn on the page').not.toBeNull();
+    if (!drawn) {
+      return;
+    }
+    expect(channelsApart(drawn.dotColour, dots.dotColour), `the dots are ${dots.dotColour} (drawn ${drawn.dotColour})`).toBeLessThanOrEqual(DOT_COLOUR_ROUNDING);
+    expect(drawn.paper.toUpperCase(), 'the paper behind the dots').toBe(dots.paper.toUpperCase());
+    expect(drawn.sizeInPixels, 'each dot is this many pixels across').toBeCloseTo(dots.sizeInPixels, 0);
+    expect(drawn.everyPixels, 'the dots are this many pixels apart').toBeCloseTo(dots.everyPixels, 0);
+  }
+
+  async expectShownIn(text: TypefacedText, typeface: Typeface): Promise<void> {
+    expect(await this.driver().typeface(text), `the ${text} is shown in`).toBe(typeface);
+  }
+
   async expectReadyToPlayWithin(seconds: number): Promise<void> {
     expect(await this.driver().secondsUntilReadyToPlay(), 'seconds until ready to play').toBeLessThanOrEqual(seconds);
   }
@@ -116,6 +184,13 @@ export class PhoneDsl {
     expect(responseTimes.length, 'taps measured').toBeGreaterThan(0);
     expect(Math.max(...responseTimes), 'slowest tap, in milliseconds').toBeLessThanOrEqual(milliseconds);
   }
+}
+
+/** The largest difference in red, green or blue between two #RRGGBB colours. */
+function channelsApart(first: string, second: string): number {
+  const channels = (colour: string) => (colour.match(/[0-9a-f]{2}/gi) ?? []).map((pair) => Number.parseInt(pair, 16));
+  const [a, b] = [channels(first), channels(second)];
+  return a.length === 3 && b.length === 3 ? Math.max(...a.map((value, index) => Math.abs(value - (b[index] ?? 0)))) : Number.POSITIVE_INFINITY;
 }
 
 function everythingIn(layout: ScreenLayout): [string, Box][] {

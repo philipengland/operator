@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { defineConfig, type Plugin } from 'vite';
+import { FLAGS_ON_MODE, RELEASED, featuresForBuild } from './src/app/features.ts';
 import { buildVersion } from './tools/build-version.ts';
 
 // Research R9: JavaScript and CSS together stay under 30 KB gzipped, protecting the
@@ -55,8 +56,10 @@ export default defineConfig(({ mode }) =>
     : {
         // Relative paths work under the GitHub Pages sub-path and inside Capacitor (research R7).
         base: './',
+        // Constitution VII: which features this build contains is fixed here, at build time.
+        define: { __OPERATOR_FEATURES__: JSON.stringify(featuresForBuild(mode, RELEASED)) },
         build: {
-          outDir: 'dist',
+          outDir: mode === FLAGS_ON_MODE ? 'dist-flags-on' : 'dist',
           emptyOutDir: true,
         },
         plugins: [versionMeta(), bundleBudget()],

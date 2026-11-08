@@ -3,13 +3,13 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 14px;
+  padding: 4px var(--space-pill);
   border-radius: var(--radius-pill);
   background: var(--ink);
   color: var(--paper);
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 22px;
+  font-size: var(--text-pill);
   line-height: 1.2;
   gap: 6px;
   white-space: nowrap;

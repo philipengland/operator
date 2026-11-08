@@ -54,6 +54,10 @@
   --size-main: 60px;
   --size-dashed: 48px;
   --text-display: 28px;
+  --text-cell: 44px;
+  --text-pill: 22px;
+  --size-pill-tick: 20px;
+  --space-pill: 14px;
   --text-body: 16px;
   --space-surface: 16px;
   --space-grid: var(--gap);
@@ -78,6 +82,8 @@
 @media (max-height: 600px) {
   :root {
     --size-cell: var(--touch-target);
+    /* A digit fits inside the smallest cell's outline, so filling a cell never changes its height. */
+    --text-cell: 36px;
     --size-main: var(--touch-target);
     --space-surface: 8px;
     --space-screen: 8px;
@@ -92,6 +98,10 @@
   :root {
     --text-display: 22px;
     --text-body: 14px;
+    /* A column pill, with room for its tick, must fit a column of a 320 px screen. */
+    --text-pill: 18px;
+    --size-pill-tick: 14px;
+    --space-pill: 8px;
   }
 }
 

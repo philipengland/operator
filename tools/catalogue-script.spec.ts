@@ -10,4 +10,10 @@ describe('npm run catalogue', () => {
 
     expect(scripts.catalogue).toMatch(/^vite build --mode catalogue && vite preview --outDir catalogue-dist\b/);
   });
+
+  it('serves the game the same way for npm run dev, now it uses the library (spec-004)', () => {
+    const { scripts } = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts: Record<string, string> };
+
+    expect(scripts.dev).toMatch(/^vite build && vite preview\b/);
+  });
 });

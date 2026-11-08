@@ -75,7 +75,7 @@ catalogue scenario still passes.
   - While it is not empty, the bubble's line is hidden from screen readers (research R2).
 - [X] T007 `src/catalogue/screen-samples.ts`: "Row 1 correct" shows the greeting and "All found" shows "Every line connected, pal!" (in each theme's voice). spec-003 AC-17 must still pass: the new lines take the same number of lines in the bubble.
 - [X] T008 `docs/contracts/component-library.md` gains the additions in [contracts/component-library-changes.md](contracts/component-library-changes.md). Full suite: every existing scenario passes, and `dist/` is byte-identical to `main`.
-- [ ] T009 Push and open "spec-004 part 1 of 4: library additions" (what, why, how tested, rollback; no change for players). The owner merges with a merge commit; it deploys with no visible change.
+- [X] T009 Push and open "spec-004 part 1 of 4: library additions" (what, why, how tested, rollback; no change for players). The owner merges with a merge commit; it deploys with no visible change.
 
 ---
 
@@ -89,37 +89,39 @@ spec-002 and spec-003 criterion passes; `themed-look.acceptance-spec.ts` passes 
 
 ### Before AC-1
 
-- [ ] T010 [US1] Create branch `004-themed-play-screen-part-2` from `main` after part 1 merges. Bring over, unchanged from the approved commit `f4da139` (confirm by blob): `test/acceptance/play/themed-look.acceptance-spec.ts`, `test/acceptance/dsl/game.dsl.ts`, `test/acceptance/dsl/phone.dsl.ts`, `test/acceptance/dsl/vocabulary.ts`, and the signatures in `test/acceptance/drivers/game.driver.ts` and `phone.driver.ts`.
-- [ ] T011 [US1] Placeholder readings so the interfaces compile, in `test/acceptance/drivers/ui/game.ui-driver.ts`, `ui/phone.ui-driver.ts` and `engine/game.engine-driver.ts`: each returns a value that cannot pass (spec-003 T085's pattern). Typecheck green. Run the full suite as this part's baseline.
-- [ ] T012 [US1] TDD: the flags (research R10). `src/app/features.ts`: `keypad` and `voice`, both false, and a pure `featuresFrom(released, flagsOn)`, unit-tested in `src/app/features.spec.ts`. `vite.config.ts` passes them through `define` from `OPERATOR_FLAGS_ON`; `package.json` gains `build:flags-on` (`dist-flags-on/`, git-ignored). The bundle budget applies to both builds.
-- [ ] T013 [US1] Flag testing (owner's approval 2026-11-08), in `playwright.config.ts`: projects `iphone-flagged` and `android-flagged` on a flags-on build, built and served by the test runner on its own port. While a flag is off, its Layer 1 file runs only on these projects (`keypad` → `keypad.acceptance-spec.ts`, `voice` → `operator-voice.acceptance-spec.ts`); once it is on, on the game's projects. `tools/test-results.ts` learns the two projects, test-first in `tools/test-results.spec.ts`. Confirm `.github/workflows/ci-deploy.yml` needs no change.
+- [X] T010 [US1] Create branch `004-themed-play-screen-part-2` from `main` after part 1 merges. Bring over, unchanged from the approved commit `f4da139` (confirm by blob): `test/acceptance/play/themed-look.acceptance-spec.ts`, `test/acceptance/dsl/game.dsl.ts`, `test/acceptance/dsl/phone.dsl.ts`, `test/acceptance/dsl/vocabulary.ts`, and the signatures in `test/acceptance/drivers/game.driver.ts` and `phone.driver.ts`.
+- [X] T011 [US1] Placeholder readings so the interfaces compile, in `test/acceptance/drivers/ui/game.ui-driver.ts`, `ui/phone.ui-driver.ts` and `engine/game.engine-driver.ts`: each returns a value that cannot pass (spec-003 T085's pattern). Typecheck green. Run the full suite as this part's baseline.
+- [X] T012 [US1] TDD: the flags (research R10). `src/app/features.ts`: `keypad` and `voice`, both false, and a pure `featuresForBuild(mode, released)`, unit-tested in `src/app/features.spec.ts`. `vite.config.ts` passes them through `define`; `package.json` gains `build:flags-on` (Vite mode, `dist-flags-on/`, git-ignored). The bundle budget applies to both builds.
+- [X] T013 [US1] Flag testing (owner's approval 2026-11-08), in `playwright.config.ts`: projects `iphone-flagged` and `android-flagged` on a flags-on build, built and served by the test runner on its own port. While a flag is off, its Layer 1 file runs only on these projects (`keypad` → `keypad.acceptance-spec.ts`, `voice` → `operator-voice.acceptance-spec.ts`); once it is on, on the game's projects. `tools/test-results.ts` learns the two projects, test-first in `tools/test-results.spec.ts`. Confirm `.github/workflows/ci-deploy.yml` needs no change.
+
+- [X] T013a [US1] TDD: `npm run test-results -- <feature> --criterion AC-n` reports one criterion from its real test results, every test on each run, with no tests shown as NOT COVERED (owner's request, 2026-11-08), in `tools/test-results.ts` and `tools/run-test-results.ts`. Each checkpoint from here on pastes this table, with the scenario link, its match with the approved commit, the original failure, the deliberate break, commits, whole-suite numbers and the re-run command, and a linked screenshot for criteria about how something looks.
 
 ### AC-1: the new screen
 
-- [ ] T014 [US1] AC-1 RED: real driver readings: `bubble`, `counterShown`, `pillShown`, `workingSlot`, `helperLine`, `mainButton` (game); `playScreenParts`, `isPillDashed`, `cellAppearance`, `coloursInUse`, `pageDots` (phone), reusing the catalogue's readings. Expected failure: `Operator header is above Solutions counter — Received: false` (the F0 screen has no header).
-- [ ] T015 [US1] AC-1 TDD cycles in `src/app/screen.spec.ts`: `playScreenProps(state, theme, features)` in `src/app/screen.ts` gives the header ("Hello, Operator!", the greeting from a new `bubbleLine` in `src/app/labels.ts`, unit-tested in `labels.spec.ts`), the counter, the pills ("Row 1 target 8, plus"; "Row 2 target 6, operator not chosen"), cells, workings, helper line, `isKeypadShown` false and the theme's button label.
-- [ ] T016 [US1] AC-1 the swap, as one commit so the game never ships half-changed:
+- [X] T014 [US1] AC-1 RED: real driver readings: `bubble`, `counterShown`, `pillShown`, `workingSlot`, `helperLine`, `mainButton` (game); `playScreenParts`, `isPillDashed`, `cellAppearance`, `coloursInUse`, `pageDots` (phone), reusing the catalogue's readings. Expected failure: `Operator header is above Solutions counter — Received: false` (the F0 screen has no header).
+- [X] T015 [US1] AC-1 TDD cycles in `src/app/screen.spec.ts`: `playScreenProps(state, theme, features)` in `src/app/screen.ts` gives the header ("Hello, Operator!", the greeting from a new `bubbleLine` in `src/app/labels.ts`, unit-tested in `labels.spec.ts`), the counter, the pills ("Row 1 target 8, plus"; "Row 2 target 6, operator not chosen"), cells, workings, helper line, `isKeypadShown` false and the theme's button label.
+- [X] T016 [US1] AC-1 the swap, as one commit so the game never ships half-changed:
   - `src/app/main.ts` applies `themeForSeed(undefined)`, imports the library's `tokens.css` and `page.css`, creates the library's play screen, and sends taps to the session.
   - `src/app/view.ts` and `src/app/styles.css` are removed, and `index.html`'s stylesheet link with them.
   - `test/acceptance/drivers/ui/game.ui-driver.ts`, `ui/screen-names.ts` and `ui/phone.ui-driver.ts` are re-pointed to [contracts/play-screen.md](contracts/play-screen.md) (research R3).
   - While re-pointing, `view()` reads the whole screen in one browser call instead of about 29, the root cause of spec-001 AC-12's timeouts (#17).
   - Every spec-001 and spec-002 scenario must pass unchanged. Any that cannot: **stop and ask**.
-- [ ] T017 [US1] AC-1 GREEN (six scenarios, both phones), slice refactor, checkpoint.
+- [X] T017 [US1] AC-1 GREEN (six scenarios, both phones), slice refactor, checkpoint.
 
 ### AC-2 to AC-7
 
-- [ ] T018 [US1] AC-2 RED/GREEN. ⚠️ May pass once AC-1 is built: report, and prove with a reverted break (the main button without "Check" in its name).
-- [ ] T019 [US1] AC-3 RED/GREEN, TDD in `src/app/screen.spec.ts`: a line that reaches its target gives its pill `reachesTarget` and the player's digits in it `isInCorrectLine`. Checkpoint.
-- [ ] T020 [US1] AC-4 RED/GREEN, TDD in `src/app/labels.spec.ts` and `screen.spec.ts`: `announcement(kind, theme, isVoiceOn, countChanged, counter)` with the voice off is spec-001's message, then "Found N of 2" when the count changed; `bubbleLine` with the voice off is spec-001's message (FR-413). The driver's `announcement()` reads the status. Checkpoint.
-- [ ] T021 [US1] AC-5 RED/GREEN: every pill ticked, dashed ones too (T003), and "All found! 2 of 2 ✓". Checkpoint.
-- [ ] T022 [US1] AC-6 RED/GREEN at 375 × 667 and 320 × 568. ⚠️ May pass at RED (spec-003 AC-16 sized the screen, and here it has no keypad): report, and prove with a reverted break. Checkpoint.
-- [ ] T023 [US1] AC-7 RED/GREEN: driver `typeface(text)` waits for `document.fonts.ready`. ⚠️ May pass at RED: report, and prove with a reverted break (a typeface file left out of the build). Checkpoint.
+- [X] T018 [US1] AC-2 RED/GREEN. ⚠️ May pass once AC-1 is built: report, and prove with a reverted break (the main button without "Check" in its name).
+- [X] T019 [US1] AC-3 RED/GREEN, TDD in `src/app/screen.spec.ts`: a line that reaches its target gives its pill `reachesTarget` and the player's digits in it `isInCorrectLine`. Checkpoint.
+- [X] T020 [US1] AC-4 RED/GREEN, TDD in `src/app/labels.spec.ts` and `screen.spec.ts`: `announcement(kind, theme, isVoiceOn, countChanged, counter)` with the voice off is spec-001's message, then "Found N of 2" when the count changed; `bubbleLine` with the voice off is spec-001's message (FR-413). The driver's `announcement()` reads the status. Checkpoint.
+- [X] T021 [US1] AC-5 RED/GREEN: every pill ticked, dashed ones too (T003), and "All found! 2 of 2 ✓". Checkpoint.
+- [X] T022 [US1] AC-6 RED/GREEN at 375 × 667 and 320 × 568. ⚠️ May pass at RED (spec-003 AC-16 sized the screen, and here it has no keypad): report, and prove with a reverted break. Checkpoint.
+- [X] T023 [US1] AC-7 RED/GREEN: driver `typeface(text)` waits for `document.fonts.ready`. ⚠️ May pass at RED: report, and prove with a reverted break (a typeface file left out of the build). Checkpoint.
 
 ### Pull request 2
 
-- [ ] T024 [US1] Confirm the Android speed-budget scenario (SC-405) still passes, and both builds are under the 30 KB budget. Copy [contracts/play-screen.md](contracts/play-screen.md) to `docs/contracts/play-screen.md`. `AGENTS.md`: the game uses the library, `src/app/` layout, the flags and their test projects, with why.
-- [ ] T025 [US1] Run [quickstart.md](quickstart.md) sections 1 and 2 (steps for this release). `npm run test-results -- 004-themed-play-screen` reads BLOCKED, as expected until the last story, with AC-1 to AC-7 passing. Commit it.
-- [ ] T026 [US1] Push and open "spec-004 part 2 of 4: the new look". The owner merges with a merge commit; **players get the new screen**. The owner signs off on a real phone (SC-403, first visible release); record it in `tdd-log.md`.
+- [X] T024 [US1] Confirm the Android speed-budget scenario (SC-405) still passes, and both builds are under the 30 KB budget. Copy [contracts/play-screen.md](contracts/play-screen.md) to `docs/contracts/play-screen.md`. `AGENTS.md`: the game uses the library, `src/app/` layout, the flags and their test projects, with why.
+- [X] T025 [US1] Run [quickstart.md](quickstart.md) sections 1 and 2 (steps for this release). `npm run test-results -- 004-themed-play-screen` reads BLOCKED, as expected until the last story, with AC-1 to AC-7 passing. Commit it.
+- [ ] T026 [US1] Push and open "spec-004 part 2 of 4: the new look". **Before merging, the owner reviews the real build on a phone** (`npm run build && npx vite preview --host`, the printed `Network:` address, and a checklist for this story); changes are made on the branch until the owner is happy (SC-403, first visible release). Record the sign-off in `tdd-log.md`. The owner merges with a merge commit; **players get the new screen**.
 
 ---
 
@@ -144,7 +146,7 @@ engine driver.
 - [ ] T036 [US2] AC-20 RED/GREEN: the keypad between the grid and the main button, on both screen sizes. If it does not fit, adjust the library's size tokens (`src/ui/foundations/tokens.css`), not the game. Checkpoint.
 - [ ] T037 [US2] The four edge cases in `keypad.acceptance-spec.ts` RED/GREEN. ⚠️ Report any that pass at once, and prove with a reverted break. Checkpoint.
 - [ ] T038 [US2] Confirm `npm run build` gives players no keypad and no selection (flag off: the game's phone projects still pass), and the flags-on build passes `keypad.acceptance-spec.ts`. Push and open "spec-004 part 3 of 4: the keypad (flag off)". The owner merges with a merge commit; no change for players.
-- [ ] T039 [US2] The owner previews with `OPERATOR_FLAGS_ON=keypad npm run build` on a phone. Then a one-line pull request sets `keypad` true in `src/app/features.ts` ("release the keypad"). `verify` runs every scenario with it on. The owner merges; **players get the keypad**. Record the sign-off in `tdd-log.md`.
+- [ ] T039 [US2] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `keypad` true in `src/app/features.ts` ("release the keypad"). `verify` runs every scenario with it on. The owner merges; **players get the keypad**. Record the sign-off in `tdd-log.md`.
 
 ---
 
@@ -163,7 +165,7 @@ off; released by a one-line pull request.
 - [ ] T044 [US3] AC-18 RED/GREEN: the status is emptied silently and the bubble returns to the greeting. ⚠️ May pass: report, and prove with a reverted break. Checkpoint.
 - [ ] T045 [P] [US3] AC-19 TDD in `src/app/labels.spec.ts`, title `(spec-004 AC-19)`: "Fill the grid, chief." and "You're connected! Next, please, chief!" for Midnight blue.
 - [ ] T046 [US3] Confirm `npm run build` gives players the plain messages (flag off), and the flags-on build passes `operator-voice.acceptance-spec.ts`. Push and open "spec-004 part 4 of 4: the voice (flag off)". The owner merges with a merge commit; no change for players.
-- [ ] T047 [US3] The owner previews with `OPERATOR_FLAGS_ON=voice npm run build` on a phone. Then a one-line pull request sets `voice` true in `src/app/features.ts` ("release the voice"). The owner merges; **players get the voice**.
+- [ ] T047 [US3] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `voice` true in `src/app/features.ts` ("release the voice"). The owner merges; **players get the voice**.
 
 ---
 

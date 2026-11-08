@@ -1,6 +1,8 @@
 /* Target pill: layout only; its look comes from Badge, Button and Icon (FR-303). */
 
-.badge .icon {
-  width: 20px;
-  height: 20px;
+.badge .icon,
+.button--dashed .icon {
+  flex: none;
+  width: var(--size-pill-tick);
+  height: var(--size-pill-tick);
 }

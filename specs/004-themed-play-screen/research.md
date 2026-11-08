@@ -193,10 +193,10 @@ request and a deploy, about 6 minutes).
 
 - **`src/app/features.ts`** holds each flag's released state: `keypad` and `voice`, both false
   at first. Releasing a story is a one-line change here.
-- **The build reads them through Vite's `define`**, so an off flag is a constant `false` and the
-  bundler drops its code. A build can turn flags on with the environment variable
-  `OPERATOR_FLAGS_ON=keypad,voice`. Only the flags-on test build sets it; `npm run build` and the
-  deploy never do.
+- **The build reads them through Vite's `define`.** `npm run build:flags-on` (Vite mode `flags-on`)
+  turns every flag on, in `dist-flags-on/`; `npm run build` and the deploy only ever use what is
+  released. A mode rather than an environment variable, as one cannot be set the same way on
+  Windows and in CI without a new dependency.
 - **Pure code takes the flags as a value**: `playScreenProps(state, theme, features)`. Unit tests
   cover both states without any build.
 - **No URL, setting or stored switch** (constitution VII, Principle I), so players cannot reach a
@@ -211,7 +211,7 @@ request and a deploy, about 6 minutes).
 **How flags are tested** (constitution VII: the pipeline tests what players get, and each flagged
 story with its flag on):
 - The game's phone projects (`iphone`, `android`) keep testing `npm run build`, what players get.
-- Two new projects, `iphone-flagged` and `android-flagged`, test a flags-on build
+- Two new projects, `iphone-flagged` and `android-flagged`, test the flags-on build
   (`dist-flags-on/`, git-ignored, its own port). The test runner builds and serves it, as it does
   the catalogue, so the workflow file should need no change.
 - **Which scenarios need a flag is decided by file, in `playwright.config.ts`** (Layer 3): while a
