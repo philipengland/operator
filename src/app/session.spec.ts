@@ -30,6 +30,12 @@ describe('selecting a cell (spec-004 AC-8)', () => {
     expect(state.entry.cells[0]?.[1]).toBe(7);
     expect(state.selected).toEqual({ row: 0, column: 1 });
   });
+
+  it('clears the last message, as any change to the grid does (spec-004 AC-9)', () => {
+    const afterCheck = applyAction(selectedTopRight(), { type: 'submit' });
+
+    expect(applyAction(afterCheck, { type: 'key', digit: 7 }).message).toBeNull();
+  });
 });
 
 describe('counterText', () => {

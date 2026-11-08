@@ -98,7 +98,7 @@ function setSelectedCell(state: SessionState, value: Digit | null): SessionState
   const cells = state.entry.cells.map((cellsInRow, row) =>
     cellsInRow.map((current, column) => (row === selected.row && column === selected.column ? value : current)),
   );
-  return { ...state, entry: { ...state.entry, cells } };
+  return { ...state, entry: { ...state.entry, cells }, message: null };
 }
 
 function tapOperator(state: SessionState, tapped: LinePosition): SessionState {
