@@ -72,6 +72,7 @@ export function applyAction(state: SessionState, action: SessionAction): Session
     case 'submit':
       return submit(state);
     case 'key':
+      return setSelectedCell(state, action.digit);
     case 'clear':
       return state;
   }
@@ -87,6 +88,17 @@ function tapCell(state: SessionState, tapped: CellPosition): SessionState {
     ),
   );
   return { ...state, entry: { ...state.entry, cells }, message: null, selected: { row: tapped.row, column: tapped.column } };
+}
+
+function setSelectedCell(state: SessionState, value: Digit | null): SessionState {
+  const { selected } = state;
+  if (selected === null) {
+    return state;
+  }
+  const cells = state.entry.cells.map((cellsInRow, row) =>
+    cellsInRow.map((current, column) => (row === selected.row && column === selected.column ? value : current)),
+  );
+  return { ...state, entry: { ...state.entry, cells } };
 }
 
 function tapOperator(state: SessionState, tapped: LinePosition): SessionState {

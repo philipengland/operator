@@ -21,6 +21,15 @@ describe('selecting a cell (spec-004 AC-8)', () => {
     expect(state.selected).toEqual({ row: 0, column: 1 });
     expect(state.entry.cells[0]?.[1]).toBe(1);
   });
+
+  const selectedTopRight = () => applyAction(startSession(), { type: 'tapCell', row: 0, column: 1 });
+
+  it('sets the selected cell to the key tapped, and keeps it selected (spec-004 AC-9)', () => {
+    const state = applyAction(selectedTopRight(), { type: 'key', digit: 7 });
+
+    expect(state.entry.cells[0]?.[1]).toBe(7);
+    expect(state.selected).toEqual({ row: 0, column: 1 });
+  });
 });
 
 describe('counterText', () => {
