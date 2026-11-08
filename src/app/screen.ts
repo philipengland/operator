@@ -72,6 +72,7 @@ export function playScreenProps(state: SessionState, theme: Theme, features: Fea
     },
     mainButtonLabel: theme.buttonLabel,
     isKeypadShown: features.keypad,
+    keysAvailable: state.selected !== null,
     announcement: announcement(state.message, counterText(state)),
   };
 }

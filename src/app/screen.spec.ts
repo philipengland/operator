@@ -89,4 +89,11 @@ describe('playScreenProps', () => {
 
     expect([selectedIn(true), selectedIn(false)]).toEqual([true, false]);
   });
+
+  it('makes the keys available once a cell is selected, not before (spec-004 AC-12)', () => {
+    const withKeypad = { keypad: true, voice: false };
+
+    expect(playScreenProps(startSession(), CLASSIC, withKeypad).keysAvailable).toBe(false);
+    expect(playScreenProps(applyAction(startSession(), TOP_RIGHT), CLASSIC, withKeypad).keysAvailable).toBe(true);
+  });
 });
