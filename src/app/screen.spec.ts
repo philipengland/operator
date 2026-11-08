@@ -35,12 +35,12 @@ describe('playScreenProps', () => {
   it('gives the cells, the given 6 and three empty ones', () => {
     expect(justOpened().grid.cells).toEqual([
       [
-        { name: 'Top-left cell', digit: 6, isGiven: true, isInCorrectLine: false },
-        { name: 'Top-right cell', digit: null, isGiven: false, isInCorrectLine: false },
+        { name: 'Top-left cell', digit: 6, isGiven: true, isInCorrectLine: false, isSelected: false },
+        { name: 'Top-right cell', digit: null, isGiven: false, isInCorrectLine: false, isSelected: false },
       ],
       [
-        { name: 'Bottom-left cell', digit: null, isGiven: false, isInCorrectLine: false },
-        { name: 'Bottom-right cell', digit: null, isGiven: false, isInCorrectLine: false },
+        { name: 'Bottom-left cell', digit: null, isGiven: false, isInCorrectLine: false, isSelected: false },
+        { name: 'Bottom-right cell', digit: null, isGiven: false, isInCorrectLine: false, isSelected: false },
       ],
     ]);
   });
@@ -81,5 +81,12 @@ describe('playScreenProps', () => {
 
     expect(cells[0]?.map((cell) => cell.isInCorrectLine)).toEqual([false, true]);
     expect(cells[1]?.map((cell) => cell.isInCorrectLine)).toEqual([false, false]);
+  });
+
+  it('shows the selected cell with the keypad flag on, and never with it off (spec-004 AC-8, FR-413)', () => {
+    const tapped = applyAction(startSession(), TOP_RIGHT);
+    const selectedIn = (keypad: boolean) => playScreenProps(tapped, CLASSIC, { keypad, voice: false }).grid.cells[0]?.[1]?.isSelected;
+
+    expect([selectedIn(true), selectedIn(false)]).toEqual([true, false]);
   });
 });

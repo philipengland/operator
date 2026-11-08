@@ -28,7 +28,7 @@ function isInLineReachingTarget(state: SessionState, { row, column }: CellPositi
   );
 }
 
-function cell(state: SessionState, position: CellPosition): GridCellProps {
+function cell(state: SessionState, position: CellPosition, isKeypadOn: boolean): GridCellProps {
   const { puzzle, entry } = state;
   const given = puzzle.givens[position.row]?.[position.column] ?? null;
   return {
@@ -36,6 +36,7 @@ function cell(state: SessionState, position: CellPosition): GridCellProps {
     digit: given ?? entry.cells[position.row]?.[position.column] ?? null,
     isGiven: given !== null,
     isInCorrectLine: given === null && isInLineReachingTarget(state, position),
+    isSelected: isKeypadOn && state.selected?.row === position.row && state.selected?.column === position.column,
   };
 }
 
@@ -60,7 +61,7 @@ export function playScreenProps(state: SessionState, theme: Theme, features: Fea
     grid: {
       columnPills: lines(state, 'column').map((working) => pill(state, working)),
       rowPills: lines(state, 'row').map((working) => pill(state, working)),
-      cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
+      cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column }, features.keypad)) ?? []),
       rowWorkings: lines(state, 'row').map(workingProps),
       columnWorkings: lines(state, 'column').map(workingProps),
       helper: HELPER_LINE,
