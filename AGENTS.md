@@ -145,8 +145,9 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
   rebase and squash merges rewrite. The `main` ruleset allows merge commits only and requires `verify`.
 - **The build is labelled with the checked-out commit** (`tools/build-version.ts`), not
   `GITHUB_SHA`. Why: rollback runs (`workflow_dispatch` with `ref`) check out an older commit.
-- **Speed budgets run on Android only.** Why: throttling to the reference phone uses
-  Chromium's DevTools protocol.
+- **Speed budgets run on Android only, alone, after the other phone runs, with no trace.** Why:
+  throttling to the reference phone uses Chromium's DevTools protocol, and run alongside other
+  browsers they measure the machine's load, not the game.
 - **The library's tiers are enforced by lint and `tools/ui-tiers.spec.ts`.** ESLint stops a tier
   importing a higher one (and `src/ui/` importing the engine or the app); the tools test fails if
   combined or screen CSS declares colours, fills, outlines, shadows, radii or type. Why: a theme

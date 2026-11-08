@@ -47,8 +47,18 @@ export default defineConfig({
         {
           name: 'android',
           testIgnore: '**/delivery/**',
-          grepInvert: /@after-publish|@catalogue/,
+          grepInvert: /@budget|@after-publish|@catalogue/,
           use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN },
+        },
+        {
+          // The speed budgets time real taps, so they run alone, after the others and with no
+          // trace recording: run alongside them, they measured the machine's load (a tap of
+          // 112.5 ms in one full run in four, 2026-11-08). Android only: see AGENTS.md.
+          name: 'android-speed',
+          testIgnore: '**/delivery/**',
+          grep: /@budget/,
+          dependencies: ['iphone', 'android', 'catalogue-iphone', 'catalogue-android'],
+          use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN, trace: 'off' },
         },
         {
           name: 'catalogue-iphone',
