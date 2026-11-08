@@ -28,6 +28,10 @@ function isInLineReachingTarget(state: SessionState, { row, column }: CellPositi
   );
 }
 
+function isSamePosition(first: CellPosition | null, second: CellPosition): boolean {
+  return first?.row === second.row && first.column === second.column;
+}
+
 function cell(state: SessionState, position: CellPosition, isKeypadOn: boolean): GridCellProps {
   const { puzzle, entry } = state;
   const given = puzzle.givens[position.row]?.[position.column] ?? null;
@@ -36,7 +40,7 @@ function cell(state: SessionState, position: CellPosition, isKeypadOn: boolean):
     digit: given ?? entry.cells[position.row]?.[position.column] ?? null,
     isGiven: given !== null,
     isInCorrectLine: given === null && isInLineReachingTarget(state, position),
-    isSelected: isKeypadOn && state.selected?.row === position.row && state.selected?.column === position.column,
+    isSelected: isKeypadOn && isSamePosition(state.selected, position),
   };
 }
 
