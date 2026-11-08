@@ -233,3 +233,15 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
 - **Full suite**: 268 unit tests; engine 43 passed, 5 failed; phones 241 passed, 12 failed. Every
   failure is a keypad scenario not started; with the flag off the game's own runs still pass.
 - **Slice refactor**: as above.
+
+## AC-9: a key sets the selected cell
+
+- **Acceptance test**: `keypad.acceptance-spec.ts` — `[spec-004 AC-9]`, one scenario, on the engine
+  driver and the flags-on phones.
+- **Acceptance RED** (engine and phones): `top-right cell — Expected: 7, Received: 1`.
+- **Cycle 1** (`605c3dd`): a key sets the selected cell and keeps it selected. RED on its assertion.
+- **Cycle 2** (`89e3b53`): a key clears the last message, as any change to the grid does. RED on its
+  assertion.
+- **Wiring**: `main.ts` sends keys to the session (the phones prove it).
+- **Acceptance GREEN** (T030): AC-9, 3 runs passed. Screen checked by eye.
+- **Slice refactor**: none needed.
