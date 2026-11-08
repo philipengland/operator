@@ -111,6 +111,28 @@ implementation starts.
 *Rationale: executable specifications define success independently of the code, so success
 cannot be quietly redefined to match what was built (Baseline principle 1).*
 
+### VII. Small, Releasable Steps
+
+Work moves in the smallest steps a person can review, and `main` is always releasable.
+
+- Every merge to `main` deploys, so every merge MUST be fit for players. Players never see a
+  half-built feature.
+- Each user story MUST merge and deploy on its own, depending only on stories already released,
+  and MUST sit behind a feature flag until released. A plan MAY leave a story unflagged by
+  recording why.
+- Flags are fixed at build time. Off means players cannot reach the feature; there is no remote,
+  URL or player-facing switch (Principle I).
+- The pipeline MUST test what players get, and each flagged story with its flag on.
+- A flag is removed once its story has been released and signed off, in the next pull request
+  that touches that area.
+- Plans MUST give the release order and what players get at each release.
+- Within a story, each acceptance criterion is a review checkpoint. A pull request MUST be
+  reviewable in under 30 minutes; a story too big for that is split into smaller releasable
+  stories.
+
+*Rationale: small, flagged releases are easy to review and reverse, and separate merging code
+from releasing it (Baseline principle 5).*
+
 ## Platform Constraints
 
 - **Language:** TypeScript in strict mode for the engine and the app.
@@ -172,13 +194,13 @@ MUST NOT weaken it.
 - **Versioning:** semantic versioning. MAJOR means a principle is removed or redefined in a
   backward-incompatible way. MINOR means a principle or section is added, or guidance is
   materially expanded. PATCH means a clarification or wording fix.
-- **Compliance:** every plan includes a Constitution Check against Principles I–VI and the
+- **Compliance:** every plan includes a Constitution Check against Principles I–VII and the
   baseline. Every pull request review confirms it. The build enforces the engine boundary
   (II), golden seeds (III), accessibility checks (IV) and the expiry of exceptions
   (Baseline 9).
 - **Runtime guidance:** `AGENTS.md` and `.github/copilot-instructions.md`.
 
-**Version**: 1.0.1 | **Ratified**: 2026-11-01 | **Last Amended**: 2026-11-02
+**Version**: 1.1.0 | **Ratified**: 2026-11-01 | **Last Amended**: 2026-11-08
 
 <!-- org-baseline: v2.0.0 -->
 ## Organisation Baseline (v2.0.0) — Architecture Principles
