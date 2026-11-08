@@ -104,6 +104,17 @@ function spokenNumber(value: number): string {
   return value < 0 ? `minus ${-value}` : String(value);
 }
 
+/** A line's result slot for the library's Line working: the mark is drawn, so not in the text. */
+export function workingSlot({ outcome }: LineWorking): { readonly result: string; readonly mark: 'none' | 'tick' | 'cross' } {
+  if (outcome.kind === 'not-whole') {
+    return { result: '', mark: 'cross' };
+  }
+  if (outcome.kind !== 'result') {
+    return { result: `= ${GAP_MARK}`, mark: 'none' };
+  }
+  return { result: `= ${shownNumber(outcome.value)}`, mark: outcome.reachesTarget ? 'tick' : 'none' };
+}
+
 /** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
 export function resultText({ outcome }: LineWorking): string {
   if (outcome.kind === 'not-whole') {

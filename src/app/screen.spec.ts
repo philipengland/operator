@@ -41,4 +41,11 @@ describe('playScreenProps', () => {
     ]);
   });
 
+  it('gives each line its working, named as spec-002 names it', () => {
+    const { rowWorkings, columnWorkings } = justOpened().grid;
+
+    expect(rowWorkings[0]).toEqual({ result: '= ?', mark: 'none', name: 'Row 1 working, 6 + ?' });
+    expect(columnWorkings[1]).toEqual({ result: '= ?', mark: 'none', name: 'Column 2 working, ? × ?' });
+  });
+
 });
