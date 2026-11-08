@@ -145,8 +145,8 @@ engine driver.
 - [X] T035 [US2] AC-14 RED/GREEN. ⚠️ May pass: report, and prove with a reverted break. Checkpoint.
 - [X] T036 [US2] AC-20 RED/GREEN: the keypad between the grid and the main button, on both screen sizes. If it does not fit, adjust the library's size tokens (`src/ui/foundations/tokens.css`), not the game. Checkpoint.
 - [X] T037 [US2] The four edge cases in `keypad.acceptance-spec.ts` RED/GREEN. ⚠️ Report any that pass at once, and prove with a reverted break. Checkpoint.
-- [ ] T038 [US2] Confirm `npm run build` gives players no keypad and no selection (flag off: the game's phone projects still pass), and the flags-on build passes `keypad.acceptance-spec.ts`. Push and open "spec-004 part 3 of 4: the keypad (flag off)". The owner merges with a merge commit; no change for players.
-- [ ] T039 [US2] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `keypad` true in `src/app/features.ts` ("release the keypad"). `verify` runs every scenario with it on. The owner merges; **players get the keypad**. Record the sign-off in `tdd-log.md`.
+- [X] T038 [US2] Confirm `npm run build` gives players no keypad and no selection (flag off: the game's phone projects still pass), and the flags-on build passes `keypad.acceptance-spec.ts`. Push and open "spec-004 part 3 of 4: the keypad (flag off)". The owner merges with a merge commit; no change for players.
+- [X] T039 [US2] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `keypad` true in `src/app/features.ts` ("release the keypad"). `verify` runs every scenario with it on. The owner merges; **players get the keypad**. Record the sign-off in `tdd-log.md`.
 
 ---
 

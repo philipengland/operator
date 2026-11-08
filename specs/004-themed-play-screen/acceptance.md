@@ -146,3 +146,9 @@ for example `TypeError: this.driver(...).bubble is not a function`. Engine drive
     - `test/acceptance/dsl/game.dsl.ts`
     - `test/acceptance/dsl/phone.dsl.ts`
     - `test/acceptance/dsl/vocabulary.ts`
+
+## Changes after approval
+
+| Date | File | Change | Why |
+| --- | --- | --- | --- |
+| 2026-11-08 | `test/acceptance/play/themed-look.acceptance-spec.ts`, `[spec-004 AC-3]` | One added step: after top-right 2, tap bottom-left. | Approved by Philip England. With the keypad released, the cell just tapped stays selected, and the selected look wins (spec edge case "Selected cell in a correct line"), so the correct-line look only shows once another cell is selected. The tick and "= 8 ✓" are checked as before. |

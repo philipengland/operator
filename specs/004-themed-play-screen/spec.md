@@ -126,7 +126,7 @@ criterion still passes.
 2. **AC-2** — **Given** the game has just opened, **When** a screen reader reads the screen,
    **Then** it hears "Found 0 of 2", "Top-left cell, given 6", and a button that begins "Put it
    through!" and includes "Check".
-3. **AC-3** — **Given** the player has entered top-right 2, **When** they look at Row 1,
+3. **AC-3** — **Given** the player has entered top-right 2 and tapped another cell, **When** they look at Row 1,
    **Then** Row 1's pill shows "+ 8" with a tick, the 2 is in the accent colour with an
    accent shadow, and Row 1's working shows "6 + 2 = 8 ✓".
 4. **AC-4** — **Given** Solution A is entered (top-right 2, bottom-left 2, bottom-right 3, Row
