@@ -46,6 +46,9 @@ const RUN_COLUMNS: readonly (readonly [RunName, string])[] = [
 
 const PLAYWRIGHT_PROJECTS: ReadonlySet<string> = new Set(['engine', 'iphone', 'android', 'catalogue-iphone', 'catalogue-android', 'after-publish']);
 
+// A project that is another run under particular conditions: the speed budget runs alone, on the Pixel 5.
+const SAME_RUN_AS: Readonly<Record<string, RunName>> = { 'android-speed': 'android' };
+
 // A flaky test passed only on retry, which is never accepted (Playwright standard).
 const PLAYWRIGHT_STATUSES: Readonly<Record<string, TestStatus>> = {
   expected: 'passed',
@@ -92,6 +95,10 @@ function resultsIn(suite: PlaywrightSuite, describeTitles: readonly string[]): r
 }
 
 function playwrightRun(projectName: string): RunName {
+  const sameRun = SAME_RUN_AS[projectName];
+  if (sameRun) {
+    return sameRun;
+  }
   if (!PLAYWRIGHT_PROJECTS.has(projectName)) {
     throw new Error(`Unknown Playwright project "${projectName}"`);
   }

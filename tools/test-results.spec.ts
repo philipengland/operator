@@ -121,6 +121,14 @@ describe('readPlaywrightReport', () => {
     expect(readPlaywrightReport(catalogue).map((each) => each.run)).toEqual(['catalogue-iphone', 'catalogue-android']);
   });
 
+  it('counts the speed budget, which runs alone on the Pixel 5, as a Pixel 5 run', () => {
+    const speed = {
+      suites: [{ title: 'play/play-on-a-phone.acceptance-spec.ts', specs: [{ title: 't', tests: [{ projectName: 'android-speed', status: 'expected' }] }] }],
+    };
+
+    expect(readPlaywrightReport(speed).map((each) => each.run)).toEqual(['android']);
+  });
+
   it('rejects a project it does not know, rather than guessing where the test ran', () => {
     const unknown = { suites: [{ title: 'x', specs: [{ title: 't', tests: [{ projectName: 'desktop', status: 'expected' }] }] }] };
     expect(() => readPlaywrightReport(unknown)).toThrow('Unknown Playwright project "desktop"');
