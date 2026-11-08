@@ -10,6 +10,7 @@ test-results/
 playwright-report/
 dist/
 catalogue-dist/
+dist-flags-on/
 coverage/
 
 # Design source files kept outside the repository (spec-003, 2026-11-07): the PDFs and the

@@ -3,7 +3,7 @@
 **Feature**: [spec.md](spec.md) | **Date**: 2026-11-07
 
 How to check the feature once it is built. Each release is checked on its own; a flagged story
-is previewed with `OPERATOR_FLAGS_ON=keypad,voice npm run build`. Commands run from the repository root on Node 22.
+is previewed with `npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`. Commands run from the repository root on Node 22.
 Stop any `npm run catalogue` server first: the game's tests need port 4173.
 
 ## 1. Automated checks

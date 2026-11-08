@@ -66,7 +66,7 @@ export default tseslint.config(
   {
     // docs/design/ is the design reference (spec-003): a mockup tool's export with its own
     // runtime and React copy on the owner's disk, not code of this product (owner, 2026-11-07).
-    ignores: ['dist/', 'catalogue-dist/', 'coverage/', 'test-results/', 'playwright-report/', 'node_modules/', 'docs/design/'],
+    ignores: ['dist/', 'dist-flags-on/', 'catalogue-dist/', 'coverage/', 'test-results/', 'playwright-report/', 'node_modules/', 'docs/design/'],
   },
   js.configs.recommended,
   ...tseslint.configs.strict,
