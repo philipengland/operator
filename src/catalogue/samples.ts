@@ -106,7 +106,10 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     },
   ],
   'Puzzle grid': [{ label: 'Fixed puzzle', render: () => createPuzzleGrid(FIXED_PUZZLE_JUST_OPENED).element }],
-  Keypad: [{ label: 'Keypad', render: () => createKeypad().element }],
+  Keypad: [
+    { label: 'Keypad', render: () => createKeypad().element },
+    { label: 'Unavailable', render: () => createKeypad(undefined, false).element },
+  ],
 };
 
 /** Body text to show inside a surface sample. */

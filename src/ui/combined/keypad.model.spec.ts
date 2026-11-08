@@ -9,4 +9,10 @@ describe('keypadKeys', () => {
     expect(keys[0]?.button).toEqual({ label: '1', style: 'key' });
     expect(keys[9]?.button).toEqual({ label: 'Oops', style: 'solid', action: 'clear cell' });
   });
+
+  it('marks every key and Oops unavailable when the keys are not available', () => {
+    const keys = keypadKeys(false);
+
+    expect(keys.map((key) => key.button.isUnavailable)).toEqual(Array.from({ length: 10 }, () => true));
+  });
 });

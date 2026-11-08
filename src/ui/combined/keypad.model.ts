@@ -17,6 +17,8 @@ const DIGITS = Array.from({ length: LARGEST_DIGIT }, (_, index) => index + 1);
 
 const CLEAR_KEY: KeypadKey = { value: 'clear', button: { label: 'Oops', style: 'solid', action: 'clear cell' } };
 
-export function keypadKeys(): readonly KeypadKey[] {
-  return [...DIGITS.map((digit): KeypadKey => ({ value: digit, button: { label: String(digit), style: 'key' } })), CLEAR_KEY];
+/** The keys in order; while the keys are not available, each is shown and heard as unavailable (spec-004 FR-405). */
+export function keypadKeys(keysAvailable = true): readonly KeypadKey[] {
+  const keys = [...DIGITS.map((digit): KeypadKey => ({ value: digit, button: { label: String(digit), style: 'key' } })), CLEAR_KEY];
+  return keysAvailable ? keys : keys.map((key) => ({ ...key, button: { ...key.button, isUnavailable: true } }));
 }
