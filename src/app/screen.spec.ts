@@ -3,7 +3,7 @@ import { CLASSIC } from '../ui/foundations/themes';
 import { playScreenProps } from './screen';
 import { applyAction, startSession } from './session';
 
-const NO_FLAGS = { keypad: false, voice: false };
+const NO_FLAGS = { voice: false };
 const justOpened = () => playScreenProps(startSession(), CLASSIC, NO_FLAGS);
 const TOP_RIGHT = { type: 'tapCell', row: 0, column: 1 } as const;
 
@@ -52,13 +52,9 @@ describe('playScreenProps', () => {
     expect(columnWorkings[1]).toEqual({ result: '= ?', mark: 'none', name: 'Column 2 working, ? × ?' });
   });
 
-  it('shows the helper line while an operator is open, and no keypad with the flag off', () => {
-    const props = justOpened();
-
-    expect(props.grid.helper).toBe('Tap a dashed bubble to swap its operator.');
-    expect(props.isKeypadShown).toBe(false);
+  it('shows the helper line while an operator is open', () => {
+    expect(justOpened().grid.helper).toBe('Tap a dashed bubble to swap its operator.');
   });
-
 
   it('announces a new solution with its count, and shows the result in the bubble', () => {
     const session = { ...startSession(), found: new Set(['a'] as never[]), message: 'new-solution' as const };
@@ -83,18 +79,15 @@ describe('playScreenProps', () => {
     expect(cells[1]?.map((cell) => cell.isInCorrectLine)).toEqual([false, false]);
   });
 
-  it('shows the selected cell with the keypad flag on, and never with it off (spec-004 AC-8, FR-413)', () => {
+  it('shows the selected cell (spec-004 AC-8)', () => {
     const tapped = applyAction(startSession(), TOP_RIGHT);
-    const selectedIn = (keypad: boolean) => playScreenProps(tapped, CLASSIC, { keypad, voice: false }).grid.cells[0]?.[1]?.isSelected;
 
-    expect([selectedIn(true), selectedIn(false)]).toEqual([true, false]);
+    expect(playScreenProps(tapped, CLASSIC, NO_FLAGS).grid.cells[0]?.[1]?.isSelected).toBe(true);
   });
 
   it('makes the keys available once a cell is selected, not before (spec-004 AC-12)', () => {
-    const withKeypad = { keypad: true, voice: false };
-
-    expect(playScreenProps(startSession(), CLASSIC, withKeypad).keysAvailable).toBe(false);
-    expect(playScreenProps(applyAction(startSession(), TOP_RIGHT), CLASSIC, withKeypad).keysAvailable).toBe(true);
+    expect(playScreenProps(startSession(), CLASSIC, NO_FLAGS).keysAvailable).toBe(false);
+    expect(playScreenProps(applyAction(startSession(), TOP_RIGHT), CLASSIC, NO_FLAGS).keysAvailable).toBe(true);
   });
 
   it("shows and announces the operator's line with the voice on (spec-004 AC-16)", () => {
