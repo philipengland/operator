@@ -12,6 +12,7 @@ import type { Box, CellAppearance, CellLook, PhoneDriver, ScreenLayout, ScreenSi
 // Set on the page before a reload; a page that really reloads no longer has it.
 const PAGE_BEFORE_RELOAD = 'operatorPageBeforeReload';
 
+const GAME_TYPEFACE = /\.woff2$/;
 const MILLISECONDS_PER_SECOND = 1000;
 const BITS_PER_BYTE = 8;
 
@@ -147,8 +148,12 @@ export class UiPhoneDriver implements PhoneDriver {
     return !isOldPage && (await this.page.getByRole('group', { name: 'Puzzle' }).isVisible());
   }
 
+  /**
+   * The game's own typefaces are part of opening: a slower browser asks for them just after the
+   * load event, when it first lays the text out (found on CI, spec-004). Anything else counts.
+   */
   async networkRequestsSinceOpening(): Promise<number> {
-    return this.requests.length - this.requestsWhenOpened;
+    return this.requests.slice(this.requestsWhenOpened).filter((url) => !GAME_TYPEFACE.test(url)).length;
   }
 
   async look(cell: Cell): Promise<CellLook> {
