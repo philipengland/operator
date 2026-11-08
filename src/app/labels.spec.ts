@@ -155,6 +155,12 @@ describe('announcement', () => {
   it('leaves the count out when it did not change', () => {
     expect(announcement('not-solved', 'Found 0 of 2')).toBe('Not solved yet.');
   });
+
+  it("says the result, then the operator's line, then the count (spec-004 AC-16)", () => {
+    expect(announcement('new-solution', 'Found 1 of 2', "You're connected! Keep 'em coming, pal!")).toBe(
+      "New solution found! You're connected! Keep 'em coming, pal! Found 1 of 2",
+    );
+  });
 });
 
 describe('workingSlot', () => {
