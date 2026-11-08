@@ -217,3 +217,19 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
   release).
 
 ## User Story 2: the keypad
+
+## AC-8: tapping a cell selects it
+
+- **Acceptance test**: `keypad.acceptance-spec.ts` — `[spec-004 AC-8]`, one scenario, on the engine
+  driver and the flags-on phones.
+- **Driver** (T028): `tapKey`, `selectedCell` and `keypad` on the UI and engine drivers.
+- **Acceptance RED** (all three): `the selected cell — Received: null`.
+- **Cycle 1** (`51b7e59`): tapping a changeable cell selects it and still steps its value. RED on its
+  assertion. **Slip**: the first GREEN stored the whole tap action, so its test still failed and
+  the commit went in red; fixed and amended before anything was pushed.
+- **Cycle 2** (`219551b`): the selected cell shows only with the keypad flag on. RED on its assertion.
+- **Refactor** (`f7ff7f4`): `isSamePosition`, as lint flagged the function as too complex.
+- **Acceptance GREEN** (T029): AC-8, 3 runs passed. Screen checked by eye.
+- **Full suite**: 268 unit tests; engine 43 passed, 5 failed; phones 241 passed, 12 failed. Every
+  failure is a keypad scenario not started; with the flag off the game's own runs still pass.
+- **Slice refactor**: as above.

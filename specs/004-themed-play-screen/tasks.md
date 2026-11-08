@@ -135,8 +135,8 @@ tapping cells still steps them; `keypad.acceptance-spec.ts` passes on the flagge
 engine driver.
 
 - [X] T027 [US2] Create branch `004-themed-play-screen-part-3` from `main` after part 2 merges. Bring over `test/acceptance/play/keypad.acceptance-spec.ts` unchanged from `f4da139` (confirm by blob).
-- [ ] T028 [US2] AC-8 RED: drivers' `tapKey`, `selectedCell`, `keypad` (UI: `aria-pressed`, the group "Keypad", `aria-disabled`; engine: from the session and `playScreenProps`). Expected failure: `the selected cell — Expected: "top-right", Received: null`.
-- [ ] T029 [US2] AC-8 TDD in `src/app/session.spec.ts`: the session gains `selected`, null at first; tapping a changeable cell selects it and steps it (FR-404); `playScreenProps` shows the selection and the keypad only with `features.keypad`, tested with the flag on and off in `src/app/screen.spec.ts`. GREEN on the flagged phones and the engine driver; checkpoint.
+- [X] T028 [US2] AC-8 RED: drivers' `tapKey`, `selectedCell`, `keypad` (UI: `aria-pressed`, the group "Keypad", `aria-disabled`; engine: from the session and `playScreenProps`). Expected failure: `the selected cell — Expected: "top-right", Received: null`.
+- [X] T029 [US2] AC-8 TDD in `src/app/session.spec.ts`: the session gains `selected`, null at first; tapping a changeable cell selects it and steps it (FR-404); `playScreenProps` shows the selection and the keypad only with `features.keypad`, tested with the flag on and off in `src/app/screen.spec.ts`. GREEN on the flagged phones and the engine driver; checkpoint.
 - [ ] T030 [US2] AC-9 TDD in `session.spec.ts`: `key(digit)` sets the selected cell and clears the message; the working follows. GREEN; checkpoint.
 - [ ] T031 [US2] AC-10 TDD: `clear` empties the selected cell. GREEN; checkpoint.
 - [ ] T032 [US2] AC-11 RED/GREEN. ⚠️ May pass after AC-8: report, and prove with a reverted break. Checkpoint.
