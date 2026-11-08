@@ -47,7 +47,12 @@ const RUN_COLUMNS: readonly (readonly [RunName, string])[] = [
 const PLAYWRIGHT_PROJECTS: ReadonlySet<string> = new Set(['engine', 'iphone', 'android', 'catalogue-iphone', 'catalogue-android', 'after-publish']);
 
 // A project that is another run under particular conditions: the speed budget runs alone, on the Pixel 5.
-const SAME_RUN_AS: Readonly<Record<string, RunName>> = { 'android-speed': 'android' };
+const SAME_RUN_AS: Readonly<Record<string, RunName>> = {
+  'android-speed': 'android',
+  // The same phones, testing a flagged story on the flags-on build (constitution VII).
+  'iphone-flagged': 'iphone',
+  'android-flagged': 'android',
+};
 
 // A flaky test passed only on retry, which is never accepted (Playwright standard).
 const PLAYWRIGHT_STATUSES: Readonly<Record<string, TestStatus>> = {

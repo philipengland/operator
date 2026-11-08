@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { RELEASED, type Features } from './src/app/features.ts';
 
 // Driver choice is configuration only (acceptance-tests standard "Choosing the Driver"):
 //   npm run test:acceptance:engine   in-process, no browser
@@ -20,6 +21,19 @@ const catalogueURL = `http://localhost:${CATALOGUE_PORT}/`;
 // 30 seconds (2026-11-07 and -08, from its kept trace). A stuck scenario still fails, just later.
 const SCENARIO_TIME_LIMIT_MS = 60_000;
 
+// Constitution VII: which scenarios need a flag on, by file, so releasing a story changes no locked
+// file. While a flag is off, its file runs only on the flags-on phones; once on, on the game's.
+const SCENARIOS_BEHIND_A_FLAG: Readonly<Record<keyof Features, string>> = {
+  keypad: '**/play/keypad.acceptance-spec.ts',
+  voice: '**/play/operator-voice.acceptance-spec.ts',
+};
+const unreleasedScenarios = (Object.keys(SCENARIOS_BEHIND_A_FLAG) as (keyof Features)[])
+  .filter((flag) => !RELEASED[flag])
+  .map((flag) => SCENARIOS_BEHIND_A_FLAG[flag]);
+const FLAGS_ON_PORT = 4175;
+const flagsOnURL = `http://localhost:${FLAGS_ON_PORT}/`;
+const onTheGamesPhones = ['**/delivery/**', ...unreleasedScenarios];
+
 export default defineConfig({
   testDir: 'test/acceptance',
   timeout: SCENARIO_TIME_LIMIT_MS,
@@ -40,16 +54,32 @@ export default defineConfig({
     ? [
         {
           name: 'iphone',
-          testIgnore: '**/delivery/**',
+          testIgnore: onTheGamesPhones,
           grepInvert: /@budget|@after-publish|@catalogue/,
           use: { ...devices['iPhone SE'], viewport: PHONE_SCREEN },
         },
         {
           name: 'android',
-          testIgnore: '**/delivery/**',
+          testIgnore: onTheGamesPhones,
           grepInvert: /@budget|@after-publish|@catalogue/,
           use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN },
         },
+        ...(unreleasedScenarios.length === 0
+          ? []
+          : [
+              {
+                name: 'iphone-flagged',
+                testMatch: unreleasedScenarios,
+                grepInvert: /@budget|@after-publish|@catalogue/,
+                use: { ...devices['iPhone SE'], viewport: PHONE_SCREEN, baseURL: flagsOnURL },
+              },
+              {
+                name: 'android-flagged',
+                testMatch: unreleasedScenarios,
+                grepInvert: /@budget|@after-publish|@catalogue/,
+                use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN, baseURL: flagsOnURL },
+              },
+            ]),
         {
           // The speed budgets time real taps, so they run alone, after the others and with no
           // trace recording: run alongside them, they measured the machine's load (a tap of
@@ -98,6 +128,12 @@ export default defineConfig({
             // Builds and serves the catalogue itself, so the pipeline needs no extra step.
             command: `npm run build:catalogue && npx vite preview --outDir catalogue-dist --port ${CATALOGUE_PORT} --strictPort`,
             url: `${catalogueURL}catalogue.html`,
+            reuseExistingServer: !isCi,
+          },
+          {
+            // Builds and serves the game with every flag on, for the scenarios behind a flag.
+            command: `npm run build:flags-on && npx vite preview --outDir dist-flags-on --port ${FLAGS_ON_PORT} --strictPort`,
+            url: flagsOnURL,
             reuseExistingServer: !isCi,
           },
         ]

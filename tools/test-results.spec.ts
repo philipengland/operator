@@ -129,6 +129,15 @@ describe('readPlaywrightReport', () => {
     expect(readPlaywrightReport(speed).map((each) => each.run)).toEqual(['android']);
   });
 
+  it.each([
+    ['iphone-flagged', 'iphone'],
+    ['android-flagged', 'android'],
+  ] as const)('counts %s, the same phone on the flags-on build, as a run on %s', (projectName, run) => {
+    const flagged = { suites: [{ title: 'play/keypad.acceptance-spec.ts', specs: [{ title: 't', tests: [{ projectName, status: 'expected' }] }] }] };
+
+    expect(readPlaywrightReport(flagged).map((each) => each.run)).toEqual([run]);
+  });
+
   it('rejects a project it does not know, rather than guessing where the test ran', () => {
     const unknown = { suites: [{ title: 'x', specs: [{ title: 't', tests: [{ projectName: 'desktop', status: 'expected' }] }] }] };
     expect(() => readPlaywrightReport(unknown)).toThrow('Unknown Playwright project "desktop"');
