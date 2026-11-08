@@ -120,7 +120,7 @@ spec-002 and spec-003 criterion passes; `themed-look.acceptance-spec.ts` passes 
 ### Pull request 2
 
 - [X] T024 [US1] Confirm the Android speed-budget scenario (SC-405) still passes, and both builds are under the 30 KB budget. Copy [contracts/play-screen.md](contracts/play-screen.md) to `docs/contracts/play-screen.md`. `AGENTS.md`: the game uses the library, `src/app/` layout, the flags and their test projects, with why.
-- [ ] T025 [US1] Run [quickstart.md](quickstart.md) sections 1 and 2 (steps for this release). `npm run test-results -- 004-themed-play-screen` reads BLOCKED, as expected until the last story, with AC-1 to AC-7 passing. Commit it.
+- [X] T025 [US1] Run [quickstart.md](quickstart.md) sections 1 and 2 (steps for this release). `npm run test-results -- 004-themed-play-screen` reads BLOCKED, as expected until the last story, with AC-1 to AC-7 passing. Commit it.
 - [ ] T026 [US1] Push and open "spec-004 part 2 of 4: the new look". **Before merging, the owner reviews the real build on a phone** (`npm run build && npx vite preview --host`, the printed `Network:` address, and a checklist for this story); changes are made on the branch until the owner is happy (SC-403, first visible release). Record the sign-off in `tdd-log.md`. The owner merges with a merge commit; **players get the new screen**.
 
 ---
