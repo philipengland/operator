@@ -121,7 +121,7 @@ spec-002 and spec-003 criterion passes; `themed-look.acceptance-spec.ts` passes 
 
 - [X] T024 [US1] Confirm the Android speed-budget scenario (SC-405) still passes, and both builds are under the 30 KB budget. Copy [contracts/play-screen.md](contracts/play-screen.md) to `docs/contracts/play-screen.md`. `AGENTS.md`: the game uses the library, `src/app/` layout, the flags and their test projects, with why.
 - [X] T025 [US1] Run [quickstart.md](quickstart.md) sections 1 and 2 (steps for this release). `npm run test-results -- 004-themed-play-screen` reads BLOCKED, as expected until the last story, with AC-1 to AC-7 passing. Commit it.
-- [ ] T026 [US1] Push and open "spec-004 part 2 of 4: the new look". **Before merging, the owner reviews the real build on a phone** (`npm run build && npx vite preview --host`, the printed `Network:` address, and a checklist for this story); changes are made on the branch until the owner is happy (SC-403, first visible release). Record the sign-off in `tdd-log.md`. The owner merges with a merge commit; **players get the new screen**.
+- [X] T026 [US1] Push and open "spec-004 part 2 of 4: the new look". **Before merging, the owner reviews the real build on a phone** (`npm run build && npx vite preview --host`, the printed `Network:` address, and a checklist for this story); changes are made on the branch until the owner is happy (SC-403, first visible release). Record the sign-off in `tdd-log.md`. The owner merges with a merge commit; **players get the new screen**.
 
 ---
 
@@ -134,17 +134,17 @@ request.
 tapping cells still steps them; `keypad.acceptance-spec.ts` passes on the flagged phones and the
 engine driver.
 
-- [ ] T027 [US2] Create branch `004-themed-play-screen-part-3` from `main` after part 2 merges. Bring over `test/acceptance/play/keypad.acceptance-spec.ts` unchanged from `f4da139` (confirm by blob).
-- [ ] T028 [US2] AC-8 RED: drivers' `tapKey`, `selectedCell`, `keypad` (UI: `aria-pressed`, the group "Keypad", `aria-disabled`; engine: from the session and `playScreenProps`). Expected failure: `the selected cell — Expected: "top-right", Received: null`.
-- [ ] T029 [US2] AC-8 TDD in `src/app/session.spec.ts`: the session gains `selected`, null at first; tapping a changeable cell selects it and steps it (FR-404); `playScreenProps` shows the selection and the keypad only with `features.keypad`, tested with the flag on and off in `src/app/screen.spec.ts`. GREEN on the flagged phones and the engine driver; checkpoint.
-- [ ] T030 [US2] AC-9 TDD in `session.spec.ts`: `key(digit)` sets the selected cell and clears the message; the working follows. GREEN; checkpoint.
-- [ ] T031 [US2] AC-10 TDD: `clear` empties the selected cell. GREEN; checkpoint.
-- [ ] T032 [US2] AC-11 RED/GREEN. ⚠️ May pass after AC-8: report, and prove with a reverted break. Checkpoint.
-- [ ] T033 [US2] AC-12 TDD: with nothing selected, `key` and `clear` change nothing; `playScreenProps` gives `keysAvailable` false. GREEN (FR-405); checkpoint.
-- [ ] T034 [US2] AC-13 RED/GREEN: a given cell is not selected and the selection stays. ⚠️ May pass after AC-8: report, and prove with a reverted break. Checkpoint.
-- [ ] T035 [US2] AC-14 RED/GREEN. ⚠️ May pass: report, and prove with a reverted break. Checkpoint.
-- [ ] T036 [US2] AC-20 RED/GREEN: the keypad between the grid and the main button, on both screen sizes. If it does not fit, adjust the library's size tokens (`src/ui/foundations/tokens.css`), not the game. Checkpoint.
-- [ ] T037 [US2] The four edge cases in `keypad.acceptance-spec.ts` RED/GREEN. ⚠️ Report any that pass at once, and prove with a reverted break. Checkpoint.
+- [X] T027 [US2] Create branch `004-themed-play-screen-part-3` from `main` after part 2 merges. Bring over `test/acceptance/play/keypad.acceptance-spec.ts` unchanged from `f4da139` (confirm by blob).
+- [X] T028 [US2] AC-8 RED: drivers' `tapKey`, `selectedCell`, `keypad` (UI: `aria-pressed`, the group "Keypad", `aria-disabled`; engine: from the session and `playScreenProps`). Expected failure: `the selected cell — Expected: "top-right", Received: null`.
+- [X] T029 [US2] AC-8 TDD in `src/app/session.spec.ts`: the session gains `selected`, null at first; tapping a changeable cell selects it and steps it (FR-404); `playScreenProps` shows the selection and the keypad only with `features.keypad`, tested with the flag on and off in `src/app/screen.spec.ts`. GREEN on the flagged phones and the engine driver; checkpoint.
+- [X] T030 [US2] AC-9 TDD in `session.spec.ts`: `key(digit)` sets the selected cell and clears the message; the working follows. GREEN; checkpoint.
+- [X] T031 [US2] AC-10 TDD: `clear` empties the selected cell. GREEN; checkpoint.
+- [X] T032 [US2] AC-11 RED/GREEN. ⚠️ May pass after AC-8: report, and prove with a reverted break. Checkpoint.
+- [X] T033 [US2] AC-12 TDD: with nothing selected, `key` and `clear` change nothing; `playScreenProps` gives `keysAvailable` false. GREEN (FR-405); checkpoint.
+- [X] T034 [US2] AC-13 RED/GREEN: a given cell is not selected and the selection stays. ⚠️ May pass after AC-8: report, and prove with a reverted break. Checkpoint.
+- [X] T035 [US2] AC-14 RED/GREEN. ⚠️ May pass: report, and prove with a reverted break. Checkpoint.
+- [X] T036 [US2] AC-20 RED/GREEN: the keypad between the grid and the main button, on both screen sizes. If it does not fit, adjust the library's size tokens (`src/ui/foundations/tokens.css`), not the game. Checkpoint.
+- [X] T037 [US2] The four edge cases in `keypad.acceptance-spec.ts` RED/GREEN. ⚠️ Report any that pass at once, and prove with a reverted break. Checkpoint.
 - [ ] T038 [US2] Confirm `npm run build` gives players no keypad and no selection (flag off: the game's phone projects still pass), and the flags-on build passes `keypad.acceptance-spec.ts`. Push and open "spec-004 part 3 of 4: the keypad (flag off)". The owner merges with a merge commit; no change for players.
 - [ ] T039 [US2] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `keypad` true in `src/app/features.ts` ("release the keypad"). `verify` runs every scenario with it on. The owner merges; **players get the keypad**. Record the sign-off in `tdd-log.md`.
 

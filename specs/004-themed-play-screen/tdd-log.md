@@ -202,3 +202,98 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
   - An image requested on each tap failed `network requests after opening — Received: 15`.
 - **No cycles**: no new behaviour was needed.
 - **Acceptance GREEN** (T023): AC-7, 2 runs passed.
+
+## Release 2: the new look is live (T026)
+
+- **Merged** as #20 (`9abfc6e`); deployed, and the public site serves that commit.
+- **CI found what a local run could not**: WebKit on the slower CI machine requested the two font
+  files just after the `load` event, so spec-001 AC-18's "no network requests" counted them. The
+  driver now treats the game's typefaces as part of opening (`65ce023`); any other request counts
+  (proved: an image on each tap failed with 15). `<link rel="preload">` was tried and reverted:
+  WebKit then fetched each font twice.
+- **One-off, not acted on**: in one local full run, spec-001 AC-3 on the iPhone timed out waiting for
+  WebKit to report the cell stable; the page was correct. 30 of 30 repeats passed, as did CI.
+- **Owner's review of the real build on a phone**: 2026-11-08, "I'm happy" (SC-403, first visible
+  release).
+
+## User Story 2: the keypad
+
+## AC-8: tapping a cell selects it
+
+- **Acceptance test**: `keypad.acceptance-spec.ts` — `[spec-004 AC-8]`, one scenario, on the engine
+  driver and the flags-on phones.
+- **Driver** (T028): `tapKey`, `selectedCell` and `keypad` on the UI and engine drivers.
+- **Acceptance RED** (all three): `the selected cell — Received: null`.
+- **Cycle 1** (`51b7e59`): tapping a changeable cell selects it and still steps its value. RED on its
+  assertion. **Slip**: the first GREEN stored the whole tap action, so its test still failed and
+  the commit went in red; fixed and amended before anything was pushed.
+- **Cycle 2** (`219551b`): the selected cell shows only with the keypad flag on. RED on its assertion.
+- **Refactor** (`f7ff7f4`): `isSamePosition`, as lint flagged the function as too complex.
+- **Acceptance GREEN** (T029): AC-8, 3 runs passed. Screen checked by eye.
+- **Full suite**: 268 unit tests; engine 43 passed, 5 failed; phones 241 passed, 12 failed. Every
+  failure is a keypad scenario not started; with the flag off the game's own runs still pass.
+- **Slice refactor**: as above.
+
+## AC-9: a key sets the selected cell
+
+- **Acceptance test**: `keypad.acceptance-spec.ts` — `[spec-004 AC-9]`, one scenario, on the engine
+  driver and the flags-on phones.
+- **Acceptance RED** (engine and phones): `top-right cell — Expected: 7, Received: 1`.
+- **Cycle 1** (`605c3dd`): a key sets the selected cell and keeps it selected. RED on its assertion.
+- **Cycle 2** (`89e3b53`): a key clears the last message, as any change to the grid does. RED on its
+  assertion.
+- **Wiring**: `main.ts` sends keys to the session (the phones prove it).
+- **Acceptance GREEN** (T030): AC-9, 3 runs passed. Screen checked by eye.
+- **Slice refactor**: none needed.
+
+## AC-10: Oops empties the selected cell
+
+- **Acceptance RED** (engine and phones): the cell stayed at 7.
+- **Cycle** (`bfe7ad8`): `clear` empties the selected cell. RED: `expected 7 to be null`.
+- **Acceptance GREEN** (T031).
+
+## AC-11: one cell is selected at a time
+
+- **Reported — passes at RED** (⚠️): AC-8's `selected` already follows the last tap. Proven by a
+  reverted break: the first cell staying selected failed `the selected cell — Expected:
+  "bottom-right", Received: "top-right"`. **GREEN** (T032).
+
+## AC-12: the keypad before a cell is selected
+
+- **Cycle** (`4fa79e8`): the keys are available only once a cell is selected. RED on its assertion.
+- **Unit test** (`33cfa98`): a key with nothing selected changes nothing. **Reported — passed on its
+  first run** (the guard came with AC-9). A first break, removing the guard, proved nothing: with
+  no position to match, no cell changes anyway. Proven properly: a key with nothing selected filling
+  top-right failed `top-right cell — Expected: "empty", Received: 5`.
+- **Proven on the phones**: keys that are never unavailable failed `"1" is unavailable`.
+- **GREEN** (T033).
+
+## AC-13, AC-14 and the edge cases
+
+**Reported — all passed at RED** (⚠️), from AC-8 to AC-12's behaviour. Each proven by a reverted break:
+
+| Criterion | Break | Failure |
+| --- | --- | --- |
+| AC-13 | the given 6 can be selected | `the selected cell — Expected: "bottom-left", Received: "top-left"` |
+| AC-14 | every key enters a 1 | `what the game says — Expected: "new solution", Received: "not solved yet"` |
+| Edge | tapping the selected cell deselects it | `the selected cell — Received: null` |
+| Edge | an operator tap clears the selection | `the selected cell — Received: null` |
+| Edge | checking clears the selection | `the selected cell — Received: null` |
+| Edge (FR-407) | a key says something | `what the game says — Received: "not solved yet"` |
+
+**GREEN** (T034, T035, T037).
+
+## AC-20: the keypad on the screen
+
+- **Reported — passes at RED** (⚠️): the keypad was already in the play screen, sized by spec-003.
+- **Proven** by a reverted break: keys 200 px tall failed `Keypad is on screen without scrolling`, at
+  both screen sizes.
+- **Measured**, with the longest message: the main button ends at 660 of 667 px and 545 of 568 px.
+- **GREEN** (T036). Screens checked by eye at 375 × 667 and 320 × 568.
+
+## Flag off (T038)
+
+The `npm run build` game shows no keypad group and no selected cell after a tap, so players see no
+change on merging. The game's own phone projects pass with the flag off.
+
+- **Slice refactor**: none needed beyond AC-8's.

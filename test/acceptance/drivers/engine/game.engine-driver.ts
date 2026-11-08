@@ -11,7 +11,9 @@ import {
 } from '../../../../src/app/session';
 import { workingText } from '../../../../src/app/labels';
 import type { LineOutcome } from '../../../../src/engine';
-import type { Cell, CellValue, Line, OperatorChoice, Result, WorkingMark } from '../../dsl/vocabulary';
+import { keypadKeys } from '../../../../src/ui/combined/keypad.model';
+import { buttonModel } from '../../../../src/ui/simple/button.model';
+import type { Cell, CellValue, KeypadKey, Line, OperatorChoice, Result, WorkingMark } from '../../dsl/vocabulary';
 import { DEFAULT_VIEW } from '../default-view';
 import type { CellView, GameDriver, GameView, KeypadKeyView, OperatorView, WorkingView } from '../game.driver';
 import { CELL_POSITIONS, CELLS, LINE_POSITIONS, LINES } from '../positions';
@@ -23,6 +25,8 @@ const RESULTS: Readonly<Record<MessageKind, Result>> = {
   'not-solved': 'not solved yet',
   incomplete: 'fill everything first',
 };
+
+const KEYS_IN_A_ROW = 5;
 
 function readOnlyOnThePhones(): never {
   throw new Error('Scenarios that read the screen are tagged @ui and run only with ACCEPTANCE_DRIVER=ui.');
@@ -71,16 +75,24 @@ export class EngineGameDriver implements GameDriver {
     return this.announcements;
   }
 
-  // spec-004: the keypad comes with User Story 2 (T028); the rest are read only on the phones.
+  // spec-004: the keypad, from the session; what the screen shows is read only on the phones.
 
-  async tapKey(): Promise<void> {}
-
-  async selectedCell(): Promise<Cell | null> {
-    return null;
+  async tapKey(key: KeypadKey): Promise<void> {
+    this.dispatch(key === 'Oops' ? { type: 'clear' } : { type: 'key', digit: key });
   }
 
+  async selectedCell(): Promise<Cell | null> {
+    const selected = this.session?.selected ?? null;
+    return selected === null ? null : (CELLS.find((cell) => CELL_POSITIONS[cell].row === selected.row && CELL_POSITIONS[cell].column === selected.column) ?? null);
+  }
+
+  /** The keys in the two rows of five the keypad lays them out in. */
   async keypad(): Promise<readonly (readonly KeypadKeyView[])[]> {
-    return [];
+    const keys = keypadKeys((this.session?.selected ?? null) !== null).map(({ button }) => {
+      const { name, isUnavailable } = buttonModel(button);
+      return { name, isAvailable: !isUnavailable };
+    });
+    return [keys.slice(0, KEYS_IN_A_ROW), keys.slice(KEYS_IN_A_ROW)];
   }
 
   bubble = readOnlyOnThePhones;

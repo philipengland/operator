@@ -4,6 +4,7 @@ import '../ui/foundations/tokens.css';
 import '../ui/foundations/page.css';
 import { applyTheme, themeForSeed } from '../ui/foundations/themes';
 import { createPlayScreen } from '../ui/screens/play-screen';
+import type { Digit } from '../engine';
 import type { Features } from './features';
 import { playScreenProps } from './screen';
 import { applyAction, startSession, type SessionAction } from './session';
@@ -27,6 +28,7 @@ const screen = createPlayScreen(playScreenProps(state, theme, features), {
   onCell: (row, column) => act({ type: 'tapCell', row, column }),
   onPill: (axis, index) => act({ type: 'tapOperator', line: { axis, index } }),
   onCheck: () => act({ type: 'submit' }),
+  onKey: (value) => act(value === 'clear' ? { type: 'clear' } : { type: 'key', digit: value as Digit }),
 });
 root.append(screen.element);
 

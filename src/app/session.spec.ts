@@ -9,7 +9,45 @@ describe('startSession', () => {
       entry: emptyEntry(workedExample),
       found: new Set(),
       message: null,
+      selected: null,
     });
+  });
+});
+
+describe('selecting a cell (spec-004 AC-8)', () => {
+  it('selects a changeable cell when it is tapped, and steps its value as before', () => {
+    const state = applyAction(startSession(), { type: 'tapCell', row: 0, column: 1 });
+
+    expect(state.selected).toEqual({ row: 0, column: 1 });
+    expect(state.entry.cells[0]?.[1]).toBe(1);
+  });
+
+  const selectedTopRight = () => applyAction(startSession(), { type: 'tapCell', row: 0, column: 1 });
+
+  it('sets the selected cell to the key tapped, and keeps it selected (spec-004 AC-9)', () => {
+    const state = applyAction(selectedTopRight(), { type: 'key', digit: 7 });
+
+    expect(state.entry.cells[0]?.[1]).toBe(7);
+    expect(state.selected).toEqual({ row: 0, column: 1 });
+  });
+
+  it('clears the last message, as any change to the grid does (spec-004 AC-9)', () => {
+    const afterCheck = applyAction(selectedTopRight(), { type: 'submit' });
+
+    expect(applyAction(afterCheck, { type: 'key', digit: 7 }).message).toBeNull();
+  });
+
+  it('empties the selected cell with Oops (spec-004 AC-10)', () => {
+    const withSeven = applyAction(selectedTopRight(), { type: 'key', digit: 7 });
+
+    expect(applyAction(withSeven, { type: 'clear' }).entry.cells[0]?.[1]).toBeNull();
+  });
+
+  it('changes nothing when a key is tapped with no cell selected (spec-004 AC-12)', () => {
+    const opened = startSession();
+
+    expect(applyAction(opened, { type: 'key', digit: 5 })).toEqual(opened);
+    expect(applyAction(opened, { type: 'clear' })).toEqual(opened);
   });
 });
 
