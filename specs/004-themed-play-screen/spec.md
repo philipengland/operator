@@ -142,7 +142,7 @@ criterion still passes.
    button are all visible without scrolling or zooming.
 7. **AC-7** — **Given** the game has opened and the connection is then lost, **When** the
    player goes on playing, **Then** the text stays in the game's own typefaces and no network
-   request is made. (Reopening with no connection comes with spec-005.)
+   request is made. (Reopening with no connection: spec-005, parked by the owner on 2026-11-08.)
 
 ---
 
@@ -386,4 +386,4 @@ None. The selected cell lives only while the game is open.
 - Line-by-line remarks from the mascot after each tap.
 - Animation of the mascot or the bubble.
 - Grids larger than 2 × 2 (F7).
-- Reopening the game with no connection (spec-005, owner decision 2026-11-08).
+- Reopening the game with no connection (spec-005, parked by the owner on 2026-11-08: the store apps, F13, cover it).

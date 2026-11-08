@@ -56,7 +56,7 @@ On a phone on the same Wi-Fi:
   - each check is announced once, with the count after a new solution;
   - the mascot is not read.
 - **Losing the connection**: with the game open, turn off the network and keep playing. The text
-  stays in the game's typefaces. (Reopening offline comes with spec-005.)
+  stays in the game's typefaces. (Reopening offline: spec-005, parked by the owner on 2026-11-08.)
 
 ## 4. Playtests (SC-401, SC-402)
 
