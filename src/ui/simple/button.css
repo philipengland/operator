@@ -26,12 +26,6 @@
   cursor: default;
 }
 
-/* Keys that cannot be used yet: faded and flat, so it is not told by colour alone (spec-004 FR-405). */
-.button--key[aria-disabled='true'],
-.button--solid[aria-disabled='true'] {
-  opacity: 0.45;
-  box-shadow: none;
-}
 
 /* The one action per screen: accent fill, large and full width on phones. */
 .button--main {
@@ -113,4 +107,14 @@
   height: 34px;
   border-radius: 3px;
   background: var(--tile);
+}
+
+/* Keys that cannot be used yet: flat, with a thin outline and no fill of ink, so the state is told
+   by shape, not colour alone. Solid, so the page's dots never show through (spec-004 FR-405). */
+.button--key[aria-disabled='true'],
+.button--solid[aria-disabled='true'] {
+  border-width: var(--outline-thin);
+  background: var(--tile);
+  color: var(--ink);
+  box-shadow: none;
 }
