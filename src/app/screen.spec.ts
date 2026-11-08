@@ -75,4 +75,11 @@ describe('playScreenProps', () => {
     expect(rowPills.map((pill) => pill.reachesTarget)).toEqual([true, false]);
     expect(columnPills.map((pill) => pill.reachesTarget)).toEqual([false, false]);
   });
+
+  it("gives the player's digits in a correct line the correct-line look, but not the given (spec-004 AC-3)", () => {
+    const { cells } = row1Correct().grid;
+
+    expect(cells[0]?.map((cell) => cell.isInCorrectLine)).toEqual([false, true]);
+    expect(cells[1]?.map((cell) => cell.isInCorrectLine)).toEqual([false, false]);
+  });
 });

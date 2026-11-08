@@ -22,13 +22,20 @@ function workingProps(working: LineWorking): LineWorkingProps {
   return { ...workingSlot(working), name: workingName(working) };
 }
 
-function cell({ puzzle, entry }: SessionState, position: CellPosition): GridCellProps {
+function isInLineReachingTarget(state: SessionState, { row, column }: CellPosition): boolean {
+  return lineWorkings(state).some(
+    (working) => reachesTarget(working) && (working.line.axis === 'row' ? working.line.index === row : working.line.index === column),
+  );
+}
+
+function cell(state: SessionState, position: CellPosition): GridCellProps {
+  const { puzzle, entry } = state;
   const given = puzzle.givens[position.row]?.[position.column] ?? null;
   return {
     name: cellTitle(position),
     digit: given ?? entry.cells[position.row]?.[position.column] ?? null,
     isGiven: given !== null,
-    isInCorrectLine: false,
+    isInCorrectLine: given === null && isInLineReachingTarget(state, position),
   };
 }
 
