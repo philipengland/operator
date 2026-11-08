@@ -31,7 +31,7 @@ present only once the keypad is released (flag `keypad`, spec-004 FR-413, FR-414
 | Counter | text | "Found N of 2" (visible: "Solutions found" and "N of 2", or "All found!" and "2 of 2" with a tick) | Not a live region; the count is announced with the result (Status). |
 | Puzzle | `group` | "Puzzle" | Pills, cells, workings and the helper line. |
 | Shown pill (target and operator) | text | "Row 1 target 8, plus" / "…, target reached" | Visible "+ 8", a tick when the line reaches its target. Not a button: tapping does nothing (spec-001 FR-005). |
-| Open pill | `button` | "Row 2 target 6, operator not chosen" / "…, plus" / "minus" / "times" / "divide", then ", target reached" when it does | Dashed. Visible "? 6", then "+ 6"; a tick when the line reaches its target. Tap: next operator (spec-001 FR-006). |
+| Open pill | `button` | What it shows, then the line: "? 6, Row 2 target 6, operator not chosen" / "+ 6, Row 2 target 6, plus" / "minus" / "times" / "divide", then ", target reached" when it does (label in name, WCAG 2.5.3) | Dashed. Visible "? 6", then "+ 6"; a tick when the line reaches its target. Tap: next operator (spec-001 FR-006). |
 | Row working | text, labelled | "Row 1 working, 6 + ?" / "…, 6 + 2 = 8, target reached" | Right of its row, as spec-002. Not a live region. |
 | Column working | text, labelled | "Column 1 working, 6 − 9 = minus 3" / "…, 6 ÷ 4, not a whole number" | Below its column, as spec-002. Not a live region. |
 | Given cell | `button`, `aria-disabled="true"` | "Top-left cell, given 6" | Tapping does nothing (spec-001 FR-004). Solid ink. |
@@ -73,7 +73,7 @@ shown by the symbol alone, in the display typeface's one weight, never by colour
 
 - **Cell**: the button named `/^<Cell> cell, /`. Its value comes from the name, and whether it
   is selected from `aria-pressed`.
-- **Target, operator and whether it is open**: the pill named `/^<Line> target \d+, /`.
+- **Target, operator and whether it is open**: the pill whose name holds `<Line> target N, `.
   - The target is the number.
   - The operator is the word after the comma ("operator not chosen" means not chosen).
   - The pill is open when it is a button.

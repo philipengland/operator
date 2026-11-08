@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
 import { MIDNIGHT_BLUE } from '../ui/foundations/themes';
-import { announcement, bubbleLine, cellName, lineName, messageText, operatorName, resultText, workingName, workingText } from './labels';
+import { announcement, bubbleLine, cellName, lineName, messageText, workingName, workingText } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -28,28 +28,6 @@ describe('lineName', () => {
     { axis: 'column', index: 1, name: 'Column 2' },
   ] as const)('names $axis $index "$name"', ({ axis, index, name }) => {
     expect(lineName({ axis, index })).toBe(name);
-  });
-});
-
-describe('operatorName', () => {
-  it.each([
-    { axis: 'row', index: 0, name: 'Row 1 operator, plus' },
-    { axis: 'row', index: 1, name: 'Row 2 operator, not chosen' },
-    { axis: 'column', index: 0, name: 'Column 1 operator, not chosen' },
-    { axis: 'column', index: 1, name: 'Column 2 operator, times' },
-  ] as const)('names $axis $index "$name" when the game opens', ({ axis, index, name }) => {
-    expect(operatorName(workedExample, emptyEntry(workedExample), { axis, index })).toBe(name);
-  });
-
-  it.each([
-    ['+', 'plus'],
-    ['−', 'minus'],
-    ['×', 'times'],
-    ['÷', 'divide'],
-  ] as const)('names an open operator by the choice %s as "%s"', (choice, word) => {
-    const entry = { ...emptyEntry(workedExample), rowOperators: [null, choice] };
-
-    expect(operatorName(workedExample, entry, { axis: 'row', index: 1 })).toBe(`Row 2 operator, ${word}`);
   });
 });
 
@@ -120,30 +98,6 @@ describe('workingName', () => {
 
   it('says when a division is not whole: "Column 1 working, 6 ÷ 4, not a whole number"', () => {
     expect(workingName(COLUMN_1_NOT_WHOLE)).toBe('Column 1 working, 6 ÷ 4, not a whole number');
-  });
-});
-
-describe('resultText', () => {
-  it('shows "= ?" in the result slot while a line is unfinished', () => {
-    expect(resultText(ROW_1_ON_OPENING)).toBe('= ?');
-  });
-
-  it('shows the result of a line that misses its target: "= 9"', () => {
-    const missing: LineWorking = { ...ROW_1_ON_OPENING, digits: [6, 3], outcome: { kind: 'result', value: 9, reachesTarget: false } };
-
-    expect(resultText(missing)).toBe('= 9');
-  });
-
-  it('marks a line that reaches its target with a tick: "= 8 ✓"', () => {
-    expect(resultText(ROW_1_WITH_TOP_RIGHT_2)).toBe('= 8 ✓');
-  });
-
-  it('shows a result below zero with the minus sign: "= −1"', () => {
-    expect(resultText(ROW_2_GOING_BELOW_ZERO)).toBe('= −1');
-  });
-
-  it('shows a cross and no result when a division is not whole: "✗"', () => {
-    expect(resultText(COLUMN_1_NOT_WHOLE)).toBe('✗');
   });
 });
 

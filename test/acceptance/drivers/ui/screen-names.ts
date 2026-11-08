@@ -2,6 +2,7 @@
 // read the scenarios' values back out of them.
 
 import type { Locator } from '@playwright/test';
+import type { GameScreen } from './game-reading';
 import type { Cell, CellValue, Digit, Line, Operator, OperatorChoice, Result, Working, WorkingMark } from '../../dsl/vocabulary';
 
 const CELL_NAME_PREFIX: Readonly<Record<Cell, string>> = {
@@ -20,14 +21,6 @@ const OPERATOR_WORDS: Readonly<Record<string, Operator>> = {
 
 export function cellNamePattern(cell: Cell): RegExp {
   return new RegExp(`^${CELL_NAME_PREFIX[cell]}`);
-}
-
-export function operatorNamePattern(line: Line): RegExp {
-  return new RegExp(`^${line} operator, `);
-}
-
-export function targetTextPattern(line: Line): RegExp {
-  return new RegExp(`^${line} target \\d+$`);
 }
 
 /**
@@ -50,18 +43,14 @@ function readCellValue(shown: string): CellValue {
   return Number.isInteger(digit) && digit >= 1 && digit <= 9 ? (digit as Digit) : (shown as unknown as CellValue);
 }
 
-/** "Row 2 operator, not chosen" → "not chosen"; "Row 1 operator, plus" → "+"; anything else as shown. */
-export function readOperatorName(line: Line, name: string): OperatorChoice {
-  const word = name.slice(`${line} operator, `.length);
-  if (word === 'not chosen') {
-    return 'not chosen';
-  }
-  return OPERATOR_WORDS[word] ?? (word as unknown as OperatorChoice);
-}
-
-/** "Row 1 target 8" → 8. */
-export function readTargetText(text: string): number {
-  return Number(text.match(/(\d+)\s*$/)?.[1] ?? Number.NaN);
+/** spec-004: what a line's pill says, from its name; a pill that is not there reads as nothing valid. */
+export function readPill(line: Line, screen: GameScreen): { target: number; choice: OperatorChoice; isOpen: boolean } {
+  const pattern = new RegExp(`${line} target (\\d+), (.*?)(?:, target reached)?$`);
+  const button = screen.buttons.find((name) => pattern.test(name));
+  const text = screen.texts.find((name) => pattern.test(name));
+  const [, target = 'NaN', word = 'no pill'] = pattern.exec(button ?? text ?? '') ?? [];
+  const choice = word === 'operator not chosen' ? 'not chosen' : (OPERATOR_WORDS[word] ?? (word as unknown as OperatorChoice));
+  return { target: Number(target), choice, isOpen: button !== undefined };
 }
 
 /** spec-002: a line's working is the text named "Row 1 working, …". */
@@ -90,7 +79,8 @@ function asShown(spoken: string): Working {
   return spoken.replace(/= minus (\d+)$/, '= −$1');
 }
 
-export const COUNTER_PATTERN = /Found \d+ of \d+/;
+/** The counter's heard name, alone in its element. The status can hold the same words after others. */
+export const COUNTER_PATTERN = /^Found \d+ of \d+$/;
 
 // The visible messages (labels.ts), longest first so "every solution" wins over "new solution".
 const MESSAGES: readonly (readonly [string, Result])[] = [

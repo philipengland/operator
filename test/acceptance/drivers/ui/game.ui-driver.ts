@@ -5,22 +5,20 @@ import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { scanForAccessibilityProblems } from '../../support/axe';
 import { DEFAULT_VIEW } from '../default-view';
-import type { CellView, GameDriver, KeypadKeyView, GameView, OperatorView, WorkingView } from '../game.driver';
+import type { GameDriver, KeypadKeyView, GameView, WorkingView } from '../game.driver';
 import { CELLS, LINES } from '../positions';
 import {
   cellNamePattern,
   COUNTER_PATTERN,
-  operatorNamePattern,
   readCellName,
-  readOperatorName,
+  readPill,
   readResult,
-  readTargetText,
   readWorkingName,
-  targetTextPattern,
   workingNamePattern,
   pillIn,
 } from './screen-names';
 import { shownText } from './catalogue-reading';
+import { readGameScreen } from './game-reading';
 
 const GAME_READY_TIMEOUT_MS = 5_000;
 
@@ -47,7 +45,7 @@ export class UiGameDriver implements GameDriver {
   }
 
   async tapOperator(line: Line): Promise<void> {
-    await tapLikeAFinger(this.operatorButton(line));
+    await tapLikeAFinger(pillIn(this.puzzle(), line));
   }
 
   async check(): Promise<void> {
@@ -55,22 +53,18 @@ export class UiGameDriver implements GameDriver {
     await scanForAccessibilityProblems(this.page);
   }
 
+  /** The whole screen, read in one browser call. */
   async view(): Promise<GameView> {
-    const cells = {} as Record<Cell, CellView>;
-    for (const cell of CELLS) {
-      cells[cell] = readCellName(cell, await accessibleName(this.cellButton(cell)));
-    }
-    const targets = {} as Record<Line, number>;
-    const operators = {} as Record<Line, OperatorView>;
-    const workings = {} as Record<Line, WorkingView>;
-    for (const line of LINES) {
-      targets[line] = readTargetText((await this.target(line).textContent()) ?? '');
-      operators[line] = await this.operatorView(line);
-      workings[line] = await this.workingView(line);
-    }
-    const statusText = await this.status().innerText();
-    const counter = statusText.match(COUNTER_PATTERN)?.[0] ?? '';
-    return { cells, targets, operators, counter, result: readResult(statusText), workings };
+    const screen = await this.page.evaluate(readGameScreen);
+    const pills = mapEach(LINES, (line) => readPill(line, screen));
+    return {
+      cells: mapEach(CELLS, (cell) => readCellName(cell, screen.buttons.find((name) => cellNamePattern(cell).test(name)) ?? '')),
+      targets: mapEach(LINES, (line) => pills[line].target),
+      operators: mapEach(LINES, (line) => ({ choice: pills[line].choice, isOpen: pills[line].isOpen })),
+      counter: screen.texts.find((text) => COUNTER_PATTERN.test(text)) ?? '',
+      result: readResult(screen.status),
+      workings: mapEach(LINES, (line) => workingFrom(line, screen.texts)),
+    };
   }
 
   async tapKey(): Promise<void> {}
@@ -93,7 +87,7 @@ export class UiGameDriver implements GameDriver {
   }
 
   async announcement(): Promise<string> {
-    return NOT_READ_YET;
+    return (await this.status().textContent()) ?? NOT_READ_YET;
   }
 
   /** The counter as the player sees it. Its element holds the heard "Found N of M", kept out of what is shown. */
@@ -158,30 +152,16 @@ export class UiGameDriver implements GameDriver {
   private cellButton(cell: Cell): Locator {
     return this.puzzle().getByRole('button', { name: cellNamePattern(cell) });
   }
+}
 
-  private operatorButton(line: Line): Locator {
-    return this.puzzle().getByRole('button', { name: operatorNamePattern(line) });
-  }
+function mapEach<K extends string, V>(keys: readonly K[], read: (key: K) => V): Record<K, V> {
+  return Object.fromEntries(keys.map((key) => [key, read(key)])) as Record<K, V>;
+}
 
-  private target(line: Line): Locator {
-    return this.puzzle().getByText(targetTextPattern(line));
-  }
-
-  /** A working that is not on the screen reads as nothing, rather than waiting for it. */
-  private async workingView(line: Line): Promise<WorkingView> {
-    const named = this.puzzle().getByText(workingNamePattern(line));
-    if ((await named.count()) !== 1) {
-      return DEFAULT_VIEW.workings[line];
-    }
-    return readWorkingName(line, (await named.textContent()) ?? '');
-  }
-
-  private async operatorView(line: Line): Promise<OperatorView> {
-    const button = this.operatorButton(line);
-    const choice = readOperatorName(line, await accessibleName(button));
-    const isOpen = (await button.getAttribute('aria-disabled')) !== 'true';
-    return { choice, isOpen };
-  }
+/** A working that is not on the screen reads as nothing. */
+function workingFrom(line: Line, texts: readonly string[]): WorkingView {
+  const name = texts.find((text) => workingNamePattern(line).test(text));
+  return name === undefined ? DEFAULT_VIEW.workings[line] : readWorkingName(line, name);
 }
 
 /** A finger can tap an aria-disabled button; Playwright only does so when forced. */

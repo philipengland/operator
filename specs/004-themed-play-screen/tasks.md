@@ -98,9 +98,9 @@ spec-002 and spec-003 criterion passes; `themed-look.acceptance-spec.ts` passes 
 
 ### AC-1: the new screen
 
-- [ ] T014 [US1] AC-1 RED: real driver readings: `bubble`, `counterShown`, `pillShown`, `workingSlot`, `helperLine`, `mainButton` (game); `playScreenParts`, `isPillDashed`, `cellAppearance`, `coloursInUse`, `pageDots` (phone), reusing the catalogue's readings. Expected failure: `Operator header is above Solutions counter — Received: false` (the F0 screen has no header).
-- [ ] T015 [US1] AC-1 TDD cycles in `src/app/screen.spec.ts`: `playScreenProps(state, theme, features)` in `src/app/screen.ts` gives the header ("Hello, Operator!", the greeting from a new `bubbleLine` in `src/app/labels.ts`, unit-tested in `labels.spec.ts`), the counter, the pills ("Row 1 target 8, plus"; "Row 2 target 6, operator not chosen"), cells, workings, helper line, `isKeypadShown` false and the theme's button label.
-- [ ] T016 [US1] AC-1 the swap, as one commit so the game never ships half-changed:
+- [X] T014 [US1] AC-1 RED: real driver readings: `bubble`, `counterShown`, `pillShown`, `workingSlot`, `helperLine`, `mainButton` (game); `playScreenParts`, `isPillDashed`, `cellAppearance`, `coloursInUse`, `pageDots` (phone), reusing the catalogue's readings. Expected failure: `Operator header is above Solutions counter — Received: false` (the F0 screen has no header).
+- [X] T015 [US1] AC-1 TDD cycles in `src/app/screen.spec.ts`: `playScreenProps(state, theme, features)` in `src/app/screen.ts` gives the header ("Hello, Operator!", the greeting from a new `bubbleLine` in `src/app/labels.ts`, unit-tested in `labels.spec.ts`), the counter, the pills ("Row 1 target 8, plus"; "Row 2 target 6, operator not chosen"), cells, workings, helper line, `isKeypadShown` false and the theme's button label.
+- [X] T016 [US1] AC-1 the swap, as one commit so the game never ships half-changed:
   - `src/app/main.ts` applies `themeForSeed(undefined)`, imports the library's `tokens.css` and `page.css`, creates the library's play screen, and sends taps to the session.
   - `src/app/view.ts` and `src/app/styles.css` are removed, and `index.html`'s stylesheet link with them.
   - `test/acceptance/drivers/ui/game.ui-driver.ts`, `ui/screen-names.ts` and `ui/phone.ui-driver.ts` are re-pointed to [contracts/play-screen.md](contracts/play-screen.md) (research R3).

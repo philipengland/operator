@@ -7,10 +7,23 @@
  */
 
 html {
+  color: var(--ink);
   --dots: color-mix(in srgb, var(--ink) 15%, var(--paper));
 
   background-color: var(--paper);
   background-image: radial-gradient(circle, var(--dots) 1.5px, transparent 1.75px);
   background-position: 0 0;
   background-size: 9px 9px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
 }

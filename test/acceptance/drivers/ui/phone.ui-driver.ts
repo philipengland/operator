@@ -4,7 +4,7 @@ import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
 import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour } from './catalogue-reading';
-import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, pillIn, targetTextPattern, workingNamePattern } from './screen-names';
+import { cellNamePattern, COUNTER_PATTERN, pillIn, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
 import type { PageDots, PlayScreenPart, Typeface } from '../../dsl/catalogue-vocabulary';
 import type { Box, CellAppearance, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
@@ -156,6 +156,8 @@ export class UiPhoneDriver implements PhoneDriver {
           `font ${style.fontWeight} ${style.fontStyle}`,
           `pattern ${style.backgroundImage}`,
           `decoration ${style.textDecorationLine}`,
+          // A raised shadow is a shape, not a colour: the themed cells differ by it (spec-003 AC-10).
+          `shadow ${style.boxShadow === 'none' ? 'none' : 'raised'}`,
         ].join(' | '),
       };
     });
@@ -172,8 +174,9 @@ export class UiPhoneDriver implements PhoneDriver {
     const operators = {} as Record<Line, Box>;
     const workings = {} as Record<Line, Box>;
     for (const line of LINES) {
-      targets[line] = await boxOf(puzzle.getByText(targetTextPattern(line)));
-      operators[line] = await boxOf(puzzle.getByRole('button', { name: operatorNamePattern(line) }));
+      // A pill is the line's target and operator together (spec-004 contract).
+      targets[line] = await boxOf(pillIn(puzzle, line));
+      operators[line] = targets[line];
       // The name is visually hidden; the working's slot on screen is the element around it.
       workings[line] = await boxOf(puzzle.getByText(workingNamePattern(line)).locator('..'));
     }
@@ -183,7 +186,7 @@ export class UiPhoneDriver implements PhoneDriver {
       targets,
       operators,
       workings,
-      counter: await boxOf(this.page.getByRole('status').getByText(COUNTER_PATTERN)),
+      counter: await boxOf(this.page.getByText(COUNTER_PATTERN).locator('xpath=..')),
       checkButton: await boxOf(this.page.getByRole('button', { name: 'Check' })),
     };
   }

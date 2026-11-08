@@ -27,12 +27,6 @@ const GAP_MARK = '?';
 
 const MINUS_SIGN = '−';
 
-// Shown after a result that reaches its target (spec-002 FR-204).
-const TARGET_REACHED_MARK = '✓';
-
-// Shown instead of a result when a division is not whole (spec-002 FR-205).
-const NOT_WHOLE_MARK = '✗';
-
 // F0's grid is 2 × 2, so each cell is a corner (spec "The Puzzle").
 const CORNER_NAMES: readonly (readonly string[])[] = [
   ['Top-left', 'Top-right'],
@@ -63,11 +57,6 @@ export function pillName(puzzle: Puzzle, entry: Entry, line: LinePosition): stri
   const operator = lineOperator(puzzle, entry, line);
   const heard = operator === null ? 'operator not chosen' : OPERATOR_WORDS[operator];
   return `${lineName(line)} target ${lineSpec(puzzle, line)?.target}, ${heard}`;
-}
-
-export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
-  const operator = lineOperator(puzzle, entry, line);
-  return `${lineName(line)} operator, ${operator === null ? 'not chosen' : OPERATOR_WORDS[operator]}`;
 }
 
 /** A line's working as the player reads it: "6 + ?", "6 + 2 = 8" (spec-002 FR-201). */
@@ -113,18 +102,6 @@ export function workingSlot({ outcome }: LineWorking): { readonly result: string
     return { result: `= ${GAP_MARK}`, mark: 'none' };
   }
   return { result: `= ${shownNumber(outcome.value)}`, mark: outcome.reachesTarget ? 'tick' : 'none' };
-}
-
-/** What the result slot beside or below a line shows: "= ?" (spec-002, research R2). */
-export function resultText({ outcome }: LineWorking): string {
-  if (outcome.kind === 'not-whole') {
-    return NOT_WHOLE_MARK;
-  }
-  if (outcome.kind !== 'result') {
-    return `= ${GAP_MARK}`;
-  }
-  const result = `= ${shownNumber(outcome.value)}`;
-  return outcome.reachesTarget ? `${result} ${TARGET_REACHED_MARK}` : result;
 }
 
 // Every message kind must have wording; the compiler enforces it.
