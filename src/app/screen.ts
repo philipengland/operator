@@ -4,13 +4,16 @@
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import type { Theme } from '../ui/foundations/themes';
 import type { Features } from './features';
+import { bubbleLine } from './labels';
 import type { SessionState } from './session';
 
-export function playScreenProps(_state: SessionState, _theme: Theme, _features: Features): PlayScreenProps {
+const TITLE = 'Hello, Operator!';
+
+export function playScreenProps(state: SessionState, theme: Theme, _features: Features): PlayScreenProps {
   return {
-    header: { title: '', message: '' },
-    counter: { found: 0 },
+    header: { title: TITLE, message: bubbleLine(state.message, theme) },
+    counter: { found: state.found.size, total: state.puzzle.solutionCount },
     grid: { columnPills: [], rowPills: [], cells: [], rowWorkings: [], columnWorkings: [], helper: '' },
-    mainButtonLabel: '',
+    mainButtonLabel: theme.buttonLabel,
   };
 }
