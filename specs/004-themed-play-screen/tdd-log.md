@@ -176,3 +176,16 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
     solution found! You've found every solution."`.
 - **No cycles**: no new behaviour was needed.
 - **Acceptance GREEN** (T021): AC-5, 2 runs passed. Screen checked by eye.
+
+## AC-6: the screen fits a phone
+
+- **Acceptance test**: `themed-look.acceptance-spec.ts` — `[spec-004 AC-6]`, two scenarios on both phones.
+- **Acceptance RED**: **reported — passes at RED** (⚠️, as T022 predicted): spec-003 AC-16 sized the
+  screen, and without a keypad it has room to spare.
+- **Driver proven** by reverted breaks (Pixel 5):
+  - Cells 200 px tall failed `Puzzle grid is on screen without scrolling`, at both sizes.
+  - Columns 200 px wide failed `top-right cell is on screen without scrolling`, at both sizes.
+- **Measured**: with the longest message (the two-line "Fill every cell…") at 320 × 568, the main
+  button ends at 449 of 568 px, so 119 px are spare for the keypad (AC-20).
+- **No cycles**: no new behaviour was needed.
+- **Acceptance GREEN** (T022): AC-6, 4 runs passed.
