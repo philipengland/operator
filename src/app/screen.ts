@@ -32,13 +32,17 @@ function cell({ puzzle, entry }: SessionState, position: CellPosition): GridCell
   };
 }
 
+function reachesTarget({ outcome }: LineWorking): boolean {
+  return outcome.kind === 'result' && outcome.reachesTarget;
+}
+
 function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPillProps {
   return {
     target: lineSpec(puzzle, working.line)?.target ?? 0,
     operator: lineOperator(puzzle, entry, working.line),
     isOpen: lineSpec(puzzle, working.line)?.operator === 'open',
     name: pillName(puzzle, entry, working.line),
-    reachesTarget: false,
+    reachesTarget: reachesTarget(working),
   };
 }
 

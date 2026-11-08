@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { CLASSIC } from '../ui/foundations/themes';
 import { playScreenProps } from './screen';
-import { startSession } from './session';
+import { applyAction, startSession } from './session';
 
 const NO_FLAGS = { keypad: false, voice: false };
 const justOpened = () => playScreenProps(startSession(), CLASSIC, NO_FLAGS);
+const TOP_RIGHT = { type: 'tapCell', row: 0, column: 1 } as const;
+
+/** Top-right 2: Row 1 is 6 + 2 = 8, its target. */
+const row1Correct = () => playScreenProps([TOP_RIGHT, TOP_RIGHT].reduce(applyAction, startSession()), CLASSIC, NO_FLAGS);
 
 describe('playScreenProps', () => {
   it('says hello, counts from nothing, and labels the main button in the theme\'s words', () => {
@@ -63,5 +67,12 @@ describe('playScreenProps', () => {
 
     expect(props.header.message).toBe('New solution found!');
     expect(props.announcement).toBe('New solution found! Found 1 of 2');
+  });
+
+  it('ticks the pill of a line that reaches its target, and no other (spec-004 AC-3)', () => {
+    const { rowPills, columnPills } = row1Correct().grid;
+
+    expect(rowPills.map((pill) => pill.reachesTarget)).toEqual([true, false]);
+    expect(columnPills.map((pill) => pill.reachesTarget)).toEqual([false, false]);
   });
 });
