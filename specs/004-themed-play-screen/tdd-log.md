@@ -297,3 +297,14 @@ The `npm run build` game shows no keypad group and no selected cell after a tap,
 change on merging. The game's own phone projects pass with the flag off.
 
 - **Slice refactor**: none needed beyond AC-8's.
+
+## Release 3: the keypad (T039)
+
+- **Merged with its flag off** as #21 (`458737e`); players saw no change.
+- **Owner's review of the flags-on build on a phone**: 2026-11-08, "its great".
+- **Released** by setting `keypad` true in `src/app/features.ts`. `verify` then runs the keypad's
+  scenarios on the game's own phones, with everything already live.
+- **Found by turning the flag on**: spec-004 AC-3 failed `top-right cell's digit — Expected: "accent",
+  Received: "tile"`. With the keypad live, the cell just tapped stays selected, and the selected
+  look wins, as the spec says. Three options were put to the owner, who approved rewording the
+  locked scenario: one added step, tapping another cell first (recorded in `acceptance.md`).

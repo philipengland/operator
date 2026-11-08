@@ -6,7 +6,7 @@ export interface Features {
   readonly voice: boolean;
 }
 
-export const RELEASED: Features = { keypad: false, voice: false };
+export const RELEASED: Features = { keypad: true, voice: false };
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';
