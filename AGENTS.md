@@ -19,7 +19,8 @@ Capacitor later. Feature F0, the walking skeleton, plays one fixed 2 × 2 puzzle
 working as the player taps ("6 + 2 = 8 ✓", "6 ÷ 4 ✗"); results may go below zero, and only a
 division that is not whole fails a line. Spec-003 (`specs/003-themed-ui/`) builds a themed
 component library (six colour themes, a puzzle's theme worked out from its seed) and a
-development-only catalogue; spec-004 applies it to the game. Sources: `docs/brief/project-brief.md`, the constitution.
+development-only catalogue; spec-004 (`specs/004-themed-play-screen/`) applies it to the game,
+with a keypad and the operator's voice after each check. Sources: `docs/brief/project-brief.md`, the constitution.
 
 ## Architecture and Key Decisions
 
@@ -166,6 +167,6 @@ npm run build:flags-on          # the game with every feature flag on, in dist-f
 - **User stories ship behind build-time feature flags** (`src/app/features.ts`; constitution VII).
   `playwright.config.ts` says which scenario file needs which flag: while a flag is off, that file
   runs on `iphone-flagged` and `android-flagged` against `dist-flags-on/`, and releasing a story
-  changes no locked file. Why: every merge deploys, so `main` must always be fit for players.
+  changes no locked file. No story is behind a flag at present. Why: every merge deploys, so `main` must always be fit for players.
 - **Run TypeScript tools with** `node --experimental-strip-types` (see `exceptions:check`).
   Why: no extra dependency is needed to run a `.ts` tool on Node 22.
