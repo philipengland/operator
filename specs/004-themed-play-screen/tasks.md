@@ -183,7 +183,7 @@ off; released by a one-line pull request.
 - **US1 (Phase 2)** needs Phase 1 merged. It also brings the flag mechanism (T012, T013).
 - **US2 and US3** each need US1 released. The tasks put US2 first (P1 before P2); they do not depend on each other, except that T040 removes the `keypad` flag.
 - **Within each part**, criteria run in order, because each checkpoint waits for the owner.
-- **After this feature**: spec-005, reopening the game with no connection (owner decision 2026-11-08). Its scope is not in these tasks.
+- **After this feature** (parked by the owner on 2026-11-08, not planned): spec-005, reopening the game with no connection (owner decision 2026-11-08). Its scope is not in these tasks.
 
 ## Parallel Opportunities
 
