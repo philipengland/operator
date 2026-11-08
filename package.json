@@ -8,7 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build && vite preview --open",
     "build": "vite build",
     "catalogue": "vite build --mode catalogue && vite preview --outDir catalogue-dist --open /catalogue.html",
     "build:catalogue": "vite build --mode catalogue",
