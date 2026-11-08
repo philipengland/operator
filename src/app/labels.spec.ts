@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
-import { MIDNIGHT_BLUE } from '../ui/foundations/themes';
+import { CLASSIC, MIDNIGHT_BLUE } from '../ui/foundations/themes';
 import { announcement, bubbleLine, cellName, lineName, messageText, workingName, workingSlot, workingText } from './labels';
 
 describe('cellName', () => {
@@ -130,6 +130,16 @@ describe('bubbleLine', () => {
 
   it("shows the game's existing message after a check, until the voice is released", () => {
     expect(bubbleLine('not-solved', MIDNIGHT_BLUE)).toBe('Not solved yet.');
+  });
+
+  it.each([
+    ['new-solution', "You're connected! Keep 'em coming, pal!"],
+    ['all-found', 'Every line connected, pal!'],
+    ['already-found', "We've had that call, pal."],
+    ['not-solved', 'Wrong number, pal!'],
+    ['incomplete', "Line's busy, pal: fill every cell and operator first."],
+  ] as const)("with the voice on, %s gives the operator's line (spec-004 AC-16)", (kind, line) => {
+    expect(bubbleLine(kind, CLASSIC, true)).toBe(line);
   });
 });
 
