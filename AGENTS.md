@@ -27,11 +27,12 @@ development-only catalogue; spec-004 applies it to the game. Sources: `docs/brie
   - Puzzle engine — `src/engine/` — pure TypeScript rules: line evaluation, the whole-number
     rule, checking. No DOM, browser APIs, timers or randomness (constitution II).
   - Play screen — `src/app/` — session state (`session.ts`), wording and accessible names
-    (`labels.ts`), DOM rendering (`view.ts`), wiring (`main.ts`).
+    (`labels.ts`), the mapping from state to what the library shows (`screen.ts`), build-time
+    feature flags (`features.ts`), wiring (`main.ts`). The game adds no styling of its own.
   - Component library — `src/ui/` — in tiers: `foundations/` (themes, `themeForSeed`,
     `contrastRatio`, `blend`, `tokens.css`, and `page.css`: the page's paper with Ben-Day dots), `simple/`, `combined/`, `screens/`. Each component has a pure
-    `*.model.ts` and a renderer `create<Name>(props) → { element, update }`. Not yet used by the
-    game (spec-004).
+    `*.model.ts` and a renderer `create<Name>(props) → { element, update }`. Draws everything the
+    game shows.
   - Catalogue — `src/catalogue/`, `catalogue.html` — every component in every state and theme,
     and the play screen alone at `catalogue.html#play-screen`. Development only, never published.
   - Deployable unit: the static `dist/` build, published to GitHub Pages.
@@ -86,8 +87,10 @@ npm run catalogue               # builds it, then serves the build at http://loc
 npm run build:catalogue         # builds to catalogue-dist/ (git-ignored); the UI driver serves it on its own port
 
 # Run locally
-npm run dev                     # http://localhost:5173
+npm run dev                     # builds the game, then serves the build at http://localhost:4173
 npm run preview                 # the built dist/ at http://localhost:4173 (what the UI driver uses)
+npm run build:flags-on          # the game with every feature flag on, in dist-flags-on/; previewed with
+                                # npx vite preview --outDir dist-flags-on --host
 ```
 
 ## Repository Layout
@@ -95,7 +98,7 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
 | Path | Contents |
 |---|---|
 | `src/engine/` | Pure puzzle engine; `puzzles/` holds puzzle data. Unit tests sit next to each file (`*.spec.ts`). |
-| `src/app/` | Session, labels, view and entry point for the play screen; `styles.css`. |
+| `src/app/` | Session, labels, the state-to-screen mapping, feature flags and entry point for the game. |
 | `src/ui/` | Component library by tier: `foundations/`, `simple/`, `combined/`, `screens/`. Unit tests next to each model. |
 | `src/catalogue/` | The catalogue: what it lists (`library.ts`), component and screen samples, entry point. |
 | `catalogue.html` | The catalogue's page; built only by `npm run build:catalogue`. |
@@ -127,7 +130,7 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
 - **The screen is read by accessible name.** The UI driver finds and reads everything through
   roles and `aria-label`s defined in `docs/contracts/play-screen.md`; changing wording in `labels.ts`
   can break the driver. Why: the same names are what VoiceOver and TalkBack users hear.
-- **Write live-region text only when it changes** (`writeText` in `view.ts`). Why: rewriting
+- **Write live-region text only when it changes** (`writeText` in `src/ui/component.ts`). Why: rewriting
   identical text makes screen readers announce it again (found by AC-20).
 - **A scenario that passes at RED is reported, and its driver proven** by a deliberate,
   reverted break before it is recorded as delivered. Why: several stubs passed vacuously
@@ -156,9 +159,13 @@ npm run preview                 # the built dist/ at http://localhost:4173 (what
   game's phone projects skip them, and `catalogue-iphone` / `catalogue-android` run only them
   against the catalogue build on its own port. Why: the catalogue is a separate build that must
   never reach `dist/` (spec-003 AC-18, research R8).
-- **The catalogue is served from its build, never by Vite's dev server.** Why: its content
-  security policy (`default-src 'self'`) blocks the `<style>` tags the dev server injects, so
+- **The game and the catalogue are served from their builds, never by Vite's dev server.** Why: their
+  content security policy (`default-src 'self'`) blocks the `<style>` tags the dev server injects, so
   under `vite` it showed no styles or fonts (found on a phone, 2026-11-07;
   `tools/catalogue-script.spec.ts`).
+- **User stories ship behind build-time feature flags** (`src/app/features.ts`; constitution VII).
+  `playwright.config.ts` says which scenario file needs which flag: while a flag is off, that file
+  runs on `iphone-flagged` and `android-flagged` against `dist-flags-on/`, and releasing a story
+  changes no locked file. Why: every merge deploys, so `main` must always be fit for players.
 - **Run TypeScript tools with** `node --experimental-strip-types` (see `exceptions:check`).
   Why: no extra dependency is needed to run a `.ts` tool on Node 22.
