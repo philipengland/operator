@@ -369,3 +369,11 @@ at 375 × 667; 212 px and 223 px at 320 × 568. Nothing leaves the screen: the m
 of 667 px and 526 of 568 px. No requirement covers this; it is the owner's call.
 
 - **Slice refactor**: none needed beyond the flag removal.
+
+## Release 4: the voice (T047)
+
+- The flags-on build was served for the owner's phone review on 2026-11-08.
+- **Owner's decision**: the grid moving when the bubble's line wraps is left as it is for now
+  (2026-11-08). No requirement covers it; it can be its own small change later.
+- `voice` set true in `src/app/features.ts`. `operator-voice.acceptance-spec.ts` now runs on the
+  game's own phones.

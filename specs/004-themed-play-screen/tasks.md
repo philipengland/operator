@@ -165,7 +165,7 @@ off; released by a one-line pull request.
 - [X] T044 [US3] AC-18 RED/GREEN: the status is emptied silently and the bubble returns to the greeting. ⚠️ May pass: report, and prove with a reverted break. Checkpoint.
 - [X] T045 [P] [US3] AC-19 TDD in `src/app/labels.spec.ts`, title `(spec-004 AC-19)`: "Fill the grid, chief." and "You're connected! Next, please, chief!" for Midnight blue.
 - [X] T046 [US3] Confirm `npm run build` gives players the plain messages (flag off), and the flags-on build passes `operator-voice.acceptance-spec.ts`. Push and open "spec-004 part 4 of 4: the voice (flag off)". The owner merges with a merge commit; no change for players.
-- [ ] T047 [US3] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `voice` true in `src/app/features.ts` ("release the voice"). The owner merges; **players get the voice**.
+- [X] T047 [US3] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist for this story); changes are made until the owner is happy. Then a one-line pull request sets `voice` true in `src/app/features.ts` ("release the voice"). The owner merges; **players get the voice**.
 
 ---
 
