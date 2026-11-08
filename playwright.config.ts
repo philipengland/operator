@@ -15,8 +15,14 @@ const PHONE_SCREEN = { width: 375, height: 667 }; // SC-002
 const CATALOGUE_PORT = 4174;
 const catalogueURL = `http://localhost:${CATALOGUE_PORT}/`;
 
+// A scenario that enters two whole solutions makes about 700 browser calls: 8 seconds alone, but
+// 30 or more in a full parallel run, so spec-001 AC-12 sometimes ran out of Playwright's default
+// 30 seconds (2026-11-07 and -08, from its kept trace). A stuck scenario still fails, just later.
+const SCENARIO_TIME_LIMIT_MS = 60_000;
+
 export default defineConfig({
   testDir: 'test/acceptance',
+  timeout: SCENARIO_TIME_LIMIT_MS,
   testMatch: '**/*.acceptance-spec.ts',
   forbidOnly: isCi,
   // Retries only collect traces for diagnosis; a scenario that passes on retry is flaky
