@@ -100,3 +100,16 @@ unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
   `features.ts`); engine 36 passed; phones 216 passed, 6 failed (AC-3, AC-5 and AC-7, not started),
   and the speed check waits behind them.
 - **Slice refactor**: none needed.
+
+## AC-2: what a screen reader hears when the game opens
+
+- **Acceptance test**: `themed-look.acceptance-spec.ts` — `[spec-004 AC-2]`, one scenario on both phones.
+- **Acceptance RED**: **reported — passes at RED** (⚠️, as T018 predicted). AC-1's swap brought the
+  names.
+- **Driver proven** by reverted breaks (Pixel 5):
+  - The main button named "Check the grid, Put it through!" failed `the main button is heard
+    beginning "Put it through!"`.
+  - The counter heard as "Got 0 of 2" failed `counter — Received: ""`.
+- **No cycles**: no new behaviour was needed.
+- **Acceptance GREEN** (T018): AC-2, 2 runs passed. No product code changed, so AC-1's full-suite
+  numbers stand.
