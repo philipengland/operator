@@ -36,6 +36,12 @@ describe('selecting a cell (spec-004 AC-8)', () => {
 
     expect(applyAction(afterCheck, { type: 'key', digit: 7 }).message).toBeNull();
   });
+
+  it('empties the selected cell with Oops (spec-004 AC-10)', () => {
+    const withSeven = applyAction(selectedTopRight(), { type: 'key', digit: 7 });
+
+    expect(applyAction(withSeven, { type: 'clear' }).entry.cells[0]?.[1]).toBeNull();
+  });
 });
 
 describe('counterText', () => {

@@ -74,7 +74,7 @@ export function applyAction(state: SessionState, action: SessionAction): Session
     case 'key':
       return setSelectedCell(state, action.digit);
     case 'clear':
-      return state;
+      return setSelectedCell(state, null);
   }
 }
 
