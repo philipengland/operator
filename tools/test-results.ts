@@ -234,3 +234,18 @@ function unitSection(input: TestResultsInput): readonly string[] {
     '',
   ];
 }
+
+/** One criterion's evidence, printed at a review checkpoint. */
+export function writeCriterionReport(input: TestResultsInput, criterion: string): string {
+  const results = resultsFor(input, criterion);
+  const titles = [...new Set(results.map((result) => result.title))];
+  const headings = RUN_COLUMNS.map(([, heading]) => heading).join(' | ');
+  return [
+    `**${criterion}: ${criterionStatus(results)}**`,
+    '',
+    `| Criterion | Test | ${headings} |`,
+    `| --- | --- | ${RUN_COLUMNS.map(() => '---').join(' | ')} |`,
+    ...titles.map((title) => scenarioRow(criterion, title, results)),
+    '',
+  ].join('\n');
+}

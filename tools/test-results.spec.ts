@@ -5,6 +5,7 @@ import {
   readPlaywrightReport,
   readVitestReport,
   specTitleIn,
+  writeCriterionReport,
   writeTestResults,
   type TestResult,
   type TestResultsInput,
@@ -253,5 +254,19 @@ describe('writeTestResults', () => {
   it('ends with exactly one overall status line the dashboard can read', () => {
     expect(markdown.match(/OVERALL status/g)).toHaveLength(1);
     expect(markdown.trimEnd().endsWith('OVERALL status: PASS')).toBe(true);
+  });
+});
+
+describe('writeCriterionReport', () => {
+  it('says NOT COVERED for a criterion no test names, so a gap cannot look fine', () => {
+    expect(writeCriterionReport(input(ALL_PASSING), 'AC-99')).toContain('AC-99: NOT COVERED');
+  });
+
+  it('shows each test that names the criterion, with its result on each run, and no other', () => {
+    const report = writeCriterionReport(input(ALL_PASSING), 'AC-1');
+
+    expect(report).toContain('AC-1: PASS');
+    expect(report).toContain('| AC-1 | opening › shows the working | – | pass | pass | – | – | – | – |');
+    expect(report).not.toContain('AC-2');
   });
 });

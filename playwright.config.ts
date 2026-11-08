@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { RELEASED, type Features } from './src/app/features.ts';
+import { RELEASED, type Features } from './src/app/features';
 
 // Driver choice is configuration only (acceptance-tests standard "Choosing the Driver"):
 //   npm run test:acceptance:engine   in-process, no browser

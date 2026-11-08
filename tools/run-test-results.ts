@@ -4,6 +4,8 @@
 //   npm run test-results -- --public-url https://philipengland.github.io/operator/
 //                                                          also run the after-publish checks
 //   npm run test-results -- --note "Generated after delivery."
+//   npm run test-results -- 004-themed-play-screen --criterion AC-3
+//                                                          one criterion, printed for a review checkpoint
 // The only place the generator meets the clock, git, files and child processes.
 // Exits non-zero unless every feature written is PASS.
 
@@ -12,7 +14,7 @@ import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } fro
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { overallStatus, readPlaywrightReport, readVitestReport, writeTestResults, type TestResult, type TestResultsInput } from './test-results.ts';
+import { overallStatus, readPlaywrightReport, readVitestReport, writeCriterionReport, writeTestResults, type TestResult, type TestResultsInput } from './test-results.ts';
 
 const SPECS_FOLDER = 'specs';
 const FEATURE_FOLDER = /^(\d{3})-.+$/;
@@ -25,7 +27,7 @@ const PORCELAIN_STATUS_WIDTH = 'XY '.length;
 
 const { values: options, positionals: requestedFeatures } = parseArgs({
   allowPositionals: true,
-  options: { 'public-url': { type: 'string' }, note: { type: 'string' } },
+  options: { 'public-url': { type: 'string' }, note: { type: 'string' }, criterion: { type: 'string' } },
 });
 
 const reports = mkdtempSync(join(tmpdir(), 'operator-test-results-'));
@@ -40,10 +42,21 @@ function readJson(path: string): unknown {
   return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {};
 }
 
+// With --criterion, only the tests that name it run: "AC-1" must not also match "AC-12".
+const criterionFilter = (specId: string, criterion: string): string => `${specId} ${criterion}(?!\\d)`;
+
+function onlyTheCriterion(flag: string): readonly string[] {
+  const [folder] = requestedFeatures;
+  return options.criterion === undefined || folder === undefined
+    ? []
+    : [flag, criterionFilter(`spec-${FEATURE_FOLDER.exec(folder)?.[1]}`, options.criterion)];
+}
+
 function runUnitTests(): readonly TestResult[] {
   const output = join(reports, 'unit.json');
   run('Unit tests', VITEST_CLI, [
     'run',
+    ...onlyTheCriterion('-t'),
     '--coverage',
     '--coverage.reporter=text-summary',
     '--coverage.reporter=json-summary',
@@ -57,7 +70,7 @@ function runUnitTests(): readonly TestResult[] {
 
 function runAcceptance(name: string, driver: string, environment: Record<string, string> = {}): readonly TestResult[] {
   const output = join(reports, `acceptance-${name}.json`);
-  run(`Acceptance tests: ${name}`, 'tools/run-acceptance.mjs', [driver, '--reporter=list,json'], {
+  run(`Acceptance tests: ${name}`, 'tools/run-acceptance.mjs', [driver, '--reporter=list,json', ...onlyTheCriterion('-g')], {
     ...environment,
     PLAYWRIGHT_JSON_OUTPUT_FILE: output,
   });
@@ -118,6 +131,12 @@ for (const folder of featuresToWrite()) {
     uncommittedChanges: changes,
     note: options.note,
   };
+  if (options.criterion !== undefined) {
+    const report = writeCriterionReport(input, options.criterion);
+    console.log(`\n${report}`);
+    allPass &&= report.includes(`${options.criterion}: PASS`);
+    continue;
+  }
   const status = overallStatus(input);
   allPass &&= status === 'PASS';
   writeFileSync(join(SPECS_FOLDER, folder, 'test-results.md'), writeTestResults(input));
