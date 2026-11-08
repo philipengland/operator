@@ -145,3 +145,11 @@ export function messageText(kind: MessageKind): string {
 export function bubbleLine(kind: MessageKind | null, { address }: Theme): string {
   return kind === null ? `Fill the grid, ${address}.` : MESSAGES[kind];
 }
+
+/** What a screen reader is told after a check; empty when there is no result (spec-004 FR-409, FR-413). */
+export function announcement(kind: MessageKind | null, counter: string): string {
+  if (kind === null) {
+    return '';
+  }
+  return kind === 'new-solution' || kind === 'all-found' ? `${MESSAGES[kind]} ${counter}` : MESSAGES[kind];
+}

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
 import { MIDNIGHT_BLUE } from '../ui/foundations/themes';
-import { bubbleLine, cellName, lineName, messageText, operatorName, resultText, workingName, workingText } from './labels';
+import { announcement, bubbleLine, cellName, lineName, messageText, operatorName, resultText, workingName, workingText } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -176,5 +176,19 @@ describe('bubbleLine', () => {
 
   it("shows the game's existing message after a check, until the voice is released", () => {
     expect(bubbleLine('not-solved', MIDNIGHT_BLUE)).toBe('Not solved yet.');
+  });
+});
+
+describe('announcement', () => {
+  it('says nothing while there is no result', () => {
+    expect(announcement(null, 'Found 0 of 2')).toBe('');
+  });
+
+  it('says the result, then the count when a new solution changed it (spec-004 AC-4)', () => {
+    expect(announcement('new-solution', 'Found 1 of 2')).toBe('New solution found! Found 1 of 2');
+  });
+
+  it('leaves the count out when it did not change', () => {
+    expect(announcement('not-solved', 'Found 0 of 2')).toBe('Not solved yet.');
   });
 });
