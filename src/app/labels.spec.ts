@@ -141,6 +141,11 @@ describe('bubbleLine', () => {
   ] as const)("with the voice on, %s gives the operator's line (spec-004 AC-16)", (kind, line) => {
     expect(bubbleLine(kind, CLASSIC, true)).toBe(line);
   });
+
+  it("speaks in Midnight blue's words: its address and its sign-off (spec-004 AC-19)", () => {
+    expect(bubbleLine(null, MIDNIGHT_BLUE, true)).toBe('Fill the grid, chief.');
+    expect(bubbleLine('new-solution', MIDNIGHT_BLUE, true)).toBe("You're connected! Next, please, chief!");
+  });
 });
 
 describe('announcement', () => {
