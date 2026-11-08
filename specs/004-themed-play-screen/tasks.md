@@ -106,7 +106,7 @@ spec-002 and spec-003 criterion passes; `themed-look.acceptance-spec.ts` passes 
   - `test/acceptance/drivers/ui/game.ui-driver.ts`, `ui/screen-names.ts` and `ui/phone.ui-driver.ts` are re-pointed to [contracts/play-screen.md](contracts/play-screen.md) (research R3).
   - While re-pointing, `view()` reads the whole screen in one browser call instead of about 29, the root cause of spec-001 AC-12's timeouts (#17).
   - Every spec-001 and spec-002 scenario must pass unchanged. Any that cannot: **stop and ask**.
-- [ ] T017 [US1] AC-1 GREEN (six scenarios, both phones), slice refactor, checkpoint.
+- [X] T017 [US1] AC-1 GREEN (six scenarios, both phones), slice refactor, checkpoint.
 
 ### AC-2 to AC-7
 

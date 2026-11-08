@@ -17,6 +17,8 @@ export default defineConfig({
         'src/engine/**/*.ts',
         'src/app/session.ts',
         'src/app/labels.ts',
+        'src/app/screen.ts',
+        'src/app/features.ts',
         'src/ui/component.ts',
         'src/ui/foundations/**/*.ts',
         'src/ui/**/*.model.ts',
