@@ -115,7 +115,7 @@ spec-002 and spec-003 criterion passes; `themed-look.acceptance-spec.ts` passes 
 - [X] T020 [US1] AC-4 RED/GREEN, TDD in `src/app/labels.spec.ts` and `screen.spec.ts`: `announcement(kind, theme, isVoiceOn, countChanged, counter)` with the voice off is spec-001's message, then "Found N of 2" when the count changed; `bubbleLine` with the voice off is spec-001's message (FR-413). The driver's `announcement()` reads the status. Checkpoint.
 - [X] T021 [US1] AC-5 RED/GREEN: every pill ticked, dashed ones too (T003), and "All found! 2 of 2 ✓". Checkpoint.
 - [X] T022 [US1] AC-6 RED/GREEN at 375 × 667 and 320 × 568. ⚠️ May pass at RED (spec-003 AC-16 sized the screen, and here it has no keypad): report, and prove with a reverted break. Checkpoint.
-- [ ] T023 [US1] AC-7 RED/GREEN: driver `typeface(text)` waits for `document.fonts.ready`. ⚠️ May pass at RED: report, and prove with a reverted break (a typeface file left out of the build). Checkpoint.
+- [X] T023 [US1] AC-7 RED/GREEN: driver `typeface(text)` waits for `document.fonts.ready`. ⚠️ May pass at RED: report, and prove with a reverted break (a typeface file left out of the build). Checkpoint.
 
 ### Pull request 2
 

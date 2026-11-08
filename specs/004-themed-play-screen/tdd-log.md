@@ -189,3 +189,16 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
   button ends at 449 of 568 px, so 119 px are spare for the keypad (AC-20).
 - **No cycles**: no new behaviour was needed.
 - **Acceptance GREEN** (T022): AC-6, 4 runs passed.
+
+## AC-7: losing the connection while playing
+
+- **Acceptance test**: `themed-look.acceptance-spec.ts` — `[spec-004 AC-7]`, one scenario on both phones.
+- **Driver**: `typeface(text)` waits for `document.fonts.ready`, then reads the first loaded family.
+- **Acceptance RED**: against the placeholder reading, `the speech bubble title is shown in —
+  Received: "not read yet"`. With the real reading: **reported — passes at RED** (⚠️, as T023
+  predicted), because the typefaces ship with the game and it makes no requests.
+- **Driver proven** by reverted breaks (Pixel 5):
+  - Chewy's `@font-face` renamed failed `the speech bubble title is shown in — Received: "sans-serif"`.
+  - An image requested on each tap failed `network requests after opening — Received: 15`.
+- **No cycles**: no new behaviour was needed.
+- **Acceptance GREEN** (T023): AC-7, 2 runs passed.
