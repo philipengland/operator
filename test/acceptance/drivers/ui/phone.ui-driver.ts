@@ -5,7 +5,8 @@ import type { Cell, Line } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
 import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
-import type { Box, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
+import type { PageDots, PlayScreenPart, Typeface } from '../../dsl/catalogue-vocabulary';
+import type { Box, CellAppearance, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
 
 // Set on the page before a reload; a page that really reloads no longer has it.
 const PAGE_BEFORE_RELOAD = 'operatorPageBeforeReload';
@@ -35,6 +36,14 @@ const EMPTY_LAYOUT: ScreenLayout = {
   checkButton: NO_BOX,
 };
 
+const NOT_READ_PARTS: Readonly<Record<PlayScreenPart, Box>> = {
+  'Operator header': NO_BOX,
+  'Solutions counter': NO_BOX,
+  'Puzzle grid': NO_BOX,
+  Keypad: NO_BOX,
+  'Main button': NO_BOX,
+};
+
 export class UiPhoneDriver implements PhoneDriver {
   // Every request the page makes, and how many had been made when it last finished loading.
   private readonly requests: string[] = [];
@@ -45,6 +54,32 @@ export class UiPhoneDriver implements PhoneDriver {
     page.on('load', () => {
       this.requestsWhenOpened = this.requests.length;
     });
+  }
+
+  // Readings not built yet (spec-004 T011): each returns what no scenario can accept.
+
+  async playScreenParts(): Promise<{ readonly screen: ScreenSize; readonly parts: Readonly<Record<PlayScreenPart, Box>> }> {
+    return { screen: { width: 0, height: 0 }, parts: NOT_READ_PARTS };
+  }
+
+  async cellAppearance(): Promise<CellAppearance> {
+    return { fill: 'other', digit: 'other', shadow: 'other' };
+  }
+
+  async isPillDashed(): Promise<boolean> {
+    return false;
+  }
+
+  async coloursInUse(): Promise<readonly string[]> {
+    return ['not read yet'];
+  }
+
+  async pageDots(): Promise<PageDots | null> {
+    return null;
+  }
+
+  async typeface(): Promise<Typeface | string> {
+    return 'not read yet';
   }
 
   async useScreen(size: ScreenSize): Promise<void> {

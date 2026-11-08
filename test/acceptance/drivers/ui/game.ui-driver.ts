@@ -5,7 +5,7 @@ import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { scanForAccessibilityProblems } from '../../support/axe';
 import { DEFAULT_VIEW } from '../default-view';
-import type { CellView, GameDriver, GameView, OperatorView, WorkingView } from '../game.driver';
+import type { CellView, GameDriver, KeypadKeyView, GameView, OperatorView, WorkingView } from '../game.driver';
 import { CELLS, LINES } from '../positions';
 import {
   cellNamePattern,
@@ -25,6 +25,9 @@ const GAME_READY_TIMEOUT_MS = 5_000;
 interface AnnouncementCounter {
   operatorAnnouncements?: number;
 }
+
+// Readings not built yet (spec-004 T011): each returns what no scenario can accept.
+const NOT_READ_YET = 'not read yet';
 
 export class UiGameDriver implements GameDriver {
   constructor(private readonly page: Page) {}
@@ -65,6 +68,44 @@ export class UiGameDriver implements GameDriver {
     const statusText = await this.status().innerText();
     const counter = statusText.match(COUNTER_PATTERN)?.[0] ?? '';
     return { cells, targets, operators, counter, result: readResult(statusText), workings };
+  }
+
+  async tapKey(): Promise<void> {}
+
+  async selectedCell(): Promise<Cell | null> {
+    return null;
+  }
+
+  async keypad(): Promise<readonly (readonly KeypadKeyView[])[]> {
+    return [];
+  }
+
+  async bubble(): Promise<{ readonly title: string; readonly line: string }> {
+    return { title: NOT_READ_YET, line: NOT_READ_YET };
+  }
+
+  async announcement(): Promise<string> {
+    return NOT_READ_YET;
+  }
+
+  async counterShown(): Promise<string> {
+    return NOT_READ_YET;
+  }
+
+  async pillShown(): Promise<string> {
+    return NOT_READ_YET;
+  }
+
+  async workingSlot(): Promise<string> {
+    return NOT_READ_YET;
+  }
+
+  async helperLine(): Promise<string> {
+    return NOT_READ_YET;
+  }
+
+  async mainButton(): Promise<{ readonly shown: string; readonly heardAs: string }> {
+    return { shown: NOT_READ_YET, heardAs: NOT_READ_YET };
   }
 
   async announcementCount(): Promise<number> {

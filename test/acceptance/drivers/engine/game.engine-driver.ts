@@ -13,7 +13,7 @@ import { workingText } from '../../../../src/app/labels';
 import type { LineOutcome } from '../../../../src/engine';
 import type { Cell, CellValue, Line, OperatorChoice, Result, WorkingMark } from '../../dsl/vocabulary';
 import { DEFAULT_VIEW } from '../default-view';
-import type { CellView, GameDriver, GameView, OperatorView, WorkingView } from '../game.driver';
+import type { CellView, GameDriver, GameView, KeypadKeyView, OperatorView, WorkingView } from '../game.driver';
 import { CELL_POSITIONS, CELLS, LINE_POSITIONS, LINES } from '../positions';
 
 const RESULTS: Readonly<Record<MessageKind, Result>> = {
@@ -23,6 +23,10 @@ const RESULTS: Readonly<Record<MessageKind, Result>> = {
   'not-solved': 'not solved yet',
   incomplete: 'fill everything first',
 };
+
+function readOnlyOnThePhones(): never {
+  throw new Error('Scenarios that read the screen are tagged @ui and run only with ACCEPTANCE_DRIVER=ui.');
+}
 
 export class EngineGameDriver implements GameDriver {
   private session: SessionState | null = null;
@@ -66,6 +70,26 @@ export class EngineGameDriver implements GameDriver {
   async announcementCount(): Promise<number> {
     return this.announcements;
   }
+
+  // spec-004: the keypad comes with User Story 2 (T028); the rest are read only on the phones.
+
+  async tapKey(): Promise<void> {}
+
+  async selectedCell(): Promise<Cell | null> {
+    return null;
+  }
+
+  async keypad(): Promise<readonly (readonly KeypadKeyView[])[]> {
+    return [];
+  }
+
+  bubble = readOnlyOnThePhones;
+  announcement = readOnlyOnThePhones;
+  counterShown = readOnlyOnThePhones;
+  pillShown = readOnlyOnThePhones;
+  workingSlot = readOnlyOnThePhones;
+  helperLine = readOnlyOnThePhones;
+  mainButton = readOnlyOnThePhones;
 
   private dispatch(action: SessionAction): void {
     if (this.session) {

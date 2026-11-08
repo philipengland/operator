@@ -7,6 +7,7 @@ import type {
   CellValue,
   Digit,
   Entry,
+  KeypadKey,
   Line,
   Operator,
   OperatorChoice,
@@ -17,6 +18,9 @@ import type {
 // A cell has ten values (empty and 1 to 9) and an operator has four, so this many taps
 // always reaches any value that the game allows.
 const TAPS_TO_GO_ALL_THE_WAY_ROUND = 10;
+
+// spec-004: nine digit keys and Oops.
+const KEYS_ON_THE_KEYPAD = 10;
 
 export class GameDsl {
   constructor(private readonly driver: () => GameDriver) {}
@@ -194,6 +198,104 @@ export class GameDsl {
 
   async expectCrossedOut(line: Line): Promise<void> {
     expect((await this.view()).workings[line].mark, `${line} should show a cross`).toBe('not a whole number');
+  }
+
+  // spec-004 — the keypad and the selected cell.
+
+  async tapKey(digit: Digit): Promise<void> {
+    await this.driver().tapKey(digit);
+  }
+
+  async tapOops(): Promise<void> {
+    await this.driver().tapKey('Oops');
+  }
+
+  /** Enters each digit by selecting its cell and tapping the key; Oops for an empty cell. */
+  async fillInWithKeypad(entry: Entry): Promise<void> {
+    await this.enterWithKeypad('top-right', entry.topRight);
+    await this.enterWithKeypad('bottom-left', entry.bottomLeft);
+    await this.enterWithKeypad('bottom-right', entry.bottomRight);
+    await this.chooseOperator('Row 2', entry.row2);
+    await this.chooseOperator('Column 1', entry.column1);
+  }
+
+  async expectSelected(cell: Cell): Promise<void> {
+    expect(await this.driver().selectedCell(), 'the selected cell').toBe(cell);
+  }
+
+  async expectKeysAvailable(): Promise<void> {
+    await this.expectKeysToBe(true);
+  }
+
+  /** Every digit key and Oops is shown and heard as unavailable. */
+  async expectKeysUnavailable(): Promise<void> {
+    await this.expectKeysToBe(false);
+  }
+
+  /** The names a screen reader hears for each row of keys, top row first. */
+  async expectKeypadRows(rows: readonly (readonly string[])[]): Promise<void> {
+    const names = (await this.driver().keypad()).map((row) => row.map((key) => key.name));
+    expect(names, 'the keys, row by row').toEqual(rows);
+  }
+
+  // spec-004 — what the screen shows and says.
+
+  async expectBubble(title: string, line: string): Promise<void> {
+    expect(await this.driver().bubble(), 'the speech bubble').toEqual({ title, line });
+  }
+
+  /** The one announcement a screen reader has been given since the grid last changed, word for word. */
+  async expectAnnounced(words: string): Promise<void> {
+    expect(await this.driver().announcement(), 'what is announced').toBe(words);
+  }
+
+  /** The announcement ends with these words, whatever comes before them. */
+  async expectAnnouncementEndsWith(words: string): Promise<void> {
+    const announced = await this.driver().announcement();
+    expect(announced.endsWith(words), `what is announced ends "${words}": "${announced}"`).toBe(true);
+  }
+
+  async expectNothingAnnounced(): Promise<void> {
+    await this.expectAnnounced('');
+  }
+
+  async expectCounterShows(text: string): Promise<void> {
+    expect(await this.driver().counterShown(), 'the counter shows').toBe(text);
+  }
+
+  /** The target pill as the player sees it, such as "+ 8", "? 6" or "+ 8 ✓". */
+  async expectPillShows(line: Line, text: string): Promise<void> {
+    expect(await this.driver().pillShown(line), `${line} pill shows`).toBe(text);
+  }
+
+  /** The working's visible slot as the player sees it, such as "= ?" or "= 8 ✓". */
+  async expectWorkingSlotShows(line: Line, text: string): Promise<void> {
+    expect(await this.driver().workingSlot(line), `${line} working shows`).toBe(text);
+  }
+
+  async expectHelperLine(text: string): Promise<void> {
+    expect(await this.driver().helperLine(), 'the helper line').toBe(text);
+  }
+
+  /** The main button shows these words, and a screen reader hears them first and then "Check". */
+  async expectMainButton(label: string): Promise<void> {
+    const { shown, heardAs } = await this.driver().mainButton();
+    expect(shown, 'the main button shows').toBe(label);
+    expect(heardAs.startsWith(label), `the main button is heard beginning "${label}", heard "${heardAs}"`).toBe(true);
+    expect(heardAs, 'the main button is heard as Check').toContain('Check');
+  }
+
+  private async enterWithKeypad(cell: Cell, value: CellValue): Promise<void> {
+    await this.driver().tapCell(cell);
+    await this.driver().tapKey(value === 'empty' ? 'Oops' : (value satisfies KeypadKey));
+  }
+
+  private async expectKeysToBe(isAvailable: boolean): Promise<void> {
+    const keys = (await this.driver().keypad()).flat();
+    expect(keys.length, 'keys on the keypad').toBe(KEYS_ON_THE_KEYPAD);
+    for (const key of keys) {
+      expect(key.isAvailable, `"${key.name}" is ${isAvailable ? 'available' : 'unavailable'}`).toBe(isAvailable);
+    }
   }
 
   private view(): Promise<GameView> {
