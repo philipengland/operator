@@ -26,6 +26,7 @@
   cursor: default;
 }
 
+
 /* The one action per screen: accent fill, large and full width on phones. */
 .button--main {
   width: 100%;
@@ -57,6 +58,7 @@
 /* Something the player can change: a dashed accent outline and no fill. */
 .button--dashed {
   min-height: var(--size-dashed);
+  gap: 6px;
   border-style: dashed;
   border-color: var(--accent);
   border-radius: var(--radius-pill);
@@ -105,4 +107,14 @@
   height: 34px;
   border-radius: 3px;
   background: var(--tile);
+}
+
+/* Keys that cannot be used yet: flat, with a thin outline and no fill of ink, so the state is told
+   by shape, not colour alone. Solid, so the page's dots never show through (spec-004 FR-405). */
+.button--key[aria-disabled='true'],
+.button--solid[aria-disabled='true'] {
+  border-width: var(--outline-thin);
+  background: var(--tile);
+  color: var(--ink);
+  box-shadow: none;
 }

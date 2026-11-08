@@ -24,16 +24,27 @@ export interface PuzzleGridProps {
   readonly helper: string;
 }
 
+/** Which kind of line an operator pill belongs to. */
+export type PillAxis = 'row' | 'column';
+
+/** What the player can do on the grid. A given cell and a shown pill send nothing. */
+export interface PuzzleGridActions {
+  readonly onCell?: (row: number, column: number) => void;
+  readonly onPill?: (axis: PillAxis, index: number) => void;
+}
+
 /** The puzzle's size and lines are fixed once it is shown; `update` shows new states of the same parts. */
-export function createPuzzleGrid(props: PuzzleGridProps): Component<PuzzleGridProps> {
+export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActions = {}): Component<PuzzleGridProps> {
   const places = puzzleGridPlaces({ rows: props.rowPills.length, columns: props.columnPills.length });
   const grid = document.createElement('div');
   grid.className = 'puzzle-grid__grid';
   grid.style.setProperty('--columns', String(props.columnPills.length));
-  const columnPills = props.columnPills.map((pill, column) => placed(grid, createTargetPill(pill), places.columnPill(column)));
-  const rowPills = props.rowPills.map((pill, row) => placed(grid, createTargetPill(pill), places.rowPill(row)));
+  const columnPills = props.columnPills.map((pill, column) =>
+    placed(grid, createTargetPill(pill, () => actions.onPill?.('column', column)), places.columnPill(column)),
+  );
+  const rowPills = props.rowPills.map((pill, row) => placed(grid, createTargetPill(pill, () => actions.onPill?.('row', row)), places.rowPill(row)));
   const cells = props.cells.map((cellsInRow, row) =>
-    cellsInRow.map((cell, column) => placed(grid, createGridCell(cell), places.cell(row, column))),
+    cellsInRow.map((cell, column) => placed(grid, createGridCell(cell, () => actions.onCell?.(row, column)), places.cell(row, column))),
   );
   const rowWorkings = props.rowWorkings.map((working, row) => placed(grid, createLineWorking(working), places.rowWorking(row)));
   const columnWorkings = props.columnWorkings.map((working, column) =>

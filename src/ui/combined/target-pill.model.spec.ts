@@ -19,4 +19,11 @@ describe('targetPillModel', () => {
 
     expect(model).toMatchObject({ hasTick: true, heardAs: 'Row 1 target 9, plus, target reached' });
   });
+
+  it('an open operator whose line reaches its target shows the tick, heard as reached', () => {
+    const model = targetPillModel({ target: 6, operator: '+', isOpen: true, name: 'Row 2 target 6, plus', reachesTarget: true });
+
+    expect(model.hasTick).toBe(true);
+    expect(model.heardAs).toBe('Row 2 target 6, plus, target reached');
+  });
 });

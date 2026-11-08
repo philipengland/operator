@@ -175,7 +175,8 @@ export class UiCatalogueDriver implements CatalogueDriver {
 
   /** The sample's buttons by name, row by row as they sit on screen: grouped by top edge, left to right. */
   async keypadRows(sample: Sample): Promise<readonly (readonly string[])[]> {
-    const keys = this.sampleGroup(sample).getByRole('button');
+    // The first match is the sample itself; the keypad inside each sample is also a group named "Keypad".
+    const keys = this.sampleGroup(sample).first().getByRole('button');
     const placed = await Promise.all(
       (await keys.all()).map(async (key) => ({ name: (await key.getAttribute('aria-label')) ?? (await key.innerText()).trim(), box: await boxOf(key) })),
     );

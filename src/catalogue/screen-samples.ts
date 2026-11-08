@@ -100,18 +100,20 @@ export function screenSamplesFor({ address, buttonLabel }: Theme): Readonly<Reco
       counter: { found: 0, total: 2 },
       grid: FIXED_PUZZLE_JUST_OPENED,
       mainButtonLabel: buttonLabel,
+      keysAvailable: false,
     },
     'Row 1 correct': {
-      header: { title: TITLE, message: `Row one's through, ${address}.` },
+      header: { title: TITLE, message: `Fill the grid, ${address}.` },
       counter: { found: 0, total: 2 },
       grid: ROW_1_CORRECT,
       mainButtonLabel: buttonLabel,
     },
     'All found': {
-      header: { title: TITLE, message: `That's all of them, ${address}!` },
+      header: { title: TITLE, message: `Every line connected, ${address}!` },
       counter: { found: 2, total: 2 },
       grid: SOLUTION_B,
       mainButtonLabel: buttonLabel,
+      announcement: `New solution found! You've found every solution. Every line connected, ${address}! Found 2 of 2`,
     },
   };
 }

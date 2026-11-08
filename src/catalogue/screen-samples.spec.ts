@@ -8,8 +8,8 @@ describe('screenSamplesFor', () => {
 
     expect(Object.values(samples).map(({ header, mainButtonLabel }) => [header.message, mainButtonLabel])).toEqual([
       ['Fill the grid, chief.', 'Connect me!'],
-      ["Row one's through, chief.", 'Connect me!'],
-      ["That's all of them, chief!", 'Connect me!'],
+      ['Fill the grid, chief.', 'Connect me!'],
+      ['Every line connected, chief!', 'Connect me!'],
     ]);
   });
 });
