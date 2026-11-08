@@ -162,3 +162,17 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
     users`. A first attempt, two writes in the same task, did not fail: they are one change, and a
     screen reader hears one. It proved nothing and is recorded here.
 - **Acceptance GREEN** (T020): AC-4, 2 runs passed. Screen checked by eye.
+
+## AC-5: every solution found
+
+- **Acceptance test**: `themed-look.acceptance-spec.ts` — `[spec-004 AC-5]`, one scenario on both phones.
+- **Acceptance RED**: **reported — passes at RED** (⚠️). The ticks came with T003 and AC-3, and the
+  count with T016's cycles.
+- **Driver proven** by reverted breaks (Pixel 5):
+  - An open pill that never shows its tick failed `Row 2 pill shows — Expected: "+ 6 ✓", Received: "+ 6"`.
+  - A counter that is never complete failed `the counter shows — Expected: "All found! 2 of 2 ✓",
+    Received: "Solutions found 2 of 2"`.
+  - The all-found result without its count failed `what is announced ends "Found 2 of 2": "New
+    solution found! You've found every solution."`.
+- **No cycles**: no new behaviour was needed.
+- **Acceptance GREEN** (T021): AC-5, 2 runs passed. Screen checked by eye.
