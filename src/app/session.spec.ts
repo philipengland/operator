@@ -42,6 +42,13 @@ describe('selecting a cell (spec-004 AC-8)', () => {
 
     expect(applyAction(withSeven, { type: 'clear' }).entry.cells[0]?.[1]).toBeNull();
   });
+
+  it('changes nothing when a key is tapped with no cell selected (spec-004 AC-12)', () => {
+    const opened = startSession();
+
+    expect(applyAction(opened, { type: 'key', digit: 5 })).toEqual(opened);
+    expect(applyAction(opened, { type: 'clear' })).toEqual(opened);
+  });
 });
 
 describe('counterText', () => {
