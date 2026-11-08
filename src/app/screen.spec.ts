@@ -3,12 +3,11 @@ import { CLASSIC } from '../ui/foundations/themes';
 import { playScreenProps } from './screen';
 import { applyAction, startSession } from './session';
 
-const NO_FLAGS = { voice: false };
-const justOpened = () => playScreenProps(startSession(), CLASSIC, NO_FLAGS);
+const justOpened = () => playScreenProps(startSession(), CLASSIC);
 const TOP_RIGHT = { type: 'tapCell', row: 0, column: 1 } as const;
 
 /** Top-right 2: Row 1 is 6 + 2 = 8, its target. */
-const row1Correct = () => playScreenProps([TOP_RIGHT, TOP_RIGHT].reduce(applyAction, startSession()), CLASSIC, NO_FLAGS);
+const row1Correct = () => playScreenProps([TOP_RIGHT, TOP_RIGHT].reduce(applyAction, startSession()), CLASSIC);
 
 describe('playScreenProps', () => {
   it('says hello, counts from nothing, and labels the main button in the theme\'s words', () => {
@@ -56,15 +55,6 @@ describe('playScreenProps', () => {
     expect(justOpened().grid.helper).toBe('Tap a dashed bubble to swap its operator.');
   });
 
-  it('announces a new solution with its count, and shows the result in the bubble', () => {
-    const session = { ...startSession(), found: new Set(['a'] as never[]), message: 'new-solution' as const };
-
-    const props = playScreenProps(session, CLASSIC, NO_FLAGS);
-
-    expect(props.header.message).toBe('New solution found!');
-    expect(props.announcement).toBe('New solution found! Found 1 of 2');
-  });
-
   it('ticks the pill of a line that reaches its target, and no other (spec-004 AC-3)', () => {
     const { rowPills, columnPills } = row1Correct().grid;
 
@@ -82,18 +72,18 @@ describe('playScreenProps', () => {
   it('shows the selected cell (spec-004 AC-8)', () => {
     const tapped = applyAction(startSession(), TOP_RIGHT);
 
-    expect(playScreenProps(tapped, CLASSIC, NO_FLAGS).grid.cells[0]?.[1]?.isSelected).toBe(true);
+    expect(playScreenProps(tapped, CLASSIC).grid.cells[0]?.[1]?.isSelected).toBe(true);
   });
 
   it('makes the keys available once a cell is selected, not before (spec-004 AC-12)', () => {
-    expect(playScreenProps(startSession(), CLASSIC, NO_FLAGS).keysAvailable).toBe(false);
-    expect(playScreenProps(applyAction(startSession(), TOP_RIGHT), CLASSIC, NO_FLAGS).keysAvailable).toBe(true);
+    expect(playScreenProps(startSession(), CLASSIC).keysAvailable).toBe(false);
+    expect(playScreenProps(applyAction(startSession(), TOP_RIGHT), CLASSIC).keysAvailable).toBe(true);
   });
 
-  it("shows and announces the operator's line with the voice on (spec-004 AC-16)", () => {
+  it("shows and announces the operator's line (spec-004 AC-16)", () => {
     const session = { ...startSession(), found: new Set(['a'] as never[]), message: 'new-solution' as const };
 
-    const props = playScreenProps(session, CLASSIC, { ...NO_FLAGS, voice: true });
+    const props = playScreenProps(session, CLASSIC);
 
     expect(props.header.message).toBe("You're connected! Keep 'em coming, pal!");
     expect(props.announcement).toBe("New solution found! You're connected! Keep 'em coming, pal! Found 1 of 2");

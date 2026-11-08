@@ -128,41 +128,39 @@ describe('bubbleLine', () => {
     expect(bubbleLine(null, MIDNIGHT_BLUE)).toBe('Fill the grid, chief.');
   });
 
-  it("shows the game's existing message after a check, until the voice is released", () => {
-    expect(bubbleLine('not-solved', MIDNIGHT_BLUE)).toBe('Not solved yet.');
-  });
-
   it.each([
     ['new-solution', "You're connected! Keep 'em coming, pal!"],
     ['all-found', 'Every line connected, pal!'],
     ['already-found', "We've had that call, pal."],
     ['not-solved', 'Wrong number, pal!'],
     ['incomplete', "Line's busy, pal: fill every cell and operator first."],
-  ] as const)("with the voice on, %s gives the operator's line (spec-004 AC-16)", (kind, line) => {
-    expect(bubbleLine(kind, CLASSIC, true)).toBe(line);
+  ] as const)("%s gives the operator's line (spec-004 AC-16)", (kind, line) => {
+    expect(bubbleLine(kind, CLASSIC)).toBe(line);
   });
 
   it("speaks in Midnight blue's words: its address and its sign-off (spec-004 AC-19)", () => {
-    expect(bubbleLine(null, MIDNIGHT_BLUE, true)).toBe('Fill the grid, chief.');
-    expect(bubbleLine('new-solution', MIDNIGHT_BLUE, true)).toBe("You're connected! Next, please, chief!");
+    expect(bubbleLine(null, MIDNIGHT_BLUE)).toBe('Fill the grid, chief.');
+    expect(bubbleLine('new-solution', MIDNIGHT_BLUE)).toBe("You're connected! Next, please, chief!");
   });
 });
 
 describe('announcement', () => {
   it('says nothing while there is no result', () => {
-    expect(announcement(null, 'Found 0 of 2')).toBe('');
+    expect(announcement(null, CLASSIC, 'Found 0 of 2')).toBe('');
   });
 
   it('says the result, then the count when a new solution changed it (spec-004 AC-4)', () => {
-    expect(announcement('new-solution', 'Found 1 of 2')).toBe('New solution found! Found 1 of 2');
+    expect(announcement('all-found', CLASSIC, 'Found 2 of 2')).toBe(
+      "New solution found! You've found every solution. Every line connected, pal! Found 2 of 2",
+    );
   });
 
   it('leaves the count out when it did not change', () => {
-    expect(announcement('not-solved', 'Found 0 of 2')).toBe('Not solved yet.');
+    expect(announcement('not-solved', CLASSIC, 'Found 0 of 2')).toBe('Not solved yet. Wrong number, pal!');
   });
 
   it("says the result, then the operator's line, then the count (spec-004 AC-16)", () => {
-    expect(announcement('new-solution', 'Found 1 of 2', "You're connected! Keep 'em coming, pal!")).toBe(
+    expect(announcement('new-solution', CLASSIC, 'Found 1 of 2')).toBe(
       "New solution found! You're connected! Keep 'em coming, pal! Found 1 of 2",
     );
   });

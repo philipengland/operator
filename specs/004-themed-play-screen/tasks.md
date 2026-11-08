@@ -171,7 +171,7 @@ off; released by a one-line pull request.
 
 ## Phase 5: Polish and closing spec-004
 
-- [ ] T048 Remove the `voice` flag in a small pull request once released and signed off (constitution VII): `src/app/features.ts`, `src/app/screen.ts`, `src/app/labels.ts`, `playwright.config.ts`. If no flags remain, keep `features.ts` and the flagged projects only if another story is about to use them; otherwise record the choice in the pull request.
+- [X] T048 Remove the `voice` flag in a small pull request once released and signed off (constitution VII): `src/app/features.ts`, `src/app/screen.ts`, `src/app/labels.ts`, `playwright.config.ts`. If no flags remain, keep `features.ts` and the flagged projects only if another story is about to use them; otherwise record the choice in the pull request.
 - [ ] T049 Run [quickstart.md](quickstart.md) sections 1 to 3 in full. The owner signs off the finished screen on a real phone (SC-403) and runs the playtests (SC-401, SC-402); record both in `specs/004-themed-play-screen/tdd-log.md`.
 - [ ] T050 `npm run test-results -- 004-themed-play-screen`: `specs/004-themed-play-screen/test-results.md` must end `OVERALL status: PASS` with AC-1 to AC-20 covered; spec-001, spec-002 and spec-003 still pass (SC-404). Update `AGENTS.md` to match (`view.ts` gone; the game's screen). Commit in the same small pull request.
 
