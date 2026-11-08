@@ -75,6 +75,7 @@ test.describe('[spec-004 AC-3] a line that reaches its target', PHONES, () => {
     await game.open();
 
     await game.fillCell('top-right', 2);
+    await game.tapCell('bottom-left');
 
     await game.expectPillShows('Row 1', '+ 8 ✓');
     await phone.expectCellLook('top-right', { digit: 'accent', shadow: 'accent' });
