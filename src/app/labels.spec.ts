@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
 import { MIDNIGHT_BLUE } from '../ui/foundations/themes';
-import { announcement, bubbleLine, cellName, lineName, messageText, workingName, workingText } from './labels';
+import { announcement, bubbleLine, cellName, lineName, messageText, workingName, workingSlot, workingText } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -144,5 +144,16 @@ describe('announcement', () => {
 
   it('leaves the count out when it did not change', () => {
     expect(announcement('not-solved', 'Found 0 of 2')).toBe('Not solved yet.');
+  });
+});
+
+describe('workingSlot', () => {
+  it.each([
+    ['nothing to work out yet', ROW_1_ON_OPENING, { result: '= ?', mark: 'none' }],
+    ['a line reaching its target (spec-004 AC-3)', ROW_1_WITH_TOP_RIGHT_2, { result: '= 8', mark: 'tick' }],
+    ['a result below zero', ROW_2_GOING_BELOW_ZERO, { result: '= −1', mark: 'none' }],
+    ['a division that is not whole', COLUMN_1_NOT_WHOLE, { result: '', mark: 'cross' }],
+  ] as const)('shows %s', (_case, working, slot) => {
+    expect(workingSlot(working)).toEqual(slot);
   });
 });
