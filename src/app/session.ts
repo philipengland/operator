@@ -12,6 +12,7 @@ import {
   nextOperator,
   workedExample,
   type CellPosition,
+  type Digit,
   type Entry,
   type LinePosition,
   type LineWorking,
@@ -27,12 +28,16 @@ export interface SessionState {
   readonly entry: Entry;
   readonly found: ReadonlySet<SolutionKey>;
   readonly message: MessageKind | null;
+  /** The cell the keypad sets; none until the player taps one (spec-004 FR-404). */
+  readonly selected: CellPosition | null;
 }
 
 export type SessionAction =
   | { readonly type: 'tapCell'; readonly row: number; readonly column: number }
   | { readonly type: 'tapOperator'; readonly line: LinePosition }
-  | { readonly type: 'submit' };
+  | { readonly type: 'submit' }
+  | { readonly type: 'key'; readonly digit: Digit }
+  | { readonly type: 'clear' };
 
 export function startSession(): SessionState {
   return {
@@ -40,6 +45,7 @@ export function startSession(): SessionState {
     entry: emptyEntry(workedExample),
     found: new Set(),
     message: null,
+    selected: null,
   };
 }
 
@@ -65,6 +71,9 @@ export function applyAction(state: SessionState, action: SessionAction): Session
       return tapOperator(state, action.line);
     case 'submit':
       return submit(state);
+    case 'key':
+    case 'clear':
+      return state;
   }
 }
 
@@ -77,7 +86,7 @@ function tapCell(state: SessionState, tapped: CellPosition): SessionState {
       row === tapped.row && column === tapped.column ? nextCellValue(value) : value,
     ),
   );
-  return { ...state, entry: { ...state.entry, cells }, message: null };
+  return { ...state, entry: { ...state.entry, cells }, message: null, selected: { row: tapped.row, column: tapped.column } };
 }
 
 function tapOperator(state: SessionState, tapped: LinePosition): SessionState {

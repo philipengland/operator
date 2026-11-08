@@ -9,7 +9,17 @@ describe('startSession', () => {
       entry: emptyEntry(workedExample),
       found: new Set(),
       message: null,
+      selected: null,
     });
+  });
+});
+
+describe('selecting a cell (spec-004 AC-8)', () => {
+  it('selects a changeable cell when it is tapped, and steps its value as before', () => {
+    const state = applyAction(startSession(), { type: 'tapCell', row: 0, column: 1 });
+
+    expect(state.selected).toEqual({ row: 0, column: 1 });
+    expect(state.entry.cells[0]?.[1]).toBe(1);
   });
 });
 

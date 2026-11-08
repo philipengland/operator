@@ -121,7 +121,7 @@ spec-002 and spec-003 criterion passes; `themed-look.acceptance-spec.ts` passes 
 
 - [X] T024 [US1] Confirm the Android speed-budget scenario (SC-405) still passes, and both builds are under the 30 KB budget. Copy [contracts/play-screen.md](contracts/play-screen.md) to `docs/contracts/play-screen.md`. `AGENTS.md`: the game uses the library, `src/app/` layout, the flags and their test projects, with why.
 - [X] T025 [US1] Run [quickstart.md](quickstart.md) sections 1 and 2 (steps for this release). `npm run test-results -- 004-themed-play-screen` reads BLOCKED, as expected until the last story, with AC-1 to AC-7 passing. Commit it.
-- [ ] T026 [US1] Push and open "spec-004 part 2 of 4: the new look". **Before merging, the owner reviews the real build on a phone** (`npm run build && npx vite preview --host`, the printed `Network:` address, and a checklist for this story); changes are made on the branch until the owner is happy (SC-403, first visible release). Record the sign-off in `tdd-log.md`. The owner merges with a merge commit; **players get the new screen**.
+- [X] T026 [US1] Push and open "spec-004 part 2 of 4: the new look". **Before merging, the owner reviews the real build on a phone** (`npm run build && npx vite preview --host`, the printed `Network:` address, and a checklist for this story); changes are made on the branch until the owner is happy (SC-403, first visible release). Record the sign-off in `tdd-log.md`. The owner merges with a merge commit; **players get the new screen**.
 
 ---
 
@@ -134,7 +134,7 @@ request.
 tapping cells still steps them; `keypad.acceptance-spec.ts` passes on the flagged phones and the
 engine driver.
 
-- [ ] T027 [US2] Create branch `004-themed-play-screen-part-3` from `main` after part 2 merges. Bring over `test/acceptance/play/keypad.acceptance-spec.ts` unchanged from `f4da139` (confirm by blob).
+- [X] T027 [US2] Create branch `004-themed-play-screen-part-3` from `main` after part 2 merges. Bring over `test/acceptance/play/keypad.acceptance-spec.ts` unchanged from `f4da139` (confirm by blob).
 - [ ] T028 [US2] AC-8 RED: drivers' `tapKey`, `selectedCell`, `keypad` (UI: `aria-pressed`, the group "Keypad", `aria-disabled`; engine: from the session and `playScreenProps`). Expected failure: `the selected cell — Expected: "top-right", Received: null`.
 - [ ] T029 [US2] AC-8 TDD in `src/app/session.spec.ts`: the session gains `selected`, null at first; tapping a changeable cell selects it and steps it (FR-404); `playScreenProps` shows the selection and the keypad only with `features.keypad`, tested with the flag on and off in `src/app/screen.spec.ts`. GREEN on the flagged phones and the engine driver; checkpoint.
 - [ ] T030 [US2] AC-9 TDD in `session.spec.ts`: `key(digit)` sets the selected cell and clears the message; the working follows. GREEN; checkpoint.

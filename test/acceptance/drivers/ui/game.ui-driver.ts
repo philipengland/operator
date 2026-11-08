@@ -2,7 +2,7 @@
 // role and accessible name (docs/contracts/play-screen.md).
 
 import type { Locator, Page } from '@playwright/test';
-import type { Cell, Line } from '../../dsl/vocabulary';
+import type { KeypadKey, Cell, Line } from '../../dsl/vocabulary';
 import { scanForAccessibilityProblems } from '../../support/axe';
 import { DEFAULT_VIEW } from '../default-view';
 import type { GameDriver, KeypadKeyView, GameView, WorkingView } from '../game.driver';
@@ -67,14 +67,33 @@ export class UiGameDriver implements GameDriver {
     };
   }
 
-  async tapKey(): Promise<void> {}
-
-  async selectedCell(): Promise<Cell | null> {
-    return null;
+  async tapKey(key: KeypadKey): Promise<void> {
+    await tapLikeAFinger(this.keypadGroup().getByRole('button', { name: key === 'Oops' ? /^Oops/ : String(key), exact: key !== 'Oops' }));
   }
 
+  /** The cell a screen reader hears as selected, if any. */
+  async selectedCell(): Promise<Cell | null> {
+    const selected = this.puzzle().getByRole('button', { pressed: true });
+    if ((await selected.count()) !== 1) {
+      return null;
+    }
+    const name = await accessibleName(selected);
+    return CELLS.find((cell) => cellNamePattern(cell).test(name)) ?? null;
+  }
+
+  /** The keys, row by row, by where they sit. */
   async keypad(): Promise<readonly (readonly KeypadKeyView[])[]> {
-    return [];
+    const keys = await this.keypadGroup()
+      .getByRole('button')
+      .evaluateAll((buttons) =>
+        buttons.map((button) => ({
+          name: button.getAttribute('aria-label') ?? button.textContent ?? '',
+          isAvailable: button.getAttribute('aria-disabled') !== 'true',
+          top: Math.round(button.getBoundingClientRect().top),
+        })),
+      );
+    const tops = [...new Set(keys.map((key) => key.top))].sort((first, second) => first - second);
+    return tops.map((top) => keys.filter((key) => key.top === top).map(({ name, isAvailable }) => ({ name, isAvailable })));
   }
 
   /** The speech bubble: its title, and the line after it. */
@@ -139,6 +158,10 @@ export class UiGameDriver implements GameDriver {
         }
       }).observe(region, { childList: true, characterData: true, subtree: true });
     });
+  }
+
+  private keypadGroup(): Locator {
+    return this.page.getByRole('group', { name: 'Keypad', exact: true });
   }
 
   private puzzle(): Locator {

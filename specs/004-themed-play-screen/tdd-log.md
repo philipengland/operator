@@ -202,3 +202,18 @@ Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at t
   - An image requested on each tap failed `network requests after opening — Received: 15`.
 - **No cycles**: no new behaviour was needed.
 - **Acceptance GREEN** (T023): AC-7, 2 runs passed.
+
+## Release 2: the new look is live (T026)
+
+- **Merged** as #20 (`9abfc6e`); deployed, and the public site serves that commit.
+- **CI found what a local run could not**: WebKit on the slower CI machine requested the two font
+  files just after the `load` event, so spec-001 AC-18's "no network requests" counted them. The
+  driver now treats the game's typefaces as part of opening (`65ce023`); any other request counts
+  (proved: an image on each tap failed with 15). `<link rel="preload">` was tried and reverted:
+  WebKit then fetched each font twice.
+- **One-off, not acted on**: in one local full run, spec-001 AC-3 on the iPhone timed out waiting for
+  WebKit to report the cell stable; the page was correct. 30 of 30 repeats passed, as did CI.
+- **Owner's review of the real build on a phone**: 2026-11-08, "I'm happy" (SC-403, first visible
+  release).
+
+## User Story 2: the keypad
