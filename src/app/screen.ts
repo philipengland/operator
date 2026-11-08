@@ -59,8 +59,9 @@ function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPill
 }
 
 export function playScreenProps(state: SessionState, theme: Theme, features: Features): PlayScreenProps {
+  const line = bubbleLine(state.message, theme, features.voice);
   return {
-    header: { title: TITLE, message: bubbleLine(state.message, theme) },
+    header: { title: TITLE, message: line },
     counter: { found: state.found.size, total: state.puzzle.solutionCount },
     grid: {
       columnPills: lines(state, 'column').map((working) => pill(state, working)),
@@ -73,6 +74,6 @@ export function playScreenProps(state: SessionState, theme: Theme, features: Fea
     mainButtonLabel: theme.buttonLabel,
     isKeypadShown: features.keypad,
     keysAvailable: state.selected !== null,
-    announcement: announcement(state.message, counterText(state)),
+    announcement: announcement(state.message, counterText(state), features.voice ? line : ''),
   };
 }

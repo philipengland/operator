@@ -96,4 +96,13 @@ describe('playScreenProps', () => {
     expect(playScreenProps(startSession(), CLASSIC, withKeypad).keysAvailable).toBe(false);
     expect(playScreenProps(applyAction(startSession(), TOP_RIGHT), CLASSIC, withKeypad).keysAvailable).toBe(true);
   });
+
+  it("shows and announces the operator's line with the voice on (spec-004 AC-16)", () => {
+    const session = { ...startSession(), found: new Set(['a'] as never[]), message: 'new-solution' as const };
+
+    const props = playScreenProps(session, CLASSIC, { ...NO_FLAGS, voice: true });
+
+    expect(props.header.message).toBe("You're connected! Keep 'em coming, pal!");
+    expect(props.announcement).toBe("New solution found! You're connected! Keep 'em coming, pal! Found 1 of 2");
+  });
 });
