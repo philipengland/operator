@@ -132,3 +132,33 @@ unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
 - **Reported**: AC-4 and AC-5 now pass as well, ahead of their own checkpoints: the swap and these
   cycles brought their behaviour. Each is proven at its own checkpoint.
 - **Slice refactor**: none needed.
+
+## Fix before AC-4: nothing on the grid moves
+
+Noticed at AC-3's checkpoint: the cells shifted when a tick appeared. Fixed at the owner's request
+(`ba533f8`), layout only:
+
+- The tick keeps its space in every pill and working (`showKeepingItsPlace`).
+- The workings column has room for "= 13 ✓" from the start.
+- A cell fills its row, and the digit fits the smallest cell (`--text-cell`), so a cell that gets a
+  digit does not change height.
+- At 320 px a pill with its tick was wider than its column, which squashed the tick on dashed
+  pills. Pills get smaller text, tick and padding there (`--text-pill`, `--size-pill-tick`,
+  `--space-pill`), and the tick cannot shrink.
+- Measured across every digit and operator on both screen sizes: the cells move by at most 1.5 px
+  (the operators differ slightly in width), against about 7 px and a change of size before.
+- No scenario covers this; it was measured directly. Spec-003's and spec-004's scenarios still pass.
+
+## AC-4: the first solution
+
+- **Acceptance test**: `themed-look.acceptance-spec.ts` — `[spec-004 AC-4]`, one scenario on both phones.
+- **Acceptance RED**: **reported — passes at RED** (⚠️). The behaviour came in before AC-1's swap,
+  because spec-001's locked scenarios needed the status (T016's cycles).
+- **Unit test**: `announcement` says the result, then the count (spec-004 AC-4), from `9bdbf9a`.
+- **Driver proven** by reverted breaks (Pixel 5):
+  - No count in the announcement failed `what is announced ends "Found 1 of 2": "New solution found!"`.
+  - The counter stuck at 0 failed `the counter shows — Received: "Solutions found 0 of 2"`.
+  - A second write of the announcement, one task later, failed `announcements to screen-reader
+    users`. A first attempt, two writes in the same task, did not fail: they are one change, and a
+    screen reader hears one. It proved nothing and is recorded here.
+- **Acceptance GREEN** (T020): AC-4, 2 runs passed. Screen checked by eye.
