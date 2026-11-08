@@ -3,7 +3,6 @@
 
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import type { Theme } from '../ui/foundations/themes';
-import type { Features } from './features';
 import { announcement, bubbleLine, cellTitle, pillName, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
@@ -58,10 +57,9 @@ function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPill
   };
 }
 
-export function playScreenProps(state: SessionState, theme: Theme, features: Features): PlayScreenProps {
-  const line = bubbleLine(state.message, theme, features.voice);
+export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {
   return {
-    header: { title: TITLE, message: line },
+    header: { title: TITLE, message: bubbleLine(state.message, theme) },
     counter: { found: state.found.size, total: state.puzzle.solutionCount },
     grid: {
       columnPills: lines(state, 'column').map((working) => pill(state, working)),
@@ -73,6 +71,6 @@ export function playScreenProps(state: SessionState, theme: Theme, features: Fea
     },
     mainButtonLabel: theme.buttonLabel,
     keysAvailable: state.selected !== null,
-    announcement: announcement(state.message, counterText(state), features.voice ? line : ''),
+    announcement: announcement(state.message, theme, counterText(state)),
   };
 }

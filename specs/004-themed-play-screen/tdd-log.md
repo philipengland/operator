@@ -377,3 +377,12 @@ of 667 px and 526 of 568 px. No requirement covers this; it is the owner's call.
   (2026-11-08). No requirement covers it; it can be its own small change later.
 - `voice` set true in `src/app/features.ts`. `operator-voice.acceptance-spec.ts` now runs on the
   game's own phones.
+
+## Removing the voice flag (T048)
+
+- The owner confirmed on 2026-11-08 that nothing needs changing; the voice is released (#24).
+- The off path is gone: `bubbleLine` and `announcement` always use the operator's line, and
+  `playScreenProps` takes no features. Unit tests of the plain wording went with it.
+- **No flags remain, and the mechanism stays**: constitution VII puts user stories behind flags and
+  spec-005 is next. `featuresForBuild` now turns on whatever names it is given, so its tests still
+  mean something with no flags in the product.

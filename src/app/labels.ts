@@ -131,18 +131,15 @@ function operatorLine(kind: MessageKind, { address, signOff }: Theme): string {
 }
 
 /** The line in the speech bubble (spec-004 FR-408). */
-export function bubbleLine(kind: MessageKind | null, theme: Theme, isVoiceOn = false): string {
-  if (kind === null) {
-    return `Fill the grid, ${theme.address}.`;
-  }
-  return isVoiceOn ? operatorLine(kind, theme) : MESSAGES[kind];
+export function bubbleLine(kind: MessageKind | null, theme: Theme): string {
+  return kind === null ? `Fill the grid, ${theme.address}.` : operatorLine(kind, theme);
 }
 
 /** What a screen reader is told after a check; empty when there is no result (spec-004 FR-409, FR-413). */
-export function announcement(kind: MessageKind | null, counter: string, operatorSays = ''): string {
+export function announcement(kind: MessageKind | null, theme: Theme, counter: string): string {
   if (kind === null) {
     return '';
   }
   const changedCount = kind === 'new-solution' || kind === 'all-found' ? counter : '';
-  return [MESSAGES[kind], operatorSays, changedCount].filter((part) => part !== '').join(' ');
+  return [MESSAGES[kind], operatorLine(kind, theme), changedCount].filter((part) => part !== '').join(' ');
 }
