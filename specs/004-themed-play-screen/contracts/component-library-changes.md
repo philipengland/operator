@@ -6,9 +6,9 @@ scenario still passes.
 
 | Component | Tier | Addition | Accessible behaviour |
 | --- | --- | --- | --- |
-| Button | simple | optional trailing decorative `icon` (`tick`), drawn after the label | none: the icon is hidden; the name is unchanged |
+| Button | simple | `createButton(props, onPress, after)`: nodes shown after the label, as Badge has. Simple components use only the foundations, so the combined component supplies the Icon. Unavailable keys are flat with a thin outline, solid so the page's dots never show through | nodes passed in are decorative; the name is unchanged |
 | Target pill | combined | an open pill whose line reaches its target shows the tick (Button's `icon`) | name ends ", target reached", as a shown pill's |
-| Keypad | combined | prop `keysAvailable: boolean` (default true); `update` changes it | while false, every key and Oops is `aria-disabled="true"`, still focusable, and calls nothing |
+| Keypad | combined | `createKeypad(onKey, keysAvailable = true)`; `update(keysAvailable)` changes it | while false, every key and Oops is `aria-disabled="true"`, still focusable, and calls nothing |
 | Puzzle grid | combined | actions `onCell(row, column)` and `onPill(axis, index)` | taps on a given cell or a shown pill are not sent |
 | Play screen | screen | props `isKeypadShown` (default true), `keysAvailable` and `announcement`; actions `onCell`, `onPill` passed to the grid | a visually hidden polite `status` holding `announcement`, written only when it changes; while it is not empty, the bubble's line is hidden from screen readers |
 

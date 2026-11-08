@@ -40,7 +40,7 @@ of their own (spec-003 AC-7).
 
 | Addition | Component | What changes |
 | --- | --- | --- |
-| A tick on an open pill (FR-402) | Button (simple), Target pill | Button can carry a trailing decorative Icon. The open pill passes the tick when its line reaches its target. Heard as before: "…, target reached". |
+| A tick on an open pill (FR-402) | Button (simple), Target pill | Button can show nodes after its label, as Badge does. The open pill passes a tick Icon, shown when its line reaches its target. Heard as before: "…, target reached". |
 | Taps reach the game | Puzzle grid, Play screen | `onCell(row, column)` and `onPill(axis, index)` actions, alongside the existing `onKey` and `onCheck`. |
 | The keypad can be unavailable (FR-405), or left out (FR-413) | Keypad, Play screen | A `keysAvailable` prop; while false, every key and Oops is `aria-disabled="true"`, still focusable, and calls nothing. `update` switches it. The play screen's `isKeypadShown` prop leaves the keypad out while its flag is off. |
 | One announcement per check (FR-409) | Play screen | A visually hidden polite `status` region, holding `announcement` text. Written only when it changes; emptied silently. |

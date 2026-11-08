@@ -66,15 +66,15 @@ build byte-identical.
 catalogue scenario still passes.
 
 - [X] T001 Create branch `004-themed-play-screen-part-1` from `main`. Bring over `specs/004-themed-play-screen/` from `004-themed-play-screen` (documents only; no Layer 1 file joins this part). Create `specs/004-themed-play-screen/tdd-log.md`. Run the full suite as the baseline and record it.
-- [ ] T002 [P] TDD: Button gains an optional trailing decorative `icon` (`tick`) in `src/ui/simple/button.model.ts` and `src/ui/simple/button.ts`. The icon is hidden from screen readers and the name does not change.
-- [ ] T003 TDD: an open Target pill whose line reaches its target shows the tick, through Button's `icon`, in `src/ui/combined/target-pill.model.ts` and `src/ui/combined/target-pill.ts`. Add the sample "Open, line correct" in `src/catalogue/samples.ts`. Heard as before: the name ends ", target reached".
-- [ ] T004 [P] TDD: Keypad takes `keysAvailable` (default true) in `src/ui/combined/keypad.model.ts` and `src/ui/combined/keypad.ts`. While false, every key and Oops is `aria-disabled="true"`, still focusable, and calls nothing; `update` switches it. Add the sample "Unavailable" in `src/catalogue/samples.ts`.
-- [ ] T005 Puzzle grid gains the actions `onCell(row, column)` and `onPill(axis, index)` in `src/ui/combined/puzzle-grid.ts` (Grid cell and Target pill pass their taps up). A given cell and a shown pill send nothing. Wiring: exercised by the game's scenarios in Phase 2.
-- [ ] T006 Play screen gains `isKeypadShown` (default true), `keysAvailable`, `announcement` and the actions `onCell` and `onPill` in `src/ui/screens/play-screen.ts`.
+- [X] T002 [P] Button can show nodes after its label, as Badge does, in `src/ui/simple/button.ts` (a simple component may not import Icon, so Target pill supplies it). Decorative; the name does not change.
+- [X] T003 TDD: an open Target pill whose line reaches its target shows the tick, through Button's `icon`, in `src/ui/combined/target-pill.model.ts` and `src/ui/combined/target-pill.ts`. Add the sample "Open, line correct" in `src/catalogue/samples.ts`. Heard as before: the name ends ", target reached".
+- [X] T004 [P] TDD: Keypad takes `keysAvailable` (default true) in `src/ui/combined/keypad.model.ts` and `src/ui/combined/keypad.ts`. While false, every key and Oops is `aria-disabled="true"`, still focusable, and calls nothing; `update` switches it. Add the sample "Unavailable" in `src/catalogue/samples.ts`.
+- [X] T005 Puzzle grid gains the actions `onCell(row, column)` and `onPill(axis, index)` in `src/ui/combined/puzzle-grid.ts` (Grid cell and Target pill pass their taps up). A given cell and a shown pill send nothing. Wiring: exercised by the game's scenarios in Phase 2.
+- [X] T006 Play screen gains `isKeypadShown` (default true), `keysAvailable`, `announcement` and the actions `onCell` and `onPill` in `src/ui/screens/play-screen.ts`.
   - The announcement is a visually hidden `role="status"` region, written only when its text changes (`writeText` in `src/ui/component.ts`).
   - While it is not empty, the bubble's line is hidden from screen readers (research R2).
-- [ ] T007 `src/catalogue/screen-samples.ts`: "Row 1 correct" shows the greeting and "All found" shows "Every line connected, pal!" (in each theme's voice). spec-003 AC-17 must still pass: the new lines take the same number of lines in the bubble.
-- [ ] T008 `docs/contracts/component-library.md` gains the additions in [contracts/component-library-changes.md](contracts/component-library-changes.md). Full suite: every existing scenario passes, and `dist/` is byte-identical to `main`.
+- [X] T007 `src/catalogue/screen-samples.ts`: "Row 1 correct" shows the greeting and "All found" shows "Every line connected, pal!" (in each theme's voice). spec-003 AC-17 must still pass: the new lines take the same number of lines in the bubble.
+- [X] T008 `docs/contracts/component-library.md` gains the additions in [contracts/component-library-changes.md](contracts/component-library-changes.md). Full suite: every existing scenario passes, and `dist/` is byte-identical to `main`.
 - [ ] T009 Push and open "spec-004 part 1 of 4: library additions" (what, why, how tested, rollback; no change for players). The owner merges with a merge commit; it deploys with no visible change.
 
 ---

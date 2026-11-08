@@ -43,7 +43,7 @@ interface Component<Props> {
 | Component | Role | Accessible name | Notes |
 | --- | --- | --- | --- |
 | Text | none (text) | its text | `display` = Chewy; `body` = Nunito |
-| Button | `button`; `aria-pressed="true"` when selected | `label`, or `label, action` when `action` is given ("Oops, clear cell"; "Put it through!, Check"), or a whole `name` containing the label ("Top-right cell, 8") | styles: main, key, solid, dashed, cell, cell-correct |
+| Button | `button`; `aria-pressed="true"` when selected | `label`, or `label, action` when `action` is given ("Oops, clear cell"; "Put it through!, Check"), or a whole `name` containing the label ("Top-right cell, 8") | styles: main, key, solid, dashed, cell, cell-correct. `createButton(props, onPress, after)`: decorative nodes after the label, as Badge has. Unavailable key and solid buttons are flat with a thin outline |
 | Text input | `textbox` | its visible `label` (a real `<label for>`) | hint as `placeholder`; typed text in Chewy |
 | Icon | `img` when `spokenAs` is given, otherwise hidden | `spokenAs` ("target reached") | tick, cross (drawn; the ✓ or ✗ kept as visually hidden text) |
 | Surface | none | – | panel; bubble (accent shadow, 6 px tail corner); fill tile, accent or ink (ink casts an accent shadow) |
@@ -57,17 +57,17 @@ interface Component<Props> {
 | Speech bubble | Surface, Text | none; title and message read as text | title (display), message (body) |
 | Operator header | Mascot, Speech bubble | none | mascot beside bubble |
 | Solutions counter | Surface, Text, Badge, Icon | text "Found N of M" / "Found N", visible parts hidden | "Solutions found" or "All found!", count pill, tick when complete |
-| Target pill | Badge, Button, Icon | shown: text with `name`; open: `button` named `name` | "+ 8"; dashed "? 6"; tick when `reachesTarget` |
+| Target pill | Badge, Button, Icon | shown: text with `name`; open: `button` named "visible text, `name`" ("? 6, Row 2 target 6, operator not chosen") | "+ 8"; dashed "? 6"; tick when `reachesTarget`, shown or open |
 | Grid cell | Button | `button` named `name`; given → `aria-disabled`; selected → `aria-pressed="true"` | five states (data model) |
 | Line working | Text, Icon | text `name` (spec-002 contract); visible slot hidden | "= ?", "= 8 ✓", "= −3", "✗" |
 | Puzzle grid | Surface, Target pill, Grid cell, Line working, Text | `group` named "Puzzle" | pills top and left, cells, workings at far ends, helper line |
-| Keypad | Button | `group` named "Keypad"; keys named "1"–"9" and "Oops, clear cell" | two rows of five |
+| Keypad | Button | `group` named "Keypad"; keys named "1"–"9" and "Oops, clear cell"; while `keysAvailable` is false, every key is `aria-disabled="true"` | two rows of five. `createKeypad(onKey, keysAvailable = true)`; `update(keysAvailable)` |
 
 ## Screens
 
 | Screen | Built from | Layout |
 | --- | --- | --- |
-| Play screen | Operator header, Solutions counter, Puzzle grid, Keypad, Button (main) | top to bottom, inside safe areas; fits 375 × 667 and 320 × 568 without scrolling |
+| Play screen | Operator header, Solutions counter, Puzzle grid, Keypad, Button (main) | top to bottom, inside safe areas; fits 375 × 667 and 320 × 568 without scrolling. Props `isKeypadShown`, `keysAvailable`, `announcement` (a visually hidden polite `status`, written only when it changes; while not empty, the bubble's line is hidden from screen readers). Actions `onKey`, `onCheck`, `onCell(row, column)`, `onPill(axis, index)` |
 
 ## Catalogue (development only)
 
