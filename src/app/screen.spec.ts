@@ -28,4 +28,17 @@ describe('playScreenProps', () => {
     ]);
   });
 
+  it('gives the cells, the given 6 and three empty ones', () => {
+    expect(justOpened().grid.cells).toEqual([
+      [
+        { name: 'Top-left cell', digit: 6, isGiven: true, isInCorrectLine: false },
+        { name: 'Top-right cell', digit: null, isGiven: false, isInCorrectLine: false },
+      ],
+      [
+        { name: 'Bottom-left cell', digit: null, isGiven: false, isInCorrectLine: false },
+        { name: 'Bottom-right cell', digit: null, isGiven: false, isInCorrectLine: false },
+      ],
+    ]);
+  });
+
 });

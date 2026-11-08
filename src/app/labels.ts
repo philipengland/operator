@@ -39,6 +39,11 @@ const CORNER_NAMES: readonly (readonly string[])[] = [
   ['Bottom-left', 'Bottom-right'],
 ];
 
+/** Which cell this is, as a screen reader hears it first: "Top-left cell". */
+export function cellTitle(position: CellPosition): string {
+  return `${CORNER_NAMES[position.row]?.[position.column]} cell`;
+}
+
 export function cellName(puzzle: Puzzle, entry: Entry, position: CellPosition): string {
   const corner = CORNER_NAMES[position.row]?.[position.column];
   const given = puzzle.givens[position.row]?.[position.column] ?? null;

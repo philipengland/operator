@@ -4,8 +4,9 @@
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import type { Theme } from '../ui/foundations/themes';
 import type { Features } from './features';
-import { bubbleLine, pillName } from './labels';
-import { lineOperator, lineSpec, type LinePosition, type LineWorking } from '../engine';
+import { bubbleLine, cellTitle, pillName } from './labels';
+import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
+import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { TargetPillProps } from '../ui/combined/target-pill';
 import { lineWorkings, type SessionState } from './session';
 
@@ -13,6 +14,16 @@ const TITLE = 'Hello, Operator!';
 
 function lines(state: SessionState, axis: LinePosition['axis']): readonly LineWorking[] {
   return lineWorkings(state).filter((working) => working.line.axis === axis);
+}
+
+function cell({ puzzle, entry }: SessionState, position: CellPosition): GridCellProps {
+  const given = puzzle.givens[position.row]?.[position.column] ?? null;
+  return {
+    name: cellTitle(position),
+    digit: given ?? entry.cells[position.row]?.[position.column] ?? null,
+    isGiven: given !== null,
+    isInCorrectLine: false,
+  };
 }
 
 function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPillProps {
@@ -32,7 +43,7 @@ export function playScreenProps(state: SessionState, theme: Theme, _features: Fe
     grid: {
       columnPills: lines(state, 'column').map((working) => pill(state, working)),
       rowPills: lines(state, 'row').map((working) => pill(state, working)),
-      cells: [],
+      cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
       rowWorkings: [],
       columnWorkings: [],
       helper: '',
