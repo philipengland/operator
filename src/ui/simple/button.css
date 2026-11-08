@@ -57,6 +57,7 @@
 /* Something the player can change: a dashed accent outline and no fill. */
 .button--dashed {
   min-height: var(--size-dashed);
+  gap: 6px;
   border-style: dashed;
   border-color: var(--accent);
   border-radius: var(--radius-pill);

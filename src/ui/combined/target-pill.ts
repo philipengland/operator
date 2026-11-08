@@ -32,10 +32,12 @@ function shownPill(props: TargetPillProps): Component<TargetPillProps> {
 }
 
 function openPill(props: TargetPillProps, onChoose?: () => void): Component<TargetPillProps> {
-  const button = createButton({ label: '', style: 'dashed' }, onChoose);
+  const tick = createIcon({ icon: 'tick' });
+  const button = createButton({ label: '', style: 'dashed' }, onChoose, [tick.element]);
   const update = (next: TargetPillProps): void => {
     const model = targetPillModel(next);
     button.update({ label: model.text, style: 'dashed', action: model.heardAs });
+    tick.element.hidden = !model.hasTick;
   };
   update(props);
   return { element: button.element, update };

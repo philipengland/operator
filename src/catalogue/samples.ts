@@ -74,6 +74,10 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Divide', render: () => createTargetPill({ target: 2, operator: '÷', isOpen: false, name: 'Column 2 target 2, divide' }).element },
     { label: 'Open', render: () => createTargetPill({ target: 12, operator: null, isOpen: true, name: 'Row 2 target 12, operator not chosen' }).element },
     {
+      label: 'Open, line correct',
+      render: () => createTargetPill({ target: 6, operator: '+', isOpen: true, name: 'Row 2 target 6, plus', reachesTarget: true }).element,
+    },
+    {
       label: 'Line correct',
       render: () => createTargetPill({ target: 9, operator: '+', isOpen: false, name: 'Row 1 target 9, plus', reachesTarget: true }).element,
     },

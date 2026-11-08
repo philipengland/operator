@@ -10,9 +10,15 @@ export { buttonModel, type ButtonProps, type ButtonStyle } from './button.model'
 /** Simple components are built from the foundations only. */
 export const builtFrom: readonly string[] = [];
 
-export function createButton(props: ButtonProps, onPress?: () => void): Component<ButtonProps> {
+/** A button; `after` are nodes shown after its label, such as a decorative tick (as Badge). */
+export function createButton(props: ButtonProps, onPress?: () => void, after: readonly Node[] = []): Component<ButtonProps> {
   const element = document.createElement('button');
   element.type = 'button';
+  // A cell's caret relies on an empty button (:empty), so the label only gets its own element when needed.
+  const label = after.length > 0 ? document.createElement('span') : element;
+  if (label !== element) {
+    element.append(label, ...after);
+  }
   let current = props;
   element.addEventListener('click', () => {
     if (!buttonModel(current).isUnavailable) {
@@ -21,15 +27,15 @@ export function createButton(props: ButtonProps, onPress?: () => void): Componen
   });
   const update = (next: ButtonProps): void => {
     current = next;
-    render(element, buttonModel(next));
+    render(element, label, buttonModel(next));
   };
   update(props);
   return { element, update };
 }
 
-function render(element: HTMLButtonElement, model: ReturnType<typeof buttonModel>): void {
+function render(element: HTMLButtonElement, label: HTMLElement, model: ReturnType<typeof buttonModel>): void {
   element.className = model.classes.join(' ');
-  writeText(element, model.label);
+  writeText(label, model.label);
   // The visible label is always the start of the name (WCAG 2.5.3, label in name).
   setAttributeOrRemove(element, 'aria-label', model.name === model.label ? null : model.name);
   setAttributeOrRemove(element, 'aria-disabled', model.isUnavailable ? 'true' : null);
