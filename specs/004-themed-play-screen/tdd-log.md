@@ -386,3 +386,14 @@ of 667 px and 526 of 568 px. No requirement covers this; it is the owner's call.
 - **No flags remain, and the mechanism stays**: constitution VII puts user stories behind flags and
   spec-005 is next. `featuresForBuild` now turns on whatever names it is given, so its tests still
   mean something with no flags in the product.
+
+## Final evidence (T049, T050)
+
+- **Quickstart section 1** ran in full on `03749dd` (`main`, with every story released and every
+  flag removed): `npm ci`, exceptions, lint, typecheck, `npm test`, build and every acceptance suite
+  passed. `test-results.md` ends `OVERALL status: PASS`, covering AC-1 to AC-20.
+- **Still with the owner, not yet done** (T049 stays open):
+  - the final side-by-side sign-off on a real phone, and the screen-reader checks (SC-403,
+    quickstart section 3);
+  - five hallway playtests (SC-401, SC-402, quickstart section 4).
+  They are recorded here when they are done, and do not hold up spec-005.

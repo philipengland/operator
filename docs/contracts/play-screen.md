@@ -21,8 +21,7 @@ the structure and the names' positional part are the contract.
 
 ## Elements
 
-Top to bottom: header, counter, puzzle, keypad, main button (spec-003 FR-320). The keypad is
-present only once the keypad is released (flag `keypad`, spec-004 FR-413, FR-414).
+Top to bottom: header, counter, puzzle, keypad, main button (spec-003 FR-320).
 
 | Element | Role | Accessible name (pattern) | Behaviour |
 | --- | --- | --- | --- |
@@ -47,9 +46,8 @@ Cells are named top-left, top-right, bottom-left and bottom-right, as in spec-00
 ## Messages
 
 What the bubble shows, and what the status announces after a check (spec-004 Messages table).
-The announcement begins with spec-001's message word for word, so its meaning is unchanged.
-Until the voice is released (flag `voice`), the bubble shows that message and the status
-announces it, followed by the count when it changed:
+The announcement begins with spec-001's message word for word, so its meaning is unchanged,
+and ends with the count when it changed:
 
 | Result | Bubble | Status announces |
 | --- | --- | --- |
