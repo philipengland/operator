@@ -3,6 +3,7 @@
 
 import {
   lineOperator,
+  lineSpec,
   type CellPosition,
   type Entry,
   type LineOutcome,
@@ -50,6 +51,13 @@ export function cellName(puzzle: Puzzle, entry: Entry, position: CellPosition): 
 
 export function lineName(line: LinePosition): string {
   return `${line.axis === 'row' ? 'Row' : 'Column'} ${line.index + 1}`;
+}
+
+/** A target pill's name: the line, its target and its operator (spec-004 contract). */
+export function pillName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {
+  const operator = lineOperator(puzzle, entry, line);
+  const heard = operator === null ? 'operator not chosen' : OPERATOR_WORDS[operator];
+  return `${lineName(line)} target ${lineSpec(puzzle, line)?.target}, ${heard}`;
 }
 
 export function operatorName(puzzle: Puzzle, entry: Entry, line: LinePosition): string {

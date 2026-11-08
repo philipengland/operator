@@ -15,4 +15,17 @@ describe('playScreenProps', () => {
     expect(props.mainButtonLabel).toBe('Put it through!');
   });
 
+  it('gives each line a pill: shown operators, and open ones not yet chosen', () => {
+    const { columnPills, rowPills } = justOpened().grid;
+
+    expect(rowPills).toEqual([
+      { target: 8, operator: '+', isOpen: false, name: 'Row 1 target 8, plus', reachesTarget: false },
+      { target: 6, operator: null, isOpen: true, name: 'Row 2 target 6, operator not chosen', reachesTarget: false },
+    ]);
+    expect(columnPills).toEqual([
+      { target: 3, operator: null, isOpen: true, name: 'Column 1 target 3, operator not chosen', reachesTarget: false },
+      { target: 6, operator: '×', isOpen: false, name: 'Column 2 target 6, times', reachesTarget: false },
+    ]);
+  });
+
 });
