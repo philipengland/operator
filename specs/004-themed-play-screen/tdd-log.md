@@ -113,3 +113,22 @@ unchanged (`index-BUmz0kWH.js`, `index-CT2KBeTK.css`).
 - **No cycles**: no new behaviour was needed.
 - **Acceptance GREEN** (T018): AC-2, 2 runs passed. No product code changed, so AC-1's full-suite
   numbers stand.
+
+## AC-3: a line that reaches its target
+
+- **Acceptance test**: `themed-look.acceptance-spec.ts` — `[spec-004 AC-3]`, one scenario on both phones.
+- **Acceptance RED** (both phones): `Row 1 pill shows — Expected: "+ 8 ✓", Received: "+ 8"`.
+- **Cycle 1** (`12d815c`): a line that reaches its target ticks its pill, and no other. RED on its
+  assertion (`reachesTarget` was always false). GREEN: `reachesTarget` from the line's outcome.
+- **Cycle 2** (`21e66a3`): the player's digits in a correct line take its look; the given 6 does not
+  (FR-402 says the player's own digits). RED on its assertion.
+- **Unit test** (`eecb367`): each working's slot and mark. **Reported — passed on its first run**:
+  `workingSlot` came through the swap without a direct test. Proven by a reverted break: dropping
+  the tick failed `expected { result: '= 8', mark: 'none' } to deeply equal { …, mark: 'tick' }`.
+- **Acceptance GREEN** (T019): AC-3, 2 runs passed. Screen checked by eye: tick on "+ 8", an accent 2
+  with an accent shadow, "= 8 ✓".
+- **Full suite**: 266 unit tests (lines 99.09%, branches 93.25%); engine 36 passed; phones 220
+  passed, 2 failed (AC-7, not started), and the speed check waits behind them.
+- **Reported**: AC-4 and AC-5 now pass as well, ahead of their own checkpoints: the swap and these
+  cycles brought their behaviour. Each is proven at its own checkpoint.
+- **Slice refactor**: none needed.
