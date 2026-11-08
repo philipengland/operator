@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
-import { cellName, lineName, messageText, operatorName, resultText, workingName, workingText } from './labels';
+import { MIDNIGHT_BLUE } from '../ui/foundations/themes';
+import { bubbleLine, cellName, lineName, messageText, operatorName, resultText, workingName, workingText } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -165,5 +166,11 @@ describe('messageText', () => {
 
   it('asks for every cell and operator to be filled when the grid has a gap', () => {
     expect(messageText('incomplete')).toBe('Fill every cell and choose every operator before checking.');
+  });
+});
+
+describe('bubbleLine', () => {
+  it("greets the player in the theme's voice while there is no result", () => {
+    expect(bubbleLine(null, MIDNIGHT_BLUE)).toBe('Fill the grid, chief.');
   });
 });

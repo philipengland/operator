@@ -11,6 +11,7 @@ import {
   type Operator,
   type Puzzle,
 } from '../engine';
+import type { Theme } from '../ui/foundations/themes';
 import type { MessageKind } from './session';
 
 const OPERATOR_WORDS: Readonly<Record<Operator, string>> = {
@@ -114,4 +115,9 @@ const MESSAGES: Readonly<Record<MessageKind, string>> = {
 /** What the game says after Check (FR-014). */
 export function messageText(kind: MessageKind): string {
   return MESSAGES[kind];
+}
+
+/** The line in the speech bubble (spec-004 FR-408). */
+export function bubbleLine(_kind: MessageKind | null, { address }: Theme): string {
+  return `Fill the grid, ${address}.`;
 }
