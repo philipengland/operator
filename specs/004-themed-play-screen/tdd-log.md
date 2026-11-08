@@ -308,3 +308,64 @@ change on merging. The game's own phone projects pass with the flag off.
   Received: "tile"`. With the keypad live, the cell just tapped stays selected, and the selected
   look wins, as the spec says. Three options were put to the owner, who approved rewording the
   locked scenario: one added step, tapping another cell first (recorded in `acceptance.md`).
+
+# User Story 3: the voice (part 4)
+
+Scenarios: `operator-voice.acceptance-spec.ts` brought over unchanged from `f4da139` (blob
+`cd3acfb` on both sides). They run on `iphone-flagged` and `android-flagged` until the voice is
+released.
+
+## AC-15: the greeting
+
+- **Reported — passes at RED** (⚠️): the greeting and the silent status came with User Story 1.
+- **Proven** by two reverted breaks: the greeting placed in the status failed `what is announced —
+  Expected: "", Received: "Fill the grid, pal."`; a greeting with no address failed `the speech
+  bubble`. Both on both phones.
+- **GREEN** (T041). No production code.
+
+## AC-16: the result, in the operator's voice
+
+- **Acceptance RED** on the flags-on phones (8 failed): `the speech bubble` showed spec-001's
+  message, not the operator's line.
+- **Cycle** (`8c4e93d`): `bubbleLine` with the voice on gives each line of the Messages table,
+  with the theme's address and sign-off. RED: `expected 'New solution found!' to be "You're
+  connected! Keep 'em coming, …"`.
+- **Cycle** (`58be893`): what is heard is spec-001's message, the operator's line, then the count
+  when it changed. RED: `expected 'New solution found! Found 1 of 2' to be 'New solution found!
+  You're connected…'`.
+- **Cycle** (`8ea0af0`): `playScreenProps` uses both when the voice is on. RED: `expected 'New
+  solution found!' to be "You're connected!…"`.
+- **Refactor** (`c2fbbdc`): the keypad flag removed (T040), once released and signed off. It
+  waited for the cycle above: without the voice wired in, `features` was unused and lint failed.
+- **Acceptance GREEN** on both phones (T042).
+
+## AC-17: a grid that is not a solution
+
+- **Reported — passes at RED** (⚠️), from AC-16. Proven by reverted breaks: the plain message in
+  the bubble failed `the speech bubble`; spec-001's words dropped failed `what is announced —
+  Expected: "Not solved yet. Wrong number, pal!", Received: "Wrong number, pal!"`. **GREEN** (T043).
+
+## AC-18: the message goes once the grid changes
+
+- **Reported — passes at RED** (⚠️): a tap already cleared the message. Proven by reverted breaks: a
+  tap leaving the message failed `the speech bubble`; a status that keeps speaking failed `what is
+  announced — Expected: "", Received: "Not solved yet. Fill the grid, pal."`. **GREEN** (T044).
+
+## AC-19: another theme's words
+
+- **Unit test** (`ad61153`). **Reported — passed on its first run**, from AC-16's use of the theme.
+  Proven by reverted breaks: the sign-off fixed to Classic failed `expected "You're connected! Keep
+  'em coming, …" to be "You're connected! Next, please, chie…"`; the address fixed to Classic failed
+  `expected "You're connected! Next, please, pal!" to be "…chie…"`. **GREEN** (T045).
+
+## Flag off (T046)
+
+The `npm run build` game shows "Fill every cell and choose every operator before checking." after
+Check on an empty grid, so players see no change on merging.
+
+**For the owner's phone review**: the voice's lines take one or two lines in the bubble, so the
+grid moves down when the line wraps: top of the grid 246 px (greeting) and 268 px (longest line)
+at 375 × 667; 212 px and 223 px at 320 × 568. Nothing leaves the screen: the main button ends at 639
+of 667 px and 526 of 568 px. No requirement covers this; it is the owner's call.
+
+- **Slice refactor**: none needed beyond the flag removal.
