@@ -1,6 +1,7 @@
 // Layer 3 — the accessible names on the play screen (docs/contracts/play-screen.md), and how to
 // read the scenarios' values back out of them.
 
+import type { Locator } from '@playwright/test';
 import type { Cell, CellValue, Digit, Line, Operator, OperatorChoice, Result, Working, WorkingMark } from '../../dsl/vocabulary';
 
 const CELL_NAME_PREFIX: Readonly<Record<Cell, string>> = {
@@ -104,4 +105,14 @@ const MESSAGES: readonly (readonly [string, Result])[] = [
 export function readResult(statusText: string): Result | null {
   const shown = MESSAGES.find(([text]) => statusText.includes(text));
   return shown ? shown[1] : null;
+}
+
+/**
+ * spec-004: a line's target pill. An open pill is a button whose name starts with what it shows
+ * ("? 6, Row 2 target 6, operator not chosen"); a shown pill is the element around its heard name.
+ */
+export function pillIn(puzzle: Locator, line: Line): Locator {
+  return puzzle
+    .getByRole('button', { name: new RegExp(`${line} target \\d+`) })
+    .or(puzzle.getByText(new RegExp(`^${line} target \\d+, `)).locator('xpath=..'));
 }

@@ -3,7 +3,8 @@
 import type { Locator, Page } from '@playwright/test';
 import type { Cell, Line } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
-import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, targetTextPattern, workingNamePattern } from './screen-names';
+import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour } from './catalogue-reading';
+import { cellNamePattern, COUNTER_PATTERN, operatorNamePattern, pillIn, targetTextPattern, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
 import type { PageDots, PlayScreenPart, Typeface } from '../../dsl/catalogue-vocabulary';
 import type { Box, CellAppearance, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
@@ -36,14 +37,6 @@ const EMPTY_LAYOUT: ScreenLayout = {
   checkButton: NO_BOX,
 };
 
-const NOT_READ_PARTS: Readonly<Record<PlayScreenPart, Box>> = {
-  'Operator header': NO_BOX,
-  'Solutions counter': NO_BOX,
-  'Puzzle grid': NO_BOX,
-  Keypad: NO_BOX,
-  'Main button': NO_BOX,
-};
-
 export class UiPhoneDriver implements PhoneDriver {
   // Every request the page makes, and how many had been made when it last finished loading.
   private readonly requests: string[] = [];
@@ -56,26 +49,47 @@ export class UiPhoneDriver implements PhoneDriver {
     });
   }
 
-  // Readings not built yet (spec-004 T011): each returns what no scenario can accept.
+  // spec-004: the themed screen, read as the catalogue reads it.
 
+  /** The screen's size and where its parts sit; a part that is not there has no position. */
   async playScreenParts(): Promise<{ readonly screen: ScreenSize; readonly parts: Readonly<Record<PlayScreenPart, Box>> }> {
-    return { screen: { width: 0, height: 0 }, parts: NOT_READ_PARTS };
+    const screen = this.page.viewportSize() ?? { width: 0, height: 0 };
+    const main = this.page.getByRole('main');
+    const parts: Record<PlayScreenPart, Locator> = {
+      'Operator header': main.getByText('Hello, Operator!', { exact: true }).locator('xpath=../..'),
+      'Solutions counter': main.getByText(COUNTER_PATTERN).locator('xpath=..'),
+      'Puzzle grid': main.getByRole('group', { name: 'Puzzle', exact: true }),
+      Keypad: main.getByRole('group', { name: 'Keypad', exact: true }),
+      'Main button': main.getByRole('button', { name: /Check/ }),
+    };
+    const boxes = await Promise.all((Object.entries(parts) as [PlayScreenPart, Locator][]).map(async ([part, found]) => [part, await boxOf(found)] as const));
+    return { screen, parts: Object.fromEntries(boxes) as Record<PlayScreenPart, Box> };
   }
 
-  async cellAppearance(): Promise<CellAppearance> {
-    return { fill: 'other', digit: 'other', shadow: 'other' };
+  async cellAppearance(cell: Cell): Promise<CellAppearance> {
+    const button = this.page.getByRole('group', { name: 'Puzzle' }).getByRole('button', { name: cellNamePattern(cell) });
+    return (await button.count()) === 1 ? button.evaluate(readCellAppearance) : { fill: 'other', digit: 'other', shadow: 'other' };
   }
 
-  async isPillDashed(): Promise<boolean> {
-    return false;
+  async isPillDashed(line: Line): Promise<boolean> {
+    const pill = pillIn(this.page.getByRole('group', { name: 'Puzzle' }), line);
+    return (await pill.count()) === 1 && (await pill.evaluate((element) => getComputedStyle(element).borderTopStyle === 'dashed'));
   }
 
   async coloursInUse(): Promise<readonly string[]> {
-    return ['not read yet'];
+    const colours = await this.page.evaluate(readColoursInUse);
+    return colours.length > 0 ? colours : ['no colours were read'];
   }
 
   async pageDots(): Promise<PageDots | null> {
-    return null;
+    await this.page.evaluate(() => window.scrollTo(0, 0));
+    const declared = await this.page.evaluate(readDeclaredDots);
+    if (!declared.hasDots) {
+      return null;
+    }
+    const screenshot = await this.page.screenshot({ clip: { x: 0, y: 0, width: declared.everyPixels, height: declared.everyPixels }, animations: 'disabled' });
+    const drawn = await this.page.evaluate(readDotColour, [screenshot.toString('base64'), declared.paper] as const);
+    return drawn ? { dotColour: drawn, paper: declared.paper, sizeInPixels: declared.sizeInPixels, everyPixels: declared.everyPixels } : null;
   }
 
   async typeface(): Promise<Typeface | string> {

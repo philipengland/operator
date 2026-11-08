@@ -18,7 +18,9 @@ import {
   readWorkingName,
   targetTextPattern,
   workingNamePattern,
+  pillIn,
 } from './screen-names';
+import { shownText } from './catalogue-reading';
 
 const GAME_READY_TIMEOUT_MS = 5_000;
 
@@ -28,6 +30,7 @@ interface AnnouncementCounter {
 
 // Readings not built yet (spec-004 T011): each returns what no scenario can accept.
 const NOT_READ_YET = 'not read yet';
+const BUBBLE_TITLE = 'Hello, Operator!';
 
 export class UiGameDriver implements GameDriver {
   constructor(private readonly page: Page) {}
@@ -80,32 +83,43 @@ export class UiGameDriver implements GameDriver {
     return [];
   }
 
+  /** The speech bubble: its title, and the line after it. */
   async bubble(): Promise<{ readonly title: string; readonly line: string }> {
-    return { title: NOT_READ_YET, line: NOT_READ_YET };
+    const title = this.page.getByText(BUBBLE_TITLE, { exact: true });
+    if ((await title.count()) !== 1) {
+      return { title: NOT_READ_YET, line: NOT_READ_YET };
+    }
+    return { title: await title.innerText(), line: await title.locator('xpath=following-sibling::*[1]').innerText() };
   }
 
   async announcement(): Promise<string> {
     return NOT_READ_YET;
   }
 
+  /** The counter as the player sees it. Its element holds the heard "Found N of M", kept out of what is shown. */
   async counterShown(): Promise<string> {
-    return NOT_READ_YET;
+    const heard = this.page.getByText(COUNTER_PATTERN);
+    return (await heard.count()) === 1 ? shownText(heard.locator('xpath=..')) : NOT_READ_YET;
   }
 
-  async pillShown(): Promise<string> {
-    return NOT_READ_YET;
+  async pillShown(line: Line): Promise<string> {
+    const pill = pillIn(this.puzzle(), line);
+    return (await pill.count()) === 1 ? shownText(pill) : NOT_READ_YET;
   }
 
-  async workingSlot(): Promise<string> {
-    return NOT_READ_YET;
+  async workingSlot(line: Line): Promise<string> {
+    const named = this.puzzle().getByText(workingNamePattern(line));
+    return (await named.count()) === 1 ? shownText(named.locator('xpath=..')) : NOT_READ_YET;
   }
 
   async helperLine(): Promise<string> {
-    return NOT_READ_YET;
+    const helper = this.puzzle().getByRole('paragraph');
+    return (await helper.count()) === 1 ? helper.innerText() : NOT_READ_YET;
   }
 
   async mainButton(): Promise<{ readonly shown: string; readonly heardAs: string }> {
-    return { shown: NOT_READ_YET, heardAs: NOT_READ_YET };
+    const button = this.page.getByRole('button', { name: 'Check' });
+    return { shown: await shownText(button), heardAs: await accessibleName(button) };
   }
 
   async announcementCount(): Promise<number> {

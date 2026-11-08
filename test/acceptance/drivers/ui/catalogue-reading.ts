@@ -8,6 +8,8 @@ import type { Box } from '../phone.driver';
 // Unknown positions: NaN compares false, so nothing unread can pass a layout check.
 export const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
 
+type ColourName = 'ink' | 'paper' | 'tile' | 'accent' | 'none' | 'other';
+
 export interface HeardNode {
   readonly role: string;
   readonly name: string | null;
@@ -342,4 +344,24 @@ export function readDrawnSurfaces(part: Element): readonly Rectangle[] {
     .filter(isDrawn)
     .map(inside)
     .filter((rectangle) => rectangle.width >= smallest && rectangle.height >= smallest);
+}
+
+/** Runs in the page (spec-004): a cell's fill, digit and shadow, as the theme's colour names. */
+export function readCellAppearance(element: Element): { fill: ColourName; digit: ColourName; shadow: ColourName } {
+  const rootStyle = getComputedStyle(document.documentElement);
+  const tokens = ['ink', 'paper', 'tile', 'accent'] as const;
+  const asRgb = (hex: string): string => {
+    const value = Number.parseInt(hex.trim().replace('#', ''), 16);
+    return `rgb(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255})`;
+  };
+  const tokenColours = tokens.map((token) => [token, asRgb(rootStyle.getPropertyValue(`--${token}`))] as const);
+  const nameOf = (colour: string | undefined): ColourName => {
+    if (!colour || colour === 'transparent' || colour === 'rgba(0, 0, 0, 0)') {
+      return 'none';
+    }
+    return tokenColours.find(([, rgb]) => rgb === colour)?.[0] ?? 'other';
+  };
+  const style = getComputedStyle(element);
+  const shadow = style.boxShadow === 'none' ? undefined : style.boxShadow.match(/rgba?\([^)]*\)/)?.[0];
+  return { fill: nameOf(style.backgroundColor), digit: nameOf(style.color), shadow: nameOf(shadow) };
 }
