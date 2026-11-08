@@ -48,4 +48,11 @@ describe('playScreenProps', () => {
     expect(columnWorkings[1]).toEqual({ result: '= ?', mark: 'none', name: 'Column 2 working, ? × ?' });
   });
 
+  it('shows the helper line while an operator is open, and no keypad with the flag off', () => {
+    const props = justOpened();
+
+    expect(props.grid.helper).toBe('Tap a dashed bubble to swap its operator.');
+    expect(props.isKeypadShown).toBe(false);
+  });
+
 });

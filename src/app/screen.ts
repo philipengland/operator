@@ -12,6 +12,7 @@ import type { TargetPillProps } from '../ui/combined/target-pill';
 import { lineWorkings, type SessionState } from './session';
 
 const TITLE = 'Hello, Operator!';
+const HELPER_LINE = 'Tap a dashed bubble to swap its operator.';
 
 function lines(state: SessionState, axis: LinePosition['axis']): readonly LineWorking[] {
   return lineWorkings(state).filter((working) => working.line.axis === axis);
@@ -41,7 +42,7 @@ function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPill
   };
 }
 
-export function playScreenProps(state: SessionState, theme: Theme, _features: Features): PlayScreenProps {
+export function playScreenProps(state: SessionState, theme: Theme, features: Features): PlayScreenProps {
   return {
     header: { title: TITLE, message: bubbleLine(state.message, theme) },
     counter: { found: state.found.size, total: state.puzzle.solutionCount },
@@ -51,8 +52,9 @@ export function playScreenProps(state: SessionState, theme: Theme, _features: Fe
       cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
       rowWorkings: lines(state, 'row').map(workingProps),
       columnWorkings: lines(state, 'column').map(workingProps),
-      helper: '',
+      helper: HELPER_LINE,
     },
     mainButtonLabel: theme.buttonLabel,
+    isKeypadShown: features.keypad,
   };
 }
