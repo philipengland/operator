@@ -1,9 +1,9 @@
 // Layer 3 — the phone around the game: screen, connection, looks and speed.
 
 import type { Locator, Page } from '@playwright/test';
-import type { Cell, Line } from '../../dsl/vocabulary';
+import type { Cell, Line, TypefacedText } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
-import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour } from './catalogue-reading';
+import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour, readTypeface } from './catalogue-reading';
 import { cellNamePattern, COUNTER_PATTERN, pillIn, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
 import type { PageDots, PlayScreenPart, Typeface } from '../../dsl/catalogue-vocabulary';
@@ -92,8 +92,14 @@ export class UiPhoneDriver implements PhoneDriver {
     return drawn ? { dotColour: drawn, paper: declared.paper, sizeInPixels: declared.sizeInPixels, everyPixels: declared.everyPixels } : null;
   }
 
-  async typeface(): Promise<Typeface | string> {
-    return 'not read yet';
+  /** The first family in this text's font stack that has loaded, once loading has finished. */
+  async typeface(text: TypefacedText): Promise<Typeface | string> {
+    await this.page.evaluate(() => document.fonts.ready);
+    const found: Record<TypefacedText, Locator> = {
+      'speech bubble title': this.page.getByText('Hello, Operator!', { exact: true }),
+      'helper line': this.page.getByRole('group', { name: 'Puzzle' }).getByRole('paragraph'),
+    };
+    return (await found[text].count()) === 1 ? found[text].evaluate(readTypeface) : 'not on the screen';
   }
 
   async useScreen(size: ScreenSize): Promise<void> {
