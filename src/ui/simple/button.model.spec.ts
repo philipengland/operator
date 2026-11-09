@@ -25,4 +25,8 @@ describe('buttonModel', () => {
   it.each(['main', 'key', 'solid', 'dashed'] as const)('carries the %s style, so each style looks different', (style) => {
     expect(buttonModel({ label: 'x', style }).classes).toEqual(['button', `button--${style}`]);
   });
+
+  it('can be read-only: the same look, marked so it is not offered as something to tap', () => {
+    expect(buttonModel({ label: '2', style: 'cell', isReadOnly: true }).classes).toEqual(['button', 'button--cell', 'button--read-only']);
+  });
 });
