@@ -15,6 +15,8 @@ import { applyAction, startSession, type Place, type SessionAction } from './ses
 import { historyEntryFor, placeFrom } from './navigation';
 import { solutionListProps } from './solution-list';
 import { solutionViewProps } from './solution-view';
+import { createBrowserStore } from './browser-store';
+import { readSolutions, rememberChange } from './solution-store';
 
 // Fixed at build time (vite.config.ts; constitution VII).
 declare const __OPERATOR_FEATURES__: Features;
@@ -27,7 +29,9 @@ if (!root) {
 // The fixed puzzle has no seed, so it is shown in Classic (spec-003 AC-25).
 const theme = themeForSeed(undefined);
 const features = __OPERATOR_FEATURES__;
-let state = startSession();
+const store = createBrowserStore(() => window.localStorage);
+const opening = startSession();
+let state = features.remember ? applyAction(opening, { type: 'restoreFound', solutions: readSolutions(store, opening.puzzle) }) : opening;
 
 applyTheme(document.documentElement, theme);
 
@@ -76,7 +80,11 @@ function openSolution(number: number): void {
 }
 
 function act(action: SessionAction): void {
+  const previous = state;
   state = applyAction(state, action);
+  if (features.remember) {
+    rememberChange(store, previous, state);
+  }
   screen.update(playScreenProps(state, theme));
   list.update(solutionListProps(state, theme, features));
   showScreen();
