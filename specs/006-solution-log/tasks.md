@@ -69,7 +69,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 - [X] T014 TDD: new screen Solution view in `src/ui/screens/solution-view.model.ts`, `solution-view.ts`: heading, "Back", a read-only Puzzle grid
 - [X] T015 List and sample every new part and state in `src/catalogue/library.ts` and its samples; `[spec-003 AC-1]` goes GREEN (run `npm run test:acceptance:ui -- -g "spec-003 AC-1]"`), and every catalogue scenario still passes
 - [X] T016 Update `docs/contracts/component-library.md` from `specs/006-solution-log/contracts/component-library-changes.md`; add `docs/contracts/saved-solutions.md`; add the play-screen changes to `docs/contracts/play-screen.md`, each marked with the flag it depends on
-- [ ] T017 Full suite, lint, typecheck. Push and open "spec-006 part 1 of 6: library additions", noting the approved change to spec-003's lists and asking the owner to accept ADR 0004 (`docs/adr/0004-saved-solutions.md`). The owner merges with a merge commit
+- [X] T017 Full suite, lint, typecheck. Push and open "spec-006 part 1 of 6: library additions", noting the approved change to spec-003's lists and asking the owner to accept ADR 0004 (`docs/adr/0004-saved-solutions.md`). The owner merges with a merge commit
 
 ---
 
