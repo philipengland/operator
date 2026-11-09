@@ -1,19 +1,11 @@
 // The game's feature flags, fixed at build time (constitution VII, research R10). Releasing a
 // story is one line here. There is no remote, URL or player-facing switch.
 
-// Name each story's flag here while it is built, and remove it once it is released and signed off.
-export interface Features {
-  /** spec-006 User Story 1: the list of solutions found. */
-  readonly log: boolean;
-  /** spec-006 User Story 2: opening a found solution. */
-  readonly reopen: boolean;
-  /** spec-006 User Story 3: clearing what has been found. */
-  readonly startAgain: boolean;
-  /** spec-006 User Story 4: remembering what was found. */
-  readonly remember: boolean;
-}
+// No story is behind a flag at present. Name each one here while it is built, and remove it once
+// it is released and signed off. To read one in the game, declare __OPERATOR_FEATURES__ in main.ts.
+export type Features = Readonly<Record<never, boolean>>;
 
-export const RELEASED: Features = { log: true, reopen: true, startAgain: true, remember: true };
+export const RELEASED: Features = {};
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';

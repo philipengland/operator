@@ -10,16 +10,12 @@ import { createSolutionView, type SolutionViewScreen } from '../ui/screens/solut
 import type { Digit } from '../engine';
 import { START_AGAIN_QUESTION } from './labels';
 import { playScreenProps } from './screen';
-import type { Features } from './features';
 import { applyAction, startSession, type Place, type SessionAction } from './session';
 import { historyEntryFor, placeFrom } from './navigation';
 import { solutionListProps } from './solution-list';
 import { solutionViewProps } from './solution-view';
 import { createBrowserStore } from './browser-store';
 import { readSolutions, rememberChange } from './solution-store';
-
-// Fixed at build time (vite.config.ts; constitution VII).
-declare const __OPERATOR_FEATURES__: Features;
 
 const root = document.getElementById('game');
 if (!root) {
@@ -28,10 +24,9 @@ if (!root) {
 
 // The fixed puzzle has no seed, so it is shown in Classic (spec-003 AC-25).
 const theme = themeForSeed(undefined);
-const features = __OPERATOR_FEATURES__;
 const store = createBrowserStore(() => window.localStorage);
 const opening = startSession();
-let state = features.remember ? applyAction(opening, { type: 'restoreFound', solutions: readSolutions(store, opening.puzzle) }) : opening;
+let state = applyAction(opening, { type: 'restoreFound', solutions: readSolutions(store, opening.puzzle) });
 
 applyTheme(document.documentElement, theme);
 
@@ -40,9 +35,9 @@ const screen = createPlayScreen(playScreenProps(state, theme), {
   onPill: (axis, index) => act({ type: 'tapOperator', line: { axis, index } }),
   onCheck: () => act({ type: 'submit' }),
   onKey: (value) => act(value === 'clear' ? { type: 'clear' } : { type: 'key', digit: value as Digit }),
-  ...(features.log ? { onCounter: openList } : {}),
+  onCounter: openList,
 });
-const list = createSolutionList(solutionListProps(state, theme, features), {
+const list = createSolutionList(solutionListProps(state, theme), {
   onBack: () => history.back(),
   onRow: (index) => openSolution(index + 1),
   onStartAgain: askToStartAgain,
@@ -82,11 +77,9 @@ function openSolution(number: number): void {
 function act(action: SessionAction): void {
   const previous = state;
   state = applyAction(state, action);
-  if (features.remember) {
-    rememberChange(store, previous, state);
-  }
+  rememberChange(store, previous, state);
   screen.update(playScreenProps(state, theme));
-  list.update(solutionListProps(state, theme, features));
+  list.update(solutionListProps(state, theme));
   showScreen();
   showPopUp();
 }

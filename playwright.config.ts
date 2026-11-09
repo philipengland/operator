@@ -24,10 +24,6 @@ const SCENARIO_TIME_LIMIT_MS = 60_000;
 // Constitution VII: which scenarios need a flag on, by file, so releasing a story changes no locked
 // file. While a flag is off, its file runs only on the flags-on phones; once on, on the game's.
 const SCENARIOS_BEHIND_A_FLAG: Readonly<Record<keyof Features, string>> = {
-  log: '**/play/solution-list.acceptance-spec.ts',
-  reopen: '**/play/reopen-solution.acceptance-spec.ts',
-  startAgain: '**/play/start-again.acceptance-spec.ts',
-  remember: '**/play/remember-solutions.acceptance-spec.ts',
 };
 const unreleasedScenarios = (Object.keys(SCENARIOS_BEHIND_A_FLAG) as (keyof Features)[])
   .filter((flag) => !RELEASED[flag])

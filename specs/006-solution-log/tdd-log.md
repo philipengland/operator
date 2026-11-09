@@ -230,3 +230,7 @@ Commits:
 - `f740958` test(app): a total of 100 is shown (spec-006 AC-23)
 - `aee5213` feat(app): a total over 100 is left out of the words (spec-006 AC-24)
 - `e25a4e2` feat(app): the counter leaves out a total over 100 (spec-006 AC-24)
+
+## Flags removed (T060)
+
+`log`, `reopen`, `startAgain` and `remember` are removed, all four having been released. No behaviour changes. Four tests in `solution-list.spec.ts` changed, agreed with the owner first and recorded in `test-changes.md`.

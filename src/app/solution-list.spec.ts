@@ -17,7 +17,7 @@ describe('solutionListProps', () => {
       heading: 'Solutions',
       backLabel: 'Back',
       rows: [],
-      canOpenRows: false,
+      canOpenRows: true,
       empty: { shown: 'No calls yet, pal.', heardAs: 'No solutions found yet' },
     });
   });
@@ -30,17 +30,17 @@ describe('the rows (spec-006)', () => {
     expect(solutionListProps({ ...startSession(), solutions: [entry, entry] }, CLASSIC).rows).toEqual(['Solution 1', 'Solution 2']);
   });
 
-  it('can be opened once the story is released (spec-006 AC-7)', () => {
-    expect(solutionListProps(startSession(), CLASSIC, { reopen: true }).canOpenRows).toBe(true);
+  it('can be opened (spec-006 AC-7)', () => {
+    expect(solutionListProps(startSession(), CLASSIC).canOpenRows).toBe(true);
   });
 
-  it('offers "Start again" once released, when something has been found (spec-006 AC-11)', () => {
+  it('offers "Start again" when something has been found (spec-006 AC-11)', () => {
     const entry = startSession().entry;
 
-    expect(solutionListProps({ ...startSession(), solutions: [entry] }, CLASSIC, { startAgain: true }).startAgainLabel).toBe('Start again');
+    expect(solutionListProps({ ...startSession(), solutions: [entry] }, CLASSIC).startAgainLabel).toBe('Start again');
   });
 
   it('does not offer "Start again" with nothing found (spec-006 FR-608)', () => {
-    expect(solutionListProps(startSession(), CLASSIC, { startAgain: true }).startAgainLabel).toBeUndefined();
+    expect(solutionListProps(startSession(), CLASSIC).startAgainLabel).toBeUndefined();
   });
 });
