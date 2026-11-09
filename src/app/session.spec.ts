@@ -210,6 +210,16 @@ describe('the list of solutions (spec-006)', () => {
 
     expect(applyAction(onTheList, { type: 'showPlace', place: { kind: 'play' } })).toEqual(tapped);
   });
+
+  it('opens a found solution, changing nothing else (spec-006 AC-7)', () => {
+    const onTheList = applyAction(startSession(), { type: 'openList' });
+
+    expect(applyAction(onTheList, { type: 'openSolution', number: 1 })).toEqual({ ...onTheList, place: { kind: 'solution', number: 1 } });
+  });
+
+  it('shows the list when the browser asks for a solution that does not exist (spec-006 FR-606)', () => {
+    expect(applyAction(startSession(), { type: 'showPlace', place: { kind: 'solution', number: 3 } }).place).toEqual({ kind: 'list' });
+  });
 });
 
 describe('remembering the solutions found (spec-006)', () => {

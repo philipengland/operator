@@ -6,6 +6,7 @@ import type { Theme } from '../ui/foundations/themes';
 import { announcement, bubbleLine, cellTitle, pillName, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
+import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
 import type { LineWorkingProps } from '../ui/combined/line-working';
 import type { TargetPillProps } from '../ui/combined/target-pill';
 import { counterText, lineWorkings, type SessionState } from './session';
@@ -57,18 +58,23 @@ function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPill
   };
 }
 
+/** The whole puzzle as the session has it. */
+export function puzzleGridProps(state: SessionState): PuzzleGridProps {
+  return {
+    columnPills: lines(state, 'column').map((working) => pill(state, working)),
+    rowPills: lines(state, 'row').map((working) => pill(state, working)),
+    cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
+    rowWorkings: lines(state, 'row').map(workingProps),
+    columnWorkings: lines(state, 'column').map(workingProps),
+    helper: HELPER_LINE,
+  };
+}
+
 export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {
   return {
     header: { title: TITLE, message: bubbleLine(state.message, theme) },
     counter: { found: state.found.size, total: state.puzzle.solutionCount },
-    grid: {
-      columnPills: lines(state, 'column').map((working) => pill(state, working)),
-      rowPills: lines(state, 'row').map((working) => pill(state, working)),
-      cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
-      rowWorkings: lines(state, 'row').map(workingProps),
-      columnWorkings: lines(state, 'column').map(workingProps),
-      helper: HELPER_LINE,
-    },
+    grid: puzzleGridProps(state),
     mainButtonLabel: theme.buttonLabel,
     keysAvailable: state.selected !== null,
     announcement: announcement(state.message, theme, counterText(state)),

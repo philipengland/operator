@@ -5,12 +5,14 @@ import '../ui/foundations/page.css';
 import { applyTheme, themeForSeed } from '../ui/foundations/themes';
 import { createPlayScreen } from '../ui/screens/play-screen';
 import { createSolutionList } from '../ui/screens/solution-list';
+import { createSolutionView, type SolutionViewScreen } from '../ui/screens/solution-view';
 import type { Digit } from '../engine';
 import { playScreenProps } from './screen';
 import type { Features } from './features';
-import { applyAction, startSession, type SessionAction } from './session';
+import { applyAction, startSession, type Place, type SessionAction } from './session';
 import { historyEntryFor, placeFrom } from './navigation';
 import { solutionListProps } from './solution-list';
+import { solutionViewProps } from './solution-view';
 
 // Fixed at build time (vite.config.ts; constitution VII).
 declare const __OPERATOR_FEATURES__: Features;
@@ -34,9 +36,13 @@ const screen = createPlayScreen(playScreenProps(state, theme), {
   onKey: (value) => act(value === 'clear' ? { type: 'clear' } : { type: 'key', digit: value as Digit }),
   ...(features.log ? { onCounter: openList } : {}),
 });
-const list = createSolutionList(solutionListProps(state, theme), { onBack: () => history.back() });
+const list = createSolutionList(solutionListProps(state, theme, features), {
+  onBack: () => history.back(),
+  onRow: (index) => openSolution(index + 1),
+});
+let openSolutionView: SolutionViewScreen | null = null;
 root.append(screen.element);
-let shownPlace = state.place.kind;
+let shownPlace: Place = state.place;
 
 // A reload opens on the puzzle, so the entry left by a screen that was open is replaced (research R7).
 history.replaceState(historyEntryFor(state.place), '');
@@ -47,26 +53,48 @@ function openList(): void {
   act({ type: 'openList' });
 }
 
+function openSolution(number: number): void {
+  history.pushState(historyEntryFor({ kind: 'solution', number }), '');
+  act({ type: 'openSolution', number });
+}
+
 function act(action: SessionAction): void {
   state = applyAction(state, action);
   screen.update(playScreenProps(state, theme));
-  list.update(solutionListProps(state, theme));
+  list.update(solutionListProps(state, theme, features));
   showScreen();
 }
 
 /** The play screen stays in the page, hidden, so nothing about the game is lost (research R6). */
 function showScreen(): void {
-  if (state.place.kind === shownPlace) {
+  const previous = shownPlace;
+  if (JSON.stringify(state.place) === JSON.stringify(previous)) {
     return;
   }
-  shownPlace = state.place.kind;
-  const isOnList = shownPlace === 'list';
-  screen.element.hidden = isOnList;
-  if (isOnList) {
-    root?.append(list.element);
-    list.focusHeading();
+  shownPlace = state.place;
+  list.element.remove();
+  openSolutionView?.element.remove();
+  screen.element.hidden = shownPlace.kind !== 'play';
+  if (shownPlace.kind === 'list') {
+    showList(previous);
+  } else if (shownPlace.kind === 'solution') {
+    showSolution(shownPlace.number);
   } else {
-    list.element.remove();
     screen.focusCounter();
   }
+}
+
+function showList(previous: Place): void {
+  root?.append(list.element);
+  if (previous.kind === 'solution') {
+    list.focusRow(previous.number - 1);
+  } else {
+    list.focusHeading();
+  }
+}
+
+function showSolution(number: number): void {
+  openSolutionView = createSolutionView(solutionViewProps(state, number), { onBack: () => history.back() });
+  root?.append(openSolutionView.element);
+  openSolutionView.focusHeading();
 }

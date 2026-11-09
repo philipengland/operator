@@ -19,6 +19,7 @@ export default defineConfig({
         'src/app/labels.ts',
         'src/app/screen.ts',
         'src/app/solution-list.ts',
+        'src/app/solution-view.ts',
         'src/app/navigation.ts',
         'src/app/features.ts',
         'src/ui/component.ts',

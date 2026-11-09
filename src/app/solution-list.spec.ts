@@ -29,4 +29,8 @@ describe('the rows (spec-006)', () => {
 
     expect(solutionListProps({ ...startSession(), solutions: [entry, entry] }, CLASSIC).rows).toEqual(['Solution 1', 'Solution 2']);
   });
+
+  it('can be opened once the story is released (spec-006 AC-7)', () => {
+    expect(solutionListProps(startSession(), CLASSIC, { reopen: true }).canOpenRows).toBe(true);
+  });
 });

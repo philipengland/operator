@@ -20,3 +20,11 @@ export function readGameScreen(): GameScreen {
     .filter((text) => text !== '');
   return { buttons, texts, status: status?.textContent ?? '' };
 }
+
+/** Runs in the page: everything a screen reader reads out under `root`. */
+export function readHeardTexts(root: Element): readonly string[] {
+  return Array.from(root.querySelectorAll('*'))
+    .filter((element) => element.children.length === 0 && element.closest('[aria-hidden="true"]') === null)
+    .map((element) => element.textContent ?? '')
+    .filter((text) => text !== '');
+}
