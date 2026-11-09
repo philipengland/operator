@@ -45,8 +45,8 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 **Purpose**: the approved specifications, the record of work, and a clean baseline.
 
 - [X] T001 Obtain approval of the scenarios, the DSL and the change to spec-003's lists, recorded in `specs/006-solution-log/acceptance.md` (commit `df93d38`)
-- [ ] T002 Commit the design documents on `006-solution-log`: `specs/006-solution-log/spec.md`, `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `tasks.md`, `contracts/`, `checklists/` and `docs/adr/0004-saved-solutions.md`, by explicit path, never `specs/*/.speckit-board.json`
-- [ ] T003 Create branch `006-solution-log-part-1` from `main`; create `specs/006-solution-log/tdd-log.md` from `.specify/presets/org-baseline/templates/tdd-log-template.md`; run the full suite and record it as the baseline, stopping if anything fails
+- [X] T002 Commit the design documents on `006-solution-log`: `specs/006-solution-log/spec.md`, `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `tasks.md`, `contracts/`, `checklists/` and `docs/adr/0004-saved-solutions.md`, by explicit path, never `specs/*/.speckit-board.json`
+- [X] T003 Create branch `006-solution-log-part-1` from `main`; create `specs/006-solution-log/tdd-log.md` from `.specify/presets/org-baseline/templates/tdd-log-template.md`; run the full suite and record it as the baseline, stopping if anything fails
 
 ---
 
@@ -56,19 +56,19 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 
 **Checkpoint**: `[spec-003 AC-1]` passes with the new lists, and the catalogue shows every new part in every state.
 
-- [ ] T004 Bring over unchanged from `df93d38`, confirming each by blob: `test/acceptance/dsl/game.dsl.ts`, `phone.dsl.ts`, `vocabulary.ts`, `catalogue-vocabulary.ts`, `test/acceptance/drivers/game.driver.ts`, `phone.driver.ts`, `test/acceptance/play/examples.ts`, `test/acceptance/library/examples.ts`, `simple-components.acceptance-spec.ts`, `specs/006-solution-log/acceptance.md`, `specs/003-themed-ui/acceptance.md`, and the design documents from T002. The four new scenario files stay behind
-- [ ] T005 Make the drivers compile: add every new `GameDriver` and `PhoneDriver` method, with stubs returning empty defaults (never throwing "not implemented"), in `test/acceptance/drivers/ui/game.ui-driver.ts` and `ui/phone.ui-driver.ts`; use the existing `readOnlyOnThePhones` in `test/acceptance/drivers/engine/game.engine-driver.ts`
-- [ ] T006 [P] TDD: `Puzzle` gains `id: string` in `src/engine/types.ts`; `worked-example` in `src/engine/puzzles/worked-example.ts`; test puzzles in `src/engine/check-entry.spec.ts` and `line-working.spec.ts`; record it in `docs/contracts/engine-api.md`
-- [ ] T007 [P] TDD in `src/ui/simple/surface.model.spec.ts`: Surface takes an optional tap action and renders as a real `<button>` in `src/ui/simple/surface.ts` and `surface.css` (research R8)
-- [ ] T008 [P] TDD in `src/ui/simple/button.model.spec.ts`: Button gains a read-only form, the same look but plain text with its name read as text, in `src/ui/simple/button.ts` (research R9)
-- [ ] T009 TDD in `src/ui/combined/grid-cell.model.spec.ts`: `isReadOnly` in `src/ui/combined/grid-cell.ts`; `src/ui/combined/puzzle-grid.ts` passes it to every cell, and leaves no button in the grid when read-only
-- [ ] T010 TDD: the Solutions counter takes an optional `onTap` in `src/ui/combined/solutions-counter.ts`, passed to its Surface. Its "built from" list stays `Surface, Text, Badge, Icon`, and it stays named "Found N of M"
-- [ ] T011 [P] TDD: new simple component Dialog in `src/ui/simple/dialog.model.ts`, `dialog.ts`, `dialog.css`, on the native `<dialog>` with `showModal()`, declaring its backdrop here as `tools/ui-tiers.spec.ts` requires (research R10)
-- [ ] T012 TDD: new combined component Confirm dialog in `src/ui/combined/confirm-dialog.model.ts`, `confirm-dialog.ts`, built from Dialog, Text and Button: a question and two buttons, neither sitting where the control that opened it was
-- [ ] T013 TDD: new screen Solution list in `src/ui/screens/solution-list.model.ts`, `solution-list.ts`: heading "Solutions", "Back", rows or an empty line (shown and heard separately), optional "Start again". The list scrolls, and "Back" stays reachable without scrolling
-- [ ] T014 TDD: new screen Solution view in `src/ui/screens/solution-view.model.ts`, `solution-view.ts`: heading, "Back", a read-only Puzzle grid
-- [ ] T015 List and sample every new part and state in `src/catalogue/library.ts` and its samples; `[spec-003 AC-1]` goes GREEN (run `npm run test:acceptance:ui -- -g "spec-003 AC-1]"`), and every catalogue scenario still passes
-- [ ] T016 Update `docs/contracts/component-library.md` from `specs/006-solution-log/contracts/component-library-changes.md`; add `docs/contracts/saved-solutions.md`; add the play-screen changes to `docs/contracts/play-screen.md`, each marked with the flag it depends on
+- [X] T004 Bring over unchanged from `df93d38`, confirming each by blob: `test/acceptance/dsl/game.dsl.ts`, `phone.dsl.ts`, `vocabulary.ts`, `catalogue-vocabulary.ts`, `test/acceptance/drivers/game.driver.ts`, `phone.driver.ts`, `test/acceptance/play/examples.ts`, `test/acceptance/library/examples.ts`, `simple-components.acceptance-spec.ts`, `specs/006-solution-log/acceptance.md`, `specs/003-themed-ui/acceptance.md`, and the design documents from T002. The four new scenario files stay behind
+- [X] T005 Make the drivers compile: add every new `GameDriver` and `PhoneDriver` method, with stubs returning empty defaults (never throwing "not implemented"), in `test/acceptance/drivers/ui/game.ui-driver.ts` and `ui/phone.ui-driver.ts`; use the existing `readOnlyOnThePhones` in `test/acceptance/drivers/engine/game.engine-driver.ts`
+- [X] T006 [P] TDD: `Puzzle` gains `id: string` in `src/engine/types.ts`; `worked-example` in `src/engine/puzzles/worked-example.ts`; test puzzles in `src/engine/check-entry.spec.ts` and `line-working.spec.ts`; record it in `docs/contracts/engine-api.md`
+- [X] T007 [P] TDD in `src/ui/simple/surface.model.spec.ts`: Surface takes an optional tap action and renders as a real `<button>` in `src/ui/simple/surface.ts` and `surface.css` (research R8)
+- [X] T008 [P] TDD in `src/ui/simple/button.model.spec.ts`: Button gains a read-only form, the same look but plain text with its name read as text, in `src/ui/simple/button.ts` (research R9)
+- [X] T009 TDD in `src/ui/combined/grid-cell.model.spec.ts`: `isReadOnly` in `src/ui/combined/grid-cell.ts`; `src/ui/combined/puzzle-grid.ts` passes it to every cell, and leaves no button in the grid when read-only
+- [X] T010 TDD: the Solutions counter takes an optional `onTap` in `src/ui/combined/solutions-counter.ts`, passed to its Surface. Its "built from" list stays `Surface, Text, Badge, Icon`, and it stays named "Found N of M"
+- [X] T011 [P] TDD: new simple component Dialog in `src/ui/simple/dialog.model.ts`, `dialog.ts`, `dialog.css`, on the native `<dialog>` with `showModal()`, declaring its backdrop here as `tools/ui-tiers.spec.ts` requires (research R10)
+- [X] T012 TDD: new combined component Confirm dialog in `src/ui/combined/confirm-dialog.model.ts`, `confirm-dialog.ts`, built from Dialog, Text and Button: a question and two buttons, neither sitting where the control that opened it was
+- [X] T013 TDD: new screen Solution list in `src/ui/screens/solution-list.model.ts`, `solution-list.ts`: heading "Solutions", "Back", rows or an empty line (shown and heard separately), optional "Start again". The list scrolls, and "Back" stays reachable without scrolling
+- [X] T014 TDD: new screen Solution view in `src/ui/screens/solution-view.model.ts`, `solution-view.ts`: heading, "Back", a read-only Puzzle grid
+- [X] T015 List and sample every new part and state in `src/catalogue/library.ts` and its samples; `[spec-003 AC-1]` goes GREEN (run `npm run test:acceptance:ui -- -g "spec-003 AC-1]"`), and every catalogue scenario still passes
+- [X] T016 Update `docs/contracts/component-library.md` from `specs/006-solution-log/contracts/component-library-changes.md`; add `docs/contracts/saved-solutions.md`; add the play-screen changes to `docs/contracts/play-screen.md`, each marked with the flag it depends on
 - [ ] T017 Full suite, lint, typecheck. Push and open "spec-006 part 1 of 6: library additions", noting the approved change to spec-003's lists and asking the owner to accept ADR 0004 (`docs/adr/0004-saved-solutions.md`). The owner merges with a merge commit
 
 ---
