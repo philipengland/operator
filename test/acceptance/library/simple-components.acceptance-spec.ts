@@ -17,7 +17,7 @@ test.describe('[spec-003 AC-1] the catalogue is organised by tier', CATALOGUE, (
 
     await catalogue.expectComponentsIn('Simple components', SIMPLE_COMPONENTS);
     await catalogue.expectComponentsIn('Combined components', COMBINED_COMPONENTS);
-    await catalogue.expectComponentsIn('Screens', ['Play screen']);
+    await catalogue.expectComponentsIn('Screens', ['Play screen', 'Solution list', 'Solution view']);
   });
 });
 

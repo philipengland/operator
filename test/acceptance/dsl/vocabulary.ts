@@ -42,5 +42,8 @@ export type WorkingMark = 'target reached' | 'not a whole number' | 'none';
 /** A key on the keypad (spec-004): a digit, or Oops, which empties the selected cell. */
 export type KeypadKey = Digit | 'Oops';
 
+/** A found solution's name in the list and on its view (spec-006). */
+export type SolutionName = `Solution ${number}`;
+
 /** Text on the play screen whose typeface a scenario checks (spec-004 AC-7). */
 export type TypefacedText = 'speech bubble title' | 'helper line';

@@ -12,6 +12,9 @@ export const belowZero: Entry = { topRight: 2, bottomLeft: 9, bottomRight: 3, ro
 /** Column 1 gives 6 ÷ 4, which is not a whole number. */
 export const inexactDivision: Entry = { topRight: 2, bottomLeft: 4, bottomRight: 3, row2: '+', column1: '÷' };
 
+/** spec-006 AC-21: Solution A with top-right 9, so Row 1 gives 6 + 9 = 15, not its target of 8. */
+export const notASolution: Entry = { topRight: 9, bottomLeft: 2, bottomRight: 3, row2: '×', column1: '÷' };
+
 export const bottomRightEmpty: Entry = { topRight: 2, bottomLeft: 2, bottomRight: 'empty', row2: '×', column1: '÷' };
 
 export const column1NotChosen: Entry = { topRight: 2, bottomLeft: 2, bottomRight: 3, row2: '×', column1: 'not chosen' };
