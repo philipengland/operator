@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { solutionListModel, type SolutionListProps } from './solution-list.model';
+import { solutionListHeader, solutionListModel, type SolutionListProps } from './solution-list.model';
 
 const WITH_ONE: SolutionListProps = {
   heading: 'Solutions',
@@ -30,5 +30,11 @@ describe('solutionListModel', () => {
   it('offers "Start again" in solid ink when it is given the words, and not otherwise', () => {
     expect(solutionListModel({ ...WITH_ONE, startAgainLabel: 'Start again' }).startAgain).toEqual({ label: 'Start again', style: 'solid' });
     expect(solutionListModel(WITH_ONE).startAgain).toBeNull();
+  });
+});
+
+describe('solutionListHeader', () => {
+  it('heads the screen, and is where an empty list speaks, heard separately', () => {
+    expect(solutionListHeader({ ...WITH_ONE, rows: [] })).toEqual({ title: 'Solutions', message: 'No calls yet, pal.', isMessageHeard: false, isTitleHeading: true });
   });
 });

@@ -12,13 +12,9 @@
 
 .solution-list__top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--gap);
-}
-
-.solution-list__heading {
-  margin: 0;
 }
 
 .solution-list__rows {

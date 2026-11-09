@@ -2,15 +2,15 @@
 // and a way to start again at the foot of the screen (docs/contracts/component-library.md).
 
 import './solution-list.css';
-import { writeText, type Component } from '../component';
+import type { Component } from '../component';
+import { createOperatorHeader } from '../combined/operator-header';
 import { createButton } from '../simple/button';
-import { createText } from '../simple/text';
-import { solutionListModel, type SolutionListProps } from './solution-list.model';
+import { solutionListHeader, solutionListModel, type SolutionListProps } from './solution-list.model';
 
-export { solutionListModel, type SolutionListProps } from './solution-list.model';
+export { solutionListHeader, solutionListModel, type SolutionListProps } from './solution-list.model';
 
 /** The components this screen is laid out from (spec-003 AC-7). */
-export const builtFrom: readonly string[] = ['Text', 'Button'];
+export const builtFrom: readonly string[] = ['Operator header', 'Button'];
 
 export interface SolutionListActions {
   readonly onBack?: () => void;
@@ -22,12 +22,11 @@ export interface SolutionListActions {
 export function createSolutionList(props: SolutionListProps, actions: SolutionListActions = {}): Component<SolutionListProps> {
   const element = document.createElement('div');
   element.className = 'solution-list';
-  const title = document.createElement('h1');
-  title.className = 'solution-list__heading';
+  const header = createOperatorHeader(solutionListHeader(props));
   const back = createButton(solutionListModel(props).back, actions.onBack);
   const top = document.createElement('div');
   top.className = 'solution-list__top';
-  top.append(title, back.element);
+  top.append(header.element, back.element);
   const rows = document.createElement('div');
   rows.className = 'solution-list__rows';
   const foot = document.createElement('div');
@@ -36,7 +35,7 @@ export function createSolutionList(props: SolutionListProps, actions: SolutionLi
   let drawn = '';
   const update = (next: SolutionListProps): void => {
     const model = solutionListModel(next);
-    writeText(title, next.heading);
+    header.update(solutionListHeader(next));
     back.update(model.back);
     // Rows are redrawn only when they change, so a row keeps focus when nothing has changed.
     const nextDrawn = JSON.stringify(model);
@@ -50,17 +49,13 @@ export function createSolutionList(props: SolutionListProps, actions: SolutionLi
   return { element, update };
 }
 
-/** The empty list's line: one thing shown, another heard (spec-006 FR-603). */
+/** What a screen reader hears from an empty list; what it shows is in the bubble (spec-006 FR-603). */
 function emptyLine(empty: SolutionListProps['empty'] | null): readonly HTMLElement[] {
   if (empty === null) {
     return [];
   }
-  const line = document.createElement('p');
-  const heard = document.createElement('span');
+  const heard = document.createElement('p');
   heard.className = 'visually-hidden';
   heard.textContent = empty.heardAs;
-  const shown = createText({ text: empty.shown, style: 'body' });
-  shown.element.setAttribute('aria-hidden', 'true');
-  line.append(heard, shown.element);
-  return [line];
+  return [heard];
 }

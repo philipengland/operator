@@ -1,7 +1,8 @@
 // Solution list (screen): the solutions found, or a line saying there are none (spec-006 FR-602, FR-603;
 // docs/contracts/component-library.md). Wording is passed in.
 
-import type { ButtonProps } from '../simple/button.model';
+import type { SpeechBubbleProps } from '../combined/speech-bubble';
+import type { ButtonProps } from '../simple/button';
 
 export interface SolutionListProps {
   readonly heading: string;
@@ -21,6 +22,11 @@ export interface SolutionListModel {
   readonly rows: readonly ButtonProps[];
   readonly empty: SolutionListProps['empty'] | null;
   readonly startAgain: ButtonProps | null;
+}
+
+/** The bubble at the top: the heading, and what an empty list says. */
+export function solutionListHeader({ heading, rows, empty }: SolutionListProps): SpeechBubbleProps {
+  return { title: heading, message: rows.length === 0 ? empty.shown : '', isMessageHeard: false, isTitleHeading: true };
 }
 
 export function solutionListModel({ backLabel, rows, canOpenRows, empty, startAgainLabel }: SolutionListProps): SolutionListModel {
