@@ -18,4 +18,14 @@ describe('createBrowserStore', () => {
 
     expect(createBrowserStore(() => storage).read('key')).toBe('a value');
   });
+
+  it('writes a value, and removes the record when given null (spec-006 AC-18)', () => {
+    const storage = storageWith({ other: 'x' });
+    const store = createBrowserStore(() => storage);
+
+    store.write('key', 'a value');
+    store.write('other', null);
+
+    expect([...storage.held]).toEqual([['key', 'a value']]);
+  });
 });

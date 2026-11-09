@@ -7,5 +7,14 @@ type BrowserStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
 /** `storage` is a function because merely reaching localStorage can throw in some private modes. */
 export function createBrowserStore(storage: () => BrowserStorage): SolutionStore {
-  return { read: (key) => storage().getItem(key), write: () => undefined };
+  return {
+    read: (key) => storage().getItem(key),
+    write: (key, value) => {
+      if (value === null) {
+        storage().removeItem(key);
+      } else {
+        storage().setItem(key, value);
+      }
+    },
+  };
 }
