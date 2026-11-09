@@ -39,4 +39,8 @@ describe('the rows (spec-006)', () => {
 
     expect(solutionListProps({ ...startSession(), solutions: [entry] }, CLASSIC, { startAgain: true }).startAgainLabel).toBe('Start again');
   });
+
+  it('does not offer "Start again" with nothing found (spec-006 FR-608)', () => {
+    expect(solutionListProps(startSession(), CLASSIC, { startAgain: true }).startAgainLabel).toBeUndefined();
+  });
 });

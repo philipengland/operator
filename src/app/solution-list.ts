@@ -13,5 +13,5 @@ const START_AGAIN = 'Start again';
 type ListFeatures = Partial<Pick<Features, 'reopen' | 'startAgain'>>;
 
 export function solutionListProps({ solutions }: SessionState, theme: Theme, { reopen = false, startAgain = false }: ListFeatures = {}): SolutionListProps {
-  return { heading: HEADING, backLabel: BACK, rows: solutions.map((_, index) => solutionName(index + 1)), canOpenRows: reopen, empty: emptyListLine(theme), ...(startAgain ? { startAgainLabel: START_AGAIN } : {}) };
+  return { heading: HEADING, backLabel: BACK, rows: solutions.map((_, index) => solutionName(index + 1)), canOpenRows: reopen, empty: emptyListLine(theme), ...(startAgain && solutions.length > 0 ? { startAgainLabel: START_AGAIN } : {}) };
 }
