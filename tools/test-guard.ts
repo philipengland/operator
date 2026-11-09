@@ -2,6 +2,7 @@
 // explained by a new row in specs/<feature>/test-changes.md (AGENTS.md). Pure; run-test-guard.ts feeds it.
 
 const TEST_FILE = /^(src|tools)\/.+\.spec\.ts$/;
+const RECORD_FILE = /^specs\/[^/]+\/test-changes\.md$/;
 
 export interface TestChange {
   readonly file: string;
@@ -11,12 +12,17 @@ export interface TestChange {
 
 /** The existing test files a `git diff` changes, and whether each change has been explained. */
 export function changedExistingTests(diff: string): readonly TestChange[] {
-  return sectionsOf(diff).filter(({ file, removedLines }) => TEST_FILE.test(file) && removedLines.length > 0).map(({ file, removedLines }) => ({ file, removedLines, isRecorded: false }));
+  const sections = sectionsOf(diff);
+  const recorded = sections.some(({ file, addedLines }) => RECORD_FILE.test(file) && addedLines.length > 0);
+  return sections
+    .filter(({ file, removedLines }) => TEST_FILE.test(file) && removedLines.length > 0)
+    .map(({ file, removedLines }) => ({ file, removedLines, isRecorded: recorded }));
 }
 
 interface FileDiff {
   readonly file: string;
   readonly removedLines: readonly string[];
+  readonly addedLines: readonly string[];
 }
 
 /** One entry per file in the diff. Only lines after the first @@ are changes; before it are headers. */
@@ -29,6 +35,7 @@ function sectionsOf(diff: string): readonly FileDiff[] {
       const firstHunk = lines.findIndex((line) => line.startsWith('@@'));
       const changes = firstHunk < 0 ? [] : lines.slice(firstHunk);
       const removedLines = changes.filter((line) => line.startsWith('-') && line.slice(1).trim() !== '').map((line) => line.slice(1));
-      return { file: header.slice(header.indexOf(' b/') + ' b/'.length), removedLines };
+      const addedLines = changes.filter((line) => line.startsWith('+')).map((line) => line.slice(1));
+      return { file: header.slice(header.indexOf(' b/') + ' b/'.length), removedLines, addedLines };
     });
 }
