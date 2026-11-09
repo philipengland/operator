@@ -28,4 +28,8 @@ describe('solutionViewProps', () => {
     expect(grid.rowPills[1]).toMatchObject({ operator: '×', isOpen: false });
     expect(grid.columnPills[0]).toMatchObject({ operator: '÷', isOpen: false });
   });
+
+  it('has no helper line, as there is nothing to swap (spec-006 AC-8)', () => {
+    expect(solutionViewProps(FOUND, 1).grid.helper).toBe('');
+  });
 });

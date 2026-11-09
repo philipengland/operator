@@ -14,6 +14,7 @@ export function solutionViewProps(state: SessionState, number: number): Solution
     backLabel: BACK,
     grid: {
       ...solved,
+      helper: '',
       columnPills: solved.columnPills.map(shownPill),
       rowPills: solved.rowPills.map(shownPill),
       cells: solved.cells.map((row) => row.map((cell) => ({ ...cell, isReadOnly: true }))),
