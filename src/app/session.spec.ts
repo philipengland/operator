@@ -284,4 +284,8 @@ describe('the counter with a very large total (spec-006)', () => {
   it('shows a total of 100 (spec-006 AC-23)', () => {
     expect(counterText(threeFoundOf(100))).toBe('Found 3 of 100');
   });
+
+  it('leaves out a total capped at 101 (spec-006 AC-24)', () => {
+    expect(counterText(threeFoundOf(101))).toBe('Found 3');
+  });
 });
