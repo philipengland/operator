@@ -87,7 +87,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 - [X] T023 [US1] AC-6: rows are heard as "Solution 1"; focus moves to the heading on arrival; the accessibility scan passes, in `src/ui/screens/solution-list.ts`
 - [X] T024 [US1] AC-25 and the reload edge case: TDD in `src/app/navigation.spec.ts`: a place to and from a history entry in `src/app/navigation.ts`; `src/app/main.ts` uses `pushState`, `history.back()` and `popstate`, and replaces the entry on opening (research R7)
 - [X] T025 [US1] Confirm `npm run build` keeps the counter untappable (flag off), and the flags-on build passes `solution-list.acceptance-spec.ts`. Update `specs/006-solution-log/tdd-log.md`. Push and open "spec-006 part 2 of 6: the list (flag off)". The owner merges
-- [ ] T026 [US1] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist). The owner may hold this until after User Story 2, to review both together. Then a one-line pull request sets `log` true in `src/app/features.ts`
+- [X] T026 [US1] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist). The owner may hold this until after User Story 2, to review both together. Then a one-line pull request sets `log` true in `src/app/features.ts`
 
 ---
 
@@ -106,7 +106,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 - [X] T033 [US2] AC-26: a solution is a history entry in `src/app/navigation.ts`, and the phone's back returns to the list, with focus on its row
 - [X] T034 [US2] AC-27: numbers follow the order found. ⚠️ May pass from AC-7: report, and prove with a reverted break
 - [X] T035 [US2] Confirm `npm run build` leaves rows as text with `reopen` off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 3 of 6: reopening (flag off)". The owner merges
-- [ ] T036 [US2] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `reopen` true in `src/app/features.ts`
+- [X] T036 [US2] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `reopen` true in `src/app/features.ts`
 
 ---
 
