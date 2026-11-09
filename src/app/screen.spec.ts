@@ -89,3 +89,18 @@ describe('playScreenProps', () => {
     expect(props.announcement).toBe("New solution found! You're connected! Keep 'em coming, pal! Found 1 of 2");
   });
 });
+
+describe('the counter with a very large total (spec-006)', () => {
+  const opened = (solutionCount: number) => {
+    const session = startSession();
+    return playScreenProps({ ...session, puzzle: { ...session.puzzle, solutionCount } }, CLASSIC);
+  };
+
+  it('leaves the total out of the counter when it is over 100 (spec-006 AC-24)', () => {
+    expect(opened(101).counter.total).toBeUndefined();
+  });
+
+  it('keeps a total of 100 in the counter (spec-006 AC-23)', () => {
+    expect(opened(100).counter.total).toBe(100);
+  });
+});

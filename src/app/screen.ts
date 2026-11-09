@@ -9,7 +9,7 @@ import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
 import type { LineWorkingProps } from '../ui/combined/line-working';
 import type { TargetPillProps } from '../ui/combined/target-pill';
-import { counterText, lineWorkings, type SessionState } from './session';
+import { counterText, lineWorkings, totalToShow, type SessionState } from './session';
 
 const TITLE = 'Hello, Operator!';
 const HELPER_LINE = 'Tap a dashed bubble to swap its operator.';
@@ -70,10 +70,15 @@ export function puzzleGridProps(state: SessionState): PuzzleGridProps {
   };
 }
 
+function counterProps(state: SessionState): PlayScreenProps['counter'] {
+  const total = totalToShow(state);
+  return total === undefined ? { found: state.found.size } : { found: state.found.size, total };
+}
+
 export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {
   return {
     header: { title: TITLE, message: bubbleLine(state.message, theme) },
-    counter: { found: state.found.size, total: state.puzzle.solutionCount },
+    counter: counterProps(state),
     grid: puzzleGridProps(state),
     mainButtonLabel: theme.buttonLabel,
     keysAvailable: state.selected !== null,
