@@ -1,0 +1,33 @@
+import { describe, expect, it } from 'vitest';
+import { workedExample, type Entry } from '../engine';
+import { readSolutions, saveSolution, type SolutionStore } from './solution-store';
+
+const KEY = 'operator.solutions.worked-example';
+const SOLUTION_A: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+const SOLUTION_B: Entry = { cells: [[null, 2], [3, 3]], rowOperators: [null, '+'], columnOperators: ['−', null] };
+
+/** A store held in memory, starting with these records. */
+function storeWith(records: Readonly<Record<string, string>> = {}): SolutionStore & { readonly records: Map<string, string> } {
+  const held = new Map(Object.entries(records));
+  return {
+    records: held,
+    read: (key) => held.get(key) ?? null,
+    write: (key, value) => {
+      if (value === null) {
+        held.delete(key);
+      } else {
+        held.set(key, value);
+      }
+    },
+  };
+}
+
+describe('saveSolution', () => {
+  it('writes the agreed format, under the puzzle\'s own key (spec-006 AC-14)', () => {
+    const store = storeWith();
+
+    saveSolution(store, workedExample, SOLUTION_A);
+
+    expect(JSON.parse(store.records.get(KEY) ?? 'null')).toEqual({ format: 1, solutions: [SOLUTION_A] });
+  });
+});
