@@ -91,7 +91,7 @@ export function applyAction(state: SessionState, action: SessionAction): Session
     case 'openSolution':
       return { ...state, place: { kind: 'solution', number: action.number } };
     case 'showPlace':
-      return { ...state, place: action.place };
+      return showPlace(state, action.place);
   }
 }
 
@@ -146,4 +146,10 @@ function submit(state: SessionState): SessionState {
   const found = new Set([...state.found, result.key]);
   const isEverySolutionFound = found.size >= state.puzzle.solutionCount;
   return { ...state, found, solutions: [...state.solutions, state.entry], message: isEverySolutionFound ? 'all-found' : 'new-solution' };
+}
+
+/** History can hold a solution this session has not found, after a reload. */
+function showPlace(state: SessionState, place: Place): SessionState {
+  const isMissing = place.kind === 'solution' && state.solutions[place.number - 1] === undefined;
+  return { ...state, place: isMissing ? { kind: 'list' } : place };
 }
