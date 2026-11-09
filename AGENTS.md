@@ -61,6 +61,7 @@ npm run build
 
 # Checks the pipeline runs first
 npm run exceptions:check        # no recorded exception has expired
+npm run tests:guard             # no existing unit test changed without a recorded reason (compares with origin/main)
 npm run lint
 npm run typecheck               # app, engine (no DOM types), acceptance, tools
 
@@ -168,5 +169,9 @@ npm run build:flags-on          # the game with every feature flag on, in dist-f
   `playwright.config.ts` says which scenario file needs which flag: while a flag is off, that file
   runs on `iphone-flagged` and `android-flagged` against `dist-flags-on/`, and releasing a story
   changes no locked file. No story is behind a flag at present. Why: every merge deploys, so `main` must always be fit for players.
+- **Existing unit tests are protected.** Amend or delete one only when a specific change in functionality makes it
+  obsolete, and record it in `specs/<feature>/test-changes.md`: `| File | Test | Requirement (FR-, AC-, SC- or task) | Why the test is obsolete |`.
+  `verify` fails a pull request that removes or changes a line of an existing `*.spec.ts` without a new row for that file. Adding tests is
+  always allowed. Why: a script overwrote an existing test during spec-006, and neither `verify` nor coverage noticed (2026-11-09).
 - **Run TypeScript tools with** `node --experimental-strip-types` (see `exceptions:check`).
   Why: no extra dependency is needed to run a `.ts` tool on Node 22.

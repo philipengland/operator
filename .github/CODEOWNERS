@@ -14,4 +14,5 @@
 /test/acceptance/library/examples.ts         @philipengland
 # Approval records, and this file
 /specs/*/acceptance.md                       @philipengland
+/specs/*/test-changes.md                     @philipengland
 /.github/CODEOWNERS                          @philipengland

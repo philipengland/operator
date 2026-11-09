@@ -35,6 +35,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref || github.sha }}
+          # The whole history: the existing-test check compares with the pull request's base.
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -47,6 +49,12 @@ jobs:
 
       - name: Check no recorded exception has expired (Baseline 9)
         run: npm run exceptions:check
+
+      - name: Check no existing unit test changed without a recorded reason
+        if: github.event_name == 'pull_request'
+        run: npm run tests:guard
+        env:
+          TEST_GUARD_BASE: ${{ github.event.pull_request.base.sha }}
 
       - name: Lint
         run: npm run lint
