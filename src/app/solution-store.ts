@@ -22,9 +22,9 @@ export interface SolutionStore {
 }
 
 /** Keeps the phone in step with the session, after one action. */
-export function rememberChange(store: SolutionStore, _previous: SessionState, next: SessionState): void {
+export function rememberChange(store: SolutionStore, previous: SessionState, next: SessionState): void {
   const latest = next.solutions.at(-1);
-  if (latest !== undefined) {
+  if (latest !== undefined && next.solutions.length > previous.solutions.length) {
     saveSolution(store, next.puzzle, latest);
   }
 }

@@ -136,4 +136,15 @@ describe('rememberChange', () => {
 
     expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A]);
   });
+
+  it('saves nothing when no new solution was found (spec-006 AC-16)', () => {
+    const store = storeWith();
+    const afterA = found(SOLUTION_A);
+    rememberChange(store, before, afterA);
+    const saved = store.records.get(KEY);
+
+    rememberChange(store, afterA, found(SOLUTION_A, afterA));
+
+    expect(store.records.get(KEY)).toBe(saved);
+  });
 });
