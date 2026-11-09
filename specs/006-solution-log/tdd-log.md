@@ -93,3 +93,36 @@ story. Players' build (flag off): the counter is not a button. No overflow at ei
 - `32df17a` feat(app): going back leaves the puzzle as it was (spec-006 AC-5)
 - `1750583` feat(app): a history entry says which screen it is for (spec-006 AC-5)
 - `b2c6baa` feat(app): back returns to the puzzle, by the screen or the phone (spec-006 AC-5, AC-25)
+
+## Part 3: User Story 2, reopening (T027 to T035)
+
+Scenarios: `reopen-solution.acceptance-spec.ts`, unchanged from `df93d38` (blob confirmed). **No existing test was amended.**
+
+- **AC-7, acceptance RED**: `locator.tap: Test timeout` (rows were text). Unit cycles, each failing on its assertion first: `openSolution`; a solution that does not exist shows the list;
+  the view's heading; that solution's digits; nothing to tap; no helper line; a history entry for a solution, and a bad number as the puzzle; rows can be opened once released.
+- **Refactor**: the puzzle grid mapping became `puzzleGridProps`, so the view shares the live grid's mapping.
+
+**Reported — passed before their own code**, each proven by a reverted break:
+
+| Criterion | Break | Failed |
+| --- | --- | --- |
+| AC-8 | cells stay buttons | on both phones |
+| AC-9 | opening loads it into the grid | on both phones |
+| AC-10 | cells have no spoken name | on both phones |
+| AC-26 | opening adds no history entry | on both phones |
+| AC-27 | always the first solution | on both phones |
+
+Commits:
+
+- `d180956` feat(app): a found solution can be opened (spec-006 AC-7)
+- `208d0f3` feat(app): a solution that does not exist shows the list (spec-006 FR-606)
+- `e2b59d0` refactor(app): the puzzle grid mapping can be reused
+- `bfbe3e8` feat(app): a solution is headed by its number (spec-006 AC-7)
+- `ea7ed74` feat(app): the view shows that solution (spec-006 AC-7)
+- `f56ca78` feat(app): nothing in the view can be tapped (spec-006 AC-8)
+- `af37716` feat(app): the view has no helper line (spec-006 AC-8)
+- `fcbc889` feat(app): a history entry can be for a solution (spec-006 AC-26)
+- `a07ddd7` feat(app): a history entry with a bad number is the puzzle (spec-006 FR-606)
+- `56c953c` feat(app): rows can be opened once released (spec-006 AC-7)
+- `ab3786e` feat(app): a found solution opens in its read-only view (spec-006 AC-7)
+- `7e3e5bc` test(acceptance): the driver has no unused stub

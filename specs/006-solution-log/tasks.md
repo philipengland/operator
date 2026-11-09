@@ -97,15 +97,15 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 
 **Independent Test**: find Solution A, start another entry, reopen Solution A, go back and see the entry unchanged.
 
-- [ ] T027 [US2] Create `006-solution-log-part-3` from `main`; bring `test/acceptance/play/reopen-solution.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob); add the `reopen` flag, off, in `src/app/features.ts` and `playwright.config.ts`
-- [ ] T028 [US2] UI driver methods in `test/acceptance/drivers/ui/game.ui-driver.ts`: `tapSolution`, `tapInSolution`, `solutionView`, `solutionHeard`, `controlsOnScreen`
-- [ ] T029 [US2] AC-7: TDD in `src/app/session.spec.ts`: `openSolution(number)`; in `src/app/screen.spec.ts`: view props reuse the grid mapping with the found entry, open pills become shown pills with the player's operator, every line reaches its target, the helper line is empty; `src/app/main.ts` shows the view
-- [ ] T030 [US2] AC-8: nothing in the view can be tapped except "Back"; no keypad and no main button, in `src/ui/screens/solution-view.ts`
-- [ ] T031 [US2] AC-9: TDD in `src/app/session.spec.ts`: `showPlace` from a solution returns to the list, and opening one changes neither the grid, the count nor the list
-- [ ] T032 [US2] AC-10: the heading takes focus on arrival; cells and workings are heard as named in `specs/006-solution-log/contracts/play-screen-changes.md`; the accessibility scan passes
-- [ ] T033 [US2] AC-26: a solution is a history entry in `src/app/navigation.ts`, and the phone's back returns to the list, with focus on its row
-- [ ] T034 [US2] AC-27: numbers follow the order found. ⚠️ May pass from AC-7: report, and prove with a reverted break
-- [ ] T035 [US2] Confirm `npm run build` leaves rows as text with `reopen` off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 3 of 6: reopening (flag off)". The owner merges
+- [X] T027 [US2] Create `006-solution-log-part-3` from `main`; bring `test/acceptance/play/reopen-solution.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob); add the `reopen` flag, off, in `src/app/features.ts` and `playwright.config.ts`
+- [X] T028 [US2] UI driver methods in `test/acceptance/drivers/ui/game.ui-driver.ts`: `tapSolution`, `tapInSolution`, `solutionView`, `solutionHeard`, `controlsOnScreen`
+- [X] T029 [US2] AC-7: TDD in `src/app/session.spec.ts`: `openSolution(number)`; in `src/app/screen.spec.ts`: view props reuse the grid mapping with the found entry, open pills become shown pills with the player's operator, every line reaches its target, the helper line is empty; `src/app/main.ts` shows the view
+- [X] T030 [US2] AC-8: nothing in the view can be tapped except "Back"; no keypad and no main button, in `src/ui/screens/solution-view.ts`
+- [X] T031 [US2] AC-9: TDD in `src/app/session.spec.ts`: `showPlace` from a solution returns to the list, and opening one changes neither the grid, the count nor the list
+- [X] T032 [US2] AC-10: the heading takes focus on arrival; cells and workings are heard as named in `specs/006-solution-log/contracts/play-screen-changes.md`; the accessibility scan passes
+- [X] T033 [US2] AC-26: a solution is a history entry in `src/app/navigation.ts`, and the phone's back returns to the list, with focus on its row
+- [X] T034 [US2] AC-27: numbers follow the order found. ⚠️ May pass from AC-7: report, and prove with a reverted break
+- [X] T035 [US2] Confirm `npm run build` leaves rows as text with `reopen` off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 3 of 6: reopening (flag off)". The owner merges
 - [ ] T036 [US2] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `reopen` true in `src/app/features.ts`
 
 ---
