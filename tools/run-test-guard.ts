@@ -6,7 +6,8 @@ import { execFileSync } from 'node:child_process';
 import { changedExistingTests } from './test-guard.ts';
 
 const BASE = process.env.TEST_GUARD_BASE ?? 'origin/main';
-const LARGEST_DIFF_IN_BYTES = 64 * 1024 * 1024;
+// 64 MB.
+const LARGEST_DIFF_IN_BYTES = 67_108_864;
 const WATCHED = [':(glob)src/**/*.spec.ts', ':(glob)tools/**/*.spec.ts', ':(glob)specs/*/test-changes.md'];
 
 const diff = execFileSync('git', ['diff', '-w', '--no-renames', `${BASE}...HEAD`, '--', ...WATCHED], {
