@@ -126,3 +126,8 @@ Commits:
 - `56c953c` feat(app): rows can be opened once released (spec-006 AC-7)
 - `ab3786e` feat(app): a found solution opens in its read-only view (spec-006 AC-7)
 - `7e3e5bc` test(acceptance): the driver has no unused stub
+
+## Release: the list and the read-only view (T026, T036)
+
+- The owner reviewed the flags-on build on a phone, together, on 2026-11-09 ("looks great"), as the plan allows.
+- `log` and `reopen` set true in `src/app/features.ts`. Their scenario files now run on the game's own phones.
