@@ -37,4 +37,10 @@ describe('changedExistingTests', () => {
 
     expect(changedExistingTests(explained)[0]?.isRecorded).toBe(true);
   });
+
+  it('does not accept a row that names no requirement', () => {
+    const unexplained = REMOVED + diffOf(RECORD, row(TEST_FILE, 'tidying', 'It looked untidy.'));
+
+    expect(changedExistingTests(unexplained)[0]?.isRecorded).toBe(false);
+  });
 });

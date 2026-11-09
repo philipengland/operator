@@ -3,6 +3,9 @@
 
 const TEST_FILE = /^(src|tools)\/.+\.spec\.ts$/;
 const RECORD_FILE = /^specs\/[^/]+\/test-changes\.md$/;
+const REQUIREMENT = /\b(?:FR-|AC-|SC-|T)\d+\b/;
+// Splitting on | leaves an empty first cell, so the columns start at 1.
+const REQUIREMENT_COLUMN = 3;
 
 export interface TestChange {
   readonly file: string;
@@ -13,7 +16,7 @@ export interface TestChange {
 /** The existing test files a `git diff` changes, and whether each change has been explained. */
 export function changedExistingTests(diff: string): readonly TestChange[] {
   const sections = sectionsOf(diff);
-  const recorded = sections.some(({ file, addedLines }) => RECORD_FILE.test(file) && addedLines.length > 0);
+  const recorded = sections.filter(({ file }) => RECORD_FILE.test(file)).flatMap(({ addedLines }) => addedLines.filter(explainsAChange)).length > 0;
   return sections
     .filter(({ file, removedLines }) => TEST_FILE.test(file) && removedLines.length > 0)
     .map(({ file, removedLines }) => ({ file, removedLines, isRecorded: recorded }));
@@ -38,4 +41,10 @@ function sectionsOf(diff: string): readonly FileDiff[] {
       const addedLines = changes.filter((line) => line.startsWith('+')).map((line) => line.slice(1));
       return { file: header.slice(header.indexOf(' b/') + ' b/'.length), removedLines, addedLines };
     });
+}
+
+/** A row of the record: | `file` | test | requirement | why |. */
+function explainsAChange(row: string): boolean {
+  const requirement = row.split('|')[REQUIREMENT_COLUMN]?.trim() ?? '';
+  return REQUIREMENT.test(requirement);
 }
