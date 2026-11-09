@@ -21,4 +21,9 @@ describe('solutionListModel', () => {
   it('has a way back, in the words it is given', () => {
     expect(solutionListModel(WITH_ONE).back).toEqual({ label: 'Back', style: 'key' });
   });
+
+  it('says what it says when it is empty, and only then', () => {
+    expect(solutionListModel({ ...WITH_ONE, rows: [] }).empty).toEqual(WITH_ONE.empty);
+    expect(solutionListModel(WITH_ONE).empty).toBeNull();
+  });
 });
