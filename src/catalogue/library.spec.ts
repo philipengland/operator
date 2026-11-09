@@ -7,9 +7,9 @@ describe('LIBRARY', () => {
 
     expect(names).toEqual({
       Foundations: [],
-      'Simple components': ['Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot'],
-      'Combined components': ['Speech bubble', 'Operator header', 'Solutions counter', 'Target pill', 'Grid cell', 'Line working', 'Puzzle grid', 'Keypad'],
-      Screens: ['Play screen'],
+      'Simple components': ['Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot', 'Dialog'],
+      'Combined components': ['Speech bubble', 'Operator header', 'Solutions counter', 'Target pill', 'Grid cell', 'Line working', 'Puzzle grid', 'Keypad', 'Confirm dialog'],
+      Screens: ['Play screen', 'Solution list', 'Solution view'],
     });
   });
 
@@ -27,12 +27,15 @@ describe('LIBRARY', () => {
       'Line working': ['Text', 'Icon'],
       'Puzzle grid': ['Surface', 'Target pill', 'Grid cell', 'Line working', 'Text'],
       Keypad: ['Button'],
+      'Confirm dialog': ['Dialog', 'Text', 'Button'],
     });
   });
 
   it('says what the play screen is built from', () => {
     expect(LIBRARY.Screens).toEqual([
       { name: 'Play screen', builtFrom: ['Operator header', 'Solutions counter', 'Puzzle grid', 'Keypad', 'Button'] },
+      { name: 'Solution list', builtFrom: ['Operator header', 'Button'] },
+      { name: 'Solution view', builtFrom: ['Operator header', 'Button', 'Puzzle grid'] },
     ]);
   });
 });
