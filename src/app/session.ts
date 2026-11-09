@@ -88,7 +88,7 @@ export function applyAction(state: SessionState, action: SessionAction): Session
     case 'openList':
       return { ...state, place: { kind: 'list' } };
     case 'showPlace':
-      return state;
+      return { ...state, place: action.place };
   }
 }
 

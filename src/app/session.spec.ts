@@ -203,6 +203,13 @@ describe('the list of solutions (spec-006)', () => {
 
     expect(applyAction(opened, { type: 'openList' })).toEqual({ ...opened, place: { kind: 'list' } });
   });
+
+  it('goes back to the puzzle exactly as it was (spec-006 AC-5)', () => {
+    const tapped = applyAction(startSession(), { type: 'tapCell', row: 0, column: 1 });
+    const onTheList = applyAction(tapped, { type: 'openList' });
+
+    expect(applyAction(onTheList, { type: 'showPlace', place: { kind: 'play' } })).toEqual(tapped);
+  });
 });
 
 describe('remembering the solutions found (spec-006)', () => {
