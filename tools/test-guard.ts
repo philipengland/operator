@@ -1,6 +1,8 @@
 // Protects existing unit tests: every line removed from a test file that already exists must be
 // explained by a new row in specs/<feature>/test-changes.md (AGENTS.md). Pure; run-test-guard.ts feeds it.
 
+const TEST_FILE = /^(src|tools)\/.+\.spec\.ts$/;
+
 export interface TestChange {
   readonly file: string;
   readonly removedLines: readonly string[];
@@ -9,7 +11,7 @@ export interface TestChange {
 
 /** The existing test files a `git diff` changes, and whether each change has been explained. */
 export function changedExistingTests(diff: string): readonly TestChange[] {
-  return sectionsOf(diff).filter(({ removedLines }) => removedLines.length > 0).map(({ file, removedLines }) => ({ file, removedLines, isRecorded: false }));
+  return sectionsOf(diff).filter(({ file, removedLines }) => TEST_FILE.test(file) && removedLines.length > 0).map(({ file, removedLines }) => ({ file, removedLines, isRecorded: false }));
 }
 
 interface FileDiff {

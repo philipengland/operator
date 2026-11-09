@@ -24,4 +24,8 @@ describe('changedExistingTests', () => {
   it('ignores a removed blank line', () => {
     expect(changedExistingTests(diffOf(TEST_FILE, '-   '))).toEqual([]);
   });
+
+  it('looks only at unit test files', () => {
+    expect(changedExistingTests(diffOf('src/app/session.ts', '-  return state;'))).toEqual([]);
+  });
 });
