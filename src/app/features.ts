@@ -5,9 +5,11 @@
 export interface Features {
   /** spec-006 User Story 1: the list of solutions found. */
   readonly log: boolean;
+  /** spec-006 User Story 2: opening a found solution. */
+  readonly reopen: boolean;
 }
 
-export const RELEASED: Features = { log: false };
+export const RELEASED: Features = { log: false, reopen: false };
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';

@@ -24,7 +24,7 @@ import {
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
 /** Which screen is showing (spec-006 FR-601). */
-export type Place = { readonly kind: 'play' } | { readonly kind: 'list' };
+export type Place = { readonly kind: 'play' } | { readonly kind: 'list' } | { readonly kind: 'solution'; readonly number: number };
 
 export interface SessionState {
   readonly puzzle: Puzzle;
@@ -45,6 +45,7 @@ export type SessionAction =
   | { readonly type: 'key'; readonly digit: Digit }
   | { readonly type: 'clear' }
   | { readonly type: 'openList' }
+  | { readonly type: 'openSolution'; readonly number: number }
   | { readonly type: 'showPlace'; readonly place: Place };
 
 export function startSession(): SessionState {
@@ -87,6 +88,8 @@ export function applyAction(state: SessionState, action: SessionAction): Session
       return setSelectedCell(state, null);
     case 'openList':
       return { ...state, place: { kind: 'list' } };
+    case 'openSolution':
+      return { ...state, place: { kind: 'solution', number: action.number } };
     case 'showPlace':
       return { ...state, place: action.place };
   }

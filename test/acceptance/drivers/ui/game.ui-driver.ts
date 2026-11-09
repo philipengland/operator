@@ -2,7 +2,7 @@
 // role and accessible name (docs/contracts/play-screen.md).
 
 import type { Locator, Page } from '@playwright/test';
-import type { KeypadKey, Cell, Line } from '../../dsl/vocabulary';
+import type { KeypadKey, Cell, Line, SolutionName } from '../../dsl/vocabulary';
 import { scanForAccessibilityProblems } from '../../support/axe';
 import { DEFAULT_VIEW } from '../default-view';
 import type { GameDriver, GameScreenName, KeypadKeyView, GameView, PopUpView, SolutionView, WorkingView } from '../game.driver';
@@ -18,7 +18,7 @@ import {
   pillIn,
 } from './screen-names';
 import { shownText } from './catalogue-reading';
-import { readGameScreen } from './game-reading';
+import { readGameScreen, readHeardTexts } from './game-reading';
 
 const GAME_READY_TIMEOUT_MS = 5_000;
 
@@ -58,13 +58,9 @@ export class UiGameDriver implements GameDriver {
     await scanForAccessibilityProblems(this.page);
   }
 
-  tapSolution = notBuiltYet;
-  tapInSolution = notBuiltYet;
   tapStartAgain = notBuiltYet;
   doubleTapStartAgain = notBuiltYet;
   tapPopUpButton = notBuiltYet;
-  solutionHeard = nothingListedYet;
-  controlsOnScreen = nothingListedYet;
 
   async tapCounter(): Promise<void> {
     await this.page.getByRole('button', { name: COUNTER_PATTERN }).tap();
@@ -105,13 +101,35 @@ export class UiGameDriver implements GameDriver {
     );
   }
 
+  async tapSolution(solution: SolutionName): Promise<void> {
+    await this.page.getByRole('button', { name: solution, exact: true }).tap();
+    await scanForAccessibilityProblems(this.page);
+  }
+
+  async tapInSolution(place: Cell | Line): Promise<void> {
+    const puzzle = this.solution().getByRole('group', { name: 'Puzzle', exact: true });
+    const isCell = (CELLS as readonly string[]).includes(place);
+    await (isCell ? puzzle.getByText(cellNamePattern(place as Cell)).locator('xpath=..') : pillIn(puzzle, place as Line)).tap();
+  }
+
   async solutionView(): Promise<SolutionView> {
+    const texts = await this.solutionHeard();
+    const screen = { buttons: [], texts, status: '' };
+    const pills = mapEach(LINES, (line) => readPill(line, screen));
     return {
-      title: '',
-      cells: mapEach(CELLS, () => ({ value: 'empty', isGiven: false })),
-      operators: mapEach(LINES, () => 'not chosen'),
-      marks: mapEach(LINES, () => 'none'),
+      title: texts.find((text) => SOLUTION_NAME.test(text)) ?? '',
+      cells: mapEach(CELLS, (cell) => readCellName(cell, texts.find((name) => cellNamePattern(cell).test(name)) ?? '')),
+      operators: mapEach(LINES, (line) => pills[line].choice),
+      marks: mapEach(LINES, (line) => workingFrom(line, texts).mark),
     };
+  }
+
+  async solutionHeard(): Promise<readonly string[]> {
+    return this.solution().evaluate(readHeardTexts);
+  }
+
+  async controlsOnScreen(): Promise<readonly string[]> {
+    return Promise.all((await this.page.getByRole('button').all()).map(accessibleName));
   }
 
   async popUp(): Promise<PopUpView | null> {
@@ -120,6 +138,12 @@ export class UiGameDriver implements GameDriver {
 
   async focusedControl(): Promise<string> {
     return '';
+  }
+
+  private solution(): Locator {
+    return this.page
+      .getByRole('heading', { name: SOLUTION_NAME })
+      .locator('xpath=ancestor::div[contains(concat(" ", normalize-space(@class), " "), " solution-view ")]');
   }
 
   private listHeading(): Locator {

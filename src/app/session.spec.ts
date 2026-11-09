@@ -210,6 +210,12 @@ describe('the list of solutions (spec-006)', () => {
 
     expect(applyAction(onTheList, { type: 'showPlace', place: { kind: 'play' } })).toEqual(tapped);
   });
+
+  it('opens a found solution, changing nothing else (spec-006 AC-7)', () => {
+    const onTheList = applyAction(startSession(), { type: 'openList' });
+
+    expect(applyAction(onTheList, { type: 'openSolution', number: 1 })).toEqual({ ...onTheList, place: { kind: 'solution', number: 1 } });
+  });
 });
 
 describe('remembering the solutions found (spec-006)', () => {
