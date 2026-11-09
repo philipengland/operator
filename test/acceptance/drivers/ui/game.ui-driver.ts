@@ -5,7 +5,7 @@ import type { Locator, Page } from '@playwright/test';
 import type { KeypadKey, Cell, Line } from '../../dsl/vocabulary';
 import { scanForAccessibilityProblems } from '../../support/axe';
 import { DEFAULT_VIEW } from '../default-view';
-import type { GameDriver, KeypadKeyView, GameView, WorkingView } from '../game.driver';
+import type { GameDriver, GameScreenName, KeypadKeyView, GameView, PopUpView, SolutionView, WorkingView } from '../game.driver';
 import { CELLS, LINES } from '../positions';
 import {
   cellNamePattern,
@@ -30,6 +30,10 @@ interface AnnouncementCounter {
 const NOT_READ_YET = 'not read yet';
 const BUBBLE_TITLE = 'Hello, Operator!';
 
+// spec-006: each story's part replaces these with what the screen shows.
+const notBuiltYet = async (): Promise<void> => undefined;
+const nothingListedYet = async (): Promise<readonly string[]> => [];
+
 export class UiGameDriver implements GameDriver {
   constructor(private readonly page: Page) {}
 
@@ -51,6 +55,43 @@ export class UiGameDriver implements GameDriver {
   async check(): Promise<void> {
     await this.page.getByRole('button', { name: 'Check' }).tap();
     await scanForAccessibilityProblems(this.page);
+  }
+
+  tapCounter = notBuiltYet;
+  tapBack = notBuiltYet;
+  tapSolution = notBuiltYet;
+  tapInSolution = notBuiltYet;
+  tapStartAgain = notBuiltYet;
+  doubleTapStartAgain = notBuiltYet;
+  tapPopUpButton = notBuiltYet;
+  solutionsShown = nothingListedYet;
+  solutionsHeard = nothingListedYet;
+  solutionHeard = nothingListedYet;
+  controlsOnScreen = nothingListedYet;
+
+  async screenShowing(): Promise<GameScreenName> {
+    return 'puzzle';
+  }
+
+  async emptyList(): Promise<{ readonly shown: string; readonly heardAs: string }> {
+    return { shown: '', heardAs: '' };
+  }
+
+  async solutionView(): Promise<SolutionView> {
+    return {
+      title: '',
+      cells: mapEach(CELLS, () => ({ value: 'empty', isGiven: false })),
+      operators: mapEach(LINES, () => 'not chosen'),
+      marks: mapEach(LINES, () => 'none'),
+    };
+  }
+
+  async popUp(): Promise<PopUpView | null> {
+    return null;
+  }
+
+  async focusedControl(): Promise<string> {
+    return '';
   }
 
   /** The whole screen, read in one browser call. */

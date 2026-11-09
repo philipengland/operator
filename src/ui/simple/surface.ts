@@ -10,12 +10,21 @@ export { surfaceModel, type SurfaceFill, type SurfaceProps, type SurfaceVariant 
 /** Simple components are built from the foundations only. */
 export const builtFrom: readonly string[] = [];
 
-export function createSurface(props: SurfaceProps, content: readonly Node[] = []): Component<SurfaceProps> {
-  const element = document.createElement('div');
+/** A surface; with `onTap` the whole surface is a real button, named by what it holds. */
+export function createSurface(props: SurfaceProps, content: readonly Node[] = [], onTap?: () => void): Component<SurfaceProps> {
+  const element = onTap ? createTapTarget(onTap) : document.createElement('div');
   element.append(...content);
+  const isTappable = onTap !== undefined;
   const update = (next: SurfaceProps): void => {
-    element.className = surfaceModel(next).classes.join(' ');
+    element.className = surfaceModel({ ...next, isTappable }).classes.join(' ');
   };
   update(props);
   return { element, update };
+}
+
+function createTapTarget(onTap: () => void): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.addEventListener('click', onTap);
+  return button;
 }

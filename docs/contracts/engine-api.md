@@ -139,3 +139,8 @@ export function nextOperator(operator: Operator | null): Operator;
 | Solution A | every line | `result`, reachesTarget true |
 | Test puzzle, Row 1 target −3, operator −: 6 then 9 | Row 1 | `result`, value −3, reachesTarget true (AC-12) |
 | Same test puzzle: 6 then 8 | Row 1 | `result`, value −2, reachesTarget false (AC-12) |
+
+## Additions for the solution log (spec-006)
+
+`Puzzle` gains `id: string`: which puzzle saved solutions belong to. The fixed puzzle's is `worked-example`. A seeded puzzle's will
+come from its seed and settings (F7).

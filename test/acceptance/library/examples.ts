@@ -14,7 +14,7 @@ export const THEME_COLOURS: Readonly<Record<ThemeName, ThemeColours>> = {
 
 export const ALL_THEMES = Object.keys(THEME_COLOURS) as readonly ThemeName[];
 
-export const SIMPLE_COMPONENTS: readonly SimpleComponent[] = ['Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot'];
+export const SIMPLE_COMPONENTS: readonly SimpleComponent[] = ['Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot', 'Dialog'];
 
 export const COMBINED_COMPONENTS: readonly CombinedComponent[] = [
   'Speech bubble',
@@ -25,4 +25,5 @@ export const COMBINED_COMPONENTS: readonly CombinedComponent[] = [
   'Line working',
   'Puzzle grid',
   'Keypad',
+  'Confirm dialog',
 ];

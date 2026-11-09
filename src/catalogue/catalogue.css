@@ -118,3 +118,10 @@ main.screen-view {
 a {
   color: var(--ink);
 }
+
+/* The new screens fill the phone in the game; here they sit among the samples. */
+.sample .solution-list,
+.sample .solution-view {
+  height: auto;
+  padding: 0;
+}

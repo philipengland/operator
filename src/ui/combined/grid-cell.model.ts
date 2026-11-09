@@ -12,10 +12,12 @@ export interface GridCellProps {
   readonly isSelected?: boolean;
   /** In a row or column that reaches its target. */
   readonly isInCorrectLine?: boolean;
+  /** Shown but not offered as something to tap (spec-006 FR-606). */
+  readonly isReadOnly?: boolean;
 }
 
 /** The Button that shows the cell. */
-export function gridCellModel({ name, digit, isGiven = false, isSelected = false, isInCorrectLine = false }: GridCellProps): ButtonProps {
+export function gridCellModel({ name, digit, isGiven = false, isSelected = false, isInCorrectLine = false, isReadOnly = false }: GridCellProps): ButtonProps {
   const label = digit === null ? '' : String(digit);
   // Selected wins: the player must always see which cell the keypad will fill (data model).
   const hasCorrectLook = isInCorrectLine && !isSelected;
@@ -25,6 +27,7 @@ export function gridCellModel({ name, digit, isGiven = false, isSelected = false
     style: hasCorrectLook ? 'cell-correct' : 'cell',
     isUnavailable: isGiven,
     isSelected,
+    ...(isReadOnly ? { isReadOnly } : {}),
   };
 }
 

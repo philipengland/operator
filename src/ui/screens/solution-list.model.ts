@@ -1,0 +1,35 @@
+// Solution list (screen): the solutions found, or a line saying there are none (spec-006 FR-602, FR-603;
+// docs/contracts/component-library.md). Wording is passed in.
+
+import type { SpeechBubbleProps } from '../combined/speech-bubble';
+import type { ButtonProps } from '../simple/button';
+
+export interface SolutionListProps {
+  readonly heading: string;
+  readonly backLabel: string;
+  /** Each found solution's name, in the order found. */
+  readonly rows: readonly string[];
+  /** False shows the rows as text, not as buttons. */
+  readonly canOpenRows: boolean;
+  /** What the list says when it is empty, and what a screen reader hears instead. */
+  readonly empty: { readonly shown: string; readonly heardAs: string };
+  /** The way to clear everything; left out when there is none to offer. */
+  readonly startAgainLabel?: string;
+}
+
+export interface SolutionListModel {
+  readonly back: ButtonProps;
+  readonly rows: readonly ButtonProps[];
+  readonly empty: SolutionListProps['empty'] | null;
+  readonly startAgain: ButtonProps | null;
+}
+
+/** The bubble at the top: the heading, and what an empty list says. */
+export function solutionListHeader({ heading, rows, empty }: SolutionListProps): SpeechBubbleProps {
+  return { title: heading, message: rows.length === 0 ? empty.shown : '', isMessageHeard: false, isTitleHeading: true };
+}
+
+export function solutionListModel({ backLabel, rows, canOpenRows, empty, startAgainLabel }: SolutionListProps): SolutionListModel {
+  const asRow = (label: string): ButtonProps => (canOpenRows ? { label, style: 'key' } : { label, style: 'key', isReadOnly: true });
+  return { back: { label: backLabel, style: 'key' }, rows: rows.map(asRow), empty: rows.length === 0 ? empty : null, startAgain: startAgainLabel === undefined ? null : { label: startAgainLabel, style: 'solid' } };
+}

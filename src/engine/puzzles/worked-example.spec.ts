@@ -4,6 +4,7 @@ import { workedExample } from './worked-example';
 describe('workedExample', () => {
   it('is the 2 × 2 puzzle from the project brief, with two solutions', () => {
     expect(workedExample).toEqual({
+      id: 'worked-example',
       rows: 2,
       columns: 2,
       givens: [

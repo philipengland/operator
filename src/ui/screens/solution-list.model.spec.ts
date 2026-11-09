@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest';
+import { solutionListHeader, solutionListModel, type SolutionListProps } from './solution-list.model';
+
+const WITH_ONE: SolutionListProps = {
+  heading: 'Solutions',
+  backLabel: 'Back',
+  rows: ['Solution 1'],
+  canOpenRows: true,
+  empty: { shown: 'No calls yet, pal.', heardAs: 'No solutions found yet' },
+};
+
+describe('solutionListModel', () => {
+  it('offers each solution as a key to tap', () => {
+    expect(solutionListModel(WITH_ONE).rows).toEqual([{ label: 'Solution 1', style: 'key' }]);
+  });
+
+  it('shows rows as text while they cannot be opened', () => {
+    expect(solutionListModel({ ...WITH_ONE, canOpenRows: false }).rows).toEqual([{ label: 'Solution 1', style: 'key', isReadOnly: true }]);
+  });
+
+  it('has a way back, in the words it is given', () => {
+    expect(solutionListModel(WITH_ONE).back).toEqual({ label: 'Back', style: 'key' });
+  });
+
+  it('says what it says when it is empty, and only then', () => {
+    expect(solutionListModel({ ...WITH_ONE, rows: [] }).empty).toEqual(WITH_ONE.empty);
+    expect(solutionListModel(WITH_ONE).empty).toBeNull();
+  });
+
+  it('offers "Start again" in solid ink when it is given the words, and not otherwise', () => {
+    expect(solutionListModel({ ...WITH_ONE, startAgainLabel: 'Start again' }).startAgain).toEqual({ label: 'Start again', style: 'solid' });
+    expect(solutionListModel(WITH_ONE).startAgain).toBeNull();
+  });
+});
+
+describe('solutionListHeader', () => {
+  it('heads the screen, and is where an empty list speaks, heard separately', () => {
+    expect(solutionListHeader({ ...WITH_ONE, rows: [] })).toEqual({ title: 'Solutions', message: 'No calls yet, pal.', isMessageHeard: false, isTitleHeading: true });
+  });
+});

@@ -15,7 +15,8 @@ export { solutionsCounterModel, type SolutionsCounterProps } from './solutions-c
 /** The simple components this one is laid out from (spec-003 AC-7). */
 export const builtFrom: readonly string[] = ['Surface', 'Text', 'Badge', 'Icon'];
 
-export function createSolutionsCounter(props: SolutionsCounterProps): Component<SolutionsCounterProps> {
+/** The counter; with `onTap` the whole of it is a button, still named "Found 1 of 2" (spec-006 FR-601). */
+export function createSolutionsCounter(props: SolutionsCounterProps, onTap?: () => void): Component<SolutionsCounterProps> {
   const name = document.createElement('span');
   name.className = 'visually-hidden';
   const tick = createIcon({ icon: 'tick' });
@@ -25,7 +26,7 @@ export function createSolutionsCounter(props: SolutionsCounterProps): Component<
   shown.className = 'solutions-counter__shown';
   shown.setAttribute('aria-hidden', 'true');
   shown.append(title.element, count.element);
-  const surface = createSurface({ variant: 'panel' }, [name, shown]);
+  const surface = createSurface({ variant: 'panel' }, [name, shown], onTap);
   const update = (next: SolutionsCounterProps): void => {
     const model = solutionsCounterModel(next);
     surface.update({ variant: 'panel', fill: model.fill });

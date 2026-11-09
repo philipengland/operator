@@ -1,21 +1,25 @@
 // The catalogue's samples: each component in every state the design guide lists (spec-003 FR-324).
 // Fixed examples only; the catalogue does not play the puzzle (FR-327).
 
+import { createConfirmDialog } from '../ui/combined/confirm-dialog';
 import { createGridCell } from '../ui/combined/grid-cell';
 import { createKeypad } from '../ui/combined/keypad';
 import { createLineWorking } from '../ui/combined/line-working';
 import { createOperatorHeader } from '../ui/combined/operator-header';
-import { createPuzzleGrid } from '../ui/combined/puzzle-grid';
+import { createPuzzleGrid, type PuzzleGridProps } from '../ui/combined/puzzle-grid';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createSpeechBubble } from '../ui/combined/speech-bubble';
-import { createTargetPill } from '../ui/combined/target-pill';
+import { createTargetPill, type TargetPillProps } from '../ui/combined/target-pill';
 import { createBadge } from '../ui/simple/badge';
 import { createButton } from '../ui/simple/button';
+import { createDialog } from '../ui/simple/dialog';
 import { createIcon } from '../ui/simple/icon';
 import { createMascot } from '../ui/simple/mascot';
 import { createSurface } from '../ui/simple/surface';
 import { createText } from '../ui/simple/text';
 import { createTextInput } from '../ui/simple/text-input';
+import { createSolutionList, type SolutionListProps } from '../ui/screens/solution-list';
+import { createSolutionView } from '../ui/screens/solution-view';
 import type { Theme } from '../ui/foundations/themes';
 import { FIXED_PUZZLE_JUST_OPENED, screenSamplesFor } from './screen-samples';
 
@@ -38,6 +42,7 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Solid', render: () => createButton({ label: 'Oops', style: 'solid', action: 'clear cell' }).element },
     { label: 'Dashed', render: () => createButton({ label: '? 12', style: 'dashed' }).element },
     { label: 'Unavailable', render: () => createButton({ label: 'Check', style: 'key', isUnavailable: true }).element },
+    { label: 'Read-only', render: () => createButton({ label: '2', style: 'cell', name: 'Top-right cell, 2', isReadOnly: true }).element },
   ],
   'Text input': [{ label: 'Seed', render: () => createTextInput({ label: 'Play from a seed', hint: 'e.g. 4F7A21' }).element }],
   Icon: [
@@ -51,6 +56,7 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
   ],
   Badge: [{ label: 'Badge', render: () => createBadge({ text: '× 12' }).element }],
   Mascot: [{ label: 'Mascot', render: () => createMascot().element }],
+  Dialog: [{ label: 'Dialog', render: () => shownInPlace(createDialog({ name: 'A dialog' }, [sampleText('Dialogs hold a question.')]).element) }],
   'Speech bubble': [
     {
       label: 'Row through',
@@ -66,6 +72,7 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'In progress', render: () => createSolutionsCounter({ found: 1, total: 2 }).element },
     { label: 'Complete', render: () => createSolutionsCounter({ found: 2, total: 2 }).element },
     { label: 'No total', render: () => createSolutionsCounter({ found: 12 }).element },
+    { label: 'Can be tapped', render: () => createSolutionsCounter({ found: 1, total: 2 }, () => undefined).element },
   ],
   'Target pill': [
     { label: 'Add', render: () => createTargetPill({ target: 16, operator: '+', isOpen: false, name: 'Row 1 target 16, plus' }).element },
@@ -83,6 +90,7 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     },
   ],
   'Grid cell': [
+    { label: 'Read-only', render: () => createGridCell({ name: 'Top-right cell', digit: 2, isReadOnly: true }).element },
     { label: 'Given', render: () => createGridCell({ name: 'Top-left cell', digit: 2, isGiven: true }).element },
     { label: 'Empty', render: () => createGridCell({ name: 'Top-right cell', digit: null }).element },
     { label: 'Selected', render: () => createGridCell({ name: 'Top-right cell', digit: null, isSelected: true }).element },
@@ -110,9 +118,55 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Keypad', render: () => createKeypad().element },
     { label: 'Unavailable', render: () => createKeypad(undefined, false).element },
   ],
+  'Confirm dialog': [
+    {
+      label: 'Clear all solutions',
+      render: () => shownInPlace(createConfirmDialog({ question: 'Clear all solutions?', confirm: 'Yes, clear', cancel: 'Keep them' }).element),
+    },
+  ],
+  'Solution list': [
+    { label: 'Empty', speaksInTheme: true, render: (theme) => createSolutionList(solutionList(theme, [], false)).element },
+    { label: 'Two solutions', speaksInTheme: true, render: (theme) => createSolutionList(solutionList(theme, ['Solution 1', 'Solution 2'], true)).element },
+    { label: 'Rows as text', speaksInTheme: true, render: (theme) => createSolutionList({ ...solutionList(theme, ['Solution 1'], false), canOpenRows: false }).element },
+  ],
+  'Solution view': [
+    {
+      label: 'Solution 1',
+      render: (theme) => createSolutionView({ heading: 'Solution 1', backLabel: 'Back', grid: readOnly(screenSamplesFor(theme)['All found'].grid) }).element,
+    },
+  ],
 };
 
 /** Body text to show inside a surface sample. */
 function sampleText(text: string): HTMLElement {
   return createText({ text, style: 'body' }).element;
+}
+
+function solutionList({ address }: Theme, rows: readonly string[], canStartAgain: boolean): SolutionListProps {
+  return {
+    heading: 'Solutions',
+    backLabel: 'Back',
+    rows,
+    canOpenRows: true,
+    empty: { shown: `No calls yet, ${address}.`, heardAs: 'No solutions found yet' },
+    ...(canStartAgain ? { startAgainLabel: 'Start again' } : {}),
+  };
+}
+
+/** The whole puzzle, with nothing in it offered to tap. */
+function readOnly(grid: PuzzleGridProps): PuzzleGridProps {
+  const shownPill = (pill: TargetPillProps): TargetPillProps => ({ ...pill, isOpen: false });
+  return {
+    ...grid,
+    columnPills: grid.columnPills.map(shownPill),
+    rowPills: grid.rowPills.map(shownPill),
+    cells: grid.cells.map((row) => row.map((cell) => ({ ...cell, isReadOnly: true }))),
+    helper: '',
+  };
+}
+
+/** A pop-up shown in the page's flow, so the catalogue can show it beside everything else. */
+function shownInPlace(dialog: HTMLElement): HTMLElement {
+  dialog.setAttribute('open', '');
+  return dialog;
 }

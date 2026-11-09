@@ -35,4 +35,8 @@ describe('gridCellModel', () => {
 
     expect(model).toMatchObject({ style: 'cell', isSelected: true });
   });
+
+  it('can be read-only, in a found solution', () => {
+    expect(gridCellModel({ name: 'Top-right cell', digit: 2, isReadOnly: true }).isReadOnly).toBe(true);
+  });
 });

@@ -37,11 +37,13 @@ export interface PlayScreenActions {
   readonly onCheck?: () => void;
   readonly onCell?: (row: number, column: number) => void;
   readonly onPill?: (axis: PillAxis, index: number) => void;
+  /** Given only when the counter can be tapped (spec-006 FR-601). */
+  readonly onCounter?: () => void;
 }
 
 export function createPlayScreen(props: PlayScreenProps, actions: PlayScreenActions = {}): Component<PlayScreenProps> {
   const header = createOperatorHeader(headerWithAnnouncement(props.header, props.announcement ?? ''));
-  const counter = createSolutionsCounter(props.counter);
+  const counter = createSolutionsCounter(props.counter, actions.onCounter);
   const grid = createPuzzleGrid(props.grid, actions);
   const keypad = createKeypad(actions.onKey, props.keysAvailable);
   const mainButton = createButton(mainButtonProps(props.mainButtonLabel), actions.onCheck);

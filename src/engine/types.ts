@@ -10,6 +10,8 @@ export interface LineSpec {
 }
 
 export interface Puzzle {
+  /** Says which puzzle saved solutions belong to. A seeded puzzle's will come from its seed and settings (F7). */
+  readonly id: string;
   readonly rows: number;
   readonly columns: number;
   readonly givens: readonly (readonly (Digit | null)[])[];

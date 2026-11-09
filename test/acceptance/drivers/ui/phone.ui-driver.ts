@@ -38,7 +38,19 @@ const EMPTY_LAYOUT: ScreenLayout = {
   checkButton: NO_BOX,
 };
 
+// spec-006: each story's part replaces these.
+const notBuiltYet = async (): Promise<void> => undefined;
+const nothingFoundYet = async (): Promise<readonly string[]> => [];
+
 export class UiPhoneDriver implements PhoneDriver {
+  goBack = notBuiltYet;
+  closeAndReopen = notBuiltYet;
+  refuseSaving = notBuiltYet;
+  leaveUnreadableSavedData = notBuiltYet;
+  leaveSavedFillings = notBuiltYet;
+  accessibilityProblems = nothingFoundYet;
+  errorsOnThePage = nothingFoundYet;
+
   // Every request the page makes, and how many had been made when it last finished loading.
   private readonly requests: string[] = [];
   private requestsWhenOpened = 0;

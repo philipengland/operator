@@ -1,6 +1,7 @@
 // What the catalogue shows: the component library by tier (spec-003 AC-1, contract
 // docs/contracts/component-library.md).
 
+import { builtFrom as confirmDialogParts } from '../ui/combined/confirm-dialog';
 import { builtFrom as gridCellParts } from '../ui/combined/grid-cell';
 import { builtFrom as keypadParts } from '../ui/combined/keypad';
 import { builtFrom as lineWorkingParts } from '../ui/combined/line-working';
@@ -10,6 +11,8 @@ import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-cou
 import { builtFrom as speechBubbleParts } from '../ui/combined/speech-bubble';
 import { builtFrom as targetPillParts } from '../ui/combined/target-pill';
 import { builtFrom as playScreenParts } from '../ui/screens/play-screen';
+import { builtFrom as solutionListParts } from '../ui/screens/solution-list';
+import { builtFrom as solutionViewParts } from '../ui/screens/solution-view';
 
 export type CatalogueSection = 'Foundations' | 'Simple components' | 'Combined components' | 'Screens';
 
@@ -23,7 +26,7 @@ const entries = (...names: readonly string[]): readonly CatalogueEntry[] => name
 
 export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[]>> = {
   Foundations: [],
-  'Simple components': entries('Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot'),
+  'Simple components': entries('Text', 'Button', 'Text input', 'Icon', 'Surface', 'Badge', 'Mascot', 'Dialog'),
   'Combined components': [
     { name: 'Speech bubble', builtFrom: speechBubbleParts },
     { name: 'Operator header', builtFrom: operatorHeaderParts },
@@ -33,6 +36,11 @@ export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[
     { name: 'Line working', builtFrom: lineWorkingParts },
     { name: 'Puzzle grid', builtFrom: puzzleGridParts },
     { name: 'Keypad', builtFrom: keypadParts },
+    { name: 'Confirm dialog', builtFrom: confirmDialogParts },
   ],
-  Screens: [{ name: 'Play screen', builtFrom: playScreenParts }],
+  Screens: [
+    { name: 'Play screen', builtFrom: playScreenParts },
+    { name: 'Solution list', builtFrom: solutionListParts },
+    { name: 'Solution view', builtFrom: solutionViewParts },
+  ],
 };

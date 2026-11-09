@@ -12,6 +12,7 @@ import type {
   Operator,
   OperatorChoice,
   Result,
+  SolutionName,
   Working,
 } from './vocabulary';
 
@@ -21,6 +22,10 @@ const TAPS_TO_GO_ALL_THE_WAY_ROUND = 10;
 
 // spec-004: nine digit keys and Oops.
 const KEYS_ON_THE_KEYPAD = 10;
+
+// spec-006: the only control on a solution's read-only view.
+const WAY_BACK = 'Back';
+const EVERY_LINE: readonly Line[] = ['Row 1', 'Row 2', 'Column 1', 'Column 2'];
 
 export class GameDsl {
   constructor(private readonly driver: () => GameDriver) {}
@@ -283,6 +288,113 @@ export class GameDsl {
     expect(shown, 'the main button shows').toBe(label);
     expect(heardAs.startsWith(label), `the main button is heard beginning "${label}", heard "${heardAs}"`).toBe(true);
     expect(heardAs, 'the main button is heard as Check').toContain('Check');
+  }
+
+  // spec-006 — the list of solutions, reopening one, and starting again.
+
+  /** The player taps the "Solutions found" counter. */
+  async openSolutionList(): Promise<void> {
+    await this.driver().tapCounter();
+  }
+
+  /** The on-screen way back. */
+  async goBack(): Promise<void> {
+    await this.driver().tapBack();
+  }
+
+  async openSolution(solution: SolutionName): Promise<void> {
+    await this.driver().tapSolution(solution);
+  }
+
+  /** Tries to change something on a solution's read-only view. */
+  async tapInSolutionOn(place: Cell | Line): Promise<void> {
+    await this.driver().tapInSolution(place);
+  }
+
+  async tapStartAgain(): Promise<void> {
+    await this.driver().tapStartAgain();
+  }
+
+  async doubleTapStartAgain(): Promise<void> {
+    await this.driver().doubleTapStartAgain();
+  }
+
+  async confirmStartAgain(): Promise<void> {
+    await this.driver().tapPopUpButton('Yes, clear');
+  }
+
+  async keepSolutions(): Promise<void> {
+    await this.driver().tapPopUpButton('Keep them');
+  }
+
+  async expectOnPuzzle(): Promise<void> {
+    expect(await this.driver().screenShowing(), 'the screen showing').toBe('puzzle');
+  }
+
+  async expectOnSolutionList(): Promise<void> {
+    expect(await this.driver().screenShowing(), 'the screen showing').toBe('solution list');
+  }
+
+  async expectSolutionListEmpty(shown: string, heardAs: string): Promise<void> {
+    await this.expectOnSolutionList();
+    expect(await this.driver().emptyList(), 'the empty list').toEqual({ shown, heardAs });
+    expect(await this.driver().solutionsShown(), 'solutions listed').toEqual([]);
+  }
+
+  async expectSolutionsListed(solutions: readonly SolutionName[]): Promise<void> {
+    await this.expectOnSolutionList();
+    expect(await this.driver().solutionsShown(), 'solutions listed, in order').toEqual(solutions);
+  }
+
+  async expectSolutionsHeardAs(solutions: readonly SolutionName[]): Promise<void> {
+    expect(await this.driver().solutionsHeard(), 'solutions as a screen reader hears them').toEqual(solutions);
+  }
+
+  /** The read-only view shows the given 6, this entry, and every line reaching its target. */
+  async expectSolutionShown(solution: SolutionName, entry: Entry): Promise<void> {
+    expect(await this.driver().screenShowing(), 'the screen showing').toBe('solution');
+    const shown = await this.driver().solutionView();
+    expect(shown.title, 'the solution showing').toBe(solution);
+    expect(shown.cells['top-left'], 'the given cell').toEqual({ value: 6, isGiven: true });
+    expect(shown.cells['top-right'].value, 'top-right cell').toBe(entry.topRight);
+    expect(shown.cells['bottom-left'].value, 'bottom-left cell').toBe(entry.bottomLeft);
+    expect(shown.cells['bottom-right'].value, 'bottom-right cell').toBe(entry.bottomRight);
+    expect(shown.operators['Row 2'], 'Row 2 operator').toBe(entry.row2);
+    expect(shown.operators['Column 1'], 'Column 1 operator').toBe(entry.column1);
+    for (const line of EVERY_LINE) {
+      expect(shown.marks[line], `${line} should be marked as reaching its target`).toBe('target reached');
+    }
+  }
+
+  async expectSolutionHeardToInclude(phrases: readonly string[]): Promise<void> {
+    const heard = await this.driver().solutionHeard();
+    for (const phrase of phrases) {
+      expect(heard, `a screen reader hears "${phrase}"`).toContain(phrase);
+    }
+  }
+
+  async expectOnlyBackCanBeTapped(): Promise<void> {
+    expect(await this.driver().controlsOnScreen(), 'what can be tapped on this screen').toEqual([WAY_BACK]);
+  }
+
+  async expectPopUp(question: string, buttons: readonly string[]): Promise<void> {
+    const popUp = await this.driver().popUp();
+    expect(popUp, 'the pop-up is open').not.toBeNull();
+    expect(popUp?.question, 'what the pop-up asks').toBe(question);
+    expect([...(popUp?.reachableControls ?? [])].sort(), 'what can be reached while it is open').toEqual([...buttons].sort());
+    expect(popUp?.isFocusInside, 'focus is inside the pop-up').toBe(true);
+  }
+
+  async expectNoPopUp(): Promise<void> {
+    expect(await this.driver().popUp(), 'the pop-up').toBeNull();
+  }
+
+  async expectFocusOn(control: string): Promise<void> {
+    expect(await this.driver().focusedControl(), 'where focus is').toBe(control);
+  }
+
+  async expectStartAgainNotOffered(): Promise<void> {
+    expect(await this.driver().controlsOnScreen(), 'what can be tapped on this screen').not.toContain('Start again');
   }
 
   private async enterWithKeypad(cell: Cell, value: CellValue): Promise<void> {

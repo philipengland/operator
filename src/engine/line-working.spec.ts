@@ -51,6 +51,7 @@ describe('lineWorking', () => {
         { target: 9, operator: '+' },
       ],
       solutionCount: 1,
+      id: 'a test puzzle',
     };
     const secondDigit = (digit: Digit): Entry => ({ cells: [[null, digit]], rowOperators: [null], columnOperators: [null, null] });
 
