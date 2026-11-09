@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { workedExample, type Entry } from '../engine';
-import { readSolutions, saveSolution, type SolutionStore } from './solution-store';
+import { applyAction, startSession, type SessionState } from './session';
+import { readSolutions, rememberChange, saveSolution, type SolutionStore } from './solution-store';
 
 const KEY = 'operator.solutions.worked-example';
 const SOLUTION_A: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
@@ -120,6 +121,19 @@ describe('another puzzle', () => {
     saveSolution(store, workedExample, SOLUTION_A);
 
     expect(readSolutions(store, another)).toEqual([]);
+    expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A]);
+  });
+});
+
+describe('rememberChange', () => {
+  const before = startSession();
+  const found = (entry: Entry, from: SessionState = before): SessionState => applyAction({ ...from, entry }, { type: 'submit' });
+
+  it('saves a new solution (spec-006 AC-14)', () => {
+    const store = storeWith();
+
+    rememberChange(store, before, found(SOLUTION_A));
+
     expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A]);
   });
 });

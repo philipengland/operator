@@ -2,6 +2,7 @@
 // reached only through the store it is given.
 
 import { checkEntry, defaultRules, type Entry, type Operator, type Puzzle, type SolutionKey } from '../engine';
+import type { SessionState } from './session';
 
 const FORMAT = 1;
 const KEY_PREFIX = 'operator.solutions.';
@@ -18,6 +19,14 @@ export interface SolutionStore {
   read(key: string): string | null;
   /** `null` removes the record. */
   write(key: string, value: string | null): void;
+}
+
+/** Keeps the phone in step with the session, after one action. */
+export function rememberChange(store: SolutionStore, _previous: SessionState, next: SessionState): void {
+  const latest = next.solutions.at(-1);
+  if (latest !== undefined) {
+    saveSolution(store, next.puzzle, latest);
+  }
 }
 
 export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly Entry[] {
