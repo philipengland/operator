@@ -1,7 +1,7 @@
 // Saving found solutions on the phone (docs/contracts/saved-solutions.md; ADR 0004). Pure: the browser is
 // reached only through the store it is given.
 
-import { checkEntry, defaultRules, type Entry, type Operator, type Puzzle } from '../engine';
+import { checkEntry, defaultRules, type Entry, type Operator, type Puzzle, type SolutionKey } from '../engine';
 
 const FORMAT = 1;
 const KEY_PREFIX = 'operator.solutions.';
@@ -17,7 +17,19 @@ export interface SolutionStore {
 
 export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly Entry[] {
   const solutions = parsed(store.read(keyFor(puzzle)))?.solutions;
-  return Array.isArray(solutions) ? solutions.filter((entry: unknown): entry is Entry => isEntry(entry, puzzle) && checkEntry(puzzle, entry, defaultRules).kind === 'solved') : [];
+  return Array.isArray(solutions) ? distinctSolutions(solutions, puzzle) : [];
+}
+
+/** Only entries that solve the puzzle, each solution once, at its first place. */
+function distinctSolutions(candidates: readonly unknown[], puzzle: Puzzle): readonly Entry[] {
+  const byKey = new Map<SolutionKey, Entry>();
+  for (const candidate of candidates) {
+    const result = isEntry(candidate, puzzle) ? checkEntry(puzzle, candidate, defaultRules) : null;
+    if (result?.kind === 'solved' && !byKey.has(result.key)) {
+      byKey.set(result.key, candidate as Entry);
+    }
+  }
+  return [...byKey.values()];
 }
 
 function parsed(raw: string | null): { readonly solutions?: Entry[] } | null {
