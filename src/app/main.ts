@@ -3,10 +3,12 @@
 import '../ui/foundations/tokens.css';
 import '../ui/foundations/page.css';
 import { applyTheme, themeForSeed } from '../ui/foundations/themes';
+import { createConfirmDialog } from '../ui/combined/confirm-dialog';
 import { createPlayScreen } from '../ui/screens/play-screen';
 import { createSolutionList } from '../ui/screens/solution-list';
 import { createSolutionView, type SolutionViewScreen } from '../ui/screens/solution-view';
 import type { Digit } from '../engine';
+import { START_AGAIN_QUESTION } from './labels';
 import { playScreenProps } from './screen';
 import type { Features } from './features';
 import { applyAction, startSession, type Place, type SessionAction } from './session';
@@ -39,9 +41,19 @@ const screen = createPlayScreen(playScreenProps(state, theme), {
 const list = createSolutionList(solutionListProps(state, theme, features), {
   onBack: () => history.back(),
   onRow: (index) => openSolution(index + 1),
+  onStartAgain: askToStartAgain,
 });
+// The pop-up is one history entry, so the phone's back gesture closes it (research R7).
+const popUp = createConfirmDialog(START_AGAIN_QUESTION, {
+  onConfirm: () => {
+    act({ type: 'startAgain' });
+    history.back();
+  },
+  onCancel: () => history.back(),
+});
+let isPopUpShown = false;
 let openSolutionView: SolutionViewScreen | null = null;
-root.append(screen.element);
+root.append(screen.element, popUp.element);
 let shownPlace: Place = state.place;
 
 // A reload opens on the puzzle, so the entry left by a screen that was open is replaced (research R7).
@@ -51,6 +63,11 @@ window.addEventListener('popstate', (event) => act({ type: 'showPlace', place: p
 function openList(): void {
   history.pushState(historyEntryFor({ kind: 'list' }), '');
   act({ type: 'openList' });
+}
+
+function askToStartAgain(): void {
+  history.pushState(historyEntryFor({ kind: 'list' }), '');
+  act({ type: 'askToStartAgain' });
 }
 
 function openSolution(number: number): void {
@@ -63,6 +80,24 @@ function act(action: SessionAction): void {
   screen.update(playScreenProps(state, theme));
   list.update(solutionListProps(state, theme, features));
   showScreen();
+  showPopUp();
+}
+
+function showPopUp(): void {
+  if (state.isConfirming === isPopUpShown) {
+    return;
+  }
+  isPopUpShown = state.isConfirming;
+  if (isPopUpShown) {
+    popUp.open();
+    return;
+  }
+  popUp.close();
+  if (state.solutions.length > 0) {
+    list.focusStartAgain();
+  } else {
+    list.focusHeading();
+  }
 }
 
 /** The play screen stays in the page, hidden, so nothing about the game is lost (research R6). */

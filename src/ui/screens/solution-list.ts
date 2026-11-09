@@ -23,6 +23,7 @@ export interface SolutionListScreen extends Component<SolutionListProps> {
   focusHeading(): void;
   /** `index` counts from 0, in the order found. */
   focusRow(index: number): void;
+  focusStartAgain(): void;
 }
 
 export function createSolutionList(props: SolutionListProps, actions: SolutionListActions = {}): SolutionListScreen {
@@ -57,6 +58,7 @@ export function createSolutionList(props: SolutionListProps, actions: SolutionLi
     update,
     focusHeading: () => element.querySelector('h1')?.focus(),
     focusRow: (index) => rows.querySelectorAll('button')[index]?.focus(),
+    focusStartAgain: () => foot.querySelector('button')?.focus(),
   };
 }
 

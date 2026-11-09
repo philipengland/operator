@@ -135,6 +135,9 @@ export function bubbleLine(kind: MessageKind | null, theme: Theme): string {
   return kind === null ? `Fill the grid, ${theme.address}.` : operatorLine(kind, theme);
 }
 
+/** The pop-up before everything is cleared; plain in every theme (spec-006 FR-603, FR-608). */
+export const START_AGAIN_QUESTION = { question: 'Clear all solutions?', confirm: 'Yes, clear', cancel: 'Keep them' } as const;
+
 /** A found solution's name: "Solution 1" (spec-006 FR-602). */
 export function solutionName(position: number): string {
   return `Solution ${position}`;
