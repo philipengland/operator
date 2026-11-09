@@ -251,4 +251,8 @@ describe('starting again (spec-006)', () => {
   it('changes nothing when the player keeps their solutions (spec-006 AC-11)', () => {
     expect(applyAction(asked(), { type: 'keepSolutions' })).toEqual(startSession());
   });
+
+  it('closes the pop-up when the browser moves back, clearing nothing (spec-006 edge case)', () => {
+    expect(applyAction(asked(), { type: 'showPlace', place: { kind: 'play' } })).toEqual(startSession());
+  });
 });

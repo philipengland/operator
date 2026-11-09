@@ -163,5 +163,5 @@ function submit(state: SessionState): SessionState {
 /** History can hold a solution this session has not found, after a reload. */
 function showPlace(state: SessionState, place: Place): SessionState {
   const isMissing = place.kind === 'solution' && state.solutions[place.number - 1] === undefined;
-  return { ...state, place: isMissing ? { kind: 'list' } : place };
+  return { ...state, place: isMissing ? { kind: 'list' } : place, isConfirming: false };
 }
