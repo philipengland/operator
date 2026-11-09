@@ -6,7 +6,7 @@ import { emptyListLine, solutionName } from './labels';
 import type { SessionState } from './session';
 
 const HEADING = 'Solutions';
-const BACK = 'Back';
+export const BACK = 'Back';
 
 export function solutionListProps({ solutions }: SessionState, theme: Theme): SolutionListProps {
   return { heading: HEADING, backLabel: BACK, rows: solutions.map((_, index) => solutionName(index + 1)), canOpenRows: false, empty: emptyListLine(theme) };
