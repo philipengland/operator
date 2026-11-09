@@ -24,6 +24,8 @@
   gap: var(--gap);
   min-height: 0;
   overflow-y: auto;
+  /* Room inside the scrolling area, so the rows' shadows are not cut off. */
+  padding: 0 var(--shadow-small) var(--shadow-small) 0;
 }
 
 .solution-list__foot {
