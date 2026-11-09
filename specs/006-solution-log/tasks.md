@@ -79,14 +79,14 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 
 **Independent Test**: find Solution A, open the list and read "Solution 1"; go back and see the grid unchanged.
 
-- [ ] T018 [US1] Create `006-solution-log-part-2` from `main`; bring `test/acceptance/play/solution-list.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob). Add the `log` flag, off, to `src/app/features.ts` as a named field; restore `__OPERATOR_FEATURES__` in `src/app/main.ts` and the `features` parameter of `playScreenProps` in `src/app/screen.ts`; map it in `playwright.config.ts`
-- [ ] T019 [US1] UI driver methods in `test/acceptance/drivers/ui/game.ui-driver.ts`, `ui/screen-names.ts` and `ui/phone.ui-driver.ts`: `tapCounter`, `tapBack`, `screenShowing`, `emptyList`, `solutionsShown`, `solutionsHeard`, `goBack`, `accessibilityProblems`
-- [ ] T020 [US1] AC-1: TDD in `src/app/session.spec.ts`: `openList` sets `place`, changing nothing else; in `src/app/labels.spec.ts`: "No calls yet, pal." with the theme's address, heard as "No solutions found yet"; in `src/app/screen.spec.ts`: the counter is tappable only with `log` on. `src/app/main.ts` shows the list
-- [ ] T021 [US1] AC-2 to AC-4: TDD in `src/app/session.spec.ts`: `found` becomes an insertion-ordered `Map<SolutionKey, Entry>` in `src/app/session.ts`; a repeat adds nothing; in `src/app/screen.spec.ts`: rows are "Solution 1", "Solution 2", in the order found
-- [ ] T022 [US1] AC-5: TDD: `goBack` in `src/app/session.ts` returns to the puzzle with entry, selection and message unchanged; the play screen stays in the page, hidden, in `src/app/main.ts` (research R6); focus returns to the counter (research R11)
-- [ ] T023 [US1] AC-6: rows are heard as "Solution 1"; focus moves to the heading on arrival; the accessibility scan passes, in `src/ui/screens/solution-list.ts`
-- [ ] T024 [US1] AC-25 and the reload edge case: TDD in `src/app/navigation.spec.ts`: a place to and from a history entry in `src/app/navigation.ts`; `src/app/main.ts` uses `pushState`, `history.back()` and `popstate`, and replaces the entry on opening (research R7)
-- [ ] T025 [US1] Confirm `npm run build` keeps the counter untappable (flag off), and the flags-on build passes `solution-list.acceptance-spec.ts`. Update `specs/006-solution-log/tdd-log.md`. Push and open "spec-006 part 2 of 6: the list (flag off)". The owner merges
+- [X] T018 [US1] Create `006-solution-log-part-2` from `main`; bring `test/acceptance/play/solution-list.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob). Add the `log` flag, off, to `src/app/features.ts` as a named field; restore `__OPERATOR_FEATURES__` in `src/app/main.ts`; map it in `playwright.config.ts`
+- [X] T019 [US1] UI driver methods in `test/acceptance/drivers/ui/game.ui-driver.ts`, `ui/screen-names.ts` and `ui/phone.ui-driver.ts`: `tapCounter`, `tapBack`, `screenShowing`, `emptyList`, `solutionsShown`, `solutionsHeard`, `goBack`, `accessibilityProblems`
+- [X] T020 [US1] AC-1: TDD in `src/app/session.spec.ts`: `openList` sets `place`, changing nothing else; in `src/app/labels.spec.ts`: "No calls yet, pal." with the theme's address, heard as "No solutions found yet"; the counter is tappable only with `log` on, in `src/app/main.ts`, which shows the list
+- [X] T021 [US1] AC-2 to AC-4: TDD in `src/app/session.spec.ts`: `solutions` beside `found` in `src/app/session.ts`, in the order found; a repeat adds nothing; in `src/app/solution-list.spec.ts`: rows are "Solution 1", "Solution 2", in the order found
+- [X] T022 [US1] AC-5: TDD: `showPlace` in `src/app/session.ts` returns to the puzzle with entry, selection and message unchanged; the play screen stays in the page, hidden, in `src/app/main.ts` (research R6); focus returns to the counter (research R11)
+- [X] T023 [US1] AC-6: rows are heard as "Solution 1"; focus moves to the heading on arrival; the accessibility scan passes, in `src/ui/screens/solution-list.ts`
+- [X] T024 [US1] AC-25 and the reload edge case: TDD in `src/app/navigation.spec.ts`: a place to and from a history entry in `src/app/navigation.ts`; `src/app/main.ts` uses `pushState`, `history.back()` and `popstate`, and replaces the entry on opening (research R7)
+- [X] T025 [US1] Confirm `npm run build` keeps the counter untappable (flag off), and the flags-on build passes `solution-list.acceptance-spec.ts`. Update `specs/006-solution-log/tdd-log.md`. Push and open "spec-006 part 2 of 6: the list (flag off)". The owner merges
 - [ ] T026 [US1] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, with a checklist). The owner may hold this until after User Story 2, to review both together. Then a one-line pull request sets `log` true in `src/app/features.ts`
 
 ---
@@ -101,7 +101,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 - [ ] T028 [US2] UI driver methods in `test/acceptance/drivers/ui/game.ui-driver.ts`: `tapSolution`, `tapInSolution`, `solutionView`, `solutionHeard`, `controlsOnScreen`
 - [ ] T029 [US2] AC-7: TDD in `src/app/session.spec.ts`: `openSolution(number)`; in `src/app/screen.spec.ts`: view props reuse the grid mapping with the found entry, open pills become shown pills with the player's operator, every line reaches its target, the helper line is empty; `src/app/main.ts` shows the view
 - [ ] T030 [US2] AC-8: nothing in the view can be tapped except "Back"; no keypad and no main button, in `src/ui/screens/solution-view.ts`
-- [ ] T031 [US2] AC-9: TDD in `src/app/session.spec.ts`: `goBack` from a solution returns to the list, and opening one changes neither the grid, the count nor the list
+- [ ] T031 [US2] AC-9: TDD in `src/app/session.spec.ts`: `showPlace` from a solution returns to the list, and opening one changes neither the grid, the count nor the list
 - [ ] T032 [US2] AC-10: the heading takes focus on arrival; cells and workings are heard as named in `specs/006-solution-log/contracts/play-screen-changes.md`; the accessibility scan passes
 - [ ] T033 [US2] AC-26: a solution is a history entry in `src/app/navigation.ts`, and the phone's back returns to the list, with focus on its row
 - [ ] T034 [US2] AC-27: numbers follow the order found. ⚠️ May pass from AC-7: report, and prove with a reverted break

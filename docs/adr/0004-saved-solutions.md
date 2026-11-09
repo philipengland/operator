@@ -1,6 +1,6 @@
 # 0004. Saving found solutions on the phone
 
-- **Status:** Proposed
+- **Status:** Accepted (owner, 2026-11-09)
 - **Date:** 2026-11-08
 - **Revisits:** spec-001's assumption "No saving"
 

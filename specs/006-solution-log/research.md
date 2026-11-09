@@ -55,10 +55,10 @@ text never reaches the page.
 
 ## R5. The session
 
-**Decision**: `found` becomes an insertion-ordered `Map<SolutionKey, Entry>`, so `.size` and `.has` keep
-working and the list comes straight from it. The session gains `place` (`play`, `list` or a solution
-number) and `isConfirming`. Actions `openList`, `openSolution`, `goBack`, `askToStartAgain`, `startAgain`
-and `keepSolutions` stay pure.
+**Decision**: `found` stays as it is, and `solutions` sits beside it, holding each entry in the order found.
+The owner chose this on 2026-11-09, so that existing tests of `found` are not amended. The session gains
+`place` (`play`, `list` or a solution number) and `isConfirming`. Actions `openList`, `openSolution`, `showPlace`,
+`askToStartAgain`, `startAgain` and `keepSolutions` stay pure.
 
 ## R6. Three screens in one page
 
