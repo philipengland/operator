@@ -24,7 +24,7 @@ export default defineConfig({
         'src/ui/**/*.model.ts',
         'tools/**/*.ts',
       ],
-      exclude: ['**/*.spec.ts', 'src/engine/index.ts', 'src/engine/types.ts', 'tools/run-exceptions-check.ts', 'tools/run-test-results.ts'],
+      exclude: ['**/*.spec.ts', 'src/engine/index.ts', 'src/engine/types.ts', 'tools/run-exceptions-check.ts', 'tools/run-test-guard.ts', 'tools/run-test-results.ts'],
       thresholds: {
         lines: COVERAGE_THRESHOLD_PERCENT,
         branches: COVERAGE_THRESHOLD_PERCENT,
