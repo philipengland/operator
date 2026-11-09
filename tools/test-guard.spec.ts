@@ -49,4 +49,10 @@ describe('changedExistingTests', () => {
 
     expect(changedExistingTests(unexplained)[0]?.isRecorded).toBe(false);
   });
+
+  it('does not let a row for one file explain another', () => {
+    const unexplained = REMOVED + diffOf(RECORD, row('src/app/labels.spec.ts', 'spec-006 FR-601', 'The wording changed.'));
+
+    expect(changedExistingTests(unexplained)[0]?.isRecorded).toBe(false);
+  });
 });

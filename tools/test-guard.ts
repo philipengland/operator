@@ -5,6 +5,7 @@ const TEST_FILE = /^(src|tools)\/.+\.spec\.ts$/;
 const RECORD_FILE = /^specs\/[^/]+\/test-changes\.md$/;
 const REQUIREMENT = /\b(?:FR-|AC-|SC-|T)\d+\b/;
 // Splitting on | leaves an empty first cell, so the columns start at 1.
+const FILE_COLUMN = 1;
 const REQUIREMENT_COLUMN = 3;
 const WHY_COLUMN = 4;
 
@@ -17,10 +18,10 @@ export interface TestChange {
 /** The existing test files a `git diff` changes, and whether each change has been explained. */
 export function changedExistingTests(diff: string): readonly TestChange[] {
   const sections = sectionsOf(diff);
-  const recorded = sections.filter(({ file }) => RECORD_FILE.test(file)).flatMap(({ addedLines }) => addedLines.filter(explainsAChange)).length > 0;
+  const rows = sections.filter(({ file }) => RECORD_FILE.test(file)).flatMap(({ addedLines }) => addedLines.filter(explainsAChange));
   return sections
     .filter(({ file, removedLines }) => TEST_FILE.test(file) && removedLines.length > 0)
-    .map(({ file, removedLines }) => ({ file, removedLines, isRecorded: recorded }));
+    .map(({ file, removedLines }) => ({ file, removedLines, isRecorded: rows.some((row) => recordedFile(row) === file) }));
 }
 
 interface FileDiff {
@@ -48,4 +49,8 @@ function sectionsOf(diff: string): readonly FileDiff[] {
 function explainsAChange(row: string): boolean {
   const cells = row.split('|').map((cell) => cell.trim());
   return REQUIREMENT.test(cells[REQUIREMENT_COLUMN] ?? '') && (cells[WHY_COLUMN] ?? '') !== '';
+}
+
+function recordedFile(row: string): string {
+  return (row.split('|')[FILE_COLUMN] ?? '').replaceAll('`', '').trim();
 }
