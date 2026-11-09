@@ -81,4 +81,8 @@ describe('readSolutions', () => {
   it('keeps the same solution once, at its first place (spec-006 FR-611)', () => {
     expect(readSolutions(storeWith({ [KEY]: saved(SOLUTION_A, SOLUTION_B, SOLUTION_A) }), workedExample)).toEqual([SOLUTION_A, SOLUTION_B]);
   });
+
+  it('treats a newer format as nothing it can read (spec-006 FR-614)', () => {
+    expect(readSolutions(storeWith({ [KEY]: JSON.stringify({ format: 2, solutions: [SOLUTION_A] }) }), workedExample)).toEqual([]);
+  });
 });

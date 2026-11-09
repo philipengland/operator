@@ -9,6 +9,11 @@ const LOWEST_DIGIT = 1;
 const HIGHEST_DIGIT = 9;
 const OPERATORS: readonly Operator[] = ['+', '−', '×', '÷'];
 
+interface SavedRecord {
+  readonly format?: unknown;
+  readonly solutions?: unknown;
+}
+
 export interface SolutionStore {
   read(key: string): string | null;
   /** `null` removes the record. */
@@ -16,8 +21,8 @@ export interface SolutionStore {
 }
 
 export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly Entry[] {
-  const solutions = parsed(store.read(keyFor(puzzle)))?.solutions;
-  return Array.isArray(solutions) ? distinctSolutions(solutions, puzzle) : [];
+  const record = parsed(store.read(keyFor(puzzle)));
+  return record?.format === FORMAT && Array.isArray(record.solutions) ? distinctSolutions(record.solutions, puzzle) : [];
 }
 
 /** Only entries that solve the puzzle, each solution once, at its first place. */
@@ -32,12 +37,12 @@ function distinctSolutions(candidates: readonly unknown[], puzzle: Puzzle): read
   return [...byKey.values()];
 }
 
-function parsed(raw: string | null): { readonly solutions?: Entry[] } | null {
+function parsed(raw: string | null): SavedRecord | null {
   if (raw === null) {
     return null;
   }
   try {
-    return JSON.parse(raw) as { readonly solutions?: Entry[] };
+    return JSON.parse(raw) as SavedRecord;
   } catch {
     return null;
   }
