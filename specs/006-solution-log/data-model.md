@@ -9,7 +9,8 @@
 
 | Field | Change | Meaning |
 | --- | --- | --- |
-| `found` | `Set` → `Map<SolutionKey, Entry>` | In the order found. `.size` and `.has` are unchanged |
+| `found` | Unchanged | The set of solution keys, for the count and for spotting a repeat |
+| `solutions` | New | The found solutions' entries, in the order found |
 | `place` | New | `{ kind: 'play' }`, `{ kind: 'list' }` or `{ kind: 'solution', number }` |
 | `isConfirming` | New | Whether the pop-up is open |
 
@@ -17,7 +18,7 @@
 | --- | --- |
 | `openList` | `place` = list |
 | `openSolution(number)` | `place` = that solution |
-| `goBack` | Solution → list → play; closes the pop-up first if it is open |
+| `showPlace(place)` | Shows that screen. Sent when the browser's history moves, by the on-screen way back or the phone's back gesture |
 | `askToStartAgain` | `isConfirming` = true |
 | `keepSolutions` | `isConfirming` = false |
 | `startAgain` | Clears `found`, the entry, `selected` and `message`; `isConfirming` = false; stays on the list |

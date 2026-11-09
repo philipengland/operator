@@ -10,6 +10,8 @@ describe('startSession', () => {
       found: new Set(),
       message: null,
       selected: null,
+      solutions: [],
+      place: { kind: 'play' },
     });
   });
 });
@@ -192,5 +194,38 @@ describe('applyAction', () => {
       expect(state.message).toBe('incomplete');
       expect(state.found).toEqual(new Set());
     });
+  });
+});
+
+describe('the list of solutions (spec-006)', () => {
+  it('opens the list, changing nothing else (spec-006 AC-1)', () => {
+    const opened = startSession();
+
+    expect(applyAction(opened, { type: 'openList' })).toEqual({ ...opened, place: { kind: 'list' } });
+  });
+
+  it('goes back to the puzzle exactly as it was (spec-006 AC-5)', () => {
+    const tapped = applyAction(startSession(), { type: 'tapCell', row: 0, column: 1 });
+    const onTheList = applyAction(tapped, { type: 'openList' });
+
+    expect(applyAction(onTheList, { type: 'showPlace', place: { kind: 'play' } })).toEqual(tapped);
+  });
+});
+
+describe('remembering the solutions found (spec-006)', () => {
+  const solutionA: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+  const solutionB: Entry = { cells: [[null, 2], [3, 3]], rowOperators: [null, '+'], columnOperators: ['−', null] };
+  const found = (entry: Entry, from = startSession()): SessionState => applyAction({ ...from, entry }, { type: 'submit' });
+
+  it('keeps a new solution (spec-006 AC-2)', () => {
+    expect(found(solutionA).solutions).toEqual([solutionA]);
+  });
+
+  it('keeps solutions in the order found (spec-006 AC-3)', () => {
+    expect(found(solutionB, found(solutionA)).solutions).toEqual([solutionA, solutionB]);
+  });
+
+  it('keeps a repeat only once (spec-006 AC-4)', () => {
+    expect(found(solutionA, found(solutionA)).solutions).toEqual([solutionA]);
   });
 });

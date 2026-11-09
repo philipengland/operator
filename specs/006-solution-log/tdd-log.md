@@ -54,3 +54,42 @@ Each new piece was a failing unit test on its assertion, then the smallest code:
 - `d39c5e5` feat(catalogue): list and show the new parts (spec-006, spec-003 AC-1)
 - `e6eae96` test(engine): the worked example test pins its identity, and is restored
 - `64fdb06` fix(ui): the Solution list leaves room for its rows' shadows
+
+## Part 2: User Story 1, the list (T018 to T025)
+
+Scenarios: `solution-list.acceptance-spec.ts`, unchanged from `df93d38` (blob confirmed).
+
+**Existing test amended, with the owner's approval first (2026-11-09)**: `session.spec.ts`, what a new session starts with, gains `solutions: []` and
+`place: { kind: 'play' }`. Two approach changes avoided amending any other: `found` stays a Set with `solutions` beside it, and `playScreenProps` needs no
+`features` at all (the counter's action is given only with `log` on, in `main.ts`). New tests are in new files, as even an import line in an existing
+test file counts as amending it.
+
+| Criterion | Acceptance RED | Unit cycles |
+| --- | --- | --- |
+| AC-1 | `locator.tap: Test timeout` (the counter is not a button) | `openList`; the empty line's wording; the list's props |
+| AC-2, AC-3, AC-4 | `solutions listed, in order` | a new solution is kept; in the order found; rows are named by number |
+| AC-5 (first scenario) | `the screen showing — Expected: "puzzle", Received: "solution list"` | `showPlace`; a history entry says its screen; anything else is the puzzle |
+
+**Reported — passed before their own code**, each proven by a reverted break:
+
+| Criterion | Break | Failure |
+| --- | --- | --- |
+| AC-5, second scenario | going back clears the message | `the speech bubble` |
+| AC-6 | a row has no spoken name | `solutions as a screen reader hears them` |
+| AC-25 | the phone's back is ignored | `the screen showing — Expected: "puzzle", Received: "solution list"` |
+| Edge: reloading with the list open | reopens on the list | `the screen showing — Expected: "puzzle", Received: "solution list"` |
+| AC-4 (unit) | a repeat is kept again | `expected [ …, … ] to deeply equal [ … ]` |
+
+**Checked by hand**: focus moves to the heading "Solutions" on arrival and to the counter on return, at 375 × 667 and 320 × 568; no approved scenario covers it in this
+story. Players' build (flag off): the counter is not a button. No overflow at either size. Commits:
+
+- `4609f4e` feat(app): the list can be opened (spec-006 AC-1)
+- `e1d21cc` feat(app): what an empty list says (spec-006 AC-1)
+- `8af052b` feat(app): the counter opens the list (spec-006 AC-1)
+- `37e497e` feat(app): a new solution is kept (spec-006 AC-2)
+- `ff5a597` feat(app): solutions are kept in the order found (spec-006 AC-3)
+- `016c8fd` test(app): a repeat is listed once (spec-006 AC-4)
+- `bd60cb7` feat(app): each solution is named by its number (spec-006 AC-2)
+- `32df17a` feat(app): going back leaves the puzzle as it was (spec-006 AC-5)
+- `1750583` feat(app): a history entry says which screen it is for (spec-006 AC-5)
+- `b2c6baa` feat(app): back returns to the puzzle, by the screen or the phone (spec-006 AC-5, AC-25)

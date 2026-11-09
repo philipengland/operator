@@ -1,0 +1,20 @@
+// The screen showing, as a browser history entry, so the phone's own back gesture works (spec-006 research R7).
+
+import type { Place } from './session';
+
+export interface HistoryEntry {
+  readonly place: Place;
+}
+
+export function historyEntryFor(place: Place): HistoryEntry {
+  return { place };
+}
+
+/** Whatever the browser hands back; anything else there is treated as the puzzle. */
+export function placeFrom(entry: unknown): Place {
+  return isListEntry(entry) ? { kind: 'list' } : { kind: 'play' };
+}
+
+function isListEntry(entry: unknown): boolean {
+  return (entry as Partial<HistoryEntry> | null | undefined)?.place?.kind === 'list';
+}

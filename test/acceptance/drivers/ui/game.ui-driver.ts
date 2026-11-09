@@ -32,6 +32,7 @@ const BUBBLE_TITLE = 'Hello, Operator!';
 
 // spec-006: each story's part replaces these with what the screen shows.
 const notBuiltYet = async (): Promise<void> => undefined;
+const SOLUTION_NAME = /^Solution \d+$/;
 const nothingListedYet = async (): Promise<readonly string[]> => [];
 
 export class UiGameDriver implements GameDriver {
@@ -57,24 +58,51 @@ export class UiGameDriver implements GameDriver {
     await scanForAccessibilityProblems(this.page);
   }
 
-  tapCounter = notBuiltYet;
-  tapBack = notBuiltYet;
   tapSolution = notBuiltYet;
   tapInSolution = notBuiltYet;
   tapStartAgain = notBuiltYet;
   doubleTapStartAgain = notBuiltYet;
   tapPopUpButton = notBuiltYet;
-  solutionsShown = nothingListedYet;
-  solutionsHeard = nothingListedYet;
   solutionHeard = nothingListedYet;
   controlsOnScreen = nothingListedYet;
 
-  async screenShowing(): Promise<GameScreenName> {
-    return 'puzzle';
+  async tapCounter(): Promise<void> {
+    await this.page.getByRole('button', { name: COUNTER_PATTERN }).tap();
+    await scanForAccessibilityProblems(this.page);
   }
 
+  async tapBack(): Promise<void> {
+    await this.page.getByRole('button', { name: 'Back', exact: true }).tap();
+    await scanForAccessibilityProblems(this.page);
+  }
+
+  async screenShowing(): Promise<GameScreenName> {
+    if (await this.listHeading().isVisible()) {
+      return 'solution list';
+    }
+    return (await this.page.getByRole('heading', { name: SOLUTION_NAME }).isVisible()) ? 'solution' : 'puzzle';
+  }
+
+  /** The bubble's second line is what the empty list shows; the list itself holds what is heard. */
   async emptyList(): Promise<{ readonly shown: string; readonly heardAs: string }> {
-    return { shown: '', heardAs: '' };
+    const shown = this.listHeading().locator('xpath=following-sibling::*[not(@hidden)]');
+    const heard = this.list().locator('p.visually-hidden');
+    return {
+      shown: (await shown.count()) === 0 ? '' : await shown.innerText(),
+      heardAs: (await heard.count()) === 0 ? '' : ((await heard.textContent()) ?? ''),
+    };
+  }
+
+  async solutionsShown(): Promise<readonly string[]> {
+    return this.list().locator('.solution-list__rows .button').evaluateAll((rows) =>
+      rows.map((row) => (row.querySelector('[aria-hidden="true"]') ?? row).textContent ?? ''),
+    );
+  }
+
+  async solutionsHeard(): Promise<readonly string[]> {
+    return this.list().locator('.solution-list__rows .button').evaluateAll((rows) =>
+      rows.map((row) => (row.querySelector('.visually-hidden') ?? row).textContent ?? ''),
+    );
   }
 
   async solutionView(): Promise<SolutionView> {
@@ -92,6 +120,14 @@ export class UiGameDriver implements GameDriver {
 
   async focusedControl(): Promise<string> {
     return '';
+  }
+
+  private listHeading(): Locator {
+    return this.page.getByRole('heading', { name: 'Solutions', exact: true });
+  }
+
+  private list(): Locator {
+    return this.listHeading().locator('xpath=ancestor::div[contains(concat(" ", normalize-space(@class), " "), " solution-list ")]');
   }
 
   /** The whole screen, read in one browser call. */

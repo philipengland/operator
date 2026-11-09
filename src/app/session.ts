@@ -23,6 +23,9 @@ import {
 
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
+/** Which screen is showing (spec-006 FR-601). */
+export type Place = { readonly kind: 'play' } | { readonly kind: 'list' };
+
 export interface SessionState {
   readonly puzzle: Puzzle;
   readonly entry: Entry;
@@ -30,6 +33,9 @@ export interface SessionState {
   readonly message: MessageKind | null;
   /** The cell the keypad sets; none until the player taps one (spec-004 FR-404). */
   readonly selected: CellPosition | null;
+  /** The found solutions, in the order found (spec-006 FR-602). */
+  readonly solutions: readonly Entry[];
+  readonly place: Place;
 }
 
 export type SessionAction =
@@ -37,7 +43,9 @@ export type SessionAction =
   | { readonly type: 'tapOperator'; readonly line: LinePosition }
   | { readonly type: 'submit' }
   | { readonly type: 'key'; readonly digit: Digit }
-  | { readonly type: 'clear' };
+  | { readonly type: 'clear' }
+  | { readonly type: 'openList' }
+  | { readonly type: 'showPlace'; readonly place: Place };
 
 export function startSession(): SessionState {
   return {
@@ -46,6 +54,8 @@ export function startSession(): SessionState {
     found: new Set(),
     message: null,
     selected: null,
+    solutions: [],
+    place: { kind: 'play' },
   };
 }
 
@@ -75,6 +85,10 @@ export function applyAction(state: SessionState, action: SessionAction): Session
       return setSelectedCell(state, action.digit);
     case 'clear':
       return setSelectedCell(state, null);
+    case 'openList':
+      return { ...state, place: { kind: 'list' } };
+    case 'showPlace':
+      return { ...state, place: action.place };
   }
 }
 
@@ -128,5 +142,5 @@ function submit(state: SessionState): SessionState {
   }
   const found = new Set([...state.found, result.key]);
   const isEverySolutionFound = found.size >= state.puzzle.solutionCount;
-  return { ...state, found, message: isEverySolutionFound ? 'all-found' : 'new-solution' };
+  return { ...state, found, solutions: [...state.solutions, state.entry], message: isEverySolutionFound ? 'all-found' : 'new-solution' };
 }

@@ -40,6 +40,8 @@ function headed(title: HTMLElement, isHeading: boolean): HTMLElement {
   }
   const heading = document.createElement('h1');
   heading.className = 'speech-bubble__heading';
+  // Focus moves here when a screen opens (spec-006 research R11); it is not something to tab to.
+  heading.tabIndex = -1;
   heading.append(title);
   return heading;
 }

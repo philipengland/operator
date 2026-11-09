@@ -19,7 +19,11 @@ export interface SolutionListActions {
   readonly onStartAgain?: () => void;
 }
 
-export function createSolutionList(props: SolutionListProps, actions: SolutionListActions = {}): Component<SolutionListProps> {
+export interface SolutionListScreen extends Component<SolutionListProps> {
+  focusHeading(): void;
+}
+
+export function createSolutionList(props: SolutionListProps, actions: SolutionListActions = {}): SolutionListScreen {
   const element = document.createElement('div');
   element.className = 'solution-list';
   const header = createOperatorHeader(solutionListHeader(props));
@@ -46,7 +50,7 @@ export function createSolutionList(props: SolutionListProps, actions: SolutionLi
     }
   };
   update(props);
-  return { element, update };
+  return { element, update, focusHeading: () => element.querySelector('h1')?.focus() };
 }
 
 /** What a screen reader hears from an empty list; what it shows is in the bubble (spec-006 FR-603). */
