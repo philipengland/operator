@@ -274,3 +274,14 @@ describe('restoring what was found (spec-006)', () => {
     expect(restored).toEqual({ ...startSession(), found: new Set(['2,2,3|×|÷']), solutions: [solutionA] });
   });
 });
+
+describe('the counter with a very large total (spec-006)', () => {
+  const threeFoundOf = (solutionCount: number): SessionState => {
+    const session = startSession();
+    return { ...session, puzzle: { ...session.puzzle, solutionCount }, found: new Set(['a', 'b', 'c'] as never[]) };
+  };
+
+  it('shows a total of 100 (spec-006 AC-23)', () => {
+    expect(counterText(threeFoundOf(100))).toBe('Found 3 of 100');
+  });
+});
