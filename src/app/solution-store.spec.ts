@@ -47,4 +47,10 @@ describe('readSolutions', () => {
   it('reads back what was saved (spec-006 AC-14)', () => {
     expect(readSolutions(storeWith({ [KEY]: saved(SOLUTION_A) }), workedExample)).toEqual([SOLUTION_A]);
   });
+
+  it('treats text that is not a saved record as nothing saved (spec-006 AC-20)', () => {
+    const reading = () => readSolutions(storeWith({ [KEY]: 'this is not a saved game' }), workedExample);
+
+    expect(reading).not.toThrow();
+  });
 });

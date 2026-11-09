@@ -13,8 +13,19 @@ export interface SolutionStore {
 }
 
 export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly Entry[] {
-  const raw = store.read(keyFor(puzzle));
-  return raw === null ? [] : (JSON.parse(raw) as { solutions: Entry[] }).solutions;
+  const record = parsed(store.read(keyFor(puzzle)));
+  return record?.solutions ?? [];
+}
+
+function parsed(raw: string | null): { readonly solutions?: Entry[] } | null {
+  if (raw === null) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw) as { readonly solutions?: Entry[] };
+  } catch {
+    return null;
+  }
 }
 
 export function saveSolution(store: SolutionStore, puzzle: Puzzle, entry: Entry): void {
