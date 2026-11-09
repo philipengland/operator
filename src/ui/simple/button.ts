@@ -12,6 +12,9 @@ export const builtFrom: readonly string[] = [];
 
 /** A button; `after` are nodes shown after its label, such as a decorative tick (as Badge). */
 export function createButton(props: ButtonProps, onPress?: () => void, after: readonly Node[] = []): Component<ButtonProps> {
+  if (props.isReadOnly) {
+    return createReadOnlyButton(props);
+  }
   const element = document.createElement('button');
   element.type = 'button';
   // A cell's caret relies on an empty button (:empty), so the label only gets its own element when needed.
@@ -28,6 +31,24 @@ export function createButton(props: ButtonProps, onPress?: () => void, after: re
   const update = (next: ButtonProps): void => {
     current = next;
     render(element, label, buttonModel(next));
+  };
+  update(props);
+  return { element, update };
+}
+
+/** The same look as a button, but plain text: its name is read out, and nothing can be done with it. */
+function createReadOnlyButton(props: ButtonProps): Component<ButtonProps> {
+  const element = document.createElement('div');
+  const name = document.createElement('span');
+  name.className = 'visually-hidden';
+  const label = document.createElement('span');
+  label.setAttribute('aria-hidden', 'true');
+  element.append(name, label);
+  const update = (next: ButtonProps): void => {
+    const model = buttonModel(next);
+    element.className = model.classes.join(' ');
+    writeText(name, model.name);
+    writeText(label, model.label);
   };
   update(props);
   return { element, update };

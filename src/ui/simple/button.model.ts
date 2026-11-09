@@ -32,5 +32,12 @@ export interface ButtonModel {
 }
 
 export function buttonModel({ label, style, action, name, isUnavailable = false, isSelected = false, isReadOnly = false }: ButtonProps): ButtonModel {
-  return { label, name: name ?? (action ? `${label}, ${action}` : label), isUnavailable, isSelected, classes: ['button', `button--${style}`, ...(isReadOnly ? ['button--read-only'] : [])] };
+  return { label, name: name ?? (action ? `${label}, ${action}` : label), isUnavailable, isSelected, classes: ['button', `button--${style}`, ...readOnlyClasses(isReadOnly, isUnavailable)] };
+}
+
+function readOnlyClasses(isReadOnly: boolean, isUnavailable: boolean): readonly string[] {
+  if (!isReadOnly) {
+    return [];
+  }
+  return isUnavailable ? ['button--read-only', 'button--read-only-given'] : ['button--read-only'];
 }

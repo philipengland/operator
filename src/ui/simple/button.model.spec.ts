@@ -29,4 +29,8 @@ describe('buttonModel', () => {
   it('can be read-only: the same look, marked so it is not offered as something to tap', () => {
     expect(buttonModel({ label: '2', style: 'cell', isReadOnly: true }).classes).toEqual(['button', 'button--cell', 'button--read-only']);
   });
+
+  it('marks a read-only given cell, which has no unavailable state to show it by', () => {
+    expect(buttonModel({ label: '6', style: 'cell', isReadOnly: true, isUnavailable: true }).classes).toContain('button--read-only-given');
+  });
 });
