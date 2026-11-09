@@ -13,4 +13,8 @@ describe('solutionListModel', () => {
   it('offers each solution as a key to tap', () => {
     expect(solutionListModel(WITH_ONE).rows).toEqual([{ label: 'Solution 1', style: 'key' }]);
   });
+
+  it('shows rows as text while they cannot be opened', () => {
+    expect(solutionListModel({ ...WITH_ONE, canOpenRows: false }).rows).toEqual([{ label: 'Solution 1', style: 'key', isReadOnly: true }]);
+  });
 });
