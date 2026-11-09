@@ -124,7 +124,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 - [X] T042 [US3] AC-28: focus stays inside the pop-up, and returns to "Start again" on "Keep them"; the accessibility scan passes
 - [X] T043 [US3] Edge cases: "Start again" not offered when nothing is found, in `src/app/screen.ts`; the phone's back closes the pop-up and clears nothing, in `src/app/navigation.ts`; a double-tap cannot confirm, in `src/ui/combined/confirm-dialog.ts`
 - [X] T044 [US3] Confirm `npm run build` shows no "Start again" with the flag off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 4 of 6: starting again (flag off)". The owner merges
-- [ ] T045 [US3] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `startAgain` true in `src/app/features.ts`. Must be released before `remember` (T056)
+- [X] T045 [US3] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `startAgain` true in `src/app/features.ts`. Must be released before `remember` (T056)
 
 ---
 
