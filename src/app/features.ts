@@ -11,7 +11,7 @@ export interface Features {
   readonly startAgain: boolean;
 }
 
-export const RELEASED: Features = { log: true, reopen: true, startAgain: false };
+export const RELEASED: Features = { log: true, reopen: true, startAgain: true };
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';

@@ -163,3 +163,8 @@ Commits:
 - `af9c267` feat(app): the pop-up asks before clearing (spec-006 AC-11)
 - `7d97128` feat(app): starting again clears everything (spec-006 AC-12)
 - `10011a1` refactor(app): actions around the puzzle have their own function
+
+## Release: starting again (T045)
+
+- The owner reviewed the flags-on build on a phone on 2026-11-09 ("looks great").
+- `startAgain` set true in `src/app/features.ts`. Its scenario file now runs on the game's own phones.
