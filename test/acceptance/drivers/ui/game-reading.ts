@@ -28,3 +28,16 @@ export function readHeardTexts(root: Element): readonly string[] {
     .map((element) => element.textContent ?? '')
     .filter((text) => text !== '');
 }
+
+/** Runs in the page. While a dialog is modal the browser lets nothing outside it be reached. */
+export function readPopUp(dialog: HTMLDialogElement): { question: string; reachableControls: string[]; isFocusInside: boolean } {
+  const isModal = dialog.matches(':modal');
+  const reachable = Array.from(document.querySelectorAll('button')).filter(
+    (button) => button.getClientRects().length > 0 && (!isModal || dialog.contains(button)),
+  );
+  return {
+    question: dialog.getAttribute('aria-label') ?? '',
+    reachableControls: reachable.map((button) => button.getAttribute('aria-label') ?? button.textContent ?? ''),
+    isFocusInside: dialog.contains(document.activeElement),
+  };
+}

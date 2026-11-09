@@ -12,6 +12,7 @@ describe('startSession', () => {
       selected: null,
       solutions: [],
       place: { kind: 'play' },
+      isConfirming: false,
     });
   });
 });
@@ -237,5 +238,13 @@ describe('remembering the solutions found (spec-006)', () => {
 
   it('keeps a repeat only once (spec-006 AC-4)', () => {
     expect(found(solutionA, found(solutionA)).solutions).toEqual([solutionA]);
+  });
+});
+
+describe('starting again (spec-006)', () => {
+  const asked = (): SessionState => applyAction(startSession(), { type: 'askToStartAgain' });
+
+  it('asks first, changing nothing else (spec-006 AC-11)', () => {
+    expect(asked()).toEqual({ ...startSession(), isConfirming: true });
   });
 });

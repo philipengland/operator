@@ -36,6 +36,8 @@ export interface SessionState {
   /** The found solutions, in the order found (spec-006 FR-602). */
   readonly solutions: readonly Entry[];
   readonly place: Place;
+  /** Whether the pop-up asking to clear everything is open (spec-006 FR-608). */
+  readonly isConfirming: boolean;
 }
 
 export type SessionAction =
@@ -45,6 +47,9 @@ export type SessionAction =
   | { readonly type: 'key'; readonly digit: Digit }
   | { readonly type: 'clear' }
   | { readonly type: 'openList' }
+  | { readonly type: 'askToStartAgain' }
+  | { readonly type: 'keepSolutions' }
+  | { readonly type: 'startAgain' }
   | { readonly type: 'openSolution'; readonly number: number }
   | { readonly type: 'showPlace'; readonly place: Place };
 
@@ -57,6 +62,7 @@ export function startSession(): SessionState {
     selected: null,
     solutions: [],
     place: { kind: 'play' },
+    isConfirming: false,
   };
 }
 
@@ -86,6 +92,11 @@ export function applyAction(state: SessionState, action: SessionAction): Session
       return setSelectedCell(state, action.digit);
     case 'clear':
       return setSelectedCell(state, null);
+    case 'askToStartAgain':
+      return { ...state, isConfirming: true };
+    case 'keepSolutions':
+    case 'startAgain':
+      return state;
     case 'openList':
       return { ...state, place: { kind: 'list' } };
     case 'openSolution':

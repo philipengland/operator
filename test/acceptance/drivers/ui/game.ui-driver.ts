@@ -18,7 +18,7 @@ import {
   pillIn,
 } from './screen-names';
 import { shownText } from './catalogue-reading';
-import { readGameScreen, readHeardTexts } from './game-reading';
+import { readGameScreen, readHeardTexts, readPopUp } from './game-reading';
 
 const GAME_READY_TIMEOUT_MS = 5_000;
 
@@ -30,8 +30,6 @@ interface AnnouncementCounter {
 const NOT_READ_YET = 'not read yet';
 const BUBBLE_TITLE = 'Hello, Operator!';
 
-// spec-006: each story's part replaces these with what the screen shows.
-const notBuiltYet = async (): Promise<void> => undefined;
 const SOLUTION_NAME = /^Solution \d+$/;
 
 export class UiGameDriver implements GameDriver {
@@ -57,9 +55,6 @@ export class UiGameDriver implements GameDriver {
     await scanForAccessibilityProblems(this.page);
   }
 
-  tapStartAgain = notBuiltYet;
-  doubleTapStartAgain = notBuiltYet;
-  tapPopUpButton = notBuiltYet;
 
   async tapCounter(): Promise<void> {
     await this.page.getByRole('button', { name: COUNTER_PATTERN }).tap();
@@ -131,12 +126,43 @@ export class UiGameDriver implements GameDriver {
     return Promise.all((await this.page.getByRole('button').all()).map(accessibleName));
   }
 
+  async tapStartAgain(): Promise<void> {
+    await this.startAgain().tap();
+    await scanForAccessibilityProblems(this.page);
+  }
+
+  /** Both taps land on the same spot, as a finger's would. */
+  async doubleTapStartAgain(): Promise<void> {
+    const box = await this.startAgain().boundingBox();
+    if (box) {
+      const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
+      await this.page.touchscreen.tap(x, y);
+      await this.page.touchscreen.tap(x, y);
+    }
+  }
+
+  async tapPopUpButton(name: string): Promise<void> {
+    await this.page.getByRole('dialog').getByRole('button', { name, exact: true }).tap();
+    await scanForAccessibilityProblems(this.page);
+  }
+
   async popUp(): Promise<PopUpView | null> {
-    return null;
+    const dialog = this.page.locator('dialog[open]');
+    if ((await dialog.count()) === 0) {
+      return null;
+    }
+    return dialog.evaluate(readPopUp);
   }
 
   async focusedControl(): Promise<string> {
-    return '';
+    return this.page.evaluate(() => {
+      const focused = document.activeElement;
+      return focused?.getAttribute('aria-label') ?? focused?.textContent ?? '';
+    });
+  }
+
+  private startAgain(): Locator {
+    return this.page.getByRole('button', { name: 'Start again', exact: true });
   }
 
   private solution(): Locator {
