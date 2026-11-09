@@ -168,3 +168,50 @@ Commits:
 
 - The owner reviewed the flags-on build on a phone on 2026-11-09 ("looks great").
 - `startAgain` set true in `src/app/features.ts`. Its scenario file now runs on the game's own phones.
+
+## Part 5: User Story 4, remembering (T046 to T055)
+
+Scenarios: `remember-solutions.acceptance-spec.ts`, unchanged from `df93d38` (blob confirmed). **No existing test was amended.**
+
+- **AC-14, acceptance RED**: `counter — Expected: "Found 1 of 2", Received: "Found 0 of 2"`.
+- **Unit cycles**, each failing on its assertion first: restoring; the agreed format under the puzzle's own key; reading back; adding to what is stored; unreadable text and the wrong shape as nothing saved; a filling
+  that does not solve the puzzle dropped; entries of the wrong shape dropped; a solution saved twice counted once; a newer format unreadable, and never overwritten; only a new solution saved; starting again removing the record;
+  the browser store reading, writing, removing, and carrying on when refused.
+- **AC-22**: `(spec-006 AC-22)` in `solution-store.spec.ts`. It and two other save rules passed on first run, proven by reverted breaks (a save that rewrites from nothing; one key for every puzzle).
+
+**Reported — passed before their own code**, each proven by a reverted break, on both phones:
+
+| Criterion | Break | Failure |
+| --- | --- | --- |
+| AC-15 | nothing restored on opening | `counter — Received: "Found 0 of 2"` |
+| AC-16 | restored but not counted as found | `the speech bubble` |
+| AC-17 | only the first restored | `the counter shows — Received: "Solutions found 1 of 2"` |
+| AC-18 | starting again leaves the record | `counter — Received: "Found 1 of 2"` |
+| AC-19 | a refused save throws | `counter — Received: "Found 0 of 2"` |
+| AC-20 | unreadable data throws | the game never opens |
+| AC-21 | any shaped filling is kept | `solutions listed, in order` |
+
+**A limit of AC-15**: the driver leaves the game for another page and returns in the same tab, because one driver holds one page. Really closing the tab is on the owner's phone review.
+
+Commits:
+
+- `0d540c7` feat(app): saved solutions can be restored (spec-006 AC-14)
+- `897b9d2` feat(app): a found solution is written in the agreed format (spec-006 AC-14)
+- `6d36dd8` feat(app): saved solutions are read back (spec-006 AC-14)
+- `ce02321` feat(app): each save adds to what is stored (spec-006 AC-17)
+- `a917264` feat(app): an unreadable record is nothing saved (spec-006 AC-20)
+- `49fcd7d` feat(app): a record of the wrong shape is nothing saved (spec-006 AC-20)
+- `065bd91` feat(app): a saved filling must solve the puzzle (spec-006 AC-21)
+- `264b5af` feat(app): a saved entry must have the right shape (spec-006 FR-611)
+- `2bbf364` feat(app): a solution saved twice counts once (spec-006 FR-611)
+- `da10f11` feat(app): a newer format cannot be read (spec-006 FR-614)
+- `7222cab` feat(app): a newer record is never overwritten (spec-006 FR-614)
+- `45eca39` test(app): saves keep other tabs, replace junk, and stay per puzzle (spec-006 AC-22)
+- `446ae0b` feat(app): a new solution is saved when found (spec-006 AC-14)
+- `5711e64` feat(app): only a new solution is saved (spec-006 AC-16)
+- `f48fe0d` feat(app): starting again removes the saved record (spec-006 AC-18)
+- `bffaf4b` feat(app): the browser store reads (spec-006 AC-14)
+- `d3aca20` feat(app): the browser store writes and removes (spec-006 AC-18)
+- `e639c4d` feat(app): a refused read is nothing saved (spec-006 AC-19)
+- `d69f496` feat(app): a refused save is ignored (spec-006 AC-19)
+- `af1e5eb` feat(app): solutions are remembered on the phone (spec-006 AC-14)

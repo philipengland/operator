@@ -47,13 +47,17 @@ export type SessionAction =
   | { readonly type: 'key'; readonly digit: Digit }
   | { readonly type: 'clear' }
   | { readonly type: 'openList' }
+  | { readonly type: 'restoreFound'; readonly solutions: readonly Entry[] }
   | { readonly type: 'askToStartAgain' }
   | { readonly type: 'keepSolutions' }
   | { readonly type: 'startAgain' }
   | { readonly type: 'openSolution'; readonly number: number }
   | { readonly type: 'showPlace'; readonly place: Place };
 
-type LogAction = Extract<SessionAction, { readonly type: 'askToStartAgain' | 'keepSolutions' | 'startAgain' | 'openList' | 'openSolution' | 'showPlace' }>;
+type LogAction = Extract<
+  SessionAction,
+  { readonly type: 'askToStartAgain' | 'keepSolutions' | 'startAgain' | 'openList' | 'openSolution' | 'showPlace' | 'restoreFound' }
+>;
 
 export function startSession(): SessionState {
   return {
@@ -102,6 +106,8 @@ export function applyAction(state: SessionState, action: SessionAction): Session
 /** What the player does around the puzzle: the list, a found solution and starting again. */
 function applyLogAction(state: SessionState, action: LogAction): SessionState {
   switch (action.type) {
+    case 'restoreFound':
+      return restoreFound(state, action.solutions);
     case 'askToStartAgain':
       return { ...state, isConfirming: true };
     case 'keepSolutions':
@@ -174,4 +180,13 @@ function submit(state: SessionState): SessionState {
 function showPlace(state: SessionState, place: Place): SessionState {
   const isMissing = place.kind === 'solution' && state.solutions[place.number - 1] === undefined;
   return { ...state, place: isMissing ? { kind: 'list' } : place, isConfirming: false };
+}
+
+/** Saved solutions were checked when they were read (solution-store.ts); this only counts them. */
+function restoreFound(state: SessionState, solutions: readonly Entry[]): SessionState {
+  const keys = solutions.flatMap((entry) => {
+    const result = checkEntry(state.puzzle, entry, defaultRules);
+    return result.kind === 'solved' ? [result.key] : [];
+  });
+  return { ...state, found: new Set(keys), solutions };
 }
