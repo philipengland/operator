@@ -9,13 +9,14 @@ type BrowserStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 export function createBrowserStore(storage: () => BrowserStorage): SolutionStore {
   return {
     read: (key) => attempt(() => storage().getItem(key), null),
-    write: (key, value) => {
-      if (value === null) {
-        storage().removeItem(key);
-      } else {
-        storage().setItem(key, value);
-      }
-    },
+    write: (key, value) =>
+      attempt(() => {
+        if (value === null) {
+          storage().removeItem(key);
+        } else {
+          storage().setItem(key, value);
+        }
+      }, undefined),
   };
 }
 

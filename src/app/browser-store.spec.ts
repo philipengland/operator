@@ -36,4 +36,18 @@ describe('createBrowserStore', () => {
 
     expect(() => store.read('key')).not.toThrow();
   });
+
+  it.each(['a value', null])('carries on when the browser refuses to write %j (spec-006 AC-19)', (value) => {
+    const refusing = {
+      ...storageWith(),
+      setItem: () => {
+        throw new Error('full');
+      },
+      removeItem: () => {
+        throw new Error('full');
+      },
+    };
+
+    expect(() => createBrowserStore(() => refusing).write('key', value)).not.toThrow();
+  });
 });
