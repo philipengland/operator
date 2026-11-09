@@ -12,8 +12,9 @@ export interface SolutionStore {
   write(key: string, value: string | null): void;
 }
 
-export function readSolutions(_store: SolutionStore, _puzzle: Puzzle): readonly Entry[] {
-  return [];
+export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly Entry[] {
+  const raw = store.read(keyFor(puzzle));
+  return raw === null ? [] : (JSON.parse(raw) as { solutions: Entry[] }).solutions;
 }
 
 export function saveSolution(store: SolutionStore, puzzle: Puzzle, entry: Entry): void {

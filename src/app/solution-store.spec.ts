@@ -31,3 +31,11 @@ describe('saveSolution', () => {
     expect(JSON.parse(store.records.get(KEY) ?? 'null')).toEqual({ format: 1, solutions: [SOLUTION_A] });
   });
 });
+
+describe('readSolutions', () => {
+  const saved = (...solutions: readonly unknown[]): string => JSON.stringify({ format: 1, solutions });
+
+  it('reads back what was saved (spec-006 AC-14)', () => {
+    expect(readSolutions(storeWith({ [KEY]: saved(SOLUTION_A) }), workedExample)).toEqual([SOLUTION_A]);
+  });
+});
