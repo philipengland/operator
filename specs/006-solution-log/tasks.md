@@ -154,8 +154,8 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 
 **Independent Test**: unit tests with sample totals, until F7 brings such a puzzle.
 
-- [ ] T057 [P] [US5] Create `006-solution-log-part-6` from `main`. AC-23: TDD in `src/app/session.spec.ts`, title `(spec-006 AC-23)`: 100 solutions and 3 found gives "Found 3 of 100". ⚠️ May pass at once: report, and prove with a reverted break
-- [ ] T058 [P] [US5] AC-24: TDD in `src/app/session.spec.ts`, title `(spec-006 AC-24)`: a count capped at 101 and 3 found gives "Found 3", in `counterText` in `src/app/session.ts`; `src/app/screen.spec.ts`: the counter's total is left out in `src/app/screen.ts`
+- [X] T057 [P] [US5] Create `006-solution-log-part-6` from `main`. AC-23: TDD in `src/app/session.spec.ts`, title `(spec-006 AC-23)`: 100 solutions and 3 found gives "Found 3 of 100". ⚠️ May pass at once: report, and prove with a reverted break
+- [X] T058 [P] [US5] AC-24: TDD in `src/app/session.spec.ts`, title `(spec-006 AC-24)`: a count capped at 101 and 3 found gives "Found 3", in `counterText` in `src/app/session.ts`; `src/app/screen.spec.ts`: the counter's total is left out in `src/app/screen.ts`
 - [ ] T059 [US5] Push and open "spec-006 part 6 of 6: very large totals". No flag, as recorded in research R13. The owner merges
 
 ---

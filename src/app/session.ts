@@ -59,6 +59,8 @@ type LogAction = Extract<
   { readonly type: 'askToStartAgain' | 'keepSolutions' | 'startAgain' | 'openList' | 'openSolution' | 'showPlace' | 'restoreFound' }
 >;
 
+const LARGEST_TOTAL_SHOWN = 100;
+
 export function startSession(): SessionState {
   return {
     puzzle: workedExample,
@@ -72,9 +74,15 @@ export function startSession(): SessionState {
   };
 }
 
-/** "Found N of M" (FR-013). */
+/** The total the player is shown; a huge one would put them off (spec-006 FR-616). */
+export function totalToShow({ puzzle }: SessionState): number | undefined {
+  return puzzle.solutionCount > LARGEST_TOTAL_SHOWN ? undefined : puzzle.solutionCount;
+}
+
+/** "Found N of M", or "Found N" when the total is left out (FR-013, spec-006 FR-616). */
 export function counterText(state: SessionState): string {
-  return `Found ${state.found.size} of ${state.puzzle.solutionCount}`;
+  const total = totalToShow(state);
+  return total === undefined ? `Found ${state.found.size}` : `Found ${state.found.size} of ${total}`;
 }
 
 /** What every line works out to now, rows then columns (spec-002 FR-201). */
