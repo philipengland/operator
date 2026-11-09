@@ -147,4 +147,14 @@ describe('rememberChange', () => {
 
     expect(store.records.get(KEY)).toBe(saved);
   });
+
+  it('removes the record when the player starts again (spec-006 AC-18)', () => {
+    const store = storeWith();
+    const afterA = found(SOLUTION_A);
+    rememberChange(store, before, afterA);
+
+    rememberChange(store, afterA, applyAction(afterA, { type: 'startAgain' }));
+
+    expect(store.records.has(KEY)).toBe(false);
+  });
 });

@@ -27,6 +27,9 @@ export function rememberChange(store: SolutionStore, previous: SessionState, nex
   if (latest !== undefined && next.solutions.length > previous.solutions.length) {
     saveSolution(store, next.puzzle, latest);
   }
+  if (previous.solutions.length > 0 && next.solutions.length === 0) {
+    store.write(keyFor(next.puzzle), null);
+  }
 }
 
 export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly Entry[] {
