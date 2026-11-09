@@ -17,7 +17,11 @@ export interface SolutionViewActions {
   readonly onBack?: () => void;
 }
 
-export function createSolutionView(props: SolutionViewProps, actions: SolutionViewActions = {}): Component<SolutionViewProps> {
+export interface SolutionViewScreen extends Component<SolutionViewProps> {
+  focusHeading(): void;
+}
+
+export function createSolutionView(props: SolutionViewProps, actions: SolutionViewActions = {}): SolutionViewScreen {
   const element = document.createElement('div');
   element.className = 'solution-view';
   const header = createOperatorHeader(solutionViewHeader(props));
@@ -33,5 +37,5 @@ export function createSolutionView(props: SolutionViewProps, actions: SolutionVi
     grid.update(next.grid);
   };
   update(props);
-  return { element, update };
+  return { element, update, focusHeading: () => element.querySelector('h1')?.focus() };
 }

@@ -21,6 +21,8 @@ export interface SolutionListActions {
 
 export interface SolutionListScreen extends Component<SolutionListProps> {
   focusHeading(): void;
+  /** `index` counts from 0, in the order found. */
+  focusRow(index: number): void;
 }
 
 export function createSolutionList(props: SolutionListProps, actions: SolutionListActions = {}): SolutionListScreen {
@@ -50,7 +52,12 @@ export function createSolutionList(props: SolutionListProps, actions: SolutionLi
     }
   };
   update(props);
-  return { element, update, focusHeading: () => element.querySelector('h1')?.focus() };
+  return {
+    element,
+    update,
+    focusHeading: () => element.querySelector('h1')?.focus(),
+    focusRow: (index) => rows.querySelectorAll('button')[index]?.focus(),
+  };
 }
 
 /** What a screen reader hears from an empty list; what it shows is in the bubble (spec-006 FR-603). */
