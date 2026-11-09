@@ -20,7 +20,8 @@ working as the player taps ("6 + 2 = 8 ✓", "6 ÷ 4 ✗"); results may go below
 division that is not whole fails a line. Spec-003 (`specs/003-themed-ui/`) builds a themed
 component library (six colour themes, a puzzle's theme worked out from its seed) and a
 development-only catalogue; spec-004 (`specs/004-themed-play-screen/`) applies it to the game,
-with a keypad and the operator's voice after each check. Sources: `docs/brief/project-brief.md`, the constitution.
+with a keypad and the operator's voice after each check. Spec-006 (`specs/006-solution-log/`) lists the solutions found,
+reopens them read-only, clears them with "Start again", and remembers them on the phone. Sources: `docs/brief/project-brief.md`, the constitution.
 
 ## Architecture and Key Decisions
 
@@ -28,8 +29,9 @@ with a keypad and the operator's voice after each check. Sources: `docs/brief/pr
   - Puzzle engine — `src/engine/` — pure TypeScript rules: line evaluation, the whole-number
     rule, checking. No DOM, browser APIs, timers or randomness (constitution II).
   - Play screen — `src/app/` — session state (`session.ts`), wording and accessible names
-    (`labels.ts`), the mapping from state to what the library shows (`screen.ts`), build-time
-    feature flags (`features.ts`), wiring (`main.ts`). The game adds no styling of its own.
+    (`labels.ts`), the mapping from state to what the library shows (`screen.ts`, `solution-list.ts`,
+    `solution-view.ts`), history (`navigation.ts`), the saved format (`solution-store.ts`), the only code touching
+    `localStorage` (`browser-store.ts`), build-time feature flags (`features.ts`), wiring (`main.ts`). The game adds no styling of its own.
   - Component library — `src/ui/` — in tiers: `foundations/` (themes, `themeForSeed`,
     `contrastRatio`, `blend`, `tokens.css`, and `page.css`: the page's paper with Ben-Day dots), `simple/`, `combined/`, `screens/`. Each component has a pure
     `*.model.ts` and a renderer `create<Name>(props) → { element, update }`. Draws everything the
@@ -38,16 +40,19 @@ with a keypad and the operator's voice after each check. Sources: `docs/brief/pr
     and the play screen alone at `catalogue.html#play-screen`. Development only, never published.
   - Deployable unit: the static `dist/` build, published to GitHub Pages.
 - **Boundaries and integrations**: none at runtime. After loading, the game makes no network
-  requests (constitution I; CSP `connect-src 'none'` in `index.html`).
+  requests (constitution I; CSP `connect-src 'none'` in `index.html`). Found solutions stay in the
+  phone's `localStorage` and are re-checked by the engine when read.
 - **Contracts**: no OpenAPI/AsyncAPI. The internal contracts are
   `docs/contracts/engine-api.md` (engine), `docs/contracts/play-screen.md`
   (accessible names and wording the UI driver reads) and `docs/contracts/component-library.md`
-  (the component library's tiers, roles and names; spec-003).
+  (the component library's tiers, roles and names; spec-003), and `docs/contracts/saved-solutions.md`
+  (what is saved on the phone; every released version's format must stay readable, SC-604).
 - **Key ADRs**: `docs/adr/0001-web-stack-and-hosting.md` — TypeScript and Vite (Capacitor-ready),
   Vitest, Playwright as the UI driver, GitHub Pages deployed by GitHub Actions; TypeScript is
   pinned to 6.0.x because typescript-eslint does not yet support 6.1+.
   `docs/adr/0002-component-library.md` — a tiered component library in plain TypeScript (no
   framework), themes as data, self-hosted fonts, and a catalogue that is never published.
+  `docs/adr/0004-saved-solutions.md` — one versioned `localStorage` record per puzzle; a newer format is never overwritten.
 - **Active exceptions**: see `docs/exceptions/` (EXC-001, -002, -005, -006).
 
 ## Build, Test and Run
