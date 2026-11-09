@@ -215,3 +215,18 @@ Commits:
 - `e639c4d` feat(app): a refused read is nothing saved (spec-006 AC-19)
 - `d69f496` feat(app): a refused save is ignored (spec-006 AC-19)
 - `af1e5eb` feat(app): solutions are remembered on the phone (spec-006 AC-14)
+
+## Part 6: User Story 5, very large totals (T057 to T059)
+
+Unit tests only, as `acceptance.md` records: no puzzle can reach these until F7. **No existing test was amended**: the new tests are added to `session.spec.ts` and `screen.spec.ts` in their own `describe` blocks.
+
+- **AC-24, RED**: `expected 'Found 3 of 101' to be 'Found 3'`, then GREEN in `counterText`.
+- **AC-24 on the screen, RED**: `expected 101 to be undefined`, then GREEN in `playScreenProps`.
+
+**Reported — passed before its own code**: AC-23 (a total of 100 is shown), because every total was shown until AC-24 added the limit. Proven by a reverted break (`>=` for `>` in `totalToShow`): `expected 'Found 3' to be 'Found 3 of 100'` and `expected undefined to be 100`.
+
+Commits:
+
+- `f740958` test(app): a total of 100 is shown (spec-006 AC-23)
+- `aee5213` feat(app): a total over 100 is left out of the words (spec-006 AC-24)
+- `e25a4e2` feat(app): the counter leaves out a total over 100 (spec-006 AC-24)
