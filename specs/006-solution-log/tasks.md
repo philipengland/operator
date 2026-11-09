@@ -156,13 +156,13 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 
 - [X] T057 [P] [US5] Create `006-solution-log-part-6` from `main`. AC-23: TDD in `src/app/session.spec.ts`, title `(spec-006 AC-23)`: 100 solutions and 3 found gives "Found 3 of 100". ⚠️ May pass at once: report, and prove with a reverted break
 - [X] T058 [P] [US5] AC-24: TDD in `src/app/session.spec.ts`, title `(spec-006 AC-24)`: a count capped at 101 and 3 found gives "Found 3", in `counterText` in `src/app/session.ts`; `src/app/screen.spec.ts`: the counter's total is left out in `src/app/screen.ts`
-- [ ] T059 [US5] Push and open "spec-006 part 6 of 6: very large totals". No flag, as recorded in research R13. The owner merges
+- [X] T059 [US5] Push and open "spec-006 part 6 of 6: very large totals". No flag, as recorded in research R13. The owner merges
 
 ---
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T060 Remove the `log`, `reopen`, `startAgain` and `remember` flags once released and signed off (constitution VII), in `src/app/features.ts`, `src/app/screen.ts`, `src/app/main.ts` and `playwright.config.ts`, in small pull requests
+- [X] T060 Remove the `log`, `reopen`, `startAgain` and `remember` flags once released and signed off (constitution VII), in `src/app/features.ts`, `src/app/screen.ts`, `src/app/main.ts` and `playwright.config.ts`, in small pull requests
 - [ ] T061 Run `specs/006-solution-log/quickstart.md` section 1 in full. The owner signs off the list on a real phone (SC-606) and runs the playtests (SC-602); record both in `specs/006-solution-log/tdd-log.md`
 - [ ] T062 `npm run test-results -- 006-solution-log`: `specs/006-solution-log/test-results.md` must end `OVERALL status: PASS`, with AC-1 to AC-28 covered and specs 001 to 004 still passing (SC-605). Update `AGENTS.md`: the list, the saved format and `docs/adr/0004-saved-solutions.md`
 
