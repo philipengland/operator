@@ -13,7 +13,7 @@ export function historyEntryFor(place: Place): HistoryEntry {
 /** Whatever the browser hands back; anything else there is treated as the puzzle. */
 export function placeFrom(entry: unknown): Place {
   const place = (entry as Partial<HistoryEntry> | null | undefined)?.place;
-  if (place?.kind === 'solution') {
+  if (place?.kind === 'solution' && Number.isInteger(place.number) && place.number >= 1) {
     return place;
   }
   return place?.kind === 'list' ? { kind: 'list' } : { kind: 'play' };

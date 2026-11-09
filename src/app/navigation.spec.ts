@@ -13,4 +13,8 @@ describe('placeFrom', () => {
   it('reads back a solution (spec-006 AC-26)', () => {
     expect(placeFrom(historyEntryFor({ kind: 'solution', number: 2 }))).toEqual({ kind: 'solution', number: 2 });
   });
+
+  it.each([0, -1, 1.5, 'one', undefined])('treats a solution numbered %j as the puzzle', (number) => {
+    expect(placeFrom({ place: { kind: 'solution', number } })).toEqual({ kind: 'play' });
+  });
 });
