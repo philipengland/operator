@@ -33,4 +33,14 @@ describe('the rows (spec-006)', () => {
   it('can be opened once the story is released (spec-006 AC-7)', () => {
     expect(solutionListProps(startSession(), CLASSIC, { reopen: true }).canOpenRows).toBe(true);
   });
+
+  it('offers "Start again" once released, when something has been found (spec-006 AC-11)', () => {
+    const entry = startSession().entry;
+
+    expect(solutionListProps({ ...startSession(), solutions: [entry] }, CLASSIC, { startAgain: true }).startAgainLabel).toBe('Start again');
+  });
+
+  it('does not offer "Start again" with nothing found (spec-006 FR-608)', () => {
+    expect(solutionListProps(startSession(), CLASSIC, { startAgain: true }).startAgainLabel).toBeUndefined();
+  });
 });

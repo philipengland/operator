@@ -12,6 +12,7 @@ describe('startSession', () => {
       selected: null,
       solutions: [],
       place: { kind: 'play' },
+      isConfirming: false,
     });
   });
 });
@@ -237,5 +238,29 @@ describe('remembering the solutions found (spec-006)', () => {
 
   it('keeps a repeat only once (spec-006 AC-4)', () => {
     expect(found(solutionA, found(solutionA)).solutions).toEqual([solutionA]);
+  });
+});
+
+describe('starting again (spec-006)', () => {
+  const asked = (): SessionState => applyAction(startSession(), { type: 'askToStartAgain' });
+
+  it('asks first, changing nothing else (spec-006 AC-11)', () => {
+    expect(asked()).toEqual({ ...startSession(), isConfirming: true });
+  });
+
+  it('changes nothing when the player keeps their solutions (spec-006 AC-11)', () => {
+    expect(applyAction(asked(), { type: 'keepSolutions' })).toEqual(startSession());
+  });
+
+  it('closes the pop-up when the browser moves back, clearing nothing (spec-006 edge case)', () => {
+    expect(applyAction(asked(), { type: 'showPlace', place: { kind: 'play' } })).toEqual(startSession());
+  });
+
+  it('clears what was found, the grid and any message, and stays on the list (spec-006 AC-12)', () => {
+    const entry: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+    const found = applyAction({ ...startSession(), entry, selected: { row: 0, column: 1 } }, { type: 'submit' });
+    const asking = applyAction({ ...found, place: { kind: 'list' } }, { type: 'askToStartAgain' });
+
+    expect(applyAction(asking, { type: 'startAgain' })).toEqual({ ...startSession(), place: { kind: 'list' } });
   });
 });

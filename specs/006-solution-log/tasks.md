@@ -116,14 +116,14 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 
 **Independent Test**: find Solution A, start again, and find Solution A once more.
 
-- [ ] T037 [US3] Create `006-solution-log-part-4` from `main`; bring `test/acceptance/play/start-again.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob); add the `startAgain` flag, off, in `src/app/features.ts` and `playwright.config.ts`
-- [ ] T038 [US3] UI driver methods in `test/acceptance/drivers/ui/game.ui-driver.ts`: `tapStartAgain`, `doubleTapStartAgain`, `tapPopUpButton`, `popUp`, `focusedControl`
-- [ ] T039 [US3] AC-11: TDD in `src/app/session.spec.ts`: `askToStartAgain` and `keepSolutions` set `isConfirming` and change nothing else; `src/app/main.ts` shows the Confirm dialog
-- [ ] T040 [US3] AC-12: TDD in `src/app/session.spec.ts`: `startAgain` clears `found`, the entry, `selected` and `message`, sets `isConfirming` false, and stays on the list
-- [ ] T041 [US3] AC-13: ⚠️ May pass from AC-12: report, and prove with a reverted break
-- [ ] T042 [US3] AC-28: focus stays inside the pop-up, and returns to "Start again" on "Keep them"; the accessibility scan passes
-- [ ] T043 [US3] Edge cases: "Start again" not offered when nothing is found, in `src/app/screen.ts`; the phone's back closes the pop-up and clears nothing, in `src/app/navigation.ts`; a double-tap cannot confirm, in `src/ui/combined/confirm-dialog.ts`
-- [ ] T044 [US3] Confirm `npm run build` shows no "Start again" with the flag off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 4 of 6: starting again (flag off)". The owner merges
+- [X] T037 [US3] Create `006-solution-log-part-4` from `main`; bring `test/acceptance/play/start-again.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob); add the `startAgain` flag, off, in `src/app/features.ts` and `playwright.config.ts`
+- [X] T038 [US3] UI driver methods in `test/acceptance/drivers/ui/game.ui-driver.ts`: `tapStartAgain`, `doubleTapStartAgain`, `tapPopUpButton`, `popUp`, `focusedControl`
+- [X] T039 [US3] AC-11: TDD in `src/app/session.spec.ts`: `askToStartAgain` and `keepSolutions` set `isConfirming` and change nothing else; `src/app/main.ts` shows the Confirm dialog
+- [X] T040 [US3] AC-12: TDD in `src/app/session.spec.ts`: `startAgain` clears `found`, the entry, `selected` and `message`, sets `isConfirming` false, and stays on the list
+- [X] T041 [US3] AC-13: ⚠️ May pass from AC-12: report, and prove with a reverted break
+- [X] T042 [US3] AC-28: focus stays inside the pop-up, and returns to "Start again" on "Keep them"; the accessibility scan passes
+- [X] T043 [US3] Edge cases: "Start again" not offered when nothing is found, in `src/app/screen.ts`; the phone's back closes the pop-up and clears nothing, in `src/app/navigation.ts`; a double-tap cannot confirm, in `src/ui/combined/confirm-dialog.ts`
+- [X] T044 [US3] Confirm `npm run build` shows no "Start again" with the flag off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 4 of 6: starting again (flag off)". The owner merges
 - [ ] T045 [US3] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `startAgain` true in `src/app/features.ts`. Must be released before `remember` (T056)
 
 ---

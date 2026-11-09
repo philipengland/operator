@@ -36,6 +36,8 @@ export interface SessionState {
   /** The found solutions, in the order found (spec-006 FR-602). */
   readonly solutions: readonly Entry[];
   readonly place: Place;
+  /** Whether the pop-up asking to clear everything is open (spec-006 FR-608). */
+  readonly isConfirming: boolean;
 }
 
 export type SessionAction =
@@ -45,8 +47,13 @@ export type SessionAction =
   | { readonly type: 'key'; readonly digit: Digit }
   | { readonly type: 'clear' }
   | { readonly type: 'openList' }
+  | { readonly type: 'askToStartAgain' }
+  | { readonly type: 'keepSolutions' }
+  | { readonly type: 'startAgain' }
   | { readonly type: 'openSolution'; readonly number: number }
   | { readonly type: 'showPlace'; readonly place: Place };
+
+type LogAction = Extract<SessionAction, { readonly type: 'askToStartAgain' | 'keepSolutions' | 'startAgain' | 'openList' | 'openSolution' | 'showPlace' }>;
 
 export function startSession(): SessionState {
   return {
@@ -57,6 +64,7 @@ export function startSession(): SessionState {
     selected: null,
     solutions: [],
     place: { kind: 'play' },
+    isConfirming: false,
   };
 }
 
@@ -86,6 +94,20 @@ export function applyAction(state: SessionState, action: SessionAction): Session
       return setSelectedCell(state, action.digit);
     case 'clear':
       return setSelectedCell(state, null);
+    default:
+      return applyLogAction(state, action);
+  }
+}
+
+/** What the player does around the puzzle: the list, a found solution and starting again. */
+function applyLogAction(state: SessionState, action: LogAction): SessionState {
+  switch (action.type) {
+    case 'askToStartAgain':
+      return { ...state, isConfirming: true };
+    case 'keepSolutions':
+      return { ...state, isConfirming: false };
+    case 'startAgain':
+      return { ...startSession(), puzzle: state.puzzle, entry: emptyEntry(state.puzzle), place: state.place };
     case 'openList':
       return { ...state, place: { kind: 'list' } };
     case 'openSolution':
@@ -151,5 +173,5 @@ function submit(state: SessionState): SessionState {
 /** History can hold a solution this session has not found, after a reload. */
 function showPlace(state: SessionState, place: Place): SessionState {
   const isMissing = place.kind === 'solution' && state.solutions[place.number - 1] === undefined;
-  return { ...state, place: isMissing ? { kind: 'list' } : place };
+  return { ...state, place: isMissing ? { kind: 'list' } : place, isConfirming: false };
 }

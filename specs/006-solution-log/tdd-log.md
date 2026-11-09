@@ -131,3 +131,35 @@ Commits:
 
 - The owner reviewed the flags-on build on a phone, together, on 2026-11-09 ("looks great"), as the plan allows.
 - `log` and `reopen` set true in `src/app/features.ts`. Their scenario files now run on the game's own phones.
+
+## Part 4: User Story 3, starting again (T037 to T044)
+
+Scenarios: `start-again.acceptance-spec.ts`, unchanged from `df93d38` (blob confirmed).
+
+**Existing test amended, with the owner's approval first (2026-11-09)**: `session.spec.ts`, what a new session starts with, gains `isConfirming: false` (FR-608), the third line approved.
+
+- **AC-11, acceptance RED**: `locator.tap: Test timeout` (no "Start again"). **AC-12, acceptance RED**: `the empty list` (nothing cleared).
+- Unit cycles, each failing on its assertion first: asks first; keeping changes nothing; offered once released; not offered with nothing found; going back closes the pop-up; starting again clears everything and stays on the list.
+- **Refactor**: actions around the puzzle moved to `applyLogAction`, after lint reported a complexity of 12.
+
+**Reported — passed before their own code**, each proven by a reverted break, on both phones:
+
+| Criterion | Break |
+| --- | --- |
+| AC-13 | starting again keeps the found set |
+| AC-28, focus inside | the pop-up is not modal |
+| AC-28, focus returned | focus goes to the heading |
+| Edge: nothing to clear | offered with nothing found |
+| Edge: the phone's back | going back clears everything |
+| Edge: a double-tap | the pop-up sits where "Start again" was |
+
+Commits:
+
+- `f13d5f4` feat(app): starting again asks first (spec-006 AC-11)
+- `47e8b5e` feat(app): keeping the solutions changes nothing (spec-006 AC-11)
+- `03b1e21` feat(app): the list offers Start again once released (spec-006 AC-11)
+- `9f7ce13` feat(app): nothing to clear, nothing offered (spec-006 FR-608)
+- `b3152ed` feat(app): going back closes the pop-up (spec-006 edge case)
+- `af9c267` feat(app): the pop-up asks before clearing (spec-006 AC-11)
+- `7d97128` feat(app): starting again clears everything (spec-006 AC-12)
+- `10011a1` refactor(app): actions around the puzzle have their own function
