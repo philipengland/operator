@@ -13,4 +13,11 @@ describe('solutionViewProps', () => {
 
     expect({ heading, backLabel }).toEqual({ heading: 'Solution 1', backLabel: 'Back' });
   });
+
+  it("shows that solution's digits and marks every line, not the grid in progress (spec-006 AC-7, AC-27)", () => {
+    const { grid } = solutionViewProps(FOUND, 2);
+
+    expect(grid.cells.flat().map((cell) => cell.digit)).toEqual([6, 2, 3, 3]);
+    expect(grid.rowPills.map((pill) => pill.reachesTarget)).toEqual([true, true]);
+  });
 });

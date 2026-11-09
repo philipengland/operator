@@ -7,5 +7,5 @@ import type { SessionState } from './session';
 import { BACK } from './solution-list';
 
 export function solutionViewProps(state: SessionState, number: number): SolutionViewProps {
-  return { heading: solutionName(number), backLabel: BACK, grid: puzzleGridProps(state) };
+  return { heading: solutionName(number), backLabel: BACK, grid: puzzleGridProps({ ...state, entry: state.solutions[number - 1] ?? state.entry, selected: null }) };
 }
