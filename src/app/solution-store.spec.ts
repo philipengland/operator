@@ -30,6 +30,15 @@ describe('saveSolution', () => {
 
     expect(JSON.parse(store.records.get(KEY) ?? 'null')).toEqual({ format: 1, solutions: [SOLUTION_A] });
   });
+
+  it('adds to what is stored, in the order found (spec-006 AC-17)', () => {
+    const store = storeWith();
+
+    saveSolution(store, workedExample, SOLUTION_A);
+    saveSolution(store, workedExample, SOLUTION_B);
+
+    expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A, SOLUTION_B]);
+  });
 });
 
 describe('readSolutions', () => {

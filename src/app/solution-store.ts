@@ -18,7 +18,7 @@ export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly En
 }
 
 export function saveSolution(store: SolutionStore, puzzle: Puzzle, entry: Entry): void {
-  store.write(keyFor(puzzle), JSON.stringify({ format: FORMAT, solutions: [entry] }));
+  store.write(keyFor(puzzle), JSON.stringify({ format: FORMAT, solutions: [...readSolutions(store, puzzle), entry] }));
 }
 
 function keyFor({ id }: Puzzle): string {
