@@ -57,4 +57,10 @@ describe('readSolutions', () => {
   it.each(['null', '{}', '{"format":1}', '{"format":1,"solutions":"none"}', '[1,2]'])('treats %s as nothing saved (spec-006 AC-20)', (record) => {
     expect(readSolutions(storeWith({ [KEY]: record }), workedExample)).toEqual([]);
   });
+
+  it('drops a filling that does not solve the puzzle (spec-006 AC-21)', () => {
+    const notASolution: Entry = { ...SOLUTION_A, cells: [[null, 9], [2, 3]] };
+
+    expect(readSolutions(storeWith({ [KEY]: saved(SOLUTION_A, notASolution) }), workedExample)).toEqual([SOLUTION_A]);
+  });
 });
