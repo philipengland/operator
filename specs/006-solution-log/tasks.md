@@ -144,7 +144,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 - [X] T053 [P] [US4] AC-22: TDD in `src/app/solution-store.spec.ts`, title `(spec-006 AC-22)`: another puzzle's identity reads an empty log, and this puzzle's is unaffected
 - [X] T054 [P] [US4] Saving rules: TDD in `src/app/solution-store.spec.ts`: a save adds one solution to what is stored at that moment, so another tab's are kept; a newer `format` is "treated as empty, and never overwritten"; unreadable data is overwritten by the next save
 - [X] T055 [US4] Confirm `npm run build` reads and writes nothing with `remember` off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 5 of 6: remembering (flag off)". The owner merges
-- [ ] T056 [US4] **The owner reviews the flags-on build on a phone**; then, with `startAgain` already released, a one-line pull request sets `remember` true in `src/app/features.ts`
+- [X] T056 [US4] **The owner reviews the flags-on build on a phone**; then, with `startAgain` already released, a one-line pull request sets `remember` true in `src/app/features.ts`
 
 ---
 
