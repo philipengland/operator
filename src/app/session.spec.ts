@@ -213,4 +213,8 @@ describe('remembering the solutions found (spec-006)', () => {
   it('keeps a new solution (spec-006 AC-2)', () => {
     expect(found(solutionA).solutions).toEqual([solutionA]);
   });
+
+  it('keeps solutions in the order found (spec-006 AC-3)', () => {
+    expect(found(solutionB, found(solutionA)).solutions).toEqual([solutionA, solutionB]);
+  });
 });
