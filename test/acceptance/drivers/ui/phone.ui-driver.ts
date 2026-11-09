@@ -1,6 +1,7 @@
 // Layer 3 — the phone around the game: screen, connection, looks and speed.
 
 import type { Locator, Page } from '@playwright/test';
+import { accessibilityProblems as problemsOn } from '../../support/axe';
 import type { Cell, Line, TypefacedText } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
 import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour, readTypeface } from './catalogue-reading';
@@ -43,12 +44,10 @@ const notBuiltYet = async (): Promise<void> => undefined;
 const nothingFoundYet = async (): Promise<readonly string[]> => [];
 
 export class UiPhoneDriver implements PhoneDriver {
-  goBack = notBuiltYet;
   closeAndReopen = notBuiltYet;
   refuseSaving = notBuiltYet;
   leaveUnreadableSavedData = notBuiltYet;
   leaveSavedFillings = notBuiltYet;
-  accessibilityProblems = nothingFoundYet;
   errorsOnThePage = nothingFoundYet;
 
   // Every request the page makes, and how many had been made when it last finished loading.
@@ -147,6 +146,14 @@ export class UiPhoneDriver implements PhoneDriver {
   // Chromium then shows its error page, but Playwright's WebKit leaves the old page in place
   // (real Safari shows "Safari Can't Open the Page"), so the old page is marked first and a
   // marked page never counts as the game having loaded again.
+  async goBack(): Promise<void> {
+    await this.page.goBack();
+  }
+
+  async accessibilityProblems(): Promise<readonly string[]> {
+    return problemsOn(this.page);
+  }
+
   async reload(): Promise<void> {
     await this.page.evaluate((marker) => Object.assign(window, { [marker]: true }), PAGE_BEFORE_RELOAD).catch(() => undefined);
     await this.page.reload().catch(() => undefined);

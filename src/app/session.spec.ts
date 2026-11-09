@@ -10,6 +10,8 @@ describe('startSession', () => {
       found: new Set(),
       message: null,
       selected: null,
+      solutions: [],
+      place: { kind: 'play' },
     });
   });
 });
@@ -192,5 +194,13 @@ describe('applyAction', () => {
       expect(state.message).toBe('incomplete');
       expect(state.found).toEqual(new Set());
     });
+  });
+});
+
+describe('the list of solutions (spec-006)', () => {
+  it('opens the list, changing nothing else (spec-006 AC-1)', () => {
+    const opened = startSession();
+
+    expect(applyAction(opened, { type: 'openList' })).toEqual({ ...opened, place: { kind: 'list' } });
   });
 });
