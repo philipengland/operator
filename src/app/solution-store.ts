@@ -49,6 +49,10 @@ function parsed(raw: string | null): SavedRecord | null {
 }
 
 export function saveSolution(store: SolutionStore, puzzle: Puzzle, entry: Entry): void {
+  const format = parsed(store.read(keyFor(puzzle)))?.format;
+  if (typeof format === 'number' && format > FORMAT) {
+    return;
+  }
   store.write(keyFor(puzzle), JSON.stringify({ format: FORMAT, solutions: [...readSolutions(store, puzzle), entry] }));
 }
 

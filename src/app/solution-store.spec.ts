@@ -39,6 +39,15 @@ describe('saveSolution', () => {
 
     expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A, SOLUTION_B]);
   });
+
+  it('never overwrites a record in a newer format (spec-006 FR-614)', () => {
+    const newer = JSON.stringify({ format: 2, solutions: [SOLUTION_A] });
+    const store = storeWith({ [KEY]: newer });
+
+    saveSolution(store, workedExample, SOLUTION_B);
+
+    expect(store.records.get(KEY)).toBe(newer);
+  });
 });
 
 describe('readSolutions', () => {
