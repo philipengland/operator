@@ -20,4 +20,12 @@ describe('solutionViewProps', () => {
     expect(grid.cells.flat().map((cell) => cell.digit)).toEqual([6, 2, 3, 3]);
     expect(grid.rowPills.map((pill) => pill.reachesTarget)).toEqual([true, true]);
   });
+
+  it('offers nothing to tap: read-only cells, and shown pills with the chosen operator (spec-006 AC-8)', () => {
+    const { grid } = solutionViewProps(FOUND, 1);
+
+    expect(grid.cells.flat().every((cell) => cell.isReadOnly === true)).toBe(true);
+    expect(grid.rowPills[1]).toMatchObject({ operator: '×', isOpen: false });
+    expect(grid.columnPills[0]).toMatchObject({ operator: '÷', isOpen: false });
+  });
 });
