@@ -48,6 +48,22 @@ describe('saveSolution', () => {
 
     expect(store.records.get(KEY)).toBe(newer);
   });
+
+  it('keeps what another tab saved since this one opened (spec-006 edge case)', () => {
+    const store = storeWith({ [KEY]: JSON.stringify({ format: 1, solutions: [SOLUTION_A] }) });
+
+    saveSolution(store, workedExample, SOLUTION_B);
+
+    expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A, SOLUTION_B]);
+  });
+
+  it('replaces an unreadable record with the new solution (spec-006 AC-20)', () => {
+    const store = storeWith({ [KEY]: 'this is not a saved game' });
+
+    saveSolution(store, workedExample, SOLUTION_A);
+
+    expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A]);
+  });
 });
 
 describe('readSolutions', () => {
@@ -93,5 +109,17 @@ describe('readSolutions', () => {
 
   it('treats a newer format as nothing it can read (spec-006 FR-614)', () => {
     expect(readSolutions(storeWith({ [KEY]: JSON.stringify({ format: 2, solutions: [SOLUTION_A] }) }), workedExample)).toEqual([]);
+  });
+});
+
+describe('another puzzle', () => {
+  it("has its own log, and leaves this puzzle's alone (spec-006 AC-22)", () => {
+    const store = storeWith();
+    const another = { ...workedExample, id: 'seed-4F7A21' };
+
+    saveSolution(store, workedExample, SOLUTION_A);
+
+    expect(readSolutions(store, another)).toEqual([]);
+    expect(readSolutions(store, workedExample)).toEqual([SOLUTION_A]);
   });
 });
