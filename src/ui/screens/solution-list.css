@@ -1,0 +1,36 @@
+/* Solution list: layout only; its look comes from its components (FR-304). The rows scroll, so the way
+   back and "Start again" stay on the screen. */
+
+.solution-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-between);
+  height: 100dvh;
+  padding: max(var(--space-screen), env(safe-area-inset-top)) max(var(--space-screen), env(safe-area-inset-right))
+    max(var(--space-screen), env(safe-area-inset-bottom)) max(var(--space-screen), env(safe-area-inset-left));
+}
+
+.solution-list__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+.solution-list__heading {
+  margin: 0;
+}
+
+.solution-list__rows {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.solution-list__foot {
+  display: flex;
+  flex-direction: column;
+}

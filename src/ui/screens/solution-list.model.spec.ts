@@ -26,4 +26,9 @@ describe('solutionListModel', () => {
     expect(solutionListModel({ ...WITH_ONE, rows: [] }).empty).toEqual(WITH_ONE.empty);
     expect(solutionListModel(WITH_ONE).empty).toBeNull();
   });
+
+  it('offers "Start again" in solid ink when it is given the words, and not otherwise', () => {
+    expect(solutionListModel({ ...WITH_ONE, startAgainLabel: 'Start again' }).startAgain).toEqual({ label: 'Start again', style: 'solid' });
+    expect(solutionListModel(WITH_ONE).startAgain).toBeNull();
+  });
 });

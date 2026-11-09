@@ -23,7 +23,7 @@ export interface SolutionListModel {
   readonly startAgain: ButtonProps | null;
 }
 
-export function solutionListModel({ backLabel, rows, canOpenRows, empty }: SolutionListProps): SolutionListModel {
+export function solutionListModel({ backLabel, rows, canOpenRows, empty, startAgainLabel }: SolutionListProps): SolutionListModel {
   const asRow = (label: string): ButtonProps => (canOpenRows ? { label, style: 'key' } : { label, style: 'key', isReadOnly: true });
-  return { back: { label: backLabel, style: 'key' }, rows: rows.map(asRow), empty: rows.length === 0 ? empty : null, startAgain: null };
+  return { back: { label: backLabel, style: 'key' }, rows: rows.map(asRow), empty: rows.length === 0 ? empty : null, startAgain: startAgainLabel === undefined ? null : { label: startAgainLabel, style: 'solid' } };
 }
