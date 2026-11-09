@@ -53,6 +53,8 @@ export type SessionAction =
   | { readonly type: 'openSolution'; readonly number: number }
   | { readonly type: 'showPlace'; readonly place: Place };
 
+type LogAction = Extract<SessionAction, { readonly type: 'askToStartAgain' | 'keepSolutions' | 'startAgain' | 'openList' | 'openSolution' | 'showPlace' }>;
+
 export function startSession(): SessionState {
   return {
     puzzle: workedExample,
@@ -92,6 +94,14 @@ export function applyAction(state: SessionState, action: SessionAction): Session
       return setSelectedCell(state, action.digit);
     case 'clear':
       return setSelectedCell(state, null);
+    default:
+      return applyLogAction(state, action);
+  }
+}
+
+/** What the player does around the puzzle: the list, a found solution and starting again. */
+function applyLogAction(state: SessionState, action: LogAction): SessionState {
+  switch (action.type) {
     case 'askToStartAgain':
       return { ...state, isConfirming: true };
     case 'keepSolutions':
