@@ -2,7 +2,7 @@
 
 import type { Locator, Page } from '@playwright/test';
 import { accessibilityProblems as problemsOn } from '../../support/axe';
-import type { Cell, Line, TypefacedText } from '../../dsl/vocabulary';
+import type { Cell, Entry, Line, TypefacedText } from '../../dsl/vocabulary';
 import { CELLS, LINES } from '../positions';
 import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour, readTypeface } from './catalogue-reading';
 import { cellNamePattern, COUNTER_PATTERN, pillIn, workingNamePattern } from './screen-names';
@@ -39,16 +39,22 @@ const EMPTY_LAYOUT: ScreenLayout = {
   checkButton: NO_BOX,
 };
 
-// spec-006: each story's part replaces these.
-const notBuiltYet = async (): Promise<void> => undefined;
-const nothingFoundYet = async (): Promise<readonly string[]> => [];
+// docs/contracts/saved-solutions.md: where the fixed puzzle's solutions are kept.
+const SAVED_SOLUTIONS_KEY = 'operator.solutions.worked-example';
+
+/** A scenario's filling in the saved format: given cells and shown operators are null. */
+function savedEntry({ topRight, bottomLeft, bottomRight, row2, column1 }: Entry) {
+  const digit = (value: Entry['topRight']) => (value === 'empty' ? null : value);
+  const operator = (value: Entry['row2']) => (value === 'not chosen' ? null : value);
+  return {
+    cells: [[null, digit(topRight)], [digit(bottomLeft), digit(bottomRight)]],
+    rowOperators: [null, operator(row2)],
+    columnOperators: [operator(column1), null],
+  };
+}
 
 export class UiPhoneDriver implements PhoneDriver {
-  closeAndReopen = notBuiltYet;
-  refuseSaving = notBuiltYet;
-  leaveUnreadableSavedData = notBuiltYet;
-  leaveSavedFillings = notBuiltYet;
-  errorsOnThePage = nothingFoundYet;
+  private readonly pageErrors: string[] = [];
 
   // Every request the page makes, and how many had been made when it last finished loading.
   private readonly requests: string[] = [];
@@ -56,6 +62,7 @@ export class UiPhoneDriver implements PhoneDriver {
 
   constructor(private readonly page: Page) {
     page.on('request', (request) => this.requests.push(request.url()));
+    page.on('pageerror', (error) => this.pageErrors.push(error.message));
     page.on('load', () => {
       this.requestsWhenOpened = this.requests.length;
     });
@@ -146,6 +153,43 @@ export class UiPhoneDriver implements PhoneDriver {
   // Chromium then shows its error page, but Playwright's WebKit leaves the old page in place
   // (real Safari shows "Safari Can't Open the Page"), so the old page is marked first and a
   // marked page never counts as the game having loaded again.
+  /** Leaves the game for another page and comes back: the same phone, a fresh load. */
+  async closeAndReopen(): Promise<void> {
+    await this.page.goto('about:blank');
+    await this.page.goto('./');
+  }
+
+  async refuseSaving(): Promise<void> {
+    await this.page.addInitScript(() => {
+      Storage.prototype.setItem = () => {
+        throw new DOMException('Saving is refused', 'QuotaExceededError');
+      };
+    });
+  }
+
+  async leaveUnreadableSavedData(): Promise<void> {
+    await this.leaveSaved('this is not a saved game');
+  }
+
+  async leaveSavedFillings(fillings: readonly Entry[]): Promise<void> {
+    await this.leaveSaved(JSON.stringify({ format: 1, solutions: fillings.map(savedEntry) }));
+  }
+
+  private async leaveSaved(record: string): Promise<void> {
+    await this.page.addInitScript(
+      ([key, value]) => {
+        if (window.location.protocol.startsWith('http')) {
+          localStorage.setItem(key as string, value as string);
+        }
+      },
+      [SAVED_SOLUTIONS_KEY, record],
+    );
+  }
+
+  async errorsOnThePage(): Promise<readonly string[]> {
+    return this.pageErrors;
+  }
+
   async goBack(): Promise<void> {
     await this.page.goBack();
   }

@@ -264,3 +264,13 @@ describe('starting again (spec-006)', () => {
     expect(applyAction(asking, { type: 'startAgain' })).toEqual({ ...startSession(), place: { kind: 'list' } });
   });
 });
+
+describe('restoring what was found (spec-006)', () => {
+  const solutionA: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+
+  it('counts and lists saved solutions, on an empty grid with no message (spec-006 AC-14)', () => {
+    const restored = applyAction(startSession(), { type: 'restoreFound', solutions: [solutionA] });
+
+    expect(restored).toEqual({ ...startSession(), found: new Set(['2,2,3|×|÷']), solutions: [solutionA] });
+  });
+});

@@ -9,9 +9,11 @@ export interface Features {
   readonly reopen: boolean;
   /** spec-006 User Story 3: clearing what has been found. */
   readonly startAgain: boolean;
+  /** spec-006 User Story 4: remembering what was found. */
+  readonly remember: boolean;
 }
 
-export const RELEASED: Features = { log: true, reopen: true, startAgain: true };
+export const RELEASED: Features = { log: true, reopen: true, startAgain: true, remember: false };
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';
