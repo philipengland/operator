@@ -8,9 +8,10 @@ import type { SessionState } from './session';
 
 const HEADING = 'Solutions';
 export const BACK = 'Back';
-// Rows are text unless the build says they can be opened.
-const TEXT_ROWS: Pick<Features, 'reopen'> = { reopen: false };
+const START_AGAIN = 'Start again';
+// What the build allows; rows are text and nothing can be cleared unless it says so.
+type ListFeatures = Partial<Pick<Features, 'reopen' | 'startAgain'>>;
 
-export function solutionListProps({ solutions }: SessionState, theme: Theme, { reopen }: Pick<Features, 'reopen'> = TEXT_ROWS): SolutionListProps {
-  return { heading: HEADING, backLabel: BACK, rows: solutions.map((_, index) => solutionName(index + 1)), canOpenRows: reopen, empty: emptyListLine(theme) };
+export function solutionListProps({ solutions }: SessionState, theme: Theme, { reopen = false, startAgain = false }: ListFeatures = {}): SolutionListProps {
+  return { heading: HEADING, backLabel: BACK, rows: solutions.map((_, index) => solutionName(index + 1)), canOpenRows: reopen, empty: emptyListLine(theme), ...(startAgain ? { startAgainLabel: START_AGAIN } : {}) };
 }
