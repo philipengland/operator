@@ -16,4 +16,8 @@ describe('changedExistingTests', () => {
       { file: TEST_FILE, removedLines: ["  it('counts a repeat once', () => {"], isRecorded: false },
     ]);
   });
+
+  it('allows a test file that only gained lines', () => {
+    expect(changedExistingTests(diffOf(TEST_FILE, "+  it('counts a new thing', () => {"))).toEqual([]);
+  });
 });

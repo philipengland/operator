@@ -9,7 +9,7 @@ export interface TestChange {
 
 /** The existing test files a `git diff` changes, and whether each change has been explained. */
 export function changedExistingTests(diff: string): readonly TestChange[] {
-  return sectionsOf(diff).map(({ file, removedLines }) => ({ file, removedLines, isRecorded: false }));
+  return sectionsOf(diff).filter(({ removedLines }) => removedLines.length > 0).map(({ file, removedLines }) => ({ file, removedLines, isRecorded: false }));
 }
 
 interface FileDiff {
