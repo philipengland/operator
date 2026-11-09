@@ -247,4 +247,8 @@ describe('starting again (spec-006)', () => {
   it('asks first, changing nothing else (spec-006 AC-11)', () => {
     expect(asked()).toEqual({ ...startSession(), isConfirming: true });
   });
+
+  it('changes nothing when the player keeps their solutions (spec-006 AC-11)', () => {
+    expect(applyAction(asked(), { type: 'keepSolutions' })).toEqual(startSession());
+  });
 });

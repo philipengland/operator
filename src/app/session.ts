@@ -95,6 +95,7 @@ export function applyAction(state: SessionState, action: SessionAction): Session
     case 'askToStartAgain':
       return { ...state, isConfirming: true };
     case 'keepSolutions':
+      return { ...state, isConfirming: false };
     case 'startAgain':
       return state;
     case 'openList':
