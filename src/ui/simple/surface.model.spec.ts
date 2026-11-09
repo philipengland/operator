@@ -9,4 +9,8 @@ describe('surfaceModel', () => {
   it.each(['accent', 'ink'] as const)('can be filled with the %s, which also sets the colour of its words', (fill) => {
     expect(surfaceModel({ variant: 'panel', fill }).classes).toEqual(['surface', 'surface--panel', `surface--${fill}`]);
   });
+
+  it('can be something to tap', () => {
+    expect(surfaceModel({ variant: 'panel', isTappable: true }).classes).toEqual(['surface', 'surface--panel', 'surface--tappable']);
+  });
 });
