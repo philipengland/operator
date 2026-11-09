@@ -71,7 +71,12 @@ function createHelperLine(text: string): Component<string> {
   const element = document.createElement('p');
   element.className = 'puzzle-grid__helper';
   element.append(words.element);
-  return { element, update: (next) => words.update({ text: next, style: 'body' }) };
+  element.hidden = text === '';
+  const update = (next: string): void => {
+    words.update({ text: next, style: 'body' });
+    element.hidden = next === '';
+  };
+  return { element, update };
 }
 
 /** Adds a part to the grid at its place, and returns it. */
