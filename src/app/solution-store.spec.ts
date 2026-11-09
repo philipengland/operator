@@ -53,4 +53,8 @@ describe('readSolutions', () => {
 
     expect(reading).not.toThrow();
   });
+
+  it.each(['null', '{}', '{"format":1}', '{"format":1,"solutions":"none"}', '[1,2]'])('treats %s as nothing saved (spec-006 AC-20)', (record) => {
+    expect(readSolutions(storeWith({ [KEY]: record }), workedExample)).toEqual([]);
+  });
 });

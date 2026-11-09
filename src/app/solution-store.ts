@@ -13,8 +13,8 @@ export interface SolutionStore {
 }
 
 export function readSolutions(store: SolutionStore, puzzle: Puzzle): readonly Entry[] {
-  const record = parsed(store.read(keyFor(puzzle)));
-  return record?.solutions ?? [];
+  const solutions = parsed(store.read(keyFor(puzzle)))?.solutions;
+  return Array.isArray(solutions) ? solutions : [];
 }
 
 function parsed(raw: string | null): { readonly solutions?: Entry[] } | null {
