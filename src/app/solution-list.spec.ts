@@ -22,3 +22,11 @@ describe('solutionListProps', () => {
     });
   });
 });
+
+describe('the rows (spec-006)', () => {
+  it('names each solution by its number, in the order found (spec-006 AC-2, AC-3)', () => {
+    const entry = startSession().entry;
+
+    expect(solutionListProps({ ...startSession(), solutions: [entry, entry] }, CLASSIC).rows).toEqual(['Solution 1', 'Solution 2']);
+  });
+});

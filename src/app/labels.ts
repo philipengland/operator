@@ -135,6 +135,11 @@ export function bubbleLine(kind: MessageKind | null, theme: Theme): string {
   return kind === null ? `Fill the grid, ${theme.address}.` : operatorLine(kind, theme);
 }
 
+/** A found solution's name: "Solution 1" (spec-006 FR-602). */
+export function solutionName(position: number): string {
+  return `Solution ${position}`;
+}
+
 /** The empty list: shown in the operator's voice, heard plainly (spec-006 FR-603). */
 export function emptyListLine({ address }: Theme): { readonly shown: string; readonly heardAs: string } {
   return { shown: `No calls yet, ${address}.`, heardAs: 'No solutions found yet' };

@@ -2,12 +2,12 @@
 
 import type { Theme } from '../ui/foundations/themes';
 import type { SolutionListProps } from '../ui/screens/solution-list';
-import { emptyListLine } from './labels';
+import { emptyListLine, solutionName } from './labels';
 import type { SessionState } from './session';
 
 const HEADING = 'Solutions';
 const BACK = 'Back';
 
-export function solutionListProps(_state: SessionState, theme: Theme): SolutionListProps {
-  return { heading: HEADING, backLabel: BACK, rows: [], canOpenRows: false, empty: emptyListLine(theme) };
+export function solutionListProps({ solutions }: SessionState, theme: Theme): SolutionListProps {
+  return { heading: HEADING, backLabel: BACK, rows: solutions.map((_, index) => solutionName(index + 1)), canOpenRows: false, empty: emptyListLine(theme) };
 }
