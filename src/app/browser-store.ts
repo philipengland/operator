@@ -8,7 +8,7 @@ type BrowserStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 /** `storage` is a function because merely reaching localStorage can throw in some private modes. */
 export function createBrowserStore(storage: () => BrowserStorage): SolutionStore {
   return {
-    read: (key) => storage().getItem(key),
+    read: (key) => attempt(() => storage().getItem(key), null),
     write: (key, value) => {
       if (value === null) {
         storage().removeItem(key);
@@ -17,4 +17,13 @@ export function createBrowserStore(storage: () => BrowserStorage): SolutionStore
       }
     },
   };
+}
+
+/** The browser's answer, or the fallback when it refuses. */
+function attempt<Answer>(action: () => Answer, fallback: Answer): Answer {
+  try {
+    return action();
+  } catch {
+    return fallback;
+  }
 }

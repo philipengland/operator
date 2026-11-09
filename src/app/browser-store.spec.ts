@@ -28,4 +28,12 @@ describe('createBrowserStore', () => {
 
     expect([...storage.held]).toEqual([['key', 'a value']]);
   });
+
+  it('reads nothing when the browser refuses (spec-006 AC-19)', () => {
+    const store = createBrowserStore(() => {
+      throw new Error('blocked');
+    });
+
+    expect(() => store.read('key')).not.toThrow();
+  });
 });
