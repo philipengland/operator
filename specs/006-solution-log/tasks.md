@@ -134,16 +134,16 @@ the approved Layer 1 file it makes pass, brought unchanged from `df93d38`.
 
 **Independent Test**: find Solution A, reload, and read the counter and the list.
 
-- [ ] T046 [US4] Create `006-solution-log-part-5` from `main`; bring `test/acceptance/play/remember-solutions.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob); add the `remember` flag, off, in `src/app/features.ts` and `playwright.config.ts`
-- [ ] T047 [US4] UI driver methods in `test/acceptance/drivers/ui/phone.ui-driver.ts`: `closeAndReopen`, `refuseSaving`, `leaveUnreadableSavedData`, `leaveSavedFillings`, `errorsOnThePage`, setting up the record before the page loads (research R15). The key is `operator.solutions.worked-example`
-- [ ] T048 [US4] AC-14: TDD in `src/app/solution-store.spec.ts`: encode to `{ "format": 1, "solutions": [Entry, …] }` under the key `operator.solutions.<puzzle id>`, and decode in the order found; `restoreFound` in `src/app/session.ts`; `src/app/browser-store.ts` wraps `localStorage`, every call in `try`/`catch`; `src/app/main.ts` restores on opening, with an empty grid and the greeting, and saves each new solution
-- [ ] T049 [US4] AC-15, AC-16, AC-17: ⚠️ May pass from AC-14: report, and prove each with a reverted break
-- [ ] T050 [US4] AC-18: TDD in `src/app/solution-store.spec.ts`: "Start again" removes this puzzle's key
-- [ ] T051 [US4] AC-19: saving refused: TDD in `src/app/browser-store.spec.ts`: a store that throws is caught and the game carries on with no error
-- [ ] T052 [US4] AC-20 and AC-21: TDD in `src/app/solution-store.spec.ts`: not valid JSON or the wrong shape is treated as empty; an entry "of the wrong size, or with an unknown digit or operator" is dropped; an entry that does not solve the puzzle is dropped, by the engine's `checkEntry`; the same solution twice is "kept once, at its first place"
-- [ ] T053 [P] [US4] AC-22: TDD in `src/app/solution-store.spec.ts`, title `(spec-006 AC-22)`: another puzzle's identity reads an empty log, and this puzzle's is unaffected
-- [ ] T054 [P] [US4] Saving rules: TDD in `src/app/solution-store.spec.ts`: a save adds one solution to what is stored at that moment, so another tab's are kept; a newer `format` is "treated as empty, and never overwritten"; unreadable data is overwritten by the next save
-- [ ] T055 [US4] Confirm `npm run build` reads and writes nothing with `remember` off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 5 of 6: remembering (flag off)". The owner merges
+- [X] T046 [US4] Create `006-solution-log-part-5` from `main`; bring `test/acceptance/play/remember-solutions.acceptance-spec.ts` unchanged from `df93d38` (confirm by blob); add the `remember` flag, off, in `src/app/features.ts` and `playwright.config.ts`
+- [X] T047 [US4] UI driver methods in `test/acceptance/drivers/ui/phone.ui-driver.ts`: `closeAndReopen`, `refuseSaving`, `leaveUnreadableSavedData`, `leaveSavedFillings`, `errorsOnThePage`, setting up the record before the page loads (research R15). The key is `operator.solutions.worked-example`
+- [X] T048 [US4] AC-14: TDD in `src/app/solution-store.spec.ts`: encode to `{ "format": 1, "solutions": [Entry, …] }` under the key `operator.solutions.<puzzle id>`, and decode in the order found; `restoreFound` in `src/app/session.ts`; `src/app/browser-store.ts` wraps `localStorage`, every call in `try`/`catch`; `src/app/main.ts` restores on opening, with an empty grid and the greeting, and saves each new solution
+- [X] T049 [US4] AC-15, AC-16, AC-17: ⚠️ May pass from AC-14: report, and prove each with a reverted break
+- [X] T050 [US4] AC-18: TDD in `src/app/solution-store.spec.ts`: "Start again" removes this puzzle's key
+- [X] T051 [US4] AC-19: saving refused: TDD in `src/app/browser-store.spec.ts`: a store that throws is caught and the game carries on with no error
+- [X] T052 [US4] AC-20 and AC-21: TDD in `src/app/solution-store.spec.ts`: not valid JSON or the wrong shape is treated as empty; an entry "of the wrong size, or with an unknown digit or operator" is dropped; an entry that does not solve the puzzle is dropped, by the engine's `checkEntry`; the same solution twice is "kept once, at its first place"
+- [X] T053 [P] [US4] AC-22: TDD in `src/app/solution-store.spec.ts`, title `(spec-006 AC-22)`: another puzzle's identity reads an empty log, and this puzzle's is unaffected
+- [X] T054 [P] [US4] Saving rules: TDD in `src/app/solution-store.spec.ts`: a save adds one solution to what is stored at that moment, so another tab's are kept; a newer `format` is "treated as empty, and never overwritten"; unreadable data is overwritten by the next save
+- [X] T055 [US4] Confirm `npm run build` reads and writes nothing with `remember` off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-006 part 5 of 6: remembering (flag off)". The owner merges
 - [ ] T056 [US4] **The owner reviews the flags-on build on a phone**; then, with `startAgain` already released, a one-line pull request sets `remember` true in `src/app/features.ts`
 
 ---
