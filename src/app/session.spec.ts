@@ -204,3 +204,13 @@ describe('the list of solutions (spec-006)', () => {
     expect(applyAction(opened, { type: 'openList' })).toEqual({ ...opened, place: { kind: 'list' } });
   });
 });
+
+describe('remembering the solutions found (spec-006)', () => {
+  const solutionA: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+  const solutionB: Entry = { cells: [[null, 2], [3, 3]], rowOperators: [null, '+'], columnOperators: ['−', null] };
+  const found = (entry: Entry, from = startSession()): SessionState => applyAction({ ...from, entry }, { type: 'submit' });
+
+  it('keeps a new solution (spec-006 AC-2)', () => {
+    expect(found(solutionA).solutions).toEqual([solutionA]);
+  });
+});

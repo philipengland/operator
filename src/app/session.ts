@@ -142,5 +142,5 @@ function submit(state: SessionState): SessionState {
   }
   const found = new Set([...state.found, result.key]);
   const isEverySolutionFound = found.size >= state.puzzle.solutionCount;
-  return { ...state, found, message: isEverySolutionFound ? 'all-found' : 'new-solution' };
+  return { ...state, found, solutions: [state.entry], message: isEverySolutionFound ? 'all-found' : 'new-solution' };
 }
