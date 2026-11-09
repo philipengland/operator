@@ -2,7 +2,7 @@
 
 export type CatalogueSection = 'Foundations' | 'Simple components' | 'Combined components' | 'Screens';
 
-export type SimpleComponent = 'Text' | 'Button' | 'Text input' | 'Icon' | 'Surface' | 'Badge' | 'Mascot';
+export type SimpleComponent = 'Text' | 'Button' | 'Text input' | 'Icon' | 'Surface' | 'Badge' | 'Mascot' | 'Dialog';
 
 export type CombinedComponent =
   | 'Speech bubble'
@@ -12,9 +12,10 @@ export type CombinedComponent =
   | 'Grid cell'
   | 'Line working'
   | 'Puzzle grid'
-  | 'Keypad';
+  | 'Keypad'
+  | 'Confirm dialog';
 
-export type LibraryScreen = 'Play screen';
+export type LibraryScreen = 'Play screen' | 'Solution list' | 'Solution view';
 
 export type LibraryComponent = SimpleComponent | CombinedComponent | LibraryScreen;
 

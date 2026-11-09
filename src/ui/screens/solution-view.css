@@ -1,0 +1,16 @@
+/* Solution view: layout only; its look comes from its components (FR-304). */
+
+.solution-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-between);
+  padding: max(var(--space-screen), env(safe-area-inset-top)) max(var(--space-screen), env(safe-area-inset-right))
+    max(var(--space-screen), env(safe-area-inset-bottom)) max(var(--space-screen), env(safe-area-inset-left));
+}
+
+.solution-view__top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap);
+}

@@ -9,6 +9,8 @@ export type SurfaceFill = 'tile' | 'accent' | 'ink';
 export interface SurfaceProps {
   readonly variant: SurfaceVariant;
   readonly fill?: SurfaceFill;
+  /** Something the player can tap: the whole surface is one button. */
+  readonly isTappable?: boolean;
 }
 
 export interface SurfaceModel {
@@ -16,7 +18,8 @@ export interface SurfaceModel {
   readonly classes: readonly string[];
 }
 
-export function surfaceModel({ variant, fill = 'tile' }: SurfaceProps): SurfaceModel {
-  const classes = ['surface', `surface--${variant}`];
-  return { classes: fill === 'tile' ? classes : [...classes, `surface--${fill}`] };
+export function surfaceModel({ variant, fill = 'tile', isTappable = false }: SurfaceProps): SurfaceModel {
+  return {
+    classes: ['surface', `surface--${variant}`, ...(fill === 'tile' ? [] : [`surface--${fill}`]), ...(isTappable ? ['surface--tappable'] : [])],
+  };
 }

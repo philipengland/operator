@@ -2,7 +2,7 @@
 // Only the Playwright driver implements it, so scenarios that use it are tagged @ui.
 
 import type { ColourToken, PageDots, PlayScreenPart, Typeface } from '../dsl/catalogue-vocabulary';
-import type { Cell, Line, TypefacedText } from '../dsl/vocabulary';
+import type { Cell, Entry, Line, TypefacedText } from '../dsl/vocabulary';
 
 export interface Box {
   readonly left: number;
@@ -63,4 +63,16 @@ export interface PhoneDriver {
   pageDots(): Promise<PageDots | null>;
   /** The first family in the text's font stack that has loaded. */
   typeface(text: TypefacedText): Promise<Typeface | string>;
+  // spec-006
+  /** The phone's own back gesture or button. */
+  goBack(): Promise<void>;
+  closeAndReopen(): Promise<void>;
+  /** From now on, the phone refuses to let the game save anything. */
+  refuseSaving(): Promise<void>;
+  /** Before the game opens: saved data that makes no sense. */
+  leaveUnreadableSavedData(): Promise<void>;
+  /** Before the game opens: these fillings are saved for the fixed puzzle, in this order. */
+  leaveSavedFillings(fillings: readonly Entry[]): Promise<void>;
+  accessibilityProblems(): Promise<readonly string[]>;
+  errorsOnThePage(): Promise<readonly string[]>;
 }

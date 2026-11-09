@@ -2,6 +2,7 @@ import type { Puzzle } from '../types';
 
 /** The worked example from the project brief: the only puzzle in F0 (spec "The Puzzle"). */
 export const workedExample: Puzzle = {
+  id: 'worked-example',
   rows: 2,
   columns: 2,
   givens: [

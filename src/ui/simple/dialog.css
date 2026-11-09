@@ -1,0 +1,22 @@
+/* Dialog: a panel over the screen, high up so it never sits where the control that opened it was. */
+
+.dialog {
+  width: min(340px, calc(100% - 2 * var(--space-screen)));
+  margin: 15vh auto auto;
+  padding: var(--space-surface);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--radius-panel);
+  background: var(--tile);
+  color: var(--ink);
+  box-shadow: var(--shadow-large) var(--shadow-large) 0 var(--ink);
+}
+
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+
+/* In the catalogue it is shown in place, not over the screen. */
+.dialog:not(:modal) {
+  position: static;
+  margin: 0;
+}

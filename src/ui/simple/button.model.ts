@@ -18,6 +18,8 @@ export interface ButtonProps {
   readonly isUnavailable?: boolean;
   /** One of a set the player picks from (the selected cell): heard as selected (pressed). */
   readonly isSelected?: boolean;
+  /** Looks like a button but is plain text: nothing can be done with it (spec-006 FR-606). */
+  readonly isReadOnly?: boolean;
 }
 
 export interface ButtonModel {
@@ -29,6 +31,13 @@ export interface ButtonModel {
   readonly classes: readonly string[];
 }
 
-export function buttonModel({ label, style, action, name, isUnavailable = false, isSelected = false }: ButtonProps): ButtonModel {
-  return { label, name: name ?? (action ? `${label}, ${action}` : label), isUnavailable, isSelected, classes: ['button', `button--${style}`] };
+export function buttonModel({ label, style, action, name, isUnavailable = false, isSelected = false, isReadOnly = false }: ButtonProps): ButtonModel {
+  return { label, name: name ?? (action ? `${label}, ${action}` : label), isUnavailable, isSelected, classes: ['button', `button--${style}`, ...readOnlyClasses(isReadOnly, isUnavailable)] };
+}
+
+function readOnlyClasses(isReadOnly: boolean, isUnavailable: boolean): readonly string[] {
+  if (!isReadOnly) {
+    return [];
+  }
+  return isUnavailable ? ['button--read-only', 'button--read-only-given'] : ['button--read-only'];
 }

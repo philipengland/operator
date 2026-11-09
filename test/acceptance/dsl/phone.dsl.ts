@@ -3,7 +3,7 @@
 import { expect } from '@playwright/test';
 import type { Box, PhoneDriver, ScreenLayout } from '../drivers/phone.driver';
 import type { ColourToken, PageDots, PlayScreenPart, ThemeColours, ThemeName, Typeface } from './catalogue-vocabulary';
-import type { Cell, Line, TypefacedText } from './vocabulary';
+import type { Cell, Entry, Line, TypefacedText } from './vocabulary';
 
 /**
  * spec-003 research R10: a browser may round a mixed colour by one level in each of red, green
@@ -177,6 +177,36 @@ export class PhoneDsl {
 
   async expectReadyToPlayWithin(seconds: number): Promise<void> {
     expect(await this.driver().secondsUntilReadyToPlay(), 'seconds until ready to play').toBeLessThanOrEqual(seconds);
+  }
+
+  // spec-006 — coming back to the game, and what is saved on the phone.
+
+  async goBack(): Promise<void> {
+    await this.driver().goBack();
+  }
+
+  async closeAndReopen(): Promise<void> {
+    await this.driver().closeAndReopen();
+  }
+
+  async refuseSaving(): Promise<void> {
+    await this.driver().refuseSaving();
+  }
+
+  async leaveUnreadableSavedData(): Promise<void> {
+    await this.driver().leaveUnreadableSavedData();
+  }
+
+  async leaveSavedFillings(fillings: readonly Entry[]): Promise<void> {
+    await this.driver().leaveSavedFillings(fillings);
+  }
+
+  async expectNoAccessibilityProblems(): Promise<void> {
+    expect(await this.driver().accessibilityProblems(), 'accessibility problems on this screen').toEqual([]);
+  }
+
+  async expectNoErrorsOnThePage(): Promise<void> {
+    expect(await this.driver().errorsOnThePage(), 'errors on the page').toEqual([]);
   }
 
   async expectEveryTapAnsweredWithin(milliseconds: number): Promise<void> {

@@ -102,6 +102,22 @@ export class EngineGameDriver implements GameDriver {
   workingSlot = readOnlyOnThePhones;
   helperLine = readOnlyOnThePhones;
   mainButton = readOnlyOnThePhones;
+  tapCounter = readOnlyOnThePhones;
+  tapBack = readOnlyOnThePhones;
+  tapSolution = readOnlyOnThePhones;
+  tapInSolution = readOnlyOnThePhones;
+  tapStartAgain = readOnlyOnThePhones;
+  doubleTapStartAgain = readOnlyOnThePhones;
+  tapPopUpButton = readOnlyOnThePhones;
+  screenShowing = readOnlyOnThePhones;
+  emptyList = readOnlyOnThePhones;
+  solutionsShown = readOnlyOnThePhones;
+  solutionsHeard = readOnlyOnThePhones;
+  solutionView = readOnlyOnThePhones;
+  solutionHeard = readOnlyOnThePhones;
+  controlsOnScreen = readOnlyOnThePhones;
+  popUp = readOnlyOnThePhones;
+  focusedControl = readOnlyOnThePhones;
 
   private dispatch(action: SessionAction): void {
     if (this.session) {

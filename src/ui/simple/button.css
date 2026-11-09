@@ -89,7 +89,8 @@
 
 /* Given: solid ink, no outline or shadow, so it reads as part of the puzzle. */
 .button--cell[aria-disabled='true'],
-.button--cell-correct[aria-disabled='true'] {
+.button--cell-correct[aria-disabled='true'],
+.button--read-only-given {
   border-color: var(--ink);
   background: var(--ink);
   color: var(--paper);
@@ -118,4 +119,9 @@
   background: var(--tile);
   color: var(--ink);
   box-shadow: none;
+}
+
+/* Read-only: it looks the same, but there is nothing to tap. */
+.button--read-only {
+  cursor: default;
 }

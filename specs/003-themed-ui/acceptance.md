@@ -246,3 +246,9 @@ drivers until the first implementation task adds them.
   - Layer 1: `test/acceptance/library/page-background.acceptance-spec.ts` (new)
   - Layer 2: `test/acceptance/dsl/catalogue.dsl.ts`, `test/acceptance/dsl/catalogue-vocabulary.ts`
     (additions above)
+
+## Changes after approval
+
+| Date | File | Change | Why |
+| --- | --- | --- | --- |
+| 2026-11-08 | `test/acceptance/library/examples.ts`, `test/acceptance/library/simple-components.acceptance-spec.ts`, `test/acceptance/dsl/catalogue-vocabulary.ts`, `[spec-003 AC-1]` | The exact lists gain Dialog (simple), Confirm dialog (combined), and Solution list and Solution view (screens). | Approved by Philip England. spec-006 adds these parts to the library, and the catalogue lists every component. |

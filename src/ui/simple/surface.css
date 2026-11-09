@@ -32,3 +32,20 @@
   color: var(--paper);
   box-shadow: var(--shadow-large) var(--shadow-large) 0 var(--accent);
 }
+
+/* A surface the player can tap: the whole of it is one button. */
+.surface--tappable {
+  display: block;
+  width: 100%;
+  min-height: var(--touch-target);
+  font: inherit;
+  text-align: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+.surface--tappable:focus-visible {
+  outline: var(--outline-thin) solid var(--accent);
+  outline-offset: 3px;
+}
