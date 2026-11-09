@@ -26,7 +26,7 @@ function sectionsOf(diff: string): readonly FileDiff[] {
       const [header = '', ...lines] = section.split(/\r?\n/);
       const firstHunk = lines.findIndex((line) => line.startsWith('@@'));
       const changes = firstHunk < 0 ? [] : lines.slice(firstHunk);
-      const removedLines = changes.filter((line) => line.startsWith('-')).map((line) => line.slice(1));
+      const removedLines = changes.filter((line) => line.startsWith('-') && line.slice(1).trim() !== '').map((line) => line.slice(1));
       return { file: header.slice(header.indexOf(' b/') + ' b/'.length), removedLines };
     });
 }

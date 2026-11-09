@@ -20,4 +20,8 @@ describe('changedExistingTests', () => {
   it('allows a test file that only gained lines', () => {
     expect(changedExistingTests(diffOf(TEST_FILE, "+  it('counts a new thing', () => {"))).toEqual([]);
   });
+
+  it('ignores a removed blank line', () => {
+    expect(changedExistingTests(diffOf(TEST_FILE, '-   '))).toEqual([]);
+  });
 });
