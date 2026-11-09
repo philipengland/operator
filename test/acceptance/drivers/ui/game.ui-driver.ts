@@ -33,7 +33,6 @@ const BUBBLE_TITLE = 'Hello, Operator!';
 // spec-006: each story's part replaces these with what the screen shows.
 const notBuiltYet = async (): Promise<void> => undefined;
 const SOLUTION_NAME = /^Solution \d+$/;
-const nothingListedYet = async (): Promise<readonly string[]> => [];
 
 export class UiGameDriver implements GameDriver {
   constructor(private readonly page: Page) {}
