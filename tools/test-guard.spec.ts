@@ -43,4 +43,10 @@ describe('changedExistingTests', () => {
 
     expect(changedExistingTests(unexplained)[0]?.isRecorded).toBe(false);
   });
+
+  it('does not accept a row that does not say why', () => {
+    const unexplained = REMOVED + diffOf(RECORD, row(TEST_FILE, 'spec-006 FR-601', ''));
+
+    expect(changedExistingTests(unexplained)[0]?.isRecorded).toBe(false);
+  });
 });

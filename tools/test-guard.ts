@@ -6,6 +6,7 @@ const RECORD_FILE = /^specs\/[^/]+\/test-changes\.md$/;
 const REQUIREMENT = /\b(?:FR-|AC-|SC-|T)\d+\b/;
 // Splitting on | leaves an empty first cell, so the columns start at 1.
 const REQUIREMENT_COLUMN = 3;
+const WHY_COLUMN = 4;
 
 export interface TestChange {
   readonly file: string;
@@ -45,6 +46,6 @@ function sectionsOf(diff: string): readonly FileDiff[] {
 
 /** A row of the record: | `file` | test | requirement | why |. */
 function explainsAChange(row: string): boolean {
-  const requirement = row.split('|')[REQUIREMENT_COLUMN]?.trim() ?? '';
-  return REQUIREMENT.test(requirement);
+  const cells = row.split('|').map((cell) => cell.trim());
+  return REQUIREMENT.test(cells[REQUIREMENT_COLUMN] ?? '') && (cells[WHY_COLUMN] ?? '') !== '';
 }
