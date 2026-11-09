@@ -255,4 +255,12 @@ describe('starting again (spec-006)', () => {
   it('closes the pop-up when the browser moves back, clearing nothing (spec-006 edge case)', () => {
     expect(applyAction(asked(), { type: 'showPlace', place: { kind: 'play' } })).toEqual(startSession());
   });
+
+  it('clears what was found, the grid and any message, and stays on the list (spec-006 AC-12)', () => {
+    const entry: Entry = { cells: [[null, 2], [2, 3]], rowOperators: [null, '×'], columnOperators: ['÷', null] };
+    const found = applyAction({ ...startSession(), entry, selected: { row: 0, column: 1 } }, { type: 'submit' });
+    const asking = applyAction({ ...found, place: { kind: 'list' } }, { type: 'askToStartAgain' });
+
+    expect(applyAction(asking, { type: 'startAgain' })).toEqual({ ...startSession(), place: { kind: 'list' } });
+  });
 });

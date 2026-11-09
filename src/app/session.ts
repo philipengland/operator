@@ -97,7 +97,7 @@ export function applyAction(state: SessionState, action: SessionAction): Session
     case 'keepSolutions':
       return { ...state, isConfirming: false };
     case 'startAgain':
-      return state;
+      return { ...startSession(), puzzle: state.puzzle, entry: emptyEntry(state.puzzle), place: state.place };
     case 'openList':
       return { ...state, place: { kind: 'list' } };
     case 'openSolution':
