@@ -63,4 +63,18 @@ describe('readSolutions', () => {
 
     expect(readSolutions(storeWith({ [KEY]: saved(SOLUTION_A, notASolution) }), workedExample)).toEqual([SOLUTION_A]);
   });
+
+  it.each([
+    ['the wrong size', { ...SOLUTION_A, cells: [[null, 2]] }],
+    ['a digit that is not 1 to 9', { ...SOLUTION_A, cells: [[null, 12], [2, 3]] }],
+    ['a digit that is text', { ...SOLUTION_A, cells: [[null, '2'], [2, 3]] }],
+    ['an unknown operator', { ...SOLUTION_A, rowOperators: [null, 'x'] }],
+    ['no operators', { cells: SOLUTION_A.cells }],
+    ['not an entry at all', 7],
+  ])('drops an entry with %s, keeping the rest (spec-006 FR-611)', (_name, bad) => {
+    const reading = () => readSolutions(storeWith({ [KEY]: saved(bad, SOLUTION_A) }), workedExample);
+
+    expect(reading).not.toThrow();
+    expect(reading()).toEqual([SOLUTION_A]);
+  });
 });
