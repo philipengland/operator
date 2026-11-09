@@ -11,6 +11,10 @@ export function historyEntryFor(place: Place): HistoryEntry {
 }
 
 /** Whatever the browser hands back; anything else there is treated as the puzzle. */
-export function placeFrom(_entry: unknown): Place {
-  return { kind: 'list' };
+export function placeFrom(entry: unknown): Place {
+  return isListEntry(entry) ? { kind: 'list' } : { kind: 'play' };
+}
+
+function isListEntry(entry: unknown): boolean {
+  return (entry as Partial<HistoryEntry> | null | undefined)?.place?.kind === 'list';
 }

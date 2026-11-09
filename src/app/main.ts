@@ -9,6 +9,7 @@ import type { Digit } from '../engine';
 import { playScreenProps } from './screen';
 import type { Features } from './features';
 import { applyAction, startSession, type SessionAction } from './session';
+import { historyEntryFor, placeFrom } from './navigation';
 import { solutionListProps } from './solution-list';
 
 // Fixed at build time (vite.config.ts; constitution VII).
@@ -31,10 +32,20 @@ const screen = createPlayScreen(playScreenProps(state, theme), {
   onPill: (axis, index) => act({ type: 'tapOperator', line: { axis, index } }),
   onCheck: () => act({ type: 'submit' }),
   onKey: (value) => act(value === 'clear' ? { type: 'clear' } : { type: 'key', digit: value as Digit }),
-  ...(features.log ? { onCounter: () => act({ type: 'openList' }) } : {}),
+  ...(features.log ? { onCounter: openList } : {}),
 });
-const list = createSolutionList(solutionListProps(state, theme));
+const list = createSolutionList(solutionListProps(state, theme), { onBack: () => history.back() });
 root.append(screen.element);
+let shownPlace = state.place.kind;
+
+// A reload opens on the puzzle, so the entry left by a screen that was open is replaced (research R7).
+history.replaceState(historyEntryFor(state.place), '');
+window.addEventListener('popstate', (event) => act({ type: 'showPlace', place: placeFrom(event.state) }));
+
+function openList(): void {
+  history.pushState(historyEntryFor({ kind: 'list' }), '');
+  act({ type: 'openList' });
+}
 
 function act(action: SessionAction): void {
   state = applyAction(state, action);
@@ -45,11 +56,17 @@ function act(action: SessionAction): void {
 
 /** The play screen stays in the page, hidden, so nothing about the game is lost (research R6). */
 function showScreen(): void {
-  const isOnList = state.place.kind === 'list';
+  if (state.place.kind === shownPlace) {
+    return;
+  }
+  shownPlace = state.place.kind;
+  const isOnList = shownPlace === 'list';
   screen.element.hidden = isOnList;
   if (isOnList) {
     root?.append(list.element);
+    list.focusHeading();
   } else {
     list.element.remove();
+    screen.focusCounter();
   }
 }

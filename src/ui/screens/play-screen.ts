@@ -41,7 +41,11 @@ export interface PlayScreenActions {
   readonly onCounter?: () => void;
 }
 
-export function createPlayScreen(props: PlayScreenProps, actions: PlayScreenActions = {}): Component<PlayScreenProps> {
+export interface PlayScreenComponent extends Component<PlayScreenProps> {
+  focusCounter(): void;
+}
+
+export function createPlayScreen(props: PlayScreenProps, actions: PlayScreenActions = {}): PlayScreenComponent {
   const header = createOperatorHeader(headerWithAnnouncement(props.header, props.announcement ?? ''));
   const counter = createSolutionsCounter(props.counter, actions.onCounter);
   const grid = createPuzzleGrid(props.grid, actions);
@@ -65,7 +69,7 @@ export function createPlayScreen(props: PlayScreenProps, actions: PlayScreenActi
     mainButton.update(mainButtonProps(next.mainButtonLabel));
     writeText(status, next.announcement ?? '');
   };
-  return { element, update };
+  return { element, update, focusCounter: () => counter.element.focus() };
 }
 
 function mainButtonProps(label: string) {
