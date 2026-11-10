@@ -5,6 +5,7 @@ import { applyAction, startSession } from './session';
 import { dailyPuzzle } from '../engine';
 import { themeForSeed } from '../ui/foundations/themes';
 import { puzzleTheme } from './screen';
+import { choose, openToday, startDaily } from './daily';
 
 const justOpened = () => playScreenProps(startSession(), CLASSIC);
 const TOP_RIGHT = { type: 'tapCell', row: 0, column: 1 } as const;
@@ -141,5 +142,16 @@ describe('puzzleTheme (spec-007 FR-712)', () => {
     const easy = dailyPuzzle('2026-11-10', 'easy').puzzle;
 
     expect([puzzleTheme(startSession(easy)), puzzleTheme(startSession())]).toEqual([themeForSeed(easy.seed), CLASSIC]);
+  });
+});
+
+describe('the filling a daily puzzle was made from (spec-007 FR-711)', () => {
+  it("is never shown: Easy chosen from the Today screen opens with only its given cells filled in", () => {
+    const { puzzle } = dailyPuzzle('2026-11-10', 'easy');
+    const today = openToday(startDaily('2026-11-10', startSession(), ['easy']));
+
+    const { cells } = playScreenProps(choose(today, 'easy').session, CLASSIC).grid;
+
+    expect(cells.map((row) => row.map(({ digit }) => digit))).toEqual(puzzle.givens);
   });
 });
