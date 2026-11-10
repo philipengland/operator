@@ -22,6 +22,9 @@ interface Identity {
 }
 
 export function dailyPuzzle(date: CalendarDate, presetName: PresetName): DailyPuzzle {
+  if (!isCalendarDate(date)) {
+    throw new Error(`"${date}" is not a calendar date written YYYY-MM-DD.`);
+  }
   const preset = PRESETS[presetName];
   if (preset === undefined) {
     throw new Error(`No preset named ${presetName}.`);
@@ -35,6 +38,37 @@ export function dailyPuzzle(date: CalendarDate, presetName: PresetName): DailyPu
     }
   }
   throw new Error(`No ${presetName} puzzle for ${date} within ${MOST_CANDIDATES} candidates.`);
+}
+
+const CALENDAR_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const DAYS_IN_MONTH: Readonly<Record<string, number>> = {
+  '01': 31,
+  '02': 28,
+  '03': 31,
+  '04': 30,
+  '05': 31,
+  '06': 30,
+  '07': 31,
+  '08': 31,
+  '09': 30,
+  '10': 31,
+  '11': 30,
+  '12': 31,
+};
+const FEBRUARY = '02';
+const LEAP_EVERY = 4;
+const NO_LEAP_EVERY = 100;
+const LEAP_AFTER_ALL_EVERY = 400;
+
+/** A date that exists, written YYYY-MM-DD (data-model.md, CalendarDate). The engine reads no clock. */
+function isCalendarDate(text: string): boolean {
+  const [, year = '', month = '', day = ''] = CALENDAR_DATE.exec(text) ?? [];
+  const days = (DAYS_IN_MONTH[month] ?? 0) + (month === FEBRUARY && isLeapYear(Number(year)) ? 1 : 0);
+  return Number(day) >= 1 && Number(day) <= days;
+}
+
+function isLeapYear(year: number): boolean {
+  return (year % LEAP_EVERY === 0 && year % NO_LEAP_EVERY !== 0) || year % LEAP_AFTER_ALL_EVERY === 0;
 }
 
 /** One candidate, or null when it cannot meet the preset (FR-704). */

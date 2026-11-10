@@ -40,4 +40,12 @@ describe('dailyPuzzle', () => {
     expect(puzzle.solutionCount).toBeLessThanOrEqual(10);
     expect(puzzle.solutionCount).toBe(countSolutions(puzzle, Number.MAX_SAFE_INTEGER).count);
   });
+
+  it.each(['2026-11-31', '2026-13-01', '10 November 2026', '2026-1-5', '', '2027-02-29', '2100-02-29'])('refuses a date that is malformed or does not exist: "%s"', (date) => {
+    expect(() => dailyPuzzle(date, 'easy')).toThrow(/date/);
+  });
+
+  it('accepts 29 February in a leap year', () => {
+    expect(dailyPuzzle('2028-02-29', 'easy').puzzle.id).toBe('daily-v1-2028-02-29-easy');
+  });
 });
