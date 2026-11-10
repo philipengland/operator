@@ -2,7 +2,7 @@
 // component library shows (spec-004 research R1). Pure; the library draws it.
 
 import type { PlayScreenProps } from '../ui/screens/play-screen';
-import type { Theme } from '../ui/foundations/themes';
+import { themeForSeed, type Theme } from '../ui/foundations/themes';
 import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
@@ -74,6 +74,11 @@ export function puzzleGridProps(state: SessionState): PuzzleGridProps {
 function counterProps(state: SessionState): PlayScreenProps['counter'] {
   const total = totalToShow(state);
   return total === undefined ? { found: state.found.size } : { found: state.found.size, total };
+}
+
+/** spec-007 FR-712: a daily puzzle in the theme worked out from its seed; the worked example in Classic. */
+export function puzzleTheme({ puzzle }: SessionState): Theme {
+  return themeForSeed(puzzle.seed);
 }
 
 export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {

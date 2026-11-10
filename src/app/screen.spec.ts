@@ -3,6 +3,8 @@ import { CLASSIC } from '../ui/foundations/themes';
 import { playScreenProps } from './screen';
 import { applyAction, startSession } from './session';
 import { dailyPuzzle } from '../engine';
+import { themeForSeed } from '../ui/foundations/themes';
+import { puzzleTheme } from './screen';
 
 const justOpened = () => playScreenProps(startSession(), CLASSIC);
 const TOP_RIGHT = { type: 'tapCell', row: 0, column: 1 } as const;
@@ -115,5 +117,13 @@ describe('playScreenProps for a daily puzzle (spec-007)', () => {
 
   it('names each cell by its row and column', () => {
     expect(easy().grid.cells[1]?.[2]?.name).toBe('Row 2 column 3 cell');
+  });
+});
+
+describe('puzzleTheme (spec-007 FR-712)', () => {
+  it("shows a daily puzzle in its seed's theme, and the worked example in Classic", () => {
+    const easy = dailyPuzzle('2026-11-10', 'easy').puzzle;
+
+    expect([puzzleTheme(startSession(easy)), puzzleTheme(startSession())]).toEqual([themeForSeed(easy.seed), CLASSIC]);
   });
 });
