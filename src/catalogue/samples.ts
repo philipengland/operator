@@ -9,7 +9,9 @@ import { createOperatorHeader } from '../ui/combined/operator-header';
 import { createPuzzleGrid, type PuzzleGridProps } from '../ui/combined/puzzle-grid';
 import { createSolutionsCounter } from '../ui/combined/solutions-counter';
 import { createSpeechBubble } from '../ui/combined/speech-bubble';
+import { createStatusBar } from '../ui/combined/status-bar';
 import { createTargetPill, type TargetPillProps } from '../ui/combined/target-pill';
+import { createWorkingsStrip } from '../ui/combined/workings-strip';
 import { createBadge } from '../ui/simple/badge';
 import { createButton } from '../ui/simple/button';
 import { createDialog } from '../ui/simple/dialog';
@@ -20,6 +22,7 @@ import { createText } from '../ui/simple/text';
 import { createTextInput } from '../ui/simple/text-input';
 import { createSolutionList, type SolutionListProps } from '../ui/screens/solution-list';
 import { createSolutionView } from '../ui/screens/solution-view';
+import { createTodayList } from '../ui/screens/today-list';
 import type { Theme } from '../ui/foundations/themes';
 import { FIXED_PUZZLE_JUST_OPENED, screenSamplesFor } from './screen-samples';
 
@@ -124,6 +127,24 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
       render: () => shownInPlace(createConfirmDialog({ question: 'Clear all solutions?', confirm: 'Yes, clear', cancel: 'Keep them' }).element),
     },
   ],
+  'Status bar': [
+    { label: 'With a total', render: () => createStatusBar({ counter: { found: 1, total: 4 } }, { onCounter: () => undefined, onToday: () => undefined }).element },
+    { label: 'Over 100', render: () => createStatusBar({ counter: { found: 3 } }, { onCounter: () => undefined, onToday: () => undefined }).element },
+  ],
+  'Workings strip': [
+    {
+      label: 'Row and column',
+      render: () =>
+        createWorkingsStrip({
+          workings: [
+            { result: '7 + 2 + 9 + 6 = 24', mark: 'tick', name: '' },
+            { result: '9 × ? × ? × 6 × ?', mark: 'none', name: '' },
+          ],
+        }).element,
+    },
+    { label: 'No cell selected', render: () => createWorkingsStrip({ text: 'Tap a cell to see its row and column.' }).element },
+    { label: "The operator's line", speaksInTheme: true, render: ({ address }) => createWorkingsStrip({ text: `Wrong number, ${address}!` }).element },
+  ],
   'Solution list': [
     { label: 'Empty', speaksInTheme: true, render: (theme) => createSolutionList(solutionList(theme, [], false)).element },
     { label: 'Two solutions', speaksInTheme: true, render: (theme) => createSolutionList(solutionList(theme, ['Solution 1', 'Solution 2'], true)).element },
@@ -133,6 +154,17 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     {
       label: 'Solution 1',
       render: (theme) => createSolutionView({ heading: 'Solution 1', backLabel: 'Back', grid: readOnly(screenSamplesFor(theme)['All found'].grid) }).element,
+    },
+  ],
+  'Today list': [
+    {
+      label: 'Today',
+      render: () =>
+        createTodayList({
+          heading: 'Today',
+          backLabel: 'Back',
+          rows: ['Easy, found 1 of 4', 'Medium, found 0 of 12', 'Hard, found 0 of 2', 'Collector, found 3', 'Practice, found 1 of 2'],
+        }).element,
     },
   ],
 };
