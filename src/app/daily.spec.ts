@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dailyPuzzle, type Digit, type LinePosition } from '../engine';
+import { dailyPuzzle, type Digit, type LinePosition, type Puzzle } from '../engine';
 import { choose, openToday, startDaily, todayRows } from './daily';
 import { applyAction, startSession, type SessionAction, type SessionState } from './session';
 
@@ -46,6 +46,18 @@ describe('todayRows', () => {
     const rows = todayRows(openToday(startDaily(TENTH_OF_NOVEMBER, withSolutionAFound(), ['easy'])));
 
     expect(rows).toEqual([`Easy, found 0 of ${easyTotal}`, 'Practice, found 1 of 2']);
+  });
+});
+
+describe('saved solutions (FR-714)', () => {
+  it('starts a puzzle made today with the solutions saved on the phone for it', () => {
+    const easy = dailyPuzzle(TENTH_OF_NOVEMBER, 'easy');
+    const saved = (puzzle: Puzzle) => (puzzle.id === easy.puzzle.id ? [easy.builtFrom] : []);
+
+    const chosen = choose(openToday(startDaily(TENTH_OF_NOVEMBER, startSession(), ['easy']), saved), 'easy', saved);
+
+    expect(chosen.session.solutions).toEqual([easy.builtFrom]);
+    expect(chosen.session.found.size).toBe(1);
   });
 });
 

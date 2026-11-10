@@ -1,8 +1,8 @@
 // spec-007: today's puzzles in one session (data-model.md "Today"): the puzzle on the play screen, and
 // the others kept as the player left them. Pure; no DOM, no clock: the date comes from today.ts.
 
-import { dailyPuzzle, emptyEntry, type CalendarDate, type PresetName } from '../engine';
-import { counterText, startSession, type SessionState } from './session';
+import { dailyPuzzle, emptyEntry, type CalendarDate, type Entry, type PresetName, type Puzzle } from '../engine';
+import { applyAction, counterText, startSession, type SessionState } from './session';
 
 /** A row on the Today screen: one of today's puzzles, or the worked example as Practice. */
 export type Choice = PresetName | 'practice';
@@ -24,16 +24,21 @@ export function startDaily(date: CalendarDate, practice: SessionState, offered: 
 }
 
 /** The Today screen over the puzzle; today's puzzles not yet made are made, so each row has its count. */
-export function openToday(state: DailyState): DailyState {
+/** What the phone has saved for a puzzle (spec-006); nothing, unless the app says otherwise. */
+export type SavedSolutions = (puzzle: Puzzle) => readonly Entry[];
+
+const NOTHING_SAVED: SavedSolutions = () => [];
+
+export function openToday(state: DailyState, saved: SavedSolutions = NOTHING_SAVED): DailyState {
   const made = state.offered.filter((preset) => preset !== state.current && state.kept[preset] === undefined);
-  const kept = { ...state.kept, ...Object.fromEntries(made.map((preset) => [preset, freshSession(state.date, preset)])) };
+  const kept = { ...state.kept, ...Object.fromEntries(made.map((preset) => [preset, freshSession(state.date, preset, saved)])) };
   return { ...state, kept, session: { ...state.session, place: { kind: 'today' } } };
 }
 
 /** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
-export function choose(state: DailyState, choice: Choice): DailyState {
+export function choose(state: DailyState, choice: Choice, saved: SavedSolutions = NOTHING_SAVED): DailyState {
   const everyKept: DailyState['kept'] = { ...state.kept, [state.current]: state.session };
-  const session = openedAgain(everyKept[choice] ?? freshSession(state.date, choice));
+  const session = openedAgain(everyKept[choice] ?? freshSession(state.date, choice, saved));
   const kept = Object.fromEntries(Object.entries(everyKept).filter(([each]) => each !== choice));
   return { ...state, current: choice, session, kept };
 }
@@ -43,8 +48,10 @@ function openedAgain(session: SessionState): SessionState {
   return { ...session, entry: emptyEntry(session.puzzle), selected: null, message: null, place: { kind: 'play' }, isConfirming: false };
 }
 
-function freshSession(date: CalendarDate, choice: Choice): SessionState {
-  return choice === 'practice' ? startSession() : startSession(dailyPuzzle(date, choice).puzzle);
+/** A puzzle opened for the first time today, with whatever the phone has saved for it. */
+function freshSession(date: CalendarDate, choice: Choice, saved: SavedSolutions): SessionState {
+  const session = choice === 'practice' ? startSession() : startSession(dailyPuzzle(date, choice).puzzle);
+  return applyAction(session, { type: 'restoreFound', solutions: saved(session.puzzle) });
 }
 
 const CHOICE_WORDS: Readonly<Record<Choice, string>> = { easy: 'Easy', medium: 'Medium', hard: 'Hard', collector: 'Collector', practice: 'Practice' };
