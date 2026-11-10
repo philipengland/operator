@@ -22,4 +22,13 @@ describe('dailyPuzzle', () => {
     expect(builtFrom.cells.flat().every((digit) => digit !== null && digit >= 1 && digit <= 9)).toBe(true);
     expect(checkEntry(puzzle, builtFrom, defaultRules).kind).toBe('solved');
   });
+
+  it("gives as many of the filling's cells as the preset says: Easy 4 or 5", () => {
+    const { puzzle, builtFrom } = dailyPuzzle('2026-11-10', 'easy');
+    const given = puzzle.givens.flatMap((digits, row) => digits.flatMap((digit, column) => (digit === null ? [] : [[digit, builtFrom.cells[row]?.[column]]])));
+
+    expect(given.length).toBeGreaterThanOrEqual(4);
+    expect(given.length).toBeLessThanOrEqual(5);
+    expect(given.every(([digit, filled]) => digit === filled)).toBe(true);
+  });
 });

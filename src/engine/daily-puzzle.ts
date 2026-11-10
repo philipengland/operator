@@ -3,9 +3,9 @@
 // gives the same puzzle on every phone and in every later v1 build.
 
 import { defaultRules, evaluateLine } from './evaluate-line';
-import { GENERATOR_VERSION, PRESETS, type Preset } from './presets';
+import { GENERATOR_VERSION, PRESETS, type Between, type Preset } from './presets';
 import { randomFrom, seedNumber, type Random } from './random';
-import type { CalendarDate, DailyPuzzle, Digit, LineSpec, PresetName, Puzzle } from './types';
+import type { CalendarDate, CellPosition, DailyPuzzle, Digit, LineSpec, PresetName, Puzzle } from './types';
 
 /** No date tested needs anywhere near this many; the sweep of 2027 proves it (research R3, R12). */
 const MOST_CANDIDATES = 2_000;
@@ -44,11 +44,12 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
   if (!isEveryLineMade(rowLines) || !isEveryLineMade(columnLines)) {
     return null;
   }
+  const given = new Set(chooseSome(random, everyCell(preset), howMany(random, preset.givenCells)).map(({ row, column }) => `${row},${column}`));
   const puzzle: Puzzle = {
     ...identity,
     rows: preset.rows,
     columns: preset.columns,
-    givens: filling.map((digits) => digits.map(() => null)),
+    givens: filling.map((digits, row) => digits.map((digit, column) => (given.has(`${row},${column}`) ? digit : null))),
     rowLines,
     columnLines,
     solutionCount: 0,
@@ -69,6 +70,24 @@ function lineFor(random: Random, { operators, targets }: Preset, digits: readonl
     return result.ok && result.value !== 0 && result.value >= targets.lowest && result.value <= targets.highest ? [{ target: result.value, operator }] : [];
   });
   return possible.length === 0 ? null : (possible[random.whole(possible.length)] ?? null);
+}
+
+function everyCell({ rows, columns }: Preset): CellPosition[] {
+  return Array.from({ length: rows * columns }, (_, index) => ({ row: Math.floor(index / columns), column: index % columns }));
+}
+
+/**
+ * A number in the range. It draws nothing when the range holds one number, so a later step added to
+ * the generator can never change a preset whose range it does not use (research R13).
+ */
+function howMany(random: Random, { fewest, most }: Between): number {
+  return fewest === most ? fewest : fewest + random.whole(most - fewest + 1);
+}
+
+/** `count` of the items, each chosen in turn from those left: one draw each, none when `count` is 0. */
+function chooseSome<Item>(random: Random, items: readonly Item[], count: number): Item[] {
+  const left = [...items];
+  return Array.from({ length: count }, () => left.splice(random.whole(left.length), 1)[0]).filter((item): item is Item => item !== undefined);
 }
 
 function isEveryLineMade(lines: readonly (LineSpec | null)[]): lines is readonly LineSpec[] {
