@@ -1,7 +1,7 @@
 // spec-007: today's puzzles in one session (data-model.md "Today"): the puzzle on the play screen, and
 // the others kept as the player left them. Pure; no DOM, no clock: the date comes from today.ts.
 
-import { dailyPuzzle, type CalendarDate, type PresetName } from '../engine';
+import { dailyPuzzle, emptyEntry, type CalendarDate, type PresetName } from '../engine';
 import { startSession, type SessionState } from './session';
 
 /** A row on the Today screen: one of today's puzzles, or the worked example as Practice. */
@@ -30,9 +30,14 @@ export function openToday(state: DailyState): DailyState {
 /** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
 export function choose(state: DailyState, choice: Choice): DailyState {
   const everyKept: DailyState['kept'] = { ...state.kept, [state.current]: state.session };
-  const session = everyKept[choice] ?? freshSession(state.date, choice);
+  const session = openedAgain(everyKept[choice] ?? freshSession(state.date, choice));
   const kept = Object.fromEntries(Object.entries(everyKept).filter(([each]) => each !== choice));
   return { ...state, current: choice, session, kept };
+}
+
+/** FR-709: an empty grid, no selected cell, the greeting, on the play screen; what was found is kept. */
+function openedAgain(session: SessionState): SessionState {
+  return { ...session, entry: emptyEntry(session.puzzle), selected: null, message: null, place: { kind: 'play' }, isConfirming: false };
 }
 
 function freshSession(date: CalendarDate, choice: Choice): SessionState {

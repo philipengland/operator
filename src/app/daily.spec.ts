@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { dailyPuzzle } from '../engine';
+import { dailyPuzzle, type Digit, type LinePosition } from '../engine';
 import { choose, openToday, startDaily } from './daily';
-import { startSession } from './session';
+import { applyAction, startSession, type SessionAction, type SessionState } from './session';
 
 const TENTH_OF_NOVEMBER = '2026-11-10';
 
@@ -27,4 +27,35 @@ describe('choose', () => {
     expect(chosen.session).toEqual(startSession(dailyPuzzle(TENTH_OF_NOVEMBER, 'easy').puzzle));
     expect(chosen.kept.practice).toEqual({ ...practice, place: { kind: 'today' } });
   });
+
+  it('opens a puzzle come back to with an empty grid, no cell selected and the greeting, keeping what was found (FR-709)', () => {
+    const practice = withSolutionAFound();
+    const daily = choose(openToday(startDaily(TENTH_OF_NOVEMBER, practice, ['easy'])), 'easy');
+
+    const back = choose(openToday(daily), 'practice');
+
+    expect(practice.found.size).toBe(1);
+    expect(back.session).toEqual({ ...startSession(), found: practice.found, solutions: practice.solutions });
+  });
 });
+
+/** Solution A of the worked example found, left with a cell selected and its message showing. */
+function withSolutionAFound(): SessionState {
+  const taps = (line: LinePosition, times: number): SessionAction[] => Array.from({ length: times }, () => ({ type: 'tapOperator', line }));
+  const actions: SessionAction[] = [
+    ...enter(0, 1, 2),
+    ...enter(1, 0, 2),
+    ...enter(1, 1, 3),
+    ...taps({ axis: 'row', index: 1 }, ['+', '−', '×'].length),
+    ...taps({ axis: 'column', index: 0 }, ['+', '−', '×', '÷'].length),
+    { type: 'submit' },
+  ];
+  return actions.reduce(applyAction, startSession());
+}
+
+function enter(row: number, column: number, digit: Digit): SessionAction[] {
+  return [
+    { type: 'tapCell', row, column },
+    { type: 'key', digit },
+  ];
+}
