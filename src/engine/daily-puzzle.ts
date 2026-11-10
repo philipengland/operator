@@ -29,6 +29,11 @@ export function dailyPuzzle(date: CalendarDate, presetName: PresetName): DailyPu
   if (preset === undefined) {
     throw new Error(`No preset named ${presetName}.`);
   }
+  return puzzleFor(date, presetName, preset);
+}
+
+/** The generator's core, with the preset as data, so tests can give it presets no player meets. */
+export function puzzleFor(date: CalendarDate, presetName: PresetName, preset: Preset): DailyPuzzle {
   const identity: Identity = { id: `daily-${GENERATOR_VERSION}-${date}-${presetName}`, seed: `${GENERATOR_VERSION}:${date}:${presetName}`, preset: presetName };
   const random = randomFrom(seedNumber(identity.seed));
   for (let candidate = 0; candidate < MOST_CANDIDATES; candidate++) {
@@ -75,7 +80,7 @@ function isLeapYear(year: number): boolean {
 function candidateFrom(random: Random, preset: Preset, identity: Identity): DailyPuzzle | null {
   const filling = fill(random, preset);
   const rowLines = filling.map((digits) => lineFor(random, preset, digits));
-  const columnLines = Array.from({ length: preset.columns }, (_, column) => lineFor(random, preset, filling.map((digits) => digits[column] ?? 1)));
+  const columnLines = columnsOf(filling).map((digits) => lineFor(random, preset, digits));
   if (!isEveryLineMade(rowLines) || !isEveryLineMade(columnLines)) {
     return null;
   }
@@ -111,6 +116,11 @@ function lineFor(random: Random, { operators, targets }: Preset, digits: readonl
     return result.ok && result.value !== 0 && result.value >= targets.lowest && result.value <= targets.highest ? [{ target: result.value, operator }] : [];
   });
   return possible.length === 0 ? null : (possible[random.whole(possible.length)] ?? null);
+}
+
+/** The filling read down each column, top to bottom. */
+function columnsOf(filling: Filling): readonly (readonly Digit[])[] {
+  return (filling[0] ?? []).map((_, column) => filling.flatMap((digits) => digits.slice(column, column + 1)));
 }
 
 function everyCell({ rows, columns }: Preset): CellPosition[] {

@@ -7,8 +7,8 @@ const FNV_PRIME = 0x01000193;
 /** 32-bit FNV-1a over the text's characters. Seeds are plain ASCII, where characters and bytes agree. */
 export function seedNumber(seedText: string): number {
   let hash = FNV_OFFSET_BASIS;
-  for (const character of seedText) {
-    hash = Math.imul(hash ^ (character.codePointAt(0) ?? 0), FNV_PRIME) >>> 0;
+  for (let index = 0; index < seedText.length; index++) {
+    hash = Math.imul(hash ^ seedText.charCodeAt(index), FNV_PRIME) >>> 0;
   }
   return hash;
 }

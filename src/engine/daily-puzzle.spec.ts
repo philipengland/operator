@@ -3,6 +3,7 @@ import { checkEntry } from './check-entry';
 import { countSolutions } from './count-solutions';
 import { dailyPuzzle } from './daily-puzzle';
 import { defaultRules } from './evaluate-line';
+import type { PresetName } from './types';
 
 describe('dailyPuzzle', () => {
   it("names Easy for 10 November 2026 by its version, date and preset, and keeps its seed", () => {
@@ -47,5 +48,9 @@ describe('dailyPuzzle', () => {
 
   it('accepts 29 February in a leap year', () => {
     expect(dailyPuzzle('2028-02-29', 'easy').puzzle.id).toBe('daily-v1-2028-02-29-easy');
+  });
+
+  it('refuses a preset it does not know', () => {
+    expect(() => dailyPuzzle('2026-11-10', 'unknown' as PresetName)).toThrow(/preset/);
   });
 });
