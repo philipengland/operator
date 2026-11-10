@@ -2,6 +2,7 @@
 // Every draw comes from one stream seeded by the date and preset, in a fixed order, so the same date
 // gives the same puzzle on every phone and in every later v1 build.
 
+import { countSolutions } from './count-solutions';
 import { defaultRules, evaluateLine } from './evaluate-line';
 import { GENERATOR_VERSION, PRESETS, type Between, type Preset } from './presets';
 import { randomFrom, seedNumber, type Random } from './random';
@@ -45,7 +46,7 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
     return null;
   }
   const given = new Set(chooseSome(random, everyCell(preset), howMany(random, preset.givenCells)).map(({ row, column }) => `${row},${column}`));
-  const puzzle: Puzzle = {
+  const unsolved: Puzzle = {
     ...identity,
     rows: preset.rows,
     columns: preset.columns,
@@ -54,6 +55,12 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
     columnLines,
     solutionCount: 0,
   };
+  // Step 5: keep it only if its count is within the band, counted within the preset's work (FR-706, FR-707).
+  const { count, isWithinBudget } = countSolutions(unsolved, preset.workBudget);
+  if (!isWithinBudget || count < preset.band.fewest || count > preset.band.most) {
+    return null;
+  }
+  const puzzle: Puzzle = { ...unsolved, solutionCount: count };
   const noOperatorsChosen = (lines: readonly LineSpec[]) => lines.map(() => null);
   return { puzzle, builtFrom: { cells: filling, rowOperators: noOperatorsChosen(rowLines), columnOperators: noOperatorsChosen(columnLines) } };
 }

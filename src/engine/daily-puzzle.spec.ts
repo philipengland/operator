@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { checkEntry } from './check-entry';
+import { countSolutions } from './count-solutions';
 import { dailyPuzzle } from './daily-puzzle';
 import { defaultRules } from './evaluate-line';
 
@@ -30,5 +31,13 @@ describe('dailyPuzzle', () => {
     expect(given.length).toBeGreaterThanOrEqual(4);
     expect(given.length).toBeLessThanOrEqual(5);
     expect(given.every(([digit, filled]) => digit === filled)).toBe(true);
+  });
+
+  it("keeps only a puzzle whose count is within the preset's band, and records that count (FR-707)", () => {
+    const { puzzle } = dailyPuzzle('2026-11-10', 'easy');
+
+    expect(puzzle.solutionCount).toBeGreaterThanOrEqual(1);
+    expect(puzzle.solutionCount).toBeLessThanOrEqual(10);
+    expect(puzzle.solutionCount).toBe(countSolutions(puzzle, Number.MAX_SAFE_INTEGER).count);
   });
 });
