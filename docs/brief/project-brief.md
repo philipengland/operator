@@ -75,8 +75,8 @@ Operator visibility sits beside these levers. It changes how many solutions exis
 
 | Preset | Grid | Operators | Visibility | Pre-filled | Targets | Solutions |
 | --- | --- | --- | --- | --- | --- | --- |
-| Easy | 3 × 3 | + − | All shown | 4 or 5 of 9 | 1 to 29 | 1 to 10 |
-| Medium | 5 × 4 | + − × | 4 or 5 of 9 lines open | 10 of 20 | 1 to 100 | 2 to 20 |
+| Easy | 3 × 3 | + − × ÷ | All shown | 4 or 5 of 9 | 1 to 100 | 1 to 10 |
+| Medium | 5 × 4 | + − × ÷ | 4 or 5 of 9 lines open | 10 of 20 | 1 to 100 | 2 to 20 |
 | Hard | 7 × 5 | + − × ÷ | Shown, one or two open | 21 or 22 of 35 | −500 to 500, not 0 | 1 to 3 |
 | Collector | 4 × 3 | + − × ÷ | All open | None | −29 to 29, not 0 | 21 or more |
 

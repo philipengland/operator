@@ -33,14 +33,14 @@ in 20 Collector puzzles do, research R3). Every other scenario uses 10 or 11 Nov
 
 | Criterion | Scenario | File |
 |---|---|---|
-| AC-1: today's Easy puzzle | From the worked example: 3 × 3, every operator shown, only + and −, 4 or 5 given, targets 1 to 29, "Found 0 of M" with M 1 to 10, empty grid | `test/acceptance/play/daily-easy.acceptance-spec.ts` |
+| AC-1: today's Easy puzzle | From the worked example: 3 × 3, every operator shown, from +, −, × and ÷, 4 or 5 given, targets 1 to 100, "Found 0 of M" with M 1 to 10, empty grid | `test/acceptance/play/daily-easy.acceptance-spec.ts` |
 | AC-1 | The Today screen and the puzzle have no accessibility problems (`@ui`) | same |
 | AC-2: the same puzzle everywhere | Easy for 10 November, made twice, is the same, and the same as the engine alone makes; run on the engine, the iPhone and the Android phone | same |
 | AC-4: the filling it was made from | Accepted, and the counter reads "Found 1 of M" | same |
 | AC-6: the theme | Easy for 10 November is shown in its seed's theme (`@ui`) | same |
 | AC-7: a new puzzle each day | Easy for 11 November differs from Easy for 10 November | same |
 | AC-22: Practice | After Solution A and a visit to Easy, the Today screen says "Practice, found 1"; Practice opens the worked example at "Found 1 of 2" with Solution A in its list | same |
-| AC-8: Medium | 5 × 4, only +, − and ×, 4 or 5 lines open, 10 given, targets 1 to 100, M 2 to 20 | `test/acceptance/play/medium-and-collector.acceptance-spec.ts` |
+| AC-8: Medium | 5 × 4, only +, −, × and ÷, 4 or 5 lines open, 10 given, targets 1 to 100, M 2 to 20 | `test/acceptance/play/medium-and-collector.acceptance-spec.ts` |
 | AC-9: Collector | 4 × 3, all 7 lines open, none given, targets −29 to 29 and not 0, M 21 or more | same |
 | AC-10: more than 100 | On the first day from 10 November with more than 100: after 3 found, "Found 3", and never "All found!" | same |
 | AC-12: fitting the screen | Medium and Collector, each at 375 × 667 and 320 × 568: puzzle, keypad and button on screen with no scrolling; everything to tap at least 44 × 44; no accessibility problems (`@ui`, four scenarios) | same |
@@ -114,3 +114,13 @@ the pull request that builds its drivers.
   - `test/acceptance/dsl/catalogue-vocabulary.ts`, `test/acceptance/library/examples.ts` and
     `test/acceptance/library/simple-components.acceptance-spec.ts` (spec-003's lists gain `Status bar`,
     `Workings strip` and `Today list`)
+
+### Amendment 2026-11-10: every operator on every difficulty
+
+- **Approved by**: Philip England, 2026-11-10, before Easy was released (spec Clarifications; FR-705).
+- **Changes**:
+  - `test/acceptance/play/daily-easy.acceptance-spec.ts`, AC-1: the title reads "from +, −, × and ÷" and "targets 1 to 100";
+    `expectOperatorsOnlyFrom(['+', '−', '×', '÷'])` and `expectTargetsFrom(1, 100)`.
+  - `test/acceptance/play/medium-and-collector.acceptance-spec.ts`, AC-8: the title reads "only +, −, × and ÷";
+    `expectOperatorsOnlyFrom(['+', '−', '×', '÷'])`. Applied when part 3 brings the file in from `514187c` (task T034).
+- The DSL is unchanged.

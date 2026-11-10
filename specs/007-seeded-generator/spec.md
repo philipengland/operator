@@ -37,8 +37,8 @@ cells). Grid is rows × columns; every row and column has a target.
 
 | Preset | Grid | Operators | Shown or open | Given cells | Targets | Solutions |
 | --- | --- | --- | --- | --- | --- | --- |
-| Easy | 3 × 3 | + − | All shown | 4 or 5 | 1 to 29 | 1 to 10 |
-| Medium | 5 × 4 | + − × | 4 or 5 of 9 lines open | 10 | 1 to 100 | 2 to 20 |
+| Easy | 3 × 3 | + − × ÷ | All shown | 4 or 5 | 1 to 100 | 1 to 10 |
+| Medium | 5 × 4 | + − × ÷ | 4 or 5 of 9 lines open | 10 | 1 to 100 | 2 to 20 |
 | Hard | 7 × 5 | + − × ÷ | 1 or 2 of 12 lines open | 21 or 22 | −500 to 500, not 0 | 1 to 3 |
 | Collector | 4 × 3 | + − × ÷ | All open | None | −29 to 29, not 0 | 21 or more |
 
@@ -101,6 +101,10 @@ first.
   laid out? → A: A compact screen: the mascot and speech bubble become one bar holding the counter
   and the Today button; the operator's line shows in the workings strip after each Check, and is still
   announced. The worked example and Easy keep the full header (FR-719; research R9).
+- Q: Should every difficulty allow all four operators, + − × ÷? → A: Yes (owner, 2026-11-10, before Easy was released):
+  Easy and Medium allow + − × ÷ like Hard and Collector. Each line picks from the operators whose result is whole
+  and in range, so a puzzle may not use all four. Easy's targets become 1 to 100 so × lines can appear; its band stays
+  1 to 10 (FR-705).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -119,7 +123,7 @@ Easy preset, and solve it with the filling it was built from.
 
 1. **AC-1** — **Given** the phone's date is 10 November 2026 and the worked example is open, **When**
    the player opens today's Easy puzzle, **Then** a 3 × 3 puzzle appears with every operator shown,
-   only + and − in use, 4 or 5 of its 9 cells given, every target from 1 to 29, and the counter at
+   its operators from +, −, × and ÷, 4 or 5 of its 9 cells given, every target from 1 to 100, and the counter at
    "Found 0 of M", with M from 1 to 10.
 2. **AC-2** — **Given** the date 10 November 2026 and Easy, **When** the puzzle is made on an iPhone,
    on an Android phone and by the engine alone, **Then** the given cells, targets, operators and
@@ -156,7 +160,7 @@ against its preset.
 **Acceptance Scenarios**:
 
 8. **AC-8** — **Given** the date 10 November 2026, **When** the player opens today's Medium puzzle,
-   **Then** a 5 × 4 puzzle appears using only +, − and ×, with 4 or 5 of its 9 lines open, 10 of its
+   **Then** a 5 × 4 puzzle appears using only +, −, × and ÷, with 4 or 5 of its 9 lines open, 10 of its
    20 cells given, every target from 1 to 100, and M from 2 to 20.
 9. **AC-9** — **Given** the date 10 November 2026, **When** the player opens today's Collector
    puzzle, **Then** a 4 × 3 puzzle appears with all 7 lines open, no cells given, every target from
