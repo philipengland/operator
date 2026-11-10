@@ -34,3 +34,37 @@ passed at once, from the second play-screen cycle; it pins the worked example's 
 - **The Workings strip is also built from Text**, for its prompt and the operator's line; the contract change lists Surface and
   Line working only, and is corrected when the contracts are updated (T013).
 - **The play screen's complexity reached 11** with the Status bar; the counter or Status bar is now made by one helper.
+- **The catalogue page scrolled sideways** (459 px wide at 375): two workings side by side in the strip were too wide.
+  The strip now wraps.
+
+**Catalogue lists (T011)**: three existing tests in `src/catalogue/library.spec.ts` were amended, with the owner's
+agreement before the change, and recorded in `test-changes.md`. They failed on their assertions (the three lists lacked the
+new names), then passed once `src/catalogue/library.ts` listed the new parts.
+
+**Proving the fit (T012, research R9)**: measured in the catalogue with the widest pills and workings each grid can show.
+The first measurement did not fit: Hard 66 px over at 375 × 667, Medium 58 px over at 320 × 568, and Hard's column pills
+overlapped. Asked, the owner chose to squeeze harder before changing the spec. A compact density token set, a wrapping
+strip, hidden workings that take no room and stacked column pills then gave:
+
+| Grid | 375 × 667 | 320 × 568 |
+| --- | --- | --- |
+| Medium, 5 × 4 | 561: fits | 559: fits |
+| Hard, 7 × 5 | 666: fits, 1 px spare | scrolls up and down only, 320 wide |
+
+The same in Chromium and WebKit. Everything tappable is at least 44 × 44. The scenarios that prove it in the game are
+AC-12 and AC-16, in parts 3 and 4.
+
+**A driver corrected**: the catalogue driver listed every region in a tier as a component, so the Status bar's samples
+(each a region "Status bar") were counted. It now lists only components' own regions, those with a heading (`74bdf05`).
+
+**Acceptance GREEN**: `[spec-003 AC-1]` and every catalogue scenario pass on both phones. Full suite: 377 unit, 48 engine
+and 329 phone tests pass. In one full run, spec-001 AC-16 timed out on the iPhone waiting for the Check button to be
+stable; it passed alone three times and in a second full run, so it is noted, not changed. JavaScript 9.96 KB and CSS
+2.51 KB gzipped.
+
+**Noticed for later**: a Target pill shows a negative target with a hyphen ("− -480"), where the game writes the minus
+sign elsewhere. Hard (part 4) shows negative targets, so it is fixed there.
+
+**Commits**: `7bba210` vocabulary and stubs, `49bfe47` grid, `41a2b3f` strip, `05d3f0d` status bar, `c4c323e` Today
+list, `be4b845` play screen, `74bdf05` driver, `b67f3c6` compact density, `3d50ff8` catalogue, `d31c2a3` contracts,
+research and brief.
