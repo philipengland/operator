@@ -8,3 +8,12 @@
   padding: max(var(--space-screen), env(safe-area-inset-top)) max(var(--space-screen), env(safe-area-inset-right))
     max(var(--space-screen), env(safe-area-inset-bottom)) max(var(--space-screen), env(safe-area-inset-left));
 }
+
+/* spec-007 FR-719, research R9: grids bigger than 3 × 3 use the small phone's spacing at every size,
+   and a main button one touch target high, to make room for the grid. */
+.play-screen--compact {
+  --space-between: 4px;
+  --space-screen: 8px;
+  --space-grid: 4px;
+  --size-main: var(--touch-target);
+}
