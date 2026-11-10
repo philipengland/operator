@@ -8,7 +8,7 @@ import { readCellAppearance, readColoursInUse, readDeclaredDots, readDotColour, 
 import { cellNamePattern, COUNTER_PATTERN, pillIn, workingNamePattern } from './screen-names';
 import { recordSpeedTimings, SPEED_TIMINGS, type SpeedTimings } from './speed-timing';
 import type { PageDots, PlayScreenPart, Typeface } from '../../dsl/catalogue-vocabulary';
-import type { Box, CellAppearance, CellLook, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
+import type { Box, CellAppearance, CellLook, DailyLayout, PhoneDriver, ScreenLayout, ScreenSize } from '../phone.driver';
 
 // Set on the page before a reload; a page that really reloads no longer has it.
 const PAGE_BEFORE_RELOAD = 'operatorPageBeforeReload';
@@ -174,6 +174,15 @@ export class UiPhoneDriver implements PhoneDriver {
   async leaveSavedFillings(fillings: readonly Entry[]): Promise<void> {
     await this.leaveSaved(JSON.stringify({ format: 1, solutions: fillings.map(savedEntry) }));
   }
+
+  // spec-007: stubs until the stories that need them (tasks T038, T056).
+
+  async dailyLayout(): Promise<DailyLayout> {
+    const nothing = { width: 0, height: 0 };
+    return { screen: nothing, tapTargets: [], puzzle: NO_BOX, keypad: NO_BOX, mainButton: NO_BOX, page: nothing };
+  }
+
+  async leaveUnreadableRecordOfLastPuzzle(): Promise<void> {}
 
   private async leaveSaved(record: string): Promise<void> {
     await this.page.addInitScript(

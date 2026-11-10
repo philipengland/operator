@@ -13,12 +13,16 @@ export interface PuzzleSize {
   readonly columns: number;
 }
 
+/** spec-007 FR-718: each working beside its line, or elsewhere (a strip), kept only for screen readers. */
+export type WorkingsPlace = 'beside' | 'elsewhere';
+
 export interface PuzzleGridPlaces {
   cell(row: number, column: number): GridPlace;
   columnPill(column: number): GridPlace;
   rowPill(row: number): GridPlace;
-  rowWorking(row: number): GridPlace;
-  columnWorking(column: number): GridPlace;
+  /** Null when the workings are shown elsewhere. */
+  rowWorking(row: number): GridPlace | null;
+  columnWorking(column: number): GridPlace | null;
 }
 
 // Grid line 1 holds the pills; the cells start on line 2.
@@ -26,13 +30,13 @@ const PILL_LINE = 1;
 const FIRST_CELL_LINE = 2;
 
 /** Places for a puzzle of this size; rows and columns are counted from 0. */
-export function puzzleGridPlaces(size: PuzzleSize): PuzzleGridPlaces {
+export function puzzleGridPlaces(size: PuzzleSize, workings: WorkingsPlace = 'beside'): PuzzleGridPlaces {
   return {
     cell: (row, column) => ({ row: row + FIRST_CELL_LINE, column: column + FIRST_CELL_LINE }),
     columnPill: (column) => ({ row: PILL_LINE, column: column + FIRST_CELL_LINE }),
     rowPill: (row) => ({ row: row + FIRST_CELL_LINE, column: PILL_LINE }),
     // The line just past the last cell: right of the last column, below the last row.
-    rowWorking: (row) => ({ row: row + FIRST_CELL_LINE, column: size.columns + FIRST_CELL_LINE }),
-    columnWorking: (column) => ({ row: size.rows + FIRST_CELL_LINE, column: column + FIRST_CELL_LINE }),
+    rowWorking: (row) => (workings === 'beside' ? { row: row + FIRST_CELL_LINE, column: size.columns + FIRST_CELL_LINE } : null),
+    columnWorking: (column) => (workings === 'beside' ? { row: size.rows + FIRST_CELL_LINE, column: column + FIRST_CELL_LINE } : null),
   };
 }

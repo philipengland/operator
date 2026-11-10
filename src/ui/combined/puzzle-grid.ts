@@ -8,7 +8,7 @@ import { createSurface } from '../simple/surface';
 import { createText } from '../simple/text';
 import { createGridCell, type GridCellProps } from './grid-cell';
 import { createLineWorking, type LineWorkingProps } from './line-working';
-import { puzzleGridPlaces, type GridPlace } from './puzzle-grid.model';
+import { puzzleGridPlaces, type GridPlace, type WorkingsPlace } from './puzzle-grid.model';
 import { createTargetPill, type TargetPillProps } from './target-pill';
 
 /** The components this one is laid out from (spec-003 AC-7). */
@@ -22,6 +22,8 @@ export interface PuzzleGridProps {
   readonly rowWorkings: readonly LineWorkingProps[];
   readonly columnWorkings: readonly LineWorkingProps[];
   readonly helper: string;
+  /** spec-007 FR-718: workings beside their lines (the default), or kept only for screen readers. */
+  readonly workings?: WorkingsPlace;
 }
 
 /** Which kind of line an operator pill belongs to. */
@@ -35,21 +37,29 @@ export interface PuzzleGridActions {
 
 /** The puzzle's size and lines are fixed once it is shown; `update` shows new states of the same parts. */
 export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActions = {}): Component<PuzzleGridProps> {
-  const places = puzzleGridPlaces({ rows: props.rowPills.length, columns: props.columnPills.length });
+  const places = puzzleGridPlaces({ rows: props.rowPills.length, columns: props.columnPills.length }, props.workings);
   const grid = document.createElement('div');
-  grid.className = 'puzzle-grid__grid';
+  grid.className = props.workings === 'elsewhere' ? 'puzzle-grid__grid puzzle-grid__grid--workings-elsewhere' : 'puzzle-grid__grid';
   grid.style.setProperty('--columns', String(props.columnPills.length));
-  const columnPills = props.columnPills.map((pill, column) =>
-    placed(grid, createTargetPill(pill, () => actions.onPill?.('column', column)), places.columnPill(column)),
-  );
+  // Workings shown elsewhere are heard here, from one visually hidden holder that takes no room.
+  const heardOnly = document.createElement('div');
+  heardOnly.className = 'visually-hidden';
+  const columnPills = props.columnPills.map((pill, column) => {
+    const part = createTargetPill(pill, () => actions.onPill?.('column', column));
+    part.element.classList.add('puzzle-grid__column-pill');
+    return placed(grid, part, places.columnPill(column));
+  });
   const rowPills = props.rowPills.map((pill, row) => placed(grid, createTargetPill(pill, () => actions.onPill?.('row', row)), places.rowPill(row)));
   const cells = props.cells.map((cellsInRow, row) =>
     cellsInRow.map((cell, column) => placed(grid, createGridCell(cell, () => actions.onCell?.(row, column)), places.cell(row, column))),
   );
-  const rowWorkings = props.rowWorkings.map((working, row) => placed(grid, createLineWorking(working), places.rowWorking(row)));
+  const rowWorkings = props.rowWorkings.map((working, row) => placed(grid, createLineWorking(working), places.rowWorking(row), heardOnly));
   const columnWorkings = props.columnWorkings.map((working, column) =>
-    placed(grid, createLineWorking(working), places.columnWorking(column)),
+    placed(grid, createLineWorking(working), places.columnWorking(column), heardOnly),
   );
+  if (heardOnly.childElementCount > 0) {
+    grid.append(heardOnly);
+  }
   const helper = createHelperLine(props.helper);
   const surface = createSurface({ variant: 'panel' }, [grid, helper.element]);
   surface.element.setAttribute('role', 'group');
@@ -79,8 +89,12 @@ function createHelperLine(text: string): Component<string> {
   return { element, update };
 }
 
-/** Adds a part to the grid at its place, and returns it. */
-function placed<Props>(grid: HTMLElement, part: Component<Props>, place: GridPlace): Component<Props> {
+/** Adds a part to the grid at its place, and returns it. A part with no place goes to `heardOnly`. */
+function placed<Props>(grid: HTMLElement, part: Component<Props>, place: GridPlace | null, heardOnly?: HTMLElement): Component<Props> {
+  if (place === null) {
+    heardOnly?.append(part.element);
+    return part;
+  }
   part.element.style.gridRow = String(place.row);
   part.element.style.gridColumn = String(place.column);
   grid.append(part.element);

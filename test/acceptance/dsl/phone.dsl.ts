@@ -1,7 +1,7 @@
 // Layer 2 — the phone the game runs on: screen size, connection, how things look, speed.
 
 import { expect } from '@playwright/test';
-import type { Box, PhoneDriver, ScreenLayout } from '../drivers/phone.driver';
+import type { Box, DailyLayout, PhoneDriver, ScreenLayout } from '../drivers/phone.driver';
 import type { ColourToken, PageDots, PlayScreenPart, ThemeColours, ThemeName, Typeface } from './catalogue-vocabulary';
 import type { Cell, Entry, Line, TypefacedText } from './vocabulary';
 
@@ -201,6 +201,40 @@ export class PhoneDsl {
     await this.driver().leaveSavedFillings(fillings);
   }
 
+  // spec-007 — daily puzzles of every size.
+
+  async leaveUnreadableRecordOfLastPuzzle(): Promise<void> {
+    await this.driver().leaveUnreadableRecordOfLastPuzzle();
+  }
+
+  /** The whole puzzle, the keypad and the main button are on screen, and nothing scrolls (FR-713). */
+  async expectDailyPuzzleFitsWithoutScrolling(): Promise<void> {
+    const layout = await this.driver().dailyLayout();
+    for (const [name, box] of dailyParts(layout)) {
+      expect(isWithin(box, layout.screen), `${name} is on screen without scrolling`).toBe(true);
+    }
+    expect(layout.page, 'the page is no larger than the screen').toEqual(layout.screen);
+  }
+
+  /** Hard at 320 × 568 (FR-713): the page may scroll up and down, never sideways. */
+  async expectDailyPuzzleScrollsOnlyUpAndDown(): Promise<void> {
+    const layout = await this.driver().dailyLayout();
+    expect(layout.page.width, 'the page is no wider than the screen').toBeLessThanOrEqual(layout.screen.width);
+    for (const [name, box] of dailyParts(layout)) {
+      expect(box.left >= 0 && box.right <= layout.screen.width, `${name} is within the screen's width`).toBe(true);
+    }
+  }
+
+  /** Every cell, pill and key, and the main button, is at least this many pixels each way (spec-003). */
+  async expectEveryTapTargetAtLeast(pixels: number): Promise<void> {
+    const { tapTargets } = await this.driver().dailyLayout();
+    expect(tapTargets.length, 'things to tap').toBeGreaterThan(0);
+    for (const box of tapTargets) {
+      expect(Math.round(box.right - box.left), 'width of something to tap').toBeGreaterThanOrEqual(pixels);
+      expect(Math.round(box.bottom - box.top), 'height of something to tap').toBeGreaterThanOrEqual(pixels);
+    }
+  }
+
   async expectNoAccessibilityProblems(): Promise<void> {
     expect(await this.driver().accessibilityProblems(), 'accessibility problems on this screen').toEqual([]);
   }
@@ -231,6 +265,18 @@ function everythingIn(layout: ScreenLayout): [string, Box][] {
     ['counter', layout.counter],
     ['Check button', layout.checkButton],
   ];
+}
+
+function dailyParts(layout: DailyLayout): [string, Box][] {
+  return [
+    ['the puzzle', layout.puzzle],
+    ['the keypad', layout.keypad],
+    ['the main button', layout.mainButton],
+  ];
+}
+
+function isWithin(box: Box, screen: { readonly width: number; readonly height: number }): boolean {
+  return box.left >= 0 && box.top >= 0 && box.right <= screen.width && box.bottom <= screen.height;
 }
 
 function isOnScreen(box: Box, layout: ScreenLayout): boolean {

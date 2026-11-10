@@ -25,3 +25,11 @@ describe('puzzleGridPlaces', () => {
     ]);
   });
 });
+
+describe('puzzleGridPlaces with the workings shown elsewhere (spec-007 FR-718)', () => {
+  const places = puzzleGridPlaces({ rows: 5, columns: 4 }, 'elsewhere');
+
+  it('gives the workings no place in the grid, so the grid has no column or row for them', () => {
+    expect([places.rowWorking(0), places.columnWorking(3)]).toEqual([null, null]);
+  });
+});

@@ -28,6 +28,19 @@ export interface ScreenLayout {
   readonly workings: Readonly<Record<Line, Box>>;
 }
 
+/** spec-007: where a daily puzzle's parts sit, and how far the page can scroll each way. */
+export interface DailyLayout {
+  readonly screen: ScreenSize;
+  /** Every cell, pill and key, and the main button: everything a player taps to play. */
+  readonly tapTargets: readonly Box[];
+  /** The whole puzzle (pills, cells and any workings), the keypad and the main button. */
+  readonly puzzle: Box;
+  readonly keypad: Box;
+  readonly mainButton: Box;
+  /** The page's full scrollable size; larger than the screen when it scrolls. */
+  readonly page: ScreenSize;
+}
+
 /** How a cell looks: its colours, and every visible marking that is not a colour. */
 export interface CellLook {
   readonly colours: string;
@@ -73,6 +86,11 @@ export interface PhoneDriver {
   leaveUnreadableSavedData(): Promise<void>;
   /** Before the game opens: these fillings are saved for the fixed puzzle, in this order. */
   leaveSavedFillings(fillings: readonly Entry[]): Promise<void>;
+  // spec-007
+  /** Where a daily puzzle's parts sit, measured at the top of the page. */
+  dailyLayout(): Promise<DailyLayout>;
+  /** Before the game opens: a record of the last puzzle played that makes no sense. */
+  leaveUnreadableRecordOfLastPuzzle(): Promise<void>;
   accessibilityProblems(): Promise<readonly string[]>;
   errorsOnThePage(): Promise<readonly string[]>;
 }

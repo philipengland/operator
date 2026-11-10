@@ -5,13 +5,16 @@
 
 import { test as base } from '@playwright/test';
 import { CatalogueDsl } from '../dsl/catalogue.dsl';
+import { DailyDsl } from '../dsl/daily.dsl';
 import { DeliveryDsl } from '../dsl/delivery.dsl';
 import { GameDsl } from '../dsl/game.dsl';
 import { PhoneDsl } from '../dsl/phone.dsl';
+import { EngineDailyDriver } from '../drivers/engine/daily.engine-driver';
 import { engineCatalogueDriver } from '../drivers/engine/catalogue.engine-driver';
 import { PipelineDeliveryDriver } from '../drivers/delivery/delivery.driver';
 import { EngineGameDriver } from '../drivers/engine/game.engine-driver';
 import type { PhoneDriver } from '../drivers/phone.driver';
+import { UiDailyDriver } from '../drivers/ui/daily.ui-driver';
 import { UiCatalogueDriver } from '../drivers/ui/catalogue.ui-driver';
 import { UiGameDriver } from '../drivers/ui/game.ui-driver';
 import { UiPhoneDriver } from '../drivers/ui/phone.ui-driver';
@@ -21,6 +24,7 @@ interface AcceptanceFixtures {
   readonly phone: PhoneDsl;
   readonly delivery: DeliveryDsl;
   readonly catalogue: CatalogueDsl;
+  readonly daily: DailyDsl;
 }
 
 export const isUiRun = process.env.ACCEPTANCE_DRIVER === 'ui';
@@ -44,6 +48,10 @@ const engineFixtures = base.extend<AcceptanceFixtures>({
   delivery,
   // spec-003: without a browser, the catalogue driver can only read the game's build (AC-18).
   catalogue: async ({}, use) => use(new CatalogueDsl(() => engineCatalogueDriver)),
+  daily: async ({}, use) => {
+    const driver = new EngineDailyDriver();
+    await use(new DailyDsl(() => driver));
+  },
 });
 
 const uiFixtures = base.extend<AcceptanceFixtures>({
@@ -59,6 +67,10 @@ const uiFixtures = base.extend<AcceptanceFixtures>({
   catalogue: async ({ page }, use) => {
     const driver = new UiCatalogueDriver(page);
     await use(new CatalogueDsl(() => driver));
+  },
+  daily: async ({}, use) => {
+    const driver = new UiDailyDriver();
+    await use(new DailyDsl(() => driver));
   },
 });
 

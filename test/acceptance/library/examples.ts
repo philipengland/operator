@@ -26,4 +26,6 @@ export const COMBINED_COMPONENTS: readonly CombinedComponent[] = [
   'Puzzle grid',
   'Keypad',
   'Confirm dialog',
+  'Status bar',
+  'Workings strip',
 ];

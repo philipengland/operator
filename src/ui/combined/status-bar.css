@@ -1,0 +1,14 @@
+/* Status bar: layout only; its look comes from Solutions counter and Button (FR-303). The counter
+   takes the room the Today button leaves, and both are one touch target high. */
+
+.status-bar {
+  flex-direction: row;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-grid);
+  min-height: var(--touch-target);
+}
+
+.status-bar > :first-child {
+  flex: 1;
+}

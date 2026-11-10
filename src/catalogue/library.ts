@@ -9,10 +9,13 @@ import { builtFrom as operatorHeaderParts } from '../ui/combined/operator-header
 import { builtFrom as puzzleGridParts } from '../ui/combined/puzzle-grid';
 import { builtFrom as solutionsCounterParts } from '../ui/combined/solutions-counter';
 import { builtFrom as speechBubbleParts } from '../ui/combined/speech-bubble';
+import { builtFrom as statusBarParts } from '../ui/combined/status-bar';
 import { builtFrom as targetPillParts } from '../ui/combined/target-pill';
+import { builtFrom as workingsStripParts } from '../ui/combined/workings-strip';
 import { builtFrom as playScreenParts } from '../ui/screens/play-screen';
 import { builtFrom as solutionListParts } from '../ui/screens/solution-list';
 import { builtFrom as solutionViewParts } from '../ui/screens/solution-view';
+import { builtFrom as todayListParts } from '../ui/screens/today-list';
 
 export type CatalogueSection = 'Foundations' | 'Simple components' | 'Combined components' | 'Screens';
 
@@ -37,10 +40,13 @@ export const LIBRARY: Readonly<Record<CatalogueSection, readonly CatalogueEntry[
     { name: 'Puzzle grid', builtFrom: puzzleGridParts },
     { name: 'Keypad', builtFrom: keypadParts },
     { name: 'Confirm dialog', builtFrom: confirmDialogParts },
+    { name: 'Status bar', builtFrom: statusBarParts },
+    { name: 'Workings strip', builtFrom: workingsStripParts },
   ],
   Screens: [
     { name: 'Play screen', builtFrom: playScreenParts },
     { name: 'Solution list', builtFrom: solutionListParts },
     { name: 'Solution view', builtFrom: solutionViewParts },
+    { name: 'Today list', builtFrom: todayListParts },
   ],
 };

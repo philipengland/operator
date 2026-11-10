@@ -8,3 +8,4 @@
   padding: max(var(--space-screen), env(safe-area-inset-top)) max(var(--space-screen), env(safe-area-inset-right))
     max(var(--space-screen), env(safe-area-inset-bottom)) max(var(--space-screen), env(safe-area-inset-left));
 }
+

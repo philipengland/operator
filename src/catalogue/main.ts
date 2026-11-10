@@ -1,17 +1,23 @@
 // The component catalogue (spec-003, development only): every component of the library in every
 // state and theme. Built by `npm run build:catalogue`; never part of the game's build.
-// `catalogue.html#play-screen` shows the play screen alone at full size, its switches below it.
+// `catalogue.html#play-screen` shows the play screen alone at full size, its switches below it;
+// `#play-screen-medium` and `#play-screen-hard` show the compact screen with large grids (spec-007).
 
 import '../ui/foundations/tokens.css';
 import '../ui/foundations/page.css';
 import './catalogue.css';
 import { applyTheme, CLASSIC, THEMES, type Theme } from '../ui/foundations/themes';
 import { createPlayScreen } from '../ui/screens/play-screen';
+import { compactScreenSample, type CompactSampleName } from './compact-samples';
 import { LIBRARY, type CatalogueEntry, type CatalogueSection } from './library';
 import { SAMPLES, type Sample } from './samples';
 import { screenSamplesFor, type ScreenSampleName } from './screen-samples';
 
 const SCREEN_VIEW = '#play-screen';
+const COMPACT_VIEWS: Readonly<Record<string, CompactSampleName>> = {
+  '#play-screen-medium': 'Medium, 5 by 4',
+  '#play-screen-hard': 'Hard, 7 by 5',
+};
 const FIRST_SCREEN_SAMPLE: ScreenSampleName = 'Just opened';
 
 const root = document.getElementById('catalogue');
@@ -31,9 +37,26 @@ render();
 
 function render(): void {
   redrawInTheme = [];
-  const isScreenView = window.location.hash === SCREEN_VIEW;
+  const compactSample = COMPACT_VIEWS[window.location.hash];
+  const isScreenView = window.location.hash === SCREEN_VIEW || compactSample !== undefined;
   catalogue.className = isScreenView ? 'screen-view' : '';
+  if (compactSample !== undefined) {
+    catalogue.replaceChildren(...compactScreenView(compactSample));
+    return;
+  }
   catalogue.replaceChildren(...(isScreenView ? screenView() : catalogueView()));
+}
+
+/** spec-007: the compact play screen alone, with a large grid, to see it fit (research R9). */
+function compactScreenView(name: CompactSampleName): readonly HTMLElement[] {
+  const playScreen = createPlayScreen(compactScreenSample(name, shownTheme), { onToday: () => undefined, onCounter: () => undefined });
+  redrawInTheme.push((theme) => playScreen.update(compactScreenSample(name, theme)));
+  const screenRegion = region(`Play screen, ${name}`, playScreen.element);
+  screenRegion.className = 'screen-view__screen';
+  const controls = document.createElement('div');
+  controls.className = 'screen-view__controls';
+  controls.append(themeSwitch(), link('Back to the catalogue', '#'));
+  return [screenRegion, controls];
 }
 
 function catalogueView(): readonly HTMLElement[] {
@@ -66,7 +89,8 @@ function componentRegion(entry: CatalogueEntry): HTMLElement {
 function componentSamples(name: string): readonly HTMLElement[] {
   if (name === 'Play screen') {
     const { screen, sampleSwitch } = playScreenWithSampleSwitch();
-    return [link('Open the play screen alone', SCREEN_VIEW), sampleSwitch, screen];
+    const compactLinks = Object.entries(COMPACT_VIEWS).map(([hash, sample]) => link(`Open the compact screen: ${sample}`, hash));
+    return [link('Open the play screen alone', SCREEN_VIEW), ...compactLinks, sampleSwitch, screen];
   }
   const samples = document.createElement('div');
   samples.className = 'samples';

@@ -111,3 +111,22 @@ need the owner's approval at `/speckit-acceptance` (research R12). No other lock
 the grid's "built from" lists stay as they are.
 
 Combined components and screens still only lay out (`tools/ui-tiers.spec.ts`).
+
+## Additions for daily puzzles (spec-007)
+
+| Component | Tier | Addition | Accessible behaviour |
+| --- | --- | --- | --- |
+| Puzzle grid | combined | `workings: 'beside' \| 'elsewhere'`. Elsewhere: no column or row for workings; each working is kept, visually hidden, in one holder. A column pill wider than its column puts its target under its operator | Every working heard by its name, as before |
+| Workings strip | combined, **new** | Built from Surface, Line working and Text: the selected cell's row and column workings in full, or one line of text. Wraps to two lines | Hidden from screen readers |
+| Status bar | combined, **new** | Built from Solutions counter and Button: the counter, then a Today button | `region` "Status bar"; the button reads "Today", named "Today's puzzles" |
+| Play screen | screen | Built from Operator header, Solutions counter, Status bar, Puzzle grid, Workings strip, Keypad and Button. `onToday` adds the Status bar under the header; `isCompact` shows the Status bar and the strip in place of the header and counter, with the compact density | Unchanged; the operator's line is still announced |
+| Today list | screen, **new** | Built from Operator header and Button: heading in the bubble, Back, one row per choice, shown as heard ("Easy, found 1 of 4") | `region` named by its heading; rows are buttons |
+
+**Foundations**: `.density-compact` is a token set for the compact screen: 44 px cells, keys and main button, with
+smaller spacing and text (14 px at 320 px wide). Nothing a player taps goes below 44 × 44 px.
+
+**Catalogue**: lists each new part with samples, and shows the compact screen alone with a 5 × 4 and a 7 × 5 grid at
+`catalogue.html#play-screen-medium` and `#play-screen-hard`.
+
+**Locked scenarios affected**: spec-003 `[AC-1]` gains Status bar and Workings strip (combined) and Today list
+(screens), approved by the owner (`specs/007-seeded-generator/acceptance.md`).
