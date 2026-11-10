@@ -170,3 +170,13 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
 - A first break tried (each target worked out from its digits read backwards) left AC-4 passing: Easy for 10 November has no
   line where the order changes the result. It was reverted and replaced by the break above, which changes every line.
 - No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
+
+### AC-6: the puzzle's theme
+
+- **Acceptance test**: `[spec-007 AC-6]`, both phones (tagged `@ui`: only the phones read the page's colours).
+- **Passed at RED**: the unit behaviour T028 asks for was written test-first during AC-1, because the game needed it to show Easy
+  (`0590f56`, `src/app/screen.spec.ts` › `puzzleTheme (spec-007 FR-712)`: a daily puzzle's theme is `themeForSeed(puzzle.seed)`, the
+  worked example's is Classic). **Proved** by a deliberate, reverted break: the game no longer re-coloured the page when a new puzzle
+  was chosen. AC-6 then failed on the iPhone and the Android phone with "the theme, compared with the one worked out from the
+  puzzle's seed … Expected: Amber and teal, Received: Classic".
+- No new unit tests or production code. **Acceptance GREEN** after the revert, on both phones.
