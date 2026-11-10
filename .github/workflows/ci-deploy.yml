@@ -45,6 +45,11 @@ jobs:
           # The whole history: the existing-test check compares with the pull request's base.
           fetch-depth: 0
 
+      # In the container the checkout belongs to another user, so git refuses it ("Not a git
+      # repository") unless told it is safe. The existing-test check and the build label read git.
+      - name: Let git read the checkout
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
