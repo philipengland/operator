@@ -160,3 +160,13 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
   failed on the engine, the iPhone and the Android phone with "the puzzle, compared with Easy for 10 November 2026 made by the
   engine alone".
 - No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
+
+### AC-4: the filling it was made from
+
+- **Acceptance test**: `[spec-007 AC-4]`, engine and both phones.
+- **Passed at RED**, from AC-1's work: every target is worked out from the filling, so the filling the engine reports solves it.
+  **Proved** by a deliberate, reverted break: each line's target was its filling's result plus 1. AC-4 then failed on the engine,
+  the iPhone and the Android phone with "the counter as heard … Received: Found 0 of 3".
+- A first break tried (each target worked out from its digits read backwards) left AC-4 passing: Easy for 10 November has no
+  line where the order changes the result. It was reverted and replaced by the break above, which changes every line.
+- No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
