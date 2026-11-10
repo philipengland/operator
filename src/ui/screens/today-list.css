@@ -1,0 +1,29 @@
+/* Today list: layout only; its look comes from its components (FR-304). Five rows fit the smallest
+   phone; the rows scroll if a larger text size needs it, so the way back stays on the screen. */
+
+.today-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-between);
+  height: 100dvh;
+  padding: max(var(--space-screen), env(safe-area-inset-top)) max(var(--space-screen), env(safe-area-inset-right))
+    max(var(--space-screen), env(safe-area-inset-bottom)) max(var(--space-screen), env(safe-area-inset-left));
+}
+
+.today-list__top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap);
+}
+
+.today-list__rows {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap);
+  min-height: 0;
+  overflow-y: auto;
+  /* Room inside the scrolling area, so the rows' shadows are not cut off. */
+  padding: 0 var(--shadow-small) var(--shadow-small) 0;
+}
