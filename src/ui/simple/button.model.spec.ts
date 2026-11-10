@@ -33,4 +33,8 @@ describe('buttonModel', () => {
   it('marks a read-only given cell, which has no unavailable state to show it by', () => {
     expect(buttonModel({ label: '6', style: 'cell', isReadOnly: true, isUnavailable: true }).classes).toContain('button--read-only-given');
   });
+
+  it('can be stacked, its two-word label on two lines in smaller text, for an open column pill (spec-007 FR-713)', () => {
+    expect(buttonModel({ label: '? 60', style: 'dashed', isStacked: true }).classes).toEqual(['button', 'button--dashed', 'button--stacked']);
+  });
 });
