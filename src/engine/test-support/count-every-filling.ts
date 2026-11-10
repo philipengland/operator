@@ -1,39 +1,42 @@
 // For tests only (spec-007 AC-5): a puzzle's solutions counted the slow, obvious way, by trying every
-// filling of its empty cells and every operator on its open lines. The search in count-solutions.ts
-// must always agree with it.
+// filling of its empty cells and, for each, every operator on each open line. No bounds and no early
+// stop: the search in count-solutions.ts must always agree with it.
 
-import { checkEntry } from '../check-entry';
-import { emptyEntry } from '../entry';
-import { defaultRules } from '../evaluate-line';
-import type { Digit, Entry, Operator, Puzzle } from '../types';
+import { defaultRules, evaluateLine } from '../evaluate-line';
+import type { Digit, LineSpec, Operator, Puzzle } from '../types';
 
 const OPERATORS: readonly Operator[] = ['+', '−', '×', '÷'];
 const LARGEST_DIGIT = 9;
 const DIGITS = Array.from({ length: LARGEST_DIGIT }, (_, index) => (index + 1) as Digit);
 
 export function countEveryFilling(puzzle: Puzzle): number {
-  const empties = puzzle.givens.flatMap((row, rowIndex) => row.flatMap((digit, column) => (digit === null ? [{ row: rowIndex, column }] : [])));
-  const fillings = empties.reduce<Digit[][]>((sofar) => sofar.flatMap((digits) => DIGITS.map((digit) => [...digits, digit])), [[]]);
-  const openLines = (lines: Puzzle['rowLines']) => lines.map((line) => line.operator === 'open');
-  const rowChoices = choicesFor(openLines(puzzle.rowLines));
-  const columnChoices = choicesFor(openLines(puzzle.columnLines));
-  let count = 0;
-  for (const digits of fillings) {
-    const cells = puzzle.givens.map((row) => [...row]);
-    empties.forEach(({ row, column }, index) => {
-      (cells[row] ?? [])[column] = digits[index] ?? null;
-    });
-    for (const rowOperators of rowChoices) {
-      for (const columnOperators of columnChoices) {
-        const entry: Entry = { ...emptyEntry(puzzle), cells, rowOperators, columnOperators };
-        count += checkEntry(puzzle, entry, defaultRules).kind === 'solved' ? 1 : 0;
-      }
+  const grid = puzzle.givens.map((row) => [...row]);
+  const empties = grid.flatMap((row, rowIndex) => row.flatMap((digit, column) => (digit === null ? [{ row: rowIndex, column }] : [])));
+  const tryEvery = (next: number): number => {
+    const cell = empties[next];
+    if (cell === undefined) {
+      return solutionsWith(puzzle, grid as Digit[][]);
     }
-  }
-  return count;
+    let count = 0;
+    for (const digit of DIGITS) {
+      (grid[cell.row] ?? [])[cell.column] = digit;
+      count += tryEvery(next + 1);
+    }
+    return count;
+  };
+  return tryEvery(0);
 }
 
-/** Every choice of operators for lines that are open; a shown line's place holds null. */
-function choicesFor(isOpen: readonly boolean[]): (Operator | null)[][] {
-  return isOpen.reduce<(Operator | null)[][]>((sofar, open) => sofar.flatMap((choice) => (open ? OPERATORS : [null]).map((operator) => [...choice, operator])), [[]]);
+/** For a full grid: each line's operators that reach its target, multiplied together. */
+function solutionsWith(puzzle: Puzzle, grid: Digit[][]): number {
+  const rows = puzzle.rowLines.map((spec, row) => reaching(grid[row] ?? [], spec));
+  const columns = puzzle.columnLines.map((spec, column) => reaching(grid.map((digits) => digits[column] ?? 1), spec));
+  return [...rows, ...columns].reduce((ways, each) => ways * each, 1);
+}
+
+function reaching(digits: readonly Digit[], { target, operator }: LineSpec): number {
+  return (operator === 'open' ? OPERATORS : [operator]).filter((each) => {
+    const result = evaluateLine(digits, each, defaultRules);
+    return result.ok && result.value === target;
+  }).length;
 }
