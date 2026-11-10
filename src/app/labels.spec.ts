@@ -185,3 +185,27 @@ describe('puzzleName (spec-007 FR-717)', () => {
     expect([puzzleName(easy), puzzleName(workedExample)]).toEqual(['Easy puzzle, 3 by 3', 'Puzzle']);
   });
 });
+
+describe('cellName on a daily puzzle (spec-007 contract)', () => {
+  it('names each cell by its row and column, given or filled', () => {
+    const easy = {
+      ...workedExample,
+      id: 'daily-v1-2026-11-10-easy',
+      preset: 'easy',
+      rows: 3,
+      columns: 3,
+      givens: [
+        [3, null, 2],
+        [7, null, 4],
+        [null, null, null],
+      ],
+    } as const;
+    const entry = { ...emptyEntry(easy), cells: [[null, null, null], [null, 4, null], [null, null, null]] };
+
+    expect([cellName(easy, entry, { row: 0, column: 0 }), cellName(easy, entry, { row: 1, column: 1 }), cellName(easy, entry, { row: 2, column: 2 })]).toEqual([
+      'Row 1 column 1 cell, given 3',
+      'Row 2 column 2 cell, 4',
+      'Row 3 column 3 cell, empty',
+    ]);
+  });
+});
