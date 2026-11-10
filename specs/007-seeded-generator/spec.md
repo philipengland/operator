@@ -101,6 +101,9 @@ first.
   laid out? → A: A compact screen: the mascot and speech bubble become one bar holding the counter
   and the Today button; the operator's line shows in the workings strip after each Check, and is still
   announced. The worked example and Easy keep the full header (FR-719; research R9).
+- Q: Easy's column pills overlap on a phone (each wider than its column). How should they fit? → A: Stacked: the
+  operator above the target, in smaller text (owner, 2026-11-10, from three mock-ups). Every column pill in a grid of 3
+  or more columns is stacked, so a row of pills is consistent; the worked example keeps one-line pills (FR-713).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -291,7 +294,9 @@ phone's date to 11 November 2026 and reopen.
 - **FR-713**: Every preset's puzzle MUST fit a phone at 375 × 667 and 320 × 568 without scrolling, as
   spec-004 requires of the worked example, except Hard at 320 × 568, which MAY scroll up and down but
   never sideways. Every cell, pill and key MUST be at least 44 × 44 pixels (spec-003). The rest of the
-  screen may be arranged more compactly for a large grid to make room.
+  screen may be arranged more compactly for a large grid to make room. On a grid of 3 or more columns,
+  each column's pill MUST show its operator above its target, in smaller text, so neighbouring pills
+  never touch; the worked example's pills stay on one line.
 - **FR-714**: Found solutions MUST be kept per puzzle, as spec-006 does. When a new day's puzzles
   are first opened, the earlier days' found solutions MUST be removed from the phone, as they cannot
   be reached again. The worked example's are kept, as it can always be played as "Practice".
