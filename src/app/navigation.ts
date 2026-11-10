@@ -16,5 +16,8 @@ export function placeFrom(entry: unknown): Place {
   if (place?.kind === 'solution' && Number.isInteger(place.number) && place.number >= 1) {
     return place;
   }
+  if (place?.kind === 'today') {
+    return { kind: 'today' };
+  }
   return place?.kind === 'list' ? { kind: 'list' } : { kind: 'play' };
 }
