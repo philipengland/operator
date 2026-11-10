@@ -21,16 +21,21 @@ division that is not whole fails a line. Spec-003 (`specs/003-themed-ui/`) build
 component library (six colour themes, a puzzle's theme worked out from its seed) and a
 development-only catalogue; spec-004 (`specs/004-themed-play-screen/`) applies it to the game,
 with a keypad and the operator's voice after each check. Spec-006 (`specs/006-solution-log/`) lists the solutions found,
-reopens them read-only, clears them with "Start again", and remembers them on the phone. Sources: `docs/brief/project-brief.md`, the constitution.
+reopens them read-only, clears them with "Start again", and remembers them on the phone. Spec-007
+(`specs/007-seeded-generator/`) makes new puzzles each day from the date alone, the same on every phone, chosen from a
+Today screen, with the worked example kept as "Practice"; so far today's Easy puzzle, behind the `daily` flag. Sources: `docs/brief/project-brief.md`, the constitution.
 
 ## Architecture and Key Decisions
 
 - **Components**:
   - Puzzle engine — `src/engine/` — pure TypeScript rules: line evaluation, the whole-number
-    rule, checking. No DOM, browser APIs, timers or randomness (constitution II).
+    rule, checking, and (spec-007) the seeded daily generator (`daily-puzzle.ts`, `presets.ts`, `random.ts`)
+    and solution counting (`count-solutions.ts`). No DOM, browser APIs, timers or `Math.random`: its
+    randomness is seeded from the date and preset (constitution II).
   - Play screen — `src/app/` — session state (`session.ts`), wording and accessible names
     (`labels.ts`), the mapping from state to what the library shows (`screen.ts`, `solution-list.ts`,
-    `solution-view.ts`), history (`navigation.ts`), the saved format (`solution-store.ts`), the only code touching
+    `solution-view.ts`, `today-list.ts`), today's puzzles and switching between them (`daily.ts`), the phone's date
+    (`today.ts`), history (`navigation.ts`), the saved format (`solution-store.ts`), the only code touching
     `localStorage` (`browser-store.ts`), build-time feature flags (`features.ts`), wiring (`main.ts`). The game adds no styling of its own.
   - Component library — `src/ui/` — in tiers: `foundations/` (themes, `themeForSeed`,
     `contrastRatio`, `blend`, `tokens.css`, and `page.css`: the page's paper with Ben-Day dots), `simple/`, `combined/`, `screens/`. Each component has a pure
@@ -173,7 +178,7 @@ npm run build:flags-on          # the game with every feature flag on, in dist-f
 - **User stories ship behind build-time feature flags** (`src/app/features.ts`; constitution VII).
   `playwright.config.ts` says which scenario file needs which flag: while a flag is off, that file
   runs on `iphone-flagged` and `android-flagged` against `dist-flags-on/`, and releasing a story
-  changes no locked file. No story is behind a flag at present. Why: every merge deploys, so `main` must always be fit for players.
+  changes no locked file. Behind a flag at present: `daily` (spec-007 User Story 1, today's Easy puzzle), off. Why: every merge deploys, so `main` must always be fit for players.
 - **Existing unit tests are protected.** Amend or delete one only when a specific change in functionality makes it
   obsolete, and record it in `specs/<feature>/test-changes.md`: `| File | Test | Requirement (FR-, AC-, SC- or task) | Why the test is obsolete |`.
   `verify` fails a pull request that removes or changes a line of an existing `*.spec.ts` without a new row for that file. Adding tests is
