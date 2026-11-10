@@ -220,3 +220,22 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
 
   Making Easy itself takes under 0.5 ms in Node on its slowest date, so nearly all of the time is drawing the screen. Easy is well
   within 1 second.
+
+## Every operator on every difficulty (owner, 2026-11-10)
+
+Asked before `daily` went on: Easy and Medium allow + − × ÷, Easy's targets become 1 to 100, its band stays 1 to 10, and a puzzle
+need not use all four. Measured first over every date of 2027 with a scratch run of the generator: every date makes an Easy
+within the band (slowest 1.2 ms); lines drawn: + 1,483, × 585, − 87, ÷ 35 (a 3-digit difference or quotient is rarely
+positive and whole); 342 of 365 dates have exactly 1 solution (319 with + and − alone).
+
+- **Locked change, approved** (`714dd80`, `acceptance.md` amendment): AC-1 reads "from +, −, × and ÷" and "targets 1 to 100".
+  AC-8's change is recorded for part 3.
+- **Acceptance RED**: none possible. The amended AC-1 only widens what it accepts, so it passed on the old Easy. The preset's unit
+  test drove the change.
+- **Cycle** (`70e80b2`): RED, `presets.spec.ts` › Easy amended to `+ − × ÷` and 1 to 100, failed with "expected { rows: 3, …(6) } to
+  match object". GREEN, `PRESETS.easy` changed. As predicted, the sweep's operator check (307 dates) and target check
+  (252 dates) failed, and so did Easy's golden dates. Each was amended with the owner's approval (`test-changes.md`); the golden dates were
+  regenerated (given cells unchanged, operators and targets redrawn; 10 November 2026 unchanged, all + lines).
+  The amended target check was proved by a reverted break (targets up to 200: it failed on 171 dates).
+- **Acceptance GREEN**: 421 unit tests (branches 91.19%), 53 engine and 343 phone scenarios; the flagged Easy scenarios run again
+  on a fresh server: 14 passed.
