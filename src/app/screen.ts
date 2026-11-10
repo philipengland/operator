@@ -58,6 +58,13 @@ function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPill
   };
 }
 
+const EASY_SIZE = 3;
+
+/** spec-007 FR-713 (owner, 2026-11-10): a 3 × 3 grid has slightly smaller cells on short phones, to fit with the Today button. */
+function isThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
+  return rows === EASY_SIZE && columns === EASY_SIZE;
+}
+
 /** The helper line is about swapping an operator; a puzzle with none to swap has no helper line. */
 function hasOpenLine({ rowLines, columnLines }: SessionState['puzzle']): boolean {
   return [...rowLines, ...columnLines].some((line) => line.operator === 'open');
@@ -94,5 +101,6 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     mainButtonLabel: theme.buttonLabel,
     keysAvailable: state.selected !== null,
     announcement: announcement(state.message, theme, counterText(state)),
+    isSnug: isThreeByThree(state.puzzle),
   };
 }
