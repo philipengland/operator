@@ -34,10 +34,10 @@ export const PRESETS: Readonly<Partial<Record<PresetName, Preset>>> = {
   easy: {
     rows: 3,
     columns: 3,
-    operators: ['+', '−'],
+    operators: ['+', '−', '×', '÷'],
     openLines: { fewest: 0, most: 0 },
     givenCells: { fewest: 4, most: 5 },
-    targets: { lowest: 1, highest: 29 },
+    targets: { lowest: 1, highest: 100 },
     band: { fewest: 1, most: 10 },
     workBudget: SUGGESTED_WORK_BUDGET,
   },
