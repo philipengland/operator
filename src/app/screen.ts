@@ -3,7 +3,7 @@
 
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import type { Theme } from '../ui/foundations/themes';
-import { announcement, bubbleLine, cellTitle, pillName, workingName, workingSlot } from './labels';
+import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
@@ -36,7 +36,7 @@ function cell(state: SessionState, position: CellPosition): GridCellProps {
   const { puzzle, entry } = state;
   const given = puzzle.givens[position.row]?.[position.column] ?? null;
   return {
-    name: cellTitle(position),
+    name: cellTitleIn(puzzle, position),
     digit: given ?? entry.cells[position.row]?.[position.column] ?? null,
     isGiven: given !== null,
     isInCorrectLine: given === null && isInLineReachingTarget(state, position),
@@ -61,6 +61,7 @@ function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPill
 /** The whole puzzle as the session has it. */
 export function puzzleGridProps(state: SessionState): PuzzleGridProps {
   return {
+    name: puzzleName(state.puzzle),
     columnPills: lines(state, 'column').map((working) => pill(state, working)),
     rowPills: lines(state, 'row').map((working) => pill(state, working)),
     cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),

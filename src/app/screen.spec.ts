@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CLASSIC } from '../ui/foundations/themes';
 import { playScreenProps } from './screen';
 import { applyAction, startSession } from './session';
+import { dailyPuzzle } from '../engine';
 
 const justOpened = () => playScreenProps(startSession(), CLASSIC);
 const TOP_RIGHT = { type: 'tapCell', row: 0, column: 1 } as const;
@@ -102,5 +103,17 @@ describe('the counter with a very large total (spec-006)', () => {
 
   it('keeps a total of 100 in the counter (spec-006 AC-23)', () => {
     expect(opened(100).counter.total).toBe(100);
+  });
+});
+
+describe('playScreenProps for a daily puzzle (spec-007)', () => {
+  const easy = () => playScreenProps(startSession(dailyPuzzle('2026-11-10', 'easy').puzzle), CLASSIC);
+
+  it('names the grid by its preset and shape, and the worked example\'s as "Puzzle" (FR-717)', () => {
+    expect([easy().grid.name, justOpened().grid.name]).toEqual(['Easy puzzle, 3 by 3', 'Puzzle']);
+  });
+
+  it('names each cell by its row and column', () => {
+    expect(easy().grid.cells[1]?.[2]?.name).toBe('Row 2 column 3 cell');
   });
 });

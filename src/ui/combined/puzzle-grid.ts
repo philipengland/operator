@@ -22,6 +22,8 @@ export interface PuzzleGridProps {
   readonly rowWorkings: readonly LineWorkingProps[];
   readonly columnWorkings: readonly LineWorkingProps[];
   readonly helper: string;
+  /** What a screen reader calls the puzzle: "Puzzle" (the default), or "Easy puzzle, 3 by 3" (spec-007 FR-717). */
+  readonly name?: string;
   /** spec-007 FR-718: workings beside their lines (the default), or kept only for screen readers. */
   readonly workings?: WorkingsPlace;
 }
@@ -63,7 +65,7 @@ export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActi
   const helper = createHelperLine(props.helper);
   const surface = createSurface({ variant: 'panel' }, [grid, helper.element]);
   surface.element.setAttribute('role', 'group');
-  surface.element.setAttribute('aria-label', 'Puzzle');
+  surface.element.setAttribute('aria-label', props.name ?? 'Puzzle');
   const update = (next: PuzzleGridProps): void => {
     next.columnPills.forEach((pill, column) => columnPills[column]?.update(pill));
     next.rowPills.forEach((pill, row) => rowPills[row]?.update(pill));
