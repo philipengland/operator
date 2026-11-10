@@ -120,6 +120,14 @@ describe('playScreenProps for a daily puzzle (spec-007)', () => {
   });
 });
 
+describe('the helper line on a daily puzzle (spec-007)', () => {
+  it('is left out when no operator can be swapped, and kept on the worked example', () => {
+    const easy = playScreenProps(startSession(dailyPuzzle('2026-11-10', 'easy').puzzle), CLASSIC);
+
+    expect([easy.grid.helper, justOpened().grid.helper]).toEqual(['', 'Tap a dashed bubble to swap its operator.']);
+  });
+});
+
 describe('puzzleTheme (spec-007 FR-712)', () => {
   it("shows a daily puzzle in its seed's theme, and the worked example in Classic", () => {
     const easy = dailyPuzzle('2026-11-10', 'easy').puzzle;
