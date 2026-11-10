@@ -65,10 +65,11 @@ type LogAction = Extract<
 
 const LARGEST_TOTAL_SHOWN = 100;
 
-export function startSession(): SessionState {
+/** A puzzle just opened; the worked example unless another is given (spec-007 FR-709). */
+export function startSession(puzzle: Puzzle = workedExample): SessionState {
   return {
-    puzzle: workedExample,
-    entry: emptyEntry(workedExample),
+    puzzle,
+    entry: emptyEntry(puzzle),
     found: new Set(),
     message: null,
     selected: null,

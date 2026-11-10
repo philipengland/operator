@@ -1,8 +1,8 @@
 // spec-007: today's puzzles in one session (data-model.md "Today"): the puzzle on the play screen, and
 // the others kept as the player left them. Pure; no DOM, no clock: the date comes from today.ts.
 
-import type { CalendarDate, PresetName } from '../engine';
-import type { SessionState } from './session';
+import { dailyPuzzle, type CalendarDate, type PresetName } from '../engine';
+import { startSession, type SessionState } from './session';
 
 /** A row on the Today screen: one of today's puzzles, or the worked example as Practice. */
 export type Choice = PresetName | 'practice';
@@ -27,7 +27,17 @@ export function openToday(state: DailyState): DailyState {
   return { ...state, session: { ...state.session, place: { kind: 'today' } } };
 }
 
-export const choose: (state: DailyState, choice: Choice) => DailyState = (state) => state;
+/** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
+export function choose(state: DailyState, choice: Choice): DailyState {
+  const kept: Partial<Record<Choice, SessionState>> = { ...state.kept, [state.current]: state.session };
+  const session = kept[choice] ?? freshSession(state.date, choice);
+  delete kept[choice];
+  return { ...state, current: choice, session, kept };
+}
+
+function freshSession(date: CalendarDate, choice: Choice): SessionState {
+  return choice === 'practice' ? startSession() : startSession(dailyPuzzle(date, choice).puzzle);
+}
 
 /** The Today screen's rows, each as shown and heard: "Easy, found 1 of 4", then "Practice, found 0 of 2". */
 export const todayRows: (state: DailyState) => readonly string[] = () => [];
