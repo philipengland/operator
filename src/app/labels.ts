@@ -48,6 +48,9 @@ export function cellName(puzzle: Puzzle, entry: Entry, position: CellPosition): 
   return `${corner} cell, ${entered ?? 'empty'}`;
 }
 
+/** spec-007 FR-717: a daily puzzle as a screen reader hears it, "Easy puzzle, 3 by 3"; the worked example is "Puzzle". */
+export const puzzleName: (puzzle: Puzzle) => string = () => '';
+
 export function lineName(line: LinePosition): string {
   return `${line.axis === 'row' ? 'Row' : 'Column'} ${line.index + 1}`;
 }

@@ -10,6 +10,7 @@ import { DeliveryDsl } from '../dsl/delivery.dsl';
 import { GameDsl } from '../dsl/game.dsl';
 import { PhoneDsl } from '../dsl/phone.dsl';
 import { EngineDailyDriver } from '../drivers/engine/daily.engine-driver';
+import { EngineGame } from '../drivers/engine/engine-game';
 import { engineCatalogueDriver } from '../drivers/engine/catalogue.engine-driver';
 import { PipelineDeliveryDriver } from '../drivers/delivery/delivery.driver';
 import { EngineGameDriver } from '../drivers/engine/game.engine-driver';
@@ -39,17 +40,19 @@ const delivery = async ({}, use: (dsl: DeliveryDsl) => Promise<void>) => {
   await use(new DeliveryDsl(() => driver));
 };
 
-const engineFixtures = base.extend<AcceptanceFixtures>({
-  game: async ({}, use) => {
-    const driver = new EngineGameDriver();
+// The game and daily drivers play one game, as one phone does (spec-007 AC-22).
+const engineFixtures = base.extend<AcceptanceFixtures & { readonly engineGame: EngineGame }>({
+  engineGame: async ({}, use) => use(new EngineGame()),
+  game: async ({ engineGame }, use) => {
+    const driver = new EngineGameDriver(engineGame);
     await use(new GameDsl(() => driver));
   },
   phone: async ({}, use) => use(new PhoneDsl(noPhoneInEngineRuns)),
   delivery,
   // spec-003: without a browser, the catalogue driver can only read the game's build (AC-18).
   catalogue: async ({}, use) => use(new CatalogueDsl(() => engineCatalogueDriver)),
-  daily: async ({}, use) => {
-    const driver = new EngineDailyDriver();
+  daily: async ({ engineGame }, use) => {
+    const driver = new EngineDailyDriver(engineGame);
     await use(new DailyDsl(() => driver));
   },
 });
@@ -68,8 +71,8 @@ const uiFixtures = base.extend<AcceptanceFixtures>({
     const driver = new UiCatalogueDriver(page);
     await use(new CatalogueDsl(() => driver));
   },
-  daily: async ({}, use) => {
-    const driver = new UiDailyDriver();
+  daily: async ({ page }, use) => {
+    const driver = new UiDailyDriver(page);
     await use(new DailyDsl(() => driver));
   },
 });

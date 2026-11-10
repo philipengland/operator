@@ -10,8 +10,12 @@ export interface LineSpec {
 }
 
 export interface Puzzle {
-  /** Says which puzzle saved solutions belong to. A seeded puzzle's will come from its seed and settings (F7). */
+  /** Says which puzzle saved solutions belong to: `worked-example`, or `daily-v1-2026-11-10-easy` (spec-007). */
   readonly id: string;
+  /** spec-007: the seed a daily puzzle was made from; absent for the worked example. */
+  readonly seed?: string;
+  /** spec-007: the preset a daily puzzle was made for; absent for the worked example. */
+  readonly preset?: PresetName;
   readonly rows: number;
   readonly columns: number;
   readonly givens: readonly (readonly (Digit | null)[])[];
@@ -68,3 +72,15 @@ export type CheckResult =
     }
   | { readonly kind: 'not-solved' }
   | { readonly kind: 'solved'; readonly key: SolutionKey };
+
+/** spec-007: the four presets. */
+export type PresetName = 'easy' | 'medium' | 'hard' | 'collector';
+
+/** spec-007: a calendar date as text, `2026-11-10`, formed by the app; the engine reads no clock. */
+export type CalendarDate = string;
+
+/** spec-007: a day's puzzle, and the full filling it was made from, which solves it. */
+export interface DailyPuzzle {
+  readonly puzzle: Puzzle;
+  readonly builtFrom: Entry;
+}

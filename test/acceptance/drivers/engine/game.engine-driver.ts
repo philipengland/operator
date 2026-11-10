@@ -4,7 +4,6 @@ import {
   applyAction,
   counterText,
   lineWorkings,
-  startSession,
   type MessageKind,
   type SessionAction,
   type SessionState,
@@ -17,6 +16,7 @@ import type { Cell, CellValue, KeypadKey, Line, OperatorChoice, Result, WorkingM
 import { DEFAULT_VIEW } from '../default-view';
 import type { CellView, GameDriver, GameView, KeypadKeyView, OperatorView, WorkingView } from '../game.driver';
 import { CELL_POSITIONS, CELLS, LINE_POSITIONS, LINES } from '../positions';
+import { EngineGame } from './engine-game';
 
 const RESULTS: Readonly<Record<MessageKind, Result>> = {
   'new-solution': 'new solution',
@@ -33,11 +33,20 @@ function readOnlyOnThePhones(): never {
 }
 
 export class EngineGameDriver implements GameDriver {
-  private session: SessionState | null = null;
   private announcements = 0;
 
+  constructor(private readonly game: EngineGame = new EngineGame()) {}
+
+  private get session(): SessionState | null {
+    return this.game.session;
+  }
+
+  private set session(session: SessionState | null) {
+    this.game.session = session;
+  }
+
   async open(): Promise<void> {
-    this.session = startSession();
+    this.game.open();
   }
 
   async tapCell(cell: Cell): Promise<void> {
