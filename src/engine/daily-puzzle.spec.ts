@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { checkEntry } from './check-entry';
 import { dailyPuzzle } from './daily-puzzle';
+import { defaultRules } from './evaluate-line';
 
 describe('dailyPuzzle', () => {
   it("names Easy for 10 November 2026 by its version, date and preset, and keeps its seed", () => {
@@ -12,5 +14,12 @@ describe('dailyPuzzle', () => {
       3,
       3,
     ]);
+  });
+
+  it('is built from a full filling of digits 1 to 9, which solves it (FR-703)', () => {
+    const { puzzle, builtFrom } = dailyPuzzle('2026-11-10', 'easy');
+
+    expect(builtFrom.cells.flat().every((digit) => digit !== null && digit >= 1 && digit <= 9)).toBe(true);
+    expect(checkEntry(puzzle, builtFrom, defaultRules).kind).toBe('solved');
   });
 });
