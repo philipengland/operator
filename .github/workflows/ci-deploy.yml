@@ -27,7 +27,8 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    # The ceiling (owner, 2026-11-09): if the job outgrows this, shorten it rather than raise this.
+    timeout-minutes: 20
     env:
       CI: true
     steps:

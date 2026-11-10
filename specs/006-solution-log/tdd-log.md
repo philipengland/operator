@@ -234,3 +234,9 @@ Commits:
 ## Flags removed (T060)
 
 `log`, `reopen`, `startAgain` and `remember` are removed, all four having been released. No behaviour changes. Four tests in `solution-list.spec.ts` changed, agreed with the owner first and recorded in `test-changes.md`.
+
+## Owner sign-off on a real phone (SC-606)
+
+The owner reviewed the flags-on build on a real phone before each flag was turned on, on 2026-11-09: the list and the reopened view (#32), "Start again" (#34, "looks great") and remembering, including really closing the tab (#36, "looks good").
+
+The hallway playtests (SC-602) have not been run: T061 stays open until the owner has.
