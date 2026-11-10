@@ -8,13 +8,13 @@ import {
   type SessionAction,
   type SessionState,
 } from '../../../../src/app/session';
-import { workingText } from '../../../../src/app/labels';
+import { solutionName, workingText } from '../../../../src/app/labels';
 import type { LineOutcome } from '../../../../src/engine';
 import { keypadKeys } from '../../../../src/ui/combined/keypad.model';
 import { buttonModel } from '../../../../src/ui/simple/button.model';
-import type { Cell, CellValue, KeypadKey, Line, OperatorChoice, Result, WorkingMark } from '../../dsl/vocabulary';
+import type { Cell, CellValue, KeypadKey, Line, OperatorChoice, Result, SolutionName, WorkingMark } from '../../dsl/vocabulary';
 import { DEFAULT_VIEW } from '../default-view';
-import type { CellView, GameDriver, GameView, KeypadKeyView, OperatorView, WorkingView } from '../game.driver';
+import type { CellView, GameDriver, GameScreenName, GameView, KeypadKeyView, OperatorView, SolutionView, WorkingView } from '../game.driver';
 import { CELL_POSITIONS, CELLS, LINE_POSITIONS, LINES } from '../positions';
 import { EngineGame } from './engine-game';
 
@@ -111,18 +111,47 @@ export class EngineGameDriver implements GameDriver {
   workingSlot = readOnlyOnThePhones;
   helperLine = readOnlyOnThePhones;
   mainButton = readOnlyOnThePhones;
-  tapCounter = readOnlyOnThePhones;
+  // spec-006, needed in-process by spec-007 AC-22: the list and a found solution, from the session.
+
+  async tapCounter(): Promise<void> {
+    this.dispatch({ type: 'openList' });
+  }
+
+  async tapSolution(solution: SolutionName): Promise<void> {
+    this.dispatch({ type: 'openSolution', number: Number(solution.replace('Solution ', '')) });
+  }
+
+  async screenShowing(): Promise<GameScreenName> {
+    const kind = this.session?.place.kind;
+    return kind === 'list' ? 'solution list' : kind === 'solution' ? 'solution' : 'puzzle';
+  }
+
+  async solutionsShown(): Promise<readonly string[]> {
+    return (this.session?.solutions ?? []).map((_, index) => solutionName(index + 1));
+  }
+
+  async solutionView(): Promise<SolutionView> {
+    const session = this.session;
+    const place = session?.place;
+    if (!session || place?.kind !== 'solution') {
+      return { title: '', cells: DEFAULT_VIEW.cells, operators: mapEach(LINES, () => 'not chosen'), marks: mapEach(LINES, () => 'none') };
+    }
+    const solved = { ...session, entry: session.solutions[place.number - 1] ?? session.entry };
+    return {
+      title: solutionName(place.number),
+      cells: mapEach(CELLS, (cell) => cellView(solved, cell)),
+      operators: mapEach(LINES, (line) => operatorView(solved, line).choice),
+      marks: mapEach(LINES, (line) => workingView(solved, line).mark),
+    };
+  }
+
   tapBack = readOnlyOnThePhones;
-  tapSolution = readOnlyOnThePhones;
   tapInSolution = readOnlyOnThePhones;
   tapStartAgain = readOnlyOnThePhones;
   doubleTapStartAgain = readOnlyOnThePhones;
   tapPopUpButton = readOnlyOnThePhones;
-  screenShowing = readOnlyOnThePhones;
   emptyList = readOnlyOnThePhones;
-  solutionsShown = readOnlyOnThePhones;
   solutionsHeard = readOnlyOnThePhones;
-  solutionView = readOnlyOnThePhones;
   solutionHeard = readOnlyOnThePhones;
   controlsOnScreen = readOnlyOnThePhones;
   popUp = readOnlyOnThePhones;
