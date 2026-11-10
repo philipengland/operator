@@ -151,3 +151,12 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
   53 engine and 343 phone tests pass. JavaScript 12.68 KB gzipped.
 - **Slice refactor**: the generator's core (`puzzleFor`) and `seedNumber` without defensive fallbacks; one order of today's
   choices (`todayChoices`).
+
+### AC-2: the same puzzle everywhere
+
+- **Acceptance test**: `[spec-007 AC-2]`, engine and both phones.
+- **Passed at RED**, from AC-1's work: the generator is pure and seeded by the date and preset, and both drivers read the puzzle the
+  game shows. **Proved** by a deliberate, reverted break: the game made Easy from 11 November instead of the phone's date. AC-2 then
+  failed on the engine, the iPhone and the Android phone with "the puzzle, compared with Easy for 10 November 2026 made by the
+  engine alone".
+- No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
