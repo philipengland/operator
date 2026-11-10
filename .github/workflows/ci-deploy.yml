@@ -29,6 +29,12 @@ jobs:
     runs-on: ubuntu-latest
     # The ceiling (owner, 2026-11-09): if the job outgrows this, shorten it rather than raise this.
     timeout-minutes: 20
+    # Playwright's own image holds the browsers and the system libraries they need, so no run
+    # installs them (one install took 5m 44s, 2026-11-09). Its tag must match @playwright/test in
+    # package.json, or the browsers are not found.
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
+      options: --ipc=host
     env:
       CI: true
     steps:
@@ -68,21 +74,6 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Cache Playwright browsers
-        id: browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Playwright browsers
-        if: steps.browsers.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium webkit
-
-      - name: Install Playwright system libraries
-        if: steps.browsers.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium webkit
 
       - name: Acceptance tests
         run: npm run test:acceptance
