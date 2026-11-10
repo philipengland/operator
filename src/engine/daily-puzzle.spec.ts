@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { checkEntry } from './check-entry';
 import { countSolutions } from './count-solutions';
-import { dailyPuzzle } from './daily-puzzle';
+import { dailyPuzzle, puzzleFor } from './daily-puzzle';
+import { PRESETS, type Preset } from './presets';
 import { defaultRules } from './evaluate-line';
 import type { PresetName } from './types';
 
@@ -52,5 +53,17 @@ describe('dailyPuzzle', () => {
 
   it('refuses a preset it does not know', () => {
     expect(() => dailyPuzzle('2026-11-10', 'unknown' as PresetName)).toThrow(/preset/);
+  });
+});
+
+describe('puzzleFor, with a preset given as data', () => {
+  const easy = PRESETS.easy as Preset;
+
+  it('gives up after its candidates when none has a count within the band (research R3)', () => {
+    expect(() => puzzleFor('2026-11-10', 'easy', { ...easy, band: { fewest: 50, most: 60 } })).toThrow(/within 2000 candidates/);
+  });
+
+  it('drops every candidate whose count runs out of work, never keeping a count it did not finish (FR-706)', () => {
+    expect(() => puzzleFor('2026-11-10', 'easy', { ...easy, workBudget: 1 })).toThrow(/within 2000 candidates/);
   });
 });
