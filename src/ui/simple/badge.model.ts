@@ -9,6 +9,8 @@ export interface BadgeProps {
   readonly style?: BadgeStyle;
   /** What a screen reader hears instead of the text ("Row 1 target 16, plus"). */
   readonly spokenAs?: string;
+  /** Two words on two lines in smaller text: a column pill on a grid of 3 or more columns (spec-007 FR-713). */
+  readonly isStacked?: boolean;
 }
 
 export interface BadgeModel {
@@ -18,6 +20,6 @@ export interface BadgeModel {
   readonly classes: readonly string[];
 }
 
-export function badgeModel({ text, style = 'ink', spokenAs }: BadgeProps): BadgeModel {
-  return { text, heardAs: spokenAs ?? text, classes: style === 'light' ? ['badge', 'badge--light'] : ['badge'] };
+export function badgeModel({ text, style = 'ink', spokenAs, isStacked = false }: BadgeProps): BadgeModel {
+  return { text, heardAs: spokenAs ?? text, classes: ['badge', ...(style === 'light' ? ['badge--light'] : []), ...(isStacked ? ['badge--stacked'] : [])] };
 }
