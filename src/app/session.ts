@@ -23,8 +23,12 @@ import {
 
 export type MessageKind = 'new-solution' | 'all-found' | 'already-found' | 'not-solved' | 'incomplete';
 
-/** Which screen is showing (spec-006 FR-601). */
-export type Place = { readonly kind: 'play' } | { readonly kind: 'list' } | { readonly kind: 'solution'; readonly number: number };
+/** Which screen is showing (spec-006 FR-601; the Today screen, spec-007 FR-701). */
+export type Place =
+  | { readonly kind: 'play' }
+  | { readonly kind: 'list' }
+  | { readonly kind: 'solution'; readonly number: number }
+  | { readonly kind: 'today' };
 
 export interface SessionState {
   readonly puzzle: Puzzle;
@@ -61,10 +65,11 @@ type LogAction = Extract<
 
 const LARGEST_TOTAL_SHOWN = 100;
 
-export function startSession(): SessionState {
+/** A puzzle just opened; the worked example unless another is given (spec-007 FR-709). */
+export function startSession(puzzle: Puzzle = workedExample): SessionState {
   return {
-    puzzle: workedExample,
-    entry: emptyEntry(workedExample),
+    puzzle,
+    entry: emptyEntry(puzzle),
     found: new Set(),
     message: null,
     selected: null,

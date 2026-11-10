@@ -2,14 +2,19 @@
 // imported from outside it.
 export { nextCellValue, nextOperator } from './cycles';
 export { checkEntry } from './check-entry';
+export { countSolutions, type Count } from './count-solutions';
+export { dailyPuzzle } from './daily-puzzle';
+export { GENERATOR_VERSION, PRESETS, type Preset } from './presets';
 export { emptyEntry, lineOperator } from './entry';
 export { defaultRules, evaluateLine } from './evaluate-line';
 export { lineWorking } from './line-working';
 export { isGiven, lineSpec } from './puzzle';
 export { workedExample } from './puzzles/worked-example';
 export type {
+  CalendarDate,
   CellPosition,
   CheckResult,
+  DailyPuzzle,
   Digit,
   Entry,
   LinePosition,
@@ -18,6 +23,7 @@ export type {
   LineSpec,
   LineWorking,
   Operator,
+  PresetName,
   Puzzle,
   Rules,
   SolutionKey,

@@ -129,6 +129,14 @@
   }
 }
 
+/* spec-007 FR-713 (owner, 2026-11-10): a 3 × 3 grid on the full screen, with the Today button beside
+   the counter, has slightly smaller cells on a 667 px phone, still above the touch target. */
+@media (max-height: 700px) and (min-height: 601px) {
+  .density-snug {
+    --size-cell: 50px;
+  }
+}
+
 /* spec-007 FR-719, research R9: the compact screen for grids bigger than 3 × 3. Everything a player
    taps stays a touch target; only what is read gives way: spacing, padding and text. */
 .density-compact {

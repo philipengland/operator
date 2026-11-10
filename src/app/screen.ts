@@ -2,8 +2,8 @@
 // component library shows (spec-004 research R1). Pure; the library draws it.
 
 import type { PlayScreenProps } from '../ui/screens/play-screen';
-import type { Theme } from '../ui/foundations/themes';
-import { announcement, bubbleLine, cellTitle, pillName, workingName, workingSlot } from './labels';
+import { themeForSeed, type Theme } from '../ui/foundations/themes';
+import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
@@ -36,7 +36,7 @@ function cell(state: SessionState, position: CellPosition): GridCellProps {
   const { puzzle, entry } = state;
   const given = puzzle.givens[position.row]?.[position.column] ?? null;
   return {
-    name: cellTitle(position),
+    name: cellTitleIn(puzzle, position),
     digit: given ?? entry.cells[position.row]?.[position.column] ?? null,
     isGiven: given !== null,
     isInCorrectLine: given === null && isInLineReachingTarget(state, position),
@@ -58,21 +58,39 @@ function pill({ puzzle, entry }: SessionState, working: LineWorking): TargetPill
   };
 }
 
+const EASY_SIZE = 3;
+
+/** spec-007 FR-713 (owner, 2026-11-10): a 3 × 3 grid has slightly smaller cells on short phones, to fit with the Today button. */
+function isThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
+  return rows === EASY_SIZE && columns === EASY_SIZE;
+}
+
+/** The helper line is about swapping an operator; a puzzle with none to swap has no helper line. */
+function hasOpenLine({ rowLines, columnLines }: SessionState['puzzle']): boolean {
+  return [...rowLines, ...columnLines].some((line) => line.operator === 'open');
+}
+
 /** The whole puzzle as the session has it. */
 export function puzzleGridProps(state: SessionState): PuzzleGridProps {
   return {
+    name: puzzleName(state.puzzle),
     columnPills: lines(state, 'column').map((working) => pill(state, working)),
     rowPills: lines(state, 'row').map((working) => pill(state, working)),
     cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
     rowWorkings: lines(state, 'row').map(workingProps),
     columnWorkings: lines(state, 'column').map(workingProps),
-    helper: HELPER_LINE,
+    helper: hasOpenLine(state.puzzle) ? HELPER_LINE : '',
   };
 }
 
 function counterProps(state: SessionState): PlayScreenProps['counter'] {
   const total = totalToShow(state);
   return total === undefined ? { found: state.found.size } : { found: state.found.size, total };
+}
+
+/** spec-007 FR-712: a daily puzzle in the theme worked out from its seed; the worked example in Classic. */
+export function puzzleTheme({ puzzle }: SessionState): Theme {
+  return themeForSeed(puzzle.seed);
 }
 
 export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {
@@ -83,5 +101,6 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     mainButtonLabel: theme.buttonLabel,
     keysAvailable: state.selected !== null,
     announcement: announcement(state.message, theme, counterText(state)),
+    isSnug: isThreeByThree(state.puzzle),
   };
 }

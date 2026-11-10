@@ -41,6 +41,8 @@ export interface PlayScreenProps {
   readonly keysAvailable?: boolean;
   /** What a screen reader is told after a check; empty for nothing (spec-004 FR-409). */
   readonly announcement?: string;
+  /** spec-007 FR-713: slightly smaller cells on short phones, for a 3 × 3 grid with the Today button. Fixed once shown. */
+  readonly isSnug?: boolean;
   /** spec-007 FR-719: the compact screen, for grids bigger than 3 × 3. Fixed once shown. */
   readonly isCompact?: boolean;
   /** What the compact screen's Workings strip shows. */
@@ -72,7 +74,7 @@ export function createPlayScreen(props: PlayScreenProps, actions: PlayScreenActi
   const keypad = createKeypad(actions.onKey, props.keysAvailable);
   const mainButton = createButton(mainButtonProps(props.mainButtonLabel), actions.onCheck);
   const element = document.createElement('div');
-  element.className = props.isCompact ? 'play-screen play-screen--compact density-compact' : 'play-screen';
+  element.className = ['play-screen', ...(props.isCompact ? ['play-screen--compact', 'density-compact'] : []), ...(props.isSnug ? ['density-snug'] : [])].join(' ');
   // One polite region for what a check says; it exists from the start so new text is announced.
   const status = document.createElement('div');
   status.setAttribute('role', 'status');

@@ -18,3 +18,9 @@ describe('placeFrom', () => {
     expect(placeFrom({ place: { kind: 'solution', number } })).toEqual({ kind: 'play' });
   });
 });
+
+describe('placeFrom the Today screen (spec-007 FR-701)', () => {
+  it('reads back the Today screen', () => {
+    expect(placeFrom(historyEntryFor({ kind: 'today' }))).toEqual({ kind: 'today' });
+  });
+});

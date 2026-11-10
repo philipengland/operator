@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { CLASSIC } from '../ui/foundations/themes';
 import { playScreenProps } from './screen';
 import { applyAction, startSession } from './session';
+import { dailyPuzzle } from '../engine';
+import { themeForSeed } from '../ui/foundations/themes';
+import { puzzleTheme } from './screen';
+import { choose, openToday, startDaily } from './daily';
 
 const justOpened = () => playScreenProps(startSession(), CLASSIC);
 const TOP_RIGHT = { type: 'tapCell', row: 0, column: 1 } as const;
@@ -102,5 +106,52 @@ describe('the counter with a very large total (spec-006)', () => {
 
   it('keeps a total of 100 in the counter (spec-006 AC-23)', () => {
     expect(opened(100).counter.total).toBe(100);
+  });
+});
+
+describe('playScreenProps for a daily puzzle (spec-007)', () => {
+  const easy = () => playScreenProps(startSession(dailyPuzzle('2026-11-10', 'easy').puzzle), CLASSIC);
+
+  it('names the grid by its preset and shape, and the worked example\'s as "Puzzle" (FR-717)', () => {
+    expect([easy().grid.name, justOpened().grid.name]).toEqual(['Easy puzzle, 3 by 3', 'Puzzle']);
+  });
+
+  it('names each cell by its row and column', () => {
+    expect(easy().grid.cells[1]?.[2]?.name).toBe('Row 2 column 3 cell');
+  });
+});
+
+describe('the helper line on a daily puzzle (spec-007)', () => {
+  it('is left out when no operator can be swapped, and kept on the worked example', () => {
+    const easy = playScreenProps(startSession(dailyPuzzle('2026-11-10', 'easy').puzzle), CLASSIC);
+
+    expect([easy.grid.helper, justOpened().grid.helper]).toEqual(['', 'Tap a dashed bubble to swap its operator.']);
+  });
+});
+
+describe('room on the screen for a daily puzzle (spec-007 FR-713)', () => {
+  it("makes Easy's 3 × 3 grid snug, so it fits with the Today button, and leaves the worked example as it was", () => {
+    const easy = playScreenProps(startSession(dailyPuzzle('2026-11-10', 'easy').puzzle), CLASSIC);
+
+    expect([easy.isSnug, justOpened().isSnug]).toEqual([true, false]);
+  });
+});
+
+describe('puzzleTheme (spec-007 FR-712)', () => {
+  it("shows a daily puzzle in its seed's theme, and the worked example in Classic", () => {
+    const easy = dailyPuzzle('2026-11-10', 'easy').puzzle;
+
+    expect([puzzleTheme(startSession(easy)), puzzleTheme(startSession())]).toEqual([themeForSeed(easy.seed), CLASSIC]);
+  });
+});
+
+describe('the filling a daily puzzle was made from (spec-007 FR-711)', () => {
+  it("is never shown: Easy chosen from the Today screen opens with only its given cells filled in", () => {
+    const { puzzle } = dailyPuzzle('2026-11-10', 'easy');
+    const today = openToday(startDaily('2026-11-10', startSession(), ['easy']));
+
+    const { cells } = playScreenProps(choose(today, 'easy').session, CLASSIC).grid;
+
+    expect(cells.map((row) => row.map(({ digit }) => digit))).toEqual(puzzle.givens);
   });
 });

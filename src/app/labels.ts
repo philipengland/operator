@@ -10,6 +10,7 @@ import {
   type LinePosition,
   type LineWorking,
   type Operator,
+  type PresetName,
   type Puzzle,
 } from '../engine';
 import type { Theme } from '../ui/foundations/themes';
@@ -38,14 +39,26 @@ export function cellTitle(position: CellPosition): string {
   return `${CORNER_NAMES[position.row]?.[position.column]} cell`;
 }
 
+/** A cell on any puzzle: the worked example's corners, or a daily puzzle's "Row 2 column 3 cell" (spec-007). */
+export function cellTitleIn(puzzle: Puzzle, position: CellPosition): string {
+  return puzzle.preset === undefined ? cellTitle(position) : `Row ${position.row + 1} column ${position.column + 1} cell`;
+}
+
 export function cellName(puzzle: Puzzle, entry: Entry, position: CellPosition): string {
-  const corner = CORNER_NAMES[position.row]?.[position.column];
+  const title = cellTitleIn(puzzle, position);
   const given = puzzle.givens[position.row]?.[position.column] ?? null;
   if (given !== null) {
-    return `${corner} cell, given ${given}`;
+    return `${title}, given ${given}`;
   }
   const entered = entry.cells[position.row]?.[position.column] ?? null;
-  return `${corner} cell, ${entered ?? 'empty'}`;
+  return `${title}, ${entered ?? 'empty'}`;
+}
+
+/** spec-007 FR-717: a daily puzzle as a screen reader hears it, "Easy puzzle, 3 by 3"; the worked example is "Puzzle". */
+const PRESET_WORDS: Readonly<Record<PresetName, string>> = { easy: 'Easy', medium: 'Medium', hard: 'Hard', collector: 'Collector' };
+
+export function puzzleName({ preset, rows, columns }: Puzzle): string {
+  return preset === undefined ? 'Puzzle' : `${PRESET_WORDS[preset]} puzzle, ${rows} by ${columns}`;
 }
 
 export function lineName(line: LinePosition): string {
