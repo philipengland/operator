@@ -64,6 +64,8 @@ describe('puzzleFor, with a preset given as data', () => {
   });
 
   it('drops every candidate whose count runs out of work, never keeping a count it did not finish (FR-706)', () => {
-    expect(() => puzzleFor('2026-11-10', 'easy', { ...easy, workBudget: 1 })).toThrow(/within 2000 candidates/);
+    const anyCount = { fewest: 0, most: 101 };
+
+    expect(() => puzzleFor('2026-11-10', 'easy', { ...easy, workBudget: 1, band: anyCount })).toThrow(/within 2000 candidates/);
   });
 });
