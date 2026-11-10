@@ -29,9 +29,9 @@ export function openToday(state: DailyState): DailyState {
 
 /** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
 export function choose(state: DailyState, choice: Choice): DailyState {
-  const kept: Partial<Record<Choice, SessionState>> = { ...state.kept, [state.current]: state.session };
-  const session = kept[choice] ?? freshSession(state.date, choice);
-  delete kept[choice];
+  const everyKept: DailyState['kept'] = { ...state.kept, [state.current]: state.session };
+  const session = everyKept[choice] ?? freshSession(state.date, choice);
+  const kept = Object.fromEntries(Object.entries(everyKept).filter(([each]) => each !== choice));
   return { ...state, current: choice, session, kept };
 }
 
