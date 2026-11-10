@@ -14,6 +14,8 @@ export interface TargetPillProps {
   /** How the line is heard, e.g. "Row 1 target 16, plus" (the play screen's wording). */
   readonly name: string;
   readonly reachesTarget?: boolean;
+  /** Operator above target, in smaller text: a column pill on a grid of 3 or more columns (spec-007 FR-713). */
+  readonly isStacked?: boolean;
 }
 
 export interface TargetPillModel {

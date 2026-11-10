@@ -20,6 +20,8 @@ export interface ButtonProps {
   readonly isSelected?: boolean;
   /** Looks like a button but is plain text: nothing can be done with it (spec-006 FR-606). */
   readonly isReadOnly?: boolean;
+  /** A two-word label on two lines in smaller text: an open column pill on a grid of 3 or more columns (spec-007 FR-713). */
+  readonly isStacked?: boolean;
 }
 
 export interface ButtonModel {
@@ -31,8 +33,9 @@ export interface ButtonModel {
   readonly classes: readonly string[];
 }
 
-export function buttonModel({ label, style, action, name, isUnavailable = false, isSelected = false, isReadOnly = false }: ButtonProps): ButtonModel {
-  return { label, name: name ?? (action ? `${label}, ${action}` : label), isUnavailable, isSelected, classes: ['button', `button--${style}`, ...readOnlyClasses(isReadOnly, isUnavailable)] };
+export function buttonModel({ label, style, action, name, isUnavailable = false, isSelected = false, isReadOnly = false, isStacked = false }: ButtonProps): ButtonModel {
+  const classes = ['button', `button--${style}`, ...readOnlyClasses(isReadOnly, isUnavailable), ...(isStacked ? ['button--stacked'] : [])];
+  return { label, name: name ?? (action ? `${label}, ${action}` : label), isUnavailable, isSelected, classes };
 }
 
 function readOnlyClasses(isReadOnly: boolean, isUnavailable: boolean): readonly string[] {

@@ -43,11 +43,11 @@ interface Component<Props> {
 | Component | Role | Accessible name | Notes |
 | --- | --- | --- | --- |
 | Text | none (text) | its text | `display` = Chewy; `body` = Nunito |
-| Button | `button`; `aria-pressed="true"` when selected | `label`, or `label, action` when `action` is given ("Oops, clear cell"; "Put it through!, Check"), or a whole `name` containing the label ("Top-right cell, 8") | styles: main, key, solid, dashed, cell, cell-correct. `createButton(props, onPress, after)`: decorative nodes after the label, as Badge has. Unavailable key and solid buttons are flat with a thin outline |
+| Button | `button`; `aria-pressed="true"` when selected | `label`, or `label, action` when `action` is given ("Oops, clear cell"; "Put it through!, Check"), or a whole `name` containing the label ("Top-right cell, 8") | styles: main, key, solid, dashed, cell, cell-correct; `isStacked` puts a two-word label on two lines in smaller text (an open column pill, spec-007 FR-713). `createButton(props, onPress, after)`: decorative nodes after the label, as Badge has. Unavailable key and solid buttons are flat with a thin outline |
 | Text input | `textbox` | its visible `label` (a real `<label for>`) | hint as `placeholder`; typed text in Chewy |
 | Icon | `img` when `spokenAs` is given, otherwise hidden | `spokenAs` ("target reached") | tick, cross (drawn; the ✓ or ✗ kept as visually hidden text) |
 | Surface | none | – | panel; bubble (accent shadow, 6 px tail corner); fill tile, accent or ink (ink casts an accent shadow) |
-| Badge | none (text) | its text, or `spokenAs` (visible text then hidden) | ink pill; light pill (tile, ink outline) for a count on a coloured surface |
+| Badge | none (text) | its text, or `spokenAs` (visible text then hidden) | ink pill; light pill (tile, ink outline) for a count on a coloured surface; `isStacked` puts a two-word text on two lines in smaller text (spec-007 FR-713) |
 | Mascot | hidden (`aria-hidden="true"`) | – | 76 px, original character from the design guide |
 
 ## Combined components
@@ -57,10 +57,10 @@ interface Component<Props> {
 | Speech bubble | Surface, Text | none; title and message read as text | title (display), message (body) |
 | Operator header | Mascot, Speech bubble | none | mascot beside bubble |
 | Solutions counter | Surface, Text, Badge, Icon | text "Found N of M" / "Found N", visible parts hidden | "Solutions found" or "All found!", count pill, tick when complete |
-| Target pill | Badge, Button, Icon | shown: text with `name`; open: `button` named "visible text, `name`" ("? 6, Row 2 target 6, operator not chosen") | "+ 8"; dashed "? 6"; tick when `reachesTarget`, shown or open |
+| Target pill | Badge, Button, Icon | shown: text with `name`; open: `button` named "visible text, `name`" ("? 6, Row 2 target 6, operator not chosen") | "+ 8"; dashed "? 6"; tick when `reachesTarget`, shown or open; `isStacked`: operator above target, smaller |
 | Grid cell | Button | `button` named `name`; given → `aria-disabled`; selected → `aria-pressed="true"` | five states (data model) |
 | Line working | Text, Icon | text `name` (spec-002 contract); visible slot hidden | "= ?", "= 8 ✓", "= −3", "✗" |
-| Puzzle grid | Surface, Target pill, Grid cell, Line working, Text | `group` named "Puzzle" | pills top and left, cells, workings at far ends, helper line |
+| Puzzle grid | Surface, Target pill, Grid cell, Line working, Text | `group` named "Puzzle" | pills top and left, cells, workings at far ends, helper line; with 3 or more columns, column pills are stacked (spec-007 FR-713) |
 | Keypad | Button | `group` named "Keypad"; keys named "1"–"9" and "Oops, clear cell"; while `keysAvailable` is false, every key is `aria-disabled="true"` | two rows of five. `createKeypad(onKey, keysAvailable = true)`; `update(keysAvailable)` |
 
 ## Screens
