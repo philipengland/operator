@@ -2,7 +2,7 @@
 // the others kept as the player left them. Pure; no DOM, no clock: the date comes from today.ts.
 
 import { dailyPuzzle, emptyEntry, type CalendarDate, type PresetName } from '../engine';
-import { startSession, type SessionState } from './session';
+import { counterText, startSession, type SessionState } from './session';
 
 /** A row on the Today screen: one of today's puzzles, or the worked example as Practice. */
 export type Choice = PresetName | 'practice';
@@ -23,8 +23,11 @@ export function startDaily(date: CalendarDate, practice: SessionState, offered: 
   return { date, current: 'practice', session: practice, kept: {}, offered };
 }
 
+/** The Today screen over the puzzle; today's puzzles not yet made are made, so each row has its count. */
 export function openToday(state: DailyState): DailyState {
-  return { ...state, session: { ...state.session, place: { kind: 'today' } } };
+  const made = state.offered.filter((preset) => preset !== state.current && state.kept[preset] === undefined);
+  const kept = { ...state.kept, ...Object.fromEntries(made.map((preset) => [preset, freshSession(state.date, preset)])) };
+  return { ...state, kept, session: { ...state.session, place: { kind: 'today' } } };
 }
 
 /** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
@@ -44,5 +47,12 @@ function freshSession(date: CalendarDate, choice: Choice): SessionState {
   return choice === 'practice' ? startSession() : startSession(dailyPuzzle(date, choice).puzzle);
 }
 
+const CHOICE_WORDS: Readonly<Record<Choice, string>> = { easy: 'Easy', medium: 'Medium', hard: 'Hard', collector: 'Collector', practice: 'Practice' };
+
 /** The Today screen's rows, each as shown and heard: "Easy, found 1 of 4", then "Practice, found 0 of 2". */
-export const todayRows: (state: DailyState) => readonly string[] = () => [];
+export function todayRows(state: DailyState): readonly string[] {
+  return [...state.offered, 'practice' as const].flatMap((choice) => {
+    const session = choice === state.current ? state.session : state.kept[choice];
+    return session === undefined ? [] : [`${CHOICE_WORDS[choice]}, ${counterText(session).replace('Found', 'found')}`];
+  });
+}

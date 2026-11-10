@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { dailyPuzzle, type Digit, type LinePosition } from '../engine';
-import { choose, openToday, startDaily } from './daily';
+import { choose, openToday, startDaily, todayRows } from './daily';
 import { applyAction, startSession, type SessionAction, type SessionState } from './session';
 
 const TENTH_OF_NOVEMBER = '2026-11-10';
@@ -36,6 +36,16 @@ describe('choose', () => {
 
     expect(practice.found.size).toBe(1);
     expect(back.session).toEqual({ ...startSession(), found: practice.found, solutions: practice.solutions });
+  });
+});
+
+describe('todayRows', () => {
+  it("lists today's puzzles, then Practice, each heard with its count (FR-701)", () => {
+    const easyTotal = dailyPuzzle(TENTH_OF_NOVEMBER, 'easy').puzzle.solutionCount;
+
+    const rows = todayRows(openToday(startDaily(TENTH_OF_NOVEMBER, withSolutionAFound(), ['easy'])));
+
+    expect(rows).toEqual([`Easy, found 0 of ${easyTotal}`, 'Practice, found 1 of 2']);
   });
 });
 
