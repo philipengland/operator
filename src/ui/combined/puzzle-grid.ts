@@ -8,7 +8,7 @@ import { createSurface } from '../simple/surface';
 import { createText } from '../simple/text';
 import { createGridCell, type GridCellProps } from './grid-cell';
 import { createLineWorking, type LineWorkingProps } from './line-working';
-import { puzzleGridPlaces, type GridPlace } from './puzzle-grid.model';
+import { puzzleGridPlaces, type GridPlace, type WorkingsPlace } from './puzzle-grid.model';
 import { createTargetPill, type TargetPillProps } from './target-pill';
 
 /** The components this one is laid out from (spec-003 AC-7). */
@@ -22,6 +22,8 @@ export interface PuzzleGridProps {
   readonly rowWorkings: readonly LineWorkingProps[];
   readonly columnWorkings: readonly LineWorkingProps[];
   readonly helper: string;
+  /** spec-007 FR-718: workings beside their lines (the default), or kept only for screen readers. */
+  readonly workings?: WorkingsPlace;
 }
 
 /** Which kind of line an operator pill belongs to. */
@@ -35,9 +37,9 @@ export interface PuzzleGridActions {
 
 /** The puzzle's size and lines are fixed once it is shown; `update` shows new states of the same parts. */
 export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActions = {}): Component<PuzzleGridProps> {
-  const places = puzzleGridPlaces({ rows: props.rowPills.length, columns: props.columnPills.length });
+  const places = puzzleGridPlaces({ rows: props.rowPills.length, columns: props.columnPills.length }, props.workings);
   const grid = document.createElement('div');
-  grid.className = 'puzzle-grid__grid';
+  grid.className = props.workings === 'elsewhere' ? 'puzzle-grid__grid puzzle-grid__grid--workings-elsewhere' : 'puzzle-grid__grid';
   grid.style.setProperty('--columns', String(props.columnPills.length));
   const columnPills = props.columnPills.map((pill, column) =>
     placed(grid, createTargetPill(pill, () => actions.onPill?.('column', column)), places.columnPill(column)),
@@ -79,10 +81,14 @@ function createHelperLine(text: string): Component<string> {
   return { element, update };
 }
 
-/** Adds a part to the grid at its place, and returns it. */
-function placed<Props>(grid: HTMLElement, part: Component<Props>, place: GridPlace): Component<Props> {
+/** Adds a part to the grid at its place, and returns it. A part with no place is heard, not seen. */
+function placed<Props>(grid: HTMLElement, part: Component<Props>, place: GridPlace | null): Component<Props> {
+  grid.append(part.element);
+  if (place === null) {
+    part.element.classList.add('visually-hidden');
+    return part;
+  }
   part.element.style.gridRow = String(place.row);
   part.element.style.gridColumn = String(place.column);
-  grid.append(part.element);
   return part;
 }

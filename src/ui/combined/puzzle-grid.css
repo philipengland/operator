@@ -12,6 +12,11 @@
   white-space: nowrap;
 }
 
+/* spec-007 FR-718: with the workings in a strip, the grid has no column for them. */
+.puzzle-grid__grid--workings-elsewhere {
+  grid-template-columns: minmax(64px, auto) repeat(var(--columns), minmax(var(--touch-target), 84px));
+}
+
 /* Cells fill their column, shrinking on narrow phones but never below a touch target. */
 .puzzle-grid__grid > .button {
   width: 100%;
