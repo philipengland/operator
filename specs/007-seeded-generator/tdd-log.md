@@ -180,3 +180,11 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
   was chosen. AC-6 then failed on the iPhone and the Android phone with "the theme, compared with the one worked out from the
   puzzle's seed … Expected: Amber and teal, Received: Classic".
 - No new unit tests or production code. **Acceptance GREEN** after the revert, on both phones.
+
+### AC-7: a new puzzle each day
+
+- **Acceptance test**: `[spec-007 AC-7]`, engine and both phones.
+- **Passed at RED**, from AC-1's work: the seed is `v1:<date>:<preset>`, so each date draws its own stream. **Proved** by a
+  deliberate, reverted break: the date was left out of the seed. AC-7 then failed on the engine, the iPhone and the Android phone
+  with "the puzzle, compared with the one remembered … Expected: not" the same puzzle (10 and 11 November were identical).
+- No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
