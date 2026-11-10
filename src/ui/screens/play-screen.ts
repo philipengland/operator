@@ -72,7 +72,7 @@ export function createPlayScreen(props: PlayScreenProps, actions: PlayScreenActi
   const keypad = createKeypad(actions.onKey, props.keysAvailable);
   const mainButton = createButton(mainButtonProps(props.mainButtonLabel), actions.onCheck);
   const element = document.createElement('div');
-  element.className = props.isCompact ? 'play-screen play-screen--compact' : 'play-screen';
+  element.className = props.isCompact ? 'play-screen play-screen--compact density-compact' : 'play-screen';
   // One polite region for what a check says; it exists from the start so new text is announced.
   const status = document.createElement('div');
   status.setAttribute('role', 'status');

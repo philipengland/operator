@@ -2,6 +2,7 @@
    takes the room the Today button leaves, and both are one touch target high. */
 
 .status-bar {
+  flex-direction: row;
   display: flex;
   align-items: stretch;
   gap: var(--space-grid);

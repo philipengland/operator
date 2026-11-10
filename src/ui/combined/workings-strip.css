@@ -1,11 +1,13 @@
 /* Workings strip: layout only; its look comes from Surface, Line working and Text (FR-303).
-   One row the height of a touch target, so showing text or workings never moves the keypad. */
+   The row's working and the column's side by side, each on its own line when they do not fit;
+   at least one touch target high. */
 
 .workings-strip {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-around;
-  gap: var(--space-grid);
+  column-gap: var(--space-between);
   min-height: var(--touch-target);
   white-space: nowrap;
 }

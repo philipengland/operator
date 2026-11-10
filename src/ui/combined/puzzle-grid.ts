@@ -41,17 +41,25 @@ export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActi
   const grid = document.createElement('div');
   grid.className = props.workings === 'elsewhere' ? 'puzzle-grid__grid puzzle-grid__grid--workings-elsewhere' : 'puzzle-grid__grid';
   grid.style.setProperty('--columns', String(props.columnPills.length));
-  const columnPills = props.columnPills.map((pill, column) =>
-    placed(grid, createTargetPill(pill, () => actions.onPill?.('column', column)), places.columnPill(column)),
-  );
+  // Workings shown elsewhere are heard here, from one visually hidden holder that takes no room.
+  const heardOnly = document.createElement('div');
+  heardOnly.className = 'visually-hidden';
+  const columnPills = props.columnPills.map((pill, column) => {
+    const part = createTargetPill(pill, () => actions.onPill?.('column', column));
+    part.element.classList.add('puzzle-grid__column-pill');
+    return placed(grid, part, places.columnPill(column));
+  });
   const rowPills = props.rowPills.map((pill, row) => placed(grid, createTargetPill(pill, () => actions.onPill?.('row', row)), places.rowPill(row)));
   const cells = props.cells.map((cellsInRow, row) =>
     cellsInRow.map((cell, column) => placed(grid, createGridCell(cell, () => actions.onCell?.(row, column)), places.cell(row, column))),
   );
-  const rowWorkings = props.rowWorkings.map((working, row) => placed(grid, createLineWorking(working), places.rowWorking(row)));
+  const rowWorkings = props.rowWorkings.map((working, row) => placed(grid, createLineWorking(working), places.rowWorking(row), heardOnly));
   const columnWorkings = props.columnWorkings.map((working, column) =>
-    placed(grid, createLineWorking(working), places.columnWorking(column)),
+    placed(grid, createLineWorking(working), places.columnWorking(column), heardOnly),
   );
+  if (heardOnly.childElementCount > 0) {
+    grid.append(heardOnly);
+  }
   const helper = createHelperLine(props.helper);
   const surface = createSurface({ variant: 'panel' }, [grid, helper.element]);
   surface.element.setAttribute('role', 'group');
@@ -81,14 +89,14 @@ function createHelperLine(text: string): Component<string> {
   return { element, update };
 }
 
-/** Adds a part to the grid at its place, and returns it. A part with no place is heard, not seen. */
-function placed<Props>(grid: HTMLElement, part: Component<Props>, place: GridPlace | null): Component<Props> {
-  grid.append(part.element);
+/** Adds a part to the grid at its place, and returns it. A part with no place goes to `heardOnly`. */
+function placed<Props>(grid: HTMLElement, part: Component<Props>, place: GridPlace | null, heardOnly?: HTMLElement): Component<Props> {
   if (place === null) {
-    part.element.classList.add('visually-hidden');
+    heardOnly?.append(part.element);
     return part;
   }
   part.element.style.gridRow = String(place.row);
   part.element.style.gridColumn = String(place.column);
+  grid.append(part.element);
   return part;
 }

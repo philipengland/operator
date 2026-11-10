@@ -128,3 +128,30 @@
     animation: none !important;
   }
 }
+
+/* spec-007 FR-719, research R9: the compact screen for grids bigger than 3 × 3. Everything a player
+   taps stays a touch target; only what is read gives way: spacing, padding and text. */
+.density-compact {
+  --size-cell: var(--touch-target);
+  --size-key: var(--touch-target);
+  --size-main: var(--touch-target);
+  --text-cell: 32px;
+  --text-pill: 16px;
+  --space-pill: 6px;
+  --size-pill-tick: 12px;
+  --text-display: 16px;
+  --space-surface: 4px;
+  --space-screen: 8px;
+  --space-between: 4px;
+  --space-grid: 4px;
+}
+
+/* The compact screen on a 320 px wide phone: pills and workings at the design guide's smallest
+   text, so a 7 × 5 grid's row pills fit beside five cells. */
+@media (max-width: 359px) {
+  .density-compact {
+    --text-pill: 14px;
+    --text-display: 14px;
+    --space-pill: 4px;
+  }
+}
