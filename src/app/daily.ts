@@ -56,9 +56,14 @@ function freshSession(date: CalendarDate, choice: Choice, saved: SavedSolutions)
 
 const CHOICE_WORDS: Readonly<Record<Choice, string>> = { easy: 'Easy', medium: 'Medium', hard: 'Hard', collector: 'Collector', practice: 'Practice' };
 
+/** The Today screen's choices, in order: today's presets, then Practice. */
+export function todayChoices({ offered }: DailyState): readonly Choice[] {
+  return [...offered, 'practice'];
+}
+
 /** The Today screen's rows, each as shown and heard: "Easy, found 1 of 4", then "Practice, found 0 of 2". */
 export function todayRows(state: DailyState): readonly string[] {
-  return [...state.offered, 'practice' as const].flatMap((choice) => {
+  return todayChoices(state).flatMap((choice) => {
     const session = choice === state.current ? state.session : state.kept[choice];
     return session === undefined ? [] : [`${CHOICE_WORDS[choice]}, ${counterText(session).replace('Found', 'found')}`];
   });
