@@ -1,0 +1,11 @@
+/* Workings strip: layout only; its look comes from Surface, Line working and Text (FR-303).
+   One row the height of a touch target, so showing text or workings never moves the keypad. */
+
+.workings-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--space-grid);
+  min-height: var(--touch-target);
+  white-space: nowrap;
+}
