@@ -72,7 +72,9 @@ export class UiCatalogueDriver implements CatalogueDriver {
   /** The components a tier section lists, in the order they appear. */
   async componentsIn(section: CatalogueSection): Promise<readonly LibraryComponent[]> {
     const sectionRegion = this.page.getByRole('region', { name: section, exact: true });
-    return (await regionNames(sectionRegion.getByRole('region'))) as LibraryComponent[];
+    // A component's own region, not a region a sample contains (the Status bar is one, spec-007).
+    const components = sectionRegion.getByRole('region').filter({ has: this.page.getByRole('heading', { level: 3 }) });
+    return (await regionNames(components)) as LibraryComponent[];
   }
 
   /** What a sample shows, and what a screen reader hears from it (from the accessibility tree). */
