@@ -10,6 +10,7 @@ import {
   type LinePosition,
   type LineWorking,
   type Operator,
+  type PresetName,
   type Puzzle,
 } from '../engine';
 import type { Theme } from '../ui/foundations/themes';
@@ -49,7 +50,11 @@ export function cellName(puzzle: Puzzle, entry: Entry, position: CellPosition): 
 }
 
 /** spec-007 FR-717: a daily puzzle as a screen reader hears it, "Easy puzzle, 3 by 3"; the worked example is "Puzzle". */
-export const puzzleName: (puzzle: Puzzle) => string = () => '';
+const PRESET_WORDS: Readonly<Record<PresetName, string>> = { easy: 'Easy', medium: 'Medium', hard: 'Hard', collector: 'Collector' };
+
+export function puzzleName({ preset, rows, columns }: Puzzle): string {
+  return preset === undefined ? 'Puzzle' : `${PRESET_WORDS[preset]} puzzle, ${rows} by ${columns}`;
+}
 
 export function lineName(line: LinePosition): string {
   return `${line.axis === 'row' ? 'Row' : 'Column'} ${line.index + 1}`;

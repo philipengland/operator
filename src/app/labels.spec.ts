@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { emptyEntry, workedExample, type LineWorking } from '../engine';
 import { CLASSIC, MIDNIGHT_BLUE } from '../ui/foundations/themes';
 import { announcement, bubbleLine, cellName, lineName, messageText, workingName, workingSlot, workingText } from './labels';
+import { puzzleName } from './labels';
 
 describe('cellName', () => {
   it.each([
@@ -174,5 +175,13 @@ describe('workingSlot', () => {
     ['a division that is not whole', COLUMN_1_NOT_WHOLE, { result: '', mark: 'cross' }],
   ] as const)('shows %s', (_case, working, slot) => {
     expect(workingSlot(working)).toEqual(slot);
+  });
+});
+
+describe('puzzleName (spec-007 FR-717)', () => {
+  it('a daily puzzle is heard by its preset and shape, and the worked example as "Puzzle"', () => {
+    const easy = { ...workedExample, id: 'daily-v1-2026-11-10-easy', preset: 'easy', rows: 3, columns: 3 } as const;
+
+    expect([puzzleName(easy), puzzleName(workedExample)]).toEqual(['Easy puzzle, 3 by 3', 'Puzzle']);
   });
 });
