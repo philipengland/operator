@@ -174,6 +174,28 @@ today's column pills do at 320.
 375 × 667 and 320 × 568, before any game wiring. If Hard cannot fit 375 × 667 without going below 44
 pixels, the work stops and the owner is asked.
 
+**Proved** (2026-11-10, the catalogue's compact screens with the widest pills and workings each grid can show, in
+Chromium and WebKit; bottom of the screen, with its padding):
+
+| Grid | 375 × 667 | 320 × 568 |
+| --- | --- | --- |
+| Medium, 5 × 4 | 561: fits | 559: fits |
+| Hard, 7 × 5 | 666: fits, 1 pixel spare | 929: scrolls up and down only, 320 wide |
+
+The first measurement did not fit (Hard 66 pixels over at 375 × 667, Medium 58 over at 320 × 568). The owner chose to
+squeeze harder before changing the spec, which gave:
+
+- **A compact density** (`.density-compact` in the foundations): cells, keys and main button at 44; padding inside
+  panels 4; text 16 in pills, the strip and the counter (14 at 320 wide).
+- **The strip wraps** to two lines when the row's and column's workings do not fit side by side.
+- **Hidden workings take no room**: they sat in the grid as 1-pixel cells, adding two rows.
+- **Column pills stack**: a pill wider than its column ("− −500" over a 44-pixel column) puts its target under its
+  operator, within the 44-pixel pill row.
+
+Every cell, open pill, key and main button is at least 44 × 44. Shown pills, which cannot be tapped, are 24 to 40
+pixels tall, as on the worked example. Hard at 375 × 667 has 1 pixel to spare, so a later change to anything on the
+compact screen is measured again.
+
 ## R10. What is kept on the phone (FR-714, FR-715)
 
 **Decision**: one new record, `operator.today`, written as `{ "format": 1, "date": "2026-11-10",

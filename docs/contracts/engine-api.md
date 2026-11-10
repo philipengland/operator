@@ -144,3 +144,19 @@ export function nextOperator(operator: Operator | null): Operator;
 
 `Puzzle` gains `id: string`: which puzzle saved solutions belong to. The fixed puzzle's is `worked-example`. A seeded puzzle's will
 come from its seed and settings (F7).
+
+## Additions for daily puzzles (spec-007)
+
+Built with User Story 1 (Easy), and extended by each later story with its preset. Types are in
+`specs/007-seeded-generator/data-model.md`.
+
+| Export | Signature | Rules |
+| --- | --- | --- |
+| `dailyPuzzle` | `(date: CalendarDate, preset: PresetName) → DailyPuzzle` | Pure. Same arguments, same result, on every device and in every later `v1` build. Throws only for a malformed date or unknown preset |
+| `countSolutions` | `(puzzle: Puzzle, workBudget: number) → Count` | Pure. Counts distinct solutions (digits and open operators) up to 101, stopping after `workBudget` search steps |
+| `PRESETS` | `Readonly<Record<PresetName, Preset>>` | The presets released so far, fixed once released |
+| `GENERATOR_VERSION` | `'v1'` | Part of every seed and daily puzzle identity |
+
+`Puzzle` gains optional `seed` and `preset`; a puzzle without them is the worked example. A daily puzzle's `id` is
+`daily-v1-<date>-<preset>`. Every daily puzzle has at least one solution (the filling it was built from, which the
+game never shows), whole targets that are never 0 and within its preset's range, and a count within its band.

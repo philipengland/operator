@@ -73,14 +73,18 @@ Operator visibility sits beside these levers. It changes how many solutions exis
 
 **Presets**
 
-| Preset | Grid | Operators | Visibility | Pre-filled | Targets |
-| --- | --- | --- | --- | --- | --- |
-| Easy | 3 × 3 | + − | All shown | About half | Under 30 |
-| Medium | 5 × 4 | + − × | Mixed, about half open | About a quarter | Up to 100 |
-| Hard | 7 × 5 | + − × ÷ | Shown, one or two open | About 10% | Up to 500 |
-| Collector | 4 × 3 | + − × ÷ | All open | None | Under 30 |
+| Preset | Grid | Operators | Visibility | Pre-filled | Targets | Solutions |
+| --- | --- | --- | --- | --- | --- | --- |
+| Easy | 3 × 3 | + − | All shown | 4 or 5 of 9 | 1 to 29 | 1 to 10 |
+| Medium | 5 × 4 | + − × | 4 or 5 of 9 lines open | 10 of 20 | 1 to 100 | 2 to 20 |
+| Hard | 7 × 5 | + − × ÷ | Shown, one or two open | 21 or 22 of 35 | −500 to 500, not 0 | 1 to 3 |
+| Collector | 4 × 3 | + − × ÷ | All open | None | −29 to 29, not 0 | 21 or more |
 
 Grid is rows × columns, and every row and column carries a target. Collector is built for finding many solutions rather than one.
+
+*Owner's decisions, 2026-11-10 (spec-007):* Medium and Hard have more pre-filled cells than first planned ("about a
+quarter" and "about 10%"), because with so few, almost every puzzle had more than 100 solutions and the bands could not
+be met. Hard and Collector may have negative targets. The solutions column is each preset's band.
 
 **Difficulty score**
 
@@ -113,12 +117,12 @@ The generator builds each puzzle backwards from a known solution, so every puzzl
 
 1. Take a seed, a grid size and a preset. The same seed always produces the same puzzle.
 2. Fill the whole grid with digits 1-9. This is the known solution.
-3. For each row and each column, pick an operator that gives a whole, non-negative result on its digits, favouring the preset's operator set, and compute the target. Reject a target of 0. (Since spec-002, negative results and targets are allowed in play; F7 decides whether the generator uses them.) If the preset's mix cannot be met, redraw the grid.
+3. For each row and each column, pick an operator from the preset's set that gives a whole result on its digits, within the preset's range, and compute the target. Reject a target of 0. Results below zero are allowed only in Hard and Collector (owner, 2026-11-10). If the preset's mix cannot be met, redraw the grid.
 4. Grey out a share of the cells to match the preset, keeping their digits as given values.
-5. Count solutions by backtracking over the empty cells, stopping at 101. For each digit filling that works, multiply in the number of operators that hit each open line's target. Time-box the search and discard puzzles that count too slowly.
+5. Count solutions by backtracking over the empty cells, stopping at 101. For each digit filling that works, multiply in the number of operators that hit each open line's target. Give the search a fixed amount of work, never of time, and discard puzzles that need more, so every phone makes the same choice (constitution III).
 6. Keep the puzzle only if the count falls inside the preset's band; otherwise regenerate. Store the seed, targets, operators, greyed cells and the capped count.
 
-A seed means the MVP needs no backend, and a daily puzzle later is just a date-derived seed.
+A seed means the MVP needs no backend, and a daily puzzle is just a date-derived seed: each day brings one puzzle per preset, the same for every player on that date (spec-007).
 
 ## Worked example
 
@@ -147,9 +151,9 @@ After the player submits both, the counter reads "Found 2 of 2".
 
 The MVP is a single-player, mobile-first web game with targets on rows and columns and one operator per line.
 
-- **MVP:** grid play with row and column targets, line evaluation with the whole-number rule, Fixed / Mixed / Open modes, any-valid checking, the solution log and counter, Easy / Medium / Hard / Collector presets, and a seeded generator with capped solution counting.
+- **MVP:** grid play with row and column targets, line evaluation with the whole-number rule, Fixed / Mixed / Open modes, any-valid checking, the solution log and counter, Easy / Medium / Hard / Collector presets, a seeded generator with capped solution counting, and daily puzzles (brought forward from Phase 3 by the owner, 2026-11-10).
 - **Phase 2:** hints (reveal an operator or fill one cell), lines with mixed operators and the order setting, and custom difficulty with a live score.
-- **Phase 3:** a daily puzzle and share-by-seed, global solution-rarity stats, and an optional no-repeat variant. (Negative numbers are standard play since spec-002.)
+- **Phase 3:** share-by-seed, global solution-rarity stats, and an optional no-repeat variant. (Negative numbers are standard play since spec-002.)
 - **Out of scope:** fractions and decimals, real-time multiplayer, accounts and monetisation.
 
 The platform is decided: a client-side web app with no backend, packaged for iOS and Android with Capacitor, so it works fully offline. Seeded puzzles need no server.
@@ -172,7 +176,7 @@ Fourteen features: a walking skeleton (F0), seven MVP features, store packaging 
 | F8 | Hints | "Reveal an operator" and "Fill one cell" work on unsolved puzzles. Each hint used is shown with the result and lowers the score. | Phase 2 |
 | F9 | Mixed operators in a line | A line can have a different operator between each pair of cells. The order setting switches between left to right and standard precedence, so 2 + 3 × 4 gives 20 or 14. | Phase 2 |
 | F10 | Custom difficulty | Each lever can be set by hand and the difficulty score updates live. | Phase 2 |
-| F11 | Daily puzzle and share | A date-derived seed gives one puzzle per day. A share link reproduces any puzzle from its seed. | Phase 3 |
+| F11 | Daily puzzle and share | A date-derived seed gives one puzzle per day (brought into the MVP with F6 and F7, spec-007). A share link reproduces any puzzle from its seed. | Daily: MVP; share: Phase 3 |
 | F12 | Solution rarity | After solving, the player sees what share of players found each solution. | Phase 3 |
 
 ## Open questions and risks
