@@ -14,15 +14,17 @@ export interface DailyState {
   readonly session: SessionState;
   /** Every other puzzle opened today, as the player left it. */
   readonly kept: Readonly<Partial<Record<Choice, SessionState>>>;
+  /** Today's presets, in the Today screen's order; a story's flag decides which (research R11). */
+  readonly offered: readonly PresetName[];
 }
 
 /** The game opens on the worked example (spec-007 FR-701). */
-export function startDaily(date: CalendarDate, practice: SessionState): DailyState {
-  return { date, current: 'practice', session: practice, kept: {} };
+export function startDaily(date: CalendarDate, practice: SessionState, offered: readonly PresetName[]): DailyState {
+  return { date, current: 'practice', session: practice, kept: {}, offered };
 }
 
 export function openToday(state: DailyState): DailyState {
-  return state;
+  return { ...state, session: { ...state.session, place: { kind: 'today' } } };
 }
 
 export const choose: (state: DailyState, choice: Choice) => DailyState = (state) => state;

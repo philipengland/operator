@@ -3,6 +3,7 @@ import { emptyEntry, workedExample, type LineWorking } from '../engine';
 import { CLASSIC, MIDNIGHT_BLUE } from '../ui/foundations/themes';
 import { announcement, bubbleLine, cellName, lineName, messageText, workingName, workingSlot, workingText } from './labels';
 import { puzzleName } from './labels';
+import type { Entry } from '../engine';
 
 describe('cellName', () => {
   it.each([
@@ -200,7 +201,7 @@ describe('cellName on a daily puzzle (spec-007 contract)', () => {
         [null, null, null],
       ],
     } as const;
-    const entry = { ...emptyEntry(easy), cells: [[null, null, null], [null, 4, null], [null, null, null]] };
+    const entry: Entry = { ...emptyEntry(easy), cells: [[null, null, null], [null, 4, null], [null, null, null]] };
 
     expect([cellName(easy, entry, { row: 0, column: 0 }), cellName(easy, entry, { row: 1, column: 1 }), cellName(easy, entry, { row: 2, column: 2 })]).toEqual([
       'Row 1 column 1 cell, given 3',

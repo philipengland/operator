@@ -3,6 +3,7 @@
 
 import { startDaily, type DailyState } from '../../../../src/app/daily';
 import { startSession, type SessionState } from '../../../../src/app/session';
+import { PRESETS, type PresetName } from '../../../../src/engine';
 
 // A scenario that never sets the phone's date still plays on some day.
 const ANY_DAY = '2026-11-10';
@@ -13,7 +14,8 @@ export class EngineGame {
   daily: DailyState | null = null;
 
   open(): void {
-    this.daily = startDaily(this.date, startSession());
+    // The engine plays every preset the engine has; the phones get what the build's flags allow.
+    this.daily = startDaily(this.date, startSession(), Object.keys(PRESETS) as PresetName[]);
   }
 
   /** The puzzle on the play screen. */
