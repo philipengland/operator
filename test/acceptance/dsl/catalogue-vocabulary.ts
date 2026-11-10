@@ -13,9 +13,11 @@ export type CombinedComponent =
   | 'Line working'
   | 'Puzzle grid'
   | 'Keypad'
-  | 'Confirm dialog';
+  | 'Confirm dialog'
+  | 'Status bar'
+  | 'Workings strip';
 
-export type LibraryScreen = 'Play screen' | 'Solution list' | 'Solution view';
+export type LibraryScreen = 'Play screen' | 'Solution list' | 'Solution view' | 'Today list';
 
 export type LibraryComponent = SimpleComponent | CombinedComponent | LibraryScreen;
 
