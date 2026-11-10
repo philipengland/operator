@@ -199,3 +199,24 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
   come back to lost what had been found. AC-22 then failed on the engine, the iPhone and the Android phone with "counter …
   Expected: Found 1 of 2, Received: Found 0 of 2".
 - No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
+
+### T031: FR-711 and Easy's opening time (SC-701)
+
+- **FR-711, unit**: `src/app/screen.spec.ts` › `the filling a daily puzzle was made from (spec-007 FR-711)` › "is never shown: Easy
+  chosen from the Today screen opens with only its given cells filled in" (`56c14d0`). It goes through `choose`, so it covers the
+  path by which a filling could reach the screen. **Passed at RED** (the behaviour existed). **Proved** by a deliberate, reverted
+  break in `src/app/daily.ts`: Easy started with its filling entered *and* opening a puzzle no longer emptied the grid. The test
+  then failed with `expected [ [ 3, 9, 2 ], [ 7, 6, 4 ], …(1) ] to deeply equal [ Array(3) ]`. Either half alone leaves it passing:
+  opening a puzzle always empties its grid (FR-709), which is a second guard against showing the filling.
+- **SC-701, measured** (not a test: the opening-time scenario is User Story 3's, task T052). Chromium, Pixel 5 at 375 × 667, CPU 4×
+  slower as the speed budgets use, the flags-on build (version `b61422d`): from tapping "Easy" on the Today screen to the Easy puzzle
+  on screen, five runs each.
+
+  | Date | Milliseconds | Worst |
+  |---|---|---|
+  | 10 November 2026 | 73, 80, 70, 74, 74 | 80 |
+  | 1 January 2027 (Easy's slowest date of 2027 to make) | 71, 75, 71, 73, 72 | 75 |
+  | 25 June 2027 (second slowest) | 73, 66, 67, 73, 66 | 73 |
+
+  Making Easy itself takes under 0.5 ms in Node on its slowest date, so nearly all of the time is drawing the screen. Easy is well
+  within 1 second.

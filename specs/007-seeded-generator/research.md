@@ -86,6 +86,9 @@ The budgets are fixed when each preset is released, as part of `v1`: Easy, Mediu
 Story 1 and 2; Hard at User Story 3. The spike suggests 200,000 steps; the first task of each story measures
 the sweep (R12) and records the number.
 
+**Easy (measured 2026-11-10, User Story 1)**: 200,000 steps. Easy has at most 5 empty cells, so even an unpruned
+search takes at most 66,429 steps: the budget can never drop an Easy candidate.
+
 **Rationale**: constitution III forbids time limits, as a slow phone would then skip a candidate a fast one
 kept. The bounds prune a line as soon as it can no longer reach its target, which is what made the spike's
 counts fast. The same search answers AC-5, compared with trying every filling.
