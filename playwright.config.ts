@@ -21,10 +21,6 @@ const catalogueURL = `http://localhost:${CATALOGUE_PORT}/`;
 // 30 seconds (2026-11-07 and -08, from its kept trace). A stuck scenario still fails, just later.
 const SCENARIO_TIME_LIMIT_MS = 60_000;
 
-// GitHub's machine has 4 cores, and the phones' time is their test time divided by the workers
-// (670 seconds over 2 workers took 5.8 minutes, 2026-11-09). Local runs keep Playwright's default.
-const CI_WORKERS = 4;
-
 // Constitution VII: which scenarios need a flag on, by file, so releasing a story changes no locked
 // file. While a flag is off, its file runs only on the flags-on phones; once on, on the game's.
 const SCENARIOS_BEHIND_A_FLAG: Readonly<Record<keyof Features, string>> = {
@@ -41,7 +37,6 @@ export default defineConfig({
   timeout: SCENARIO_TIME_LIMIT_MS,
   testMatch: '**/*.acceptance-spec.ts',
   forbidOnly: isCi,
-  ...(isCi ? { workers: CI_WORKERS } : {}),
   // Retries only collect traces for diagnosis; a scenario that passes on retry is flaky
   // and is fixed, never accepted (Playwright standard).
   retries: isCi ? 1 : 0,
