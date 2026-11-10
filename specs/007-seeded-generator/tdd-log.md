@@ -188,3 +188,14 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
   deliberate, reverted break: the date was left out of the seed. AC-7 then failed on the engine, the iPhone and the Android phone
   with "the puzzle, compared with the one remembered … Expected: not" the same puzzle (10 and 11 November were identical).
 - No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
+
+### AC-22: the worked example as Practice
+
+- **Acceptance test**: `[spec-007 AC-22]`, engine and both phones.
+- **Passed at RED**: the unit behaviour T030 asks for was written test-first during AC-1, because choosing from the Today screen
+  needed it (`bc4674a`, `src/app/daily.spec.ts` › `choose` › "opens a puzzle come back to with an empty grid, no cell selected and
+  the greeting, keeping what was found (FR-709)"). It sits in `daily.spec.ts`, not `session.spec.ts` as T030 planned: each
+  puzzle's session is kept by `DailyState`, so the session needed no change. **Proved** by a deliberate, reverted break: a puzzle
+  come back to lost what had been found. AC-22 then failed on the engine, the iPhone and the Android phone with "counter …
+  Expected: Found 1 of 2, Received: Found 0 of 2".
+- No new unit tests or production code. **Acceptance GREEN** after the revert, on all three.
