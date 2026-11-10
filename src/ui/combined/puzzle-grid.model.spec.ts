@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { puzzleGridPlaces } from './puzzle-grid.model';
+import { areColumnPillsStacked } from './puzzle-grid.model';
 
 describe('puzzleGridPlaces', () => {
   const places = puzzleGridPlaces({ rows: 2, columns: 2 });
@@ -31,5 +32,11 @@ describe('puzzleGridPlaces with the workings shown elsewhere (spec-007 FR-718)',
 
   it('gives the workings no place in the grid, so the grid has no column or row for them', () => {
     expect([places.rowWorking(0), places.columnWorking(3)]).toEqual([null, null]);
+  });
+});
+
+describe('areColumnPillsStacked (spec-007 FR-713)', () => {
+  it('stacks the column pills of a grid of 3 or more columns, and leaves the worked example\'s 2 on one line', () => {
+    expect([2, 3, 4, 5].map(areColumnPillsStacked)).toEqual([false, true, true, true]);
   });
 });

@@ -23,12 +23,12 @@
 }
 
 /* spec-007 FR-713: a column pill on a grid of 3 or more columns, its operator above its target,
-   in text four-fifths of a pill's, so neighbouring pills never touch. */
+   in text four-fifths of body text, so neighbouring pills never touch. */
 .badge--stacked {
   inline-size: min-content;
   padding: 4px;
   white-space: normal;
   text-align: center;
   line-height: 1;
-  font-size: calc(var(--text-pill) * 0.8);
+  font-size: calc(var(--text-body) * 0.8);
 }

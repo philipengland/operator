@@ -40,3 +40,10 @@ export function puzzleGridPlaces(size: PuzzleSize, workings: WorkingsPlace = 'be
     columnWorking: (column) => (workings === 'beside' ? { row: size.rows + FIRST_CELL_LINE, column: column + FIRST_CELL_LINE } : null),
   };
 }
+
+/** spec-007 FR-713: on a grid of 3 or more columns every column pill is stacked, so a row of them is alike. */
+const FEWEST_COLUMNS_STACKED = 3;
+
+export function areColumnPillsStacked(columns: number): boolean {
+  return columns >= FEWEST_COLUMNS_STACKED;
+}
