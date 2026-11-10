@@ -44,7 +44,9 @@ export function countSolutions(puzzle: Puzzle, workBudget: number): Count {
         break;
       }
       setDigit(grid, cell, digit);
-      visit(next + 1);
+      if (lines.every((line) => !passesThrough(line, cell) || canStillReach(grid, line))) {
+        visit(next + 1);
+      }
     }
     setDigit(grid, cell, null);
   };
@@ -57,6 +59,76 @@ function linesOf({ rows, columns, rowLines, columnLines }: Puzzle): readonly Lin
   const down = (column: number) => Array.from({ length: rows }, (_, row) => ({ row, column }));
   return [...rowLines.map((spec, row) => ({ cells: across(row), spec })), ...columnLines.map((spec, column) => ({ cells: down(column), spec }))];
 }
+
+function passesThrough({ cells }: Line, { row, column }: CellPosition): boolean {
+  return cells.some((cell) => cell.row === row && cell.column === column);
+}
+
+/** Whether some allowed operator can still reach the target, whatever digits the empty cells take (research R4). */
+function canStillReach(grid: Grid, line: Line): boolean {
+  const digits = line.cells.map(({ row, column }) => grid[row]?.[column] ?? null);
+  if (digits.every((digit) => digit !== null)) {
+    return operatorsReaching(grid, line) > 0;
+  }
+  const choices = line.spec.operator === 'open' ? OPERATORS : [line.spec.operator];
+  return choices.some((operator) => REACH[operator](digits, line.spec.target));
+}
+
+/** The line's digits so far: the first (null while empty), and the rest, known and still to come. */
+interface Known {
+  readonly first: Digit | null;
+  readonly restSum: number;
+  readonly restProduct: number;
+  readonly restEmpty: number;
+}
+
+function known([first = null, ...rest]: readonly (Digit | null)[]): Known {
+  const filled = rest.filter((digit): digit is Digit => digit !== null);
+  return {
+    first,
+    restSum: filled.reduce<number>((sum, digit) => sum + digit, 0),
+    restProduct: filled.reduce<number>((product, digit) => product * digit, 1),
+    restEmpty: rest.length - filled.length,
+  };
+}
+
+/** The largest product of `empty` digits. */
+function mostFrom(empty: number): number {
+  return LARGEST_DIGIT ** empty;
+}
+
+/** Each operator's exact test: can the line still reach the target? */
+const REACH: Readonly<Record<Operator, (digits: readonly (Digit | null)[], target: number) => boolean>> = {
+  '+': (digits, target) => {
+    const { first, restSum, restEmpty } = known(digits);
+    const empty = restEmpty + (first === null ? 1 : 0);
+    const sum = restSum + (first ?? 0);
+    return target >= sum + empty && target <= sum + LARGEST_DIGIT * empty;
+  },
+  '−': (digits, target) => {
+    const { first, restSum, restEmpty } = known(digits);
+    const lowest = (first ?? 1) - restSum - LARGEST_DIGIT * restEmpty;
+    const highest = (first ?? LARGEST_DIGIT) - restSum - restEmpty;
+    return target >= lowest && target <= highest;
+  },
+  '×': (digits, target) => {
+    const { first, restProduct, restEmpty } = known(digits);
+    const product = restProduct * (first ?? 1);
+    const empty = restEmpty + (first === null ? 1 : 0);
+    return target > 0 && target % product === 0 && target / product <= mostFrom(empty);
+  },
+  '÷': (digits, target) => {
+    const { first, restProduct, restEmpty } = known(digits);
+    if (target <= 0) {
+      return false;
+    }
+    if (first === null) {
+      return target * restProduct <= LARGEST_DIGIT;
+    }
+    const quotient = first / (target * restProduct);
+    return Number.isInteger(quotient) && quotient >= 1 && quotient <= mostFrom(restEmpty);
+  },
+};
 
 function setDigit(grid: Grid, { row, column }: CellPosition, digit: Digit | null): void {
   const cells = grid[row];
