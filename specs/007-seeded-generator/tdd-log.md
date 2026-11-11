@@ -264,3 +264,15 @@ chose mock-up C from three made on the real page (stacked, smaller text), for ev
   The worked example has no stacked pill.
 - **Catalogue**: stacked Badge, dashed Button and Target pill samples (`a4e8104`).
 - **GREEN**: 424 unit tests, 53 engine and 343 phone and catalogue scenarios.
+
+### Both together (main merged into the operators branch, 2026-11-11)
+
+PR #47 (stacked pills) was merged first, so `main` was merged into this branch; the spec and this log kept both additions.
+Easy with + − × ÷ and stacked column pills, measured on 11 November 2026 and 1 March and 1 September 2027: column pills
+40–49 × 34 px at 375 × 667 and 33–41 × 30 px at 320 × 568, 9–16 px apart, the page fitting without scrolling at both, the
+row pill "× 96" included. 424 unit tests, 53 engine and 342 phone and catalogue scenarios passed, with the speed budget run alone.
+One scenario, spec-006 AC-3 on the iPhone, timed out once in the full run (a tap waited 60 s); run again 5 times alone, it
+passed every time in about 8 s.
+
+Unit tests must run from `C:\…`: in a session opened at `c:\…` (lower-case drive), Vitest loaded itself twice and every
+file failed with "Cannot read properties of undefined (reading 'config')".
