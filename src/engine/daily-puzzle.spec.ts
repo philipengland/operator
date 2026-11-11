@@ -56,6 +56,12 @@ describe('dailyPuzzle', () => {
     expect(open).toBeLessThanOrEqual(5);
   });
 
+  it("is solved by its filling with each open line's operator, as built (FR-703)", () => {
+    const { puzzle, builtFrom } = dailyPuzzle('2026-11-10', 'medium');
+
+    expect(checkEntry(puzzle, builtFrom, defaultRules).kind).toBe('solved');
+  });
+
   it('accepts 29 February in a leap year', () => {
     expect(dailyPuzzle('2028-02-29', 'easy').puzzle.id).toBe('daily-v1-2028-02-29-easy');
   });
