@@ -24,6 +24,7 @@ const PRESET_NAMES: Readonly<Record<Preset, PresetName>> = { Easy: 'easy', Mediu
 const MIDDAY = 12;
 // An open operator goes round the four when tapped (spec-001 FR-006).
 const OPERATOR_TAPS_TO_GO_ROUND = 4;
+const MILLISECONDS_PER_SECOND = 1000;
 
 /** What the play screen holds, read in one browser call. */
 interface DailyScreen {
@@ -153,9 +154,12 @@ export class UiDailyDriver implements DailyDriver {
     return themeForSeed(dailyPuzzle(this.date, await this.preset()).puzzle.seed).label;
   }
 
-  // spec-007 User Story 3 (task T052).
-  async secondsToOpen(): Promise<number> {
-    return Number.NaN;
+  /** From the tap on the choice's row until its puzzle is on screen; the browser round trips are counted too. */
+  async secondsToOpen(choice: TodayChoice): Promise<number> {
+    const started = Date.now();
+    await this.todayScreen().getByRole('button', { name: new RegExp(`^${choice}, found `) }).tap();
+    await this.page.getByRole('group', { name: choice === 'Practice' ? /^Puzzle$/ : new RegExp(`^${choice} puzzle, `) }).waitFor();
+    return (Date.now() - started) / MILLISECONDS_PER_SECOND;
   }
 
   /**
