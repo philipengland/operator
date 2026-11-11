@@ -41,4 +41,14 @@ export const PRESETS: Readonly<Partial<Record<PresetName, Preset>>> = {
     band: { fewest: 1, most: 10 },
     workBudget: SUGGESTED_WORK_BUDGET,
   },
+  medium: {
+    rows: 5,
+    columns: 4,
+    operators: ['+', '−', '×', '÷'],
+    openLines: { fewest: 4, most: 5 },
+    givenCells: { fewest: 10, most: 10 },
+    targets: { lowest: 1, highest: 100 },
+    band: { fewest: 2, most: 20 },
+    workBudget: SUGGESTED_WORK_BUDGET,
+  },
 };

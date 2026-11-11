@@ -14,6 +14,18 @@ describe('PRESETS', () => {
     });
   });
 
+  it('Medium is 5 × 4, + − × ÷, 4 or 5 of its 9 lines open, 10 cells given, targets 1 to 100, 2 to 20 solutions', () => {
+    expect(PRESETS.medium).toMatchObject({
+      rows: 5,
+      columns: 4,
+      operators: ['+', '−', '×', '÷'],
+      openLines: { fewest: 4, most: 5 },
+      givenCells: { fewest: 10, most: 10 },
+      targets: { lowest: 1, highest: 100 },
+      band: { fewest: 2, most: 20 },
+    });
+  });
+
   it('makes puzzles as version 1 of the generator', () => {
     expect(GENERATOR_VERSION).toBe('v1');
   });
