@@ -65,6 +65,11 @@ function isThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
   return rows === EASY_SIZE && columns === EASY_SIZE;
 }
 
+/** spec-007 FR-719: a grid bigger than 3 × 3 (Medium, Hard, Collector) has the compact screen. */
+function isBiggerThanThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
+  return rows * columns > EASY_SIZE * EASY_SIZE;
+}
+
 /** The helper line is about swapping an operator; a puzzle with none to swap has no helper line. */
 function hasOpenLine({ rowLines, columnLines }: SessionState['puzzle']): boolean {
   return [...rowLines, ...columnLines].some((line) => line.operator === 'open');
@@ -102,5 +107,6 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     keysAvailable: state.selected !== null,
     announcement: announcement(state.message, theme, counterText(state)),
     isSnug: isThreeByThree(state.puzzle),
+    isCompact: isBiggerThanThreeByThree(state.puzzle),
   };
 }

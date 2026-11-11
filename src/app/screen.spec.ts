@@ -155,3 +155,11 @@ describe('the filling a daily puzzle was made from (spec-007 FR-711)', () => {
     expect(cells.map((row) => row.map(({ digit }) => digit))).toEqual(puzzle.givens);
   });
 });
+
+describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', () => {
+  const opened = (preset: 'easy' | 'medium' | 'collector') => playScreenProps(startSession(dailyPuzzle('2026-11-10', preset).puzzle), CLASSIC);
+
+  it('is used by Medium and Collector; Easy and the worked example keep the full header', () => {
+    expect([opened('medium').isCompact, opened('collector').isCompact, opened('easy').isCompact, justOpened().isCompact]).toEqual([true, true, false, false]);
+  });
+});
