@@ -322,3 +322,45 @@ approved on 2026-11-10; behind the new `presets` flag, off. Its scenarios run on
   "Found N" with no total and for tapping open pills.
 - **GREEN**: 435 unit tests (branches 91.66%); engine 57; phones all but AC-12 (not yet built). In the full run, two iPhone taps
   timed out at 60 s (spec-006 AC-17 and AC-10); each passed 3 times out of 3 alone. AC-10 takes about 25 s on the iPhone alone.
+
+### AC-12: Medium and Collector fit the phone
+
+- **Acceptance RED** on both phones: "the puzzle is on screen without scrolling" and "the keypad is on screen without scrolling".
+  Part 1's compact screen and workings strip were in the library, but the game did not use them.
+- **Cycles** (T041, `src/app/screen.spec.ts`), each RED on its assertion first:
+  - grids bigger than 3 × 3 get the compact screen (FR-719): "expected [ undefined, undefined, …(2) ] to deeply equal [ true, true, false, false ]";
+  - grids wider than 3 columns show their workings elsewhere (FR-718): Medium, not Collector or Easy;
+  - the strip prompts "Tap a cell to see its row and column." until a cell is tapped;
+  - with a cell selected, it shows that cell's row working, then its column working;
+  - after a Check, the operator's line is in the strip until a cell is tapped, on Medium and on Collector (which has no strip
+    otherwise); it is still announced as before.
+- **Medium at 320 × 568 was 17 px too tall** (page 585 px; cells already at 44 px). The owner chose: no helper line on the compact
+  screen (spec FR-719 and the play-screen contract, `a715213`). Cycle RED: Medium's and Collector's helper was still shown.
+  Medium now measures exactly 568 px at 320 × 568: it fits, with no pixel to spare.
+- **GREEN**: all 8 scenarios on both phones, with the accessibility scan.
+
+### AC-13: switching between today's puzzles
+
+- **Passed at RED** on the engine and both phones, from part 2's AC-22. **Proved** by a deliberate, reverted break: the puzzle left
+  was filed under Practice, not its own choice. The engine failed ("Found 0 of 1"). The phones still passed: Easy's solution is also
+  saved on the phone (spec-006), and is restored when Easy is made again. With that ignored as well, both phones failed with
+  "Found 0 of 1". Both halves were reverted.
+
+### SC-701: opening Medium and Collector (T043)
+
+Chromium, Pixel 5 at 375 × 667, CPU 4× slower, the flags-on build: from tapping "Today's puzzles" (which makes the puzzles not yet
+made) to the chosen puzzle on screen, five runs each.
+
+| Puzzle | Date | Milliseconds | Worst |
+|---|---|---|---|
+| Medium | 10 November 2026 | 395, 413, 392, 396, 418 | 418 |
+| Medium | 7 January 2027 (slowest of 2027 to make) | 362, 372, 357, 371, 372 | 372 |
+| Collector | 10 November 2026 | 417, 420, 393, 396, 398 | 420 |
+| Collector | 16 August 2027 (slowest of 2027 to make) | 768, 780, 760, 750, 799 | 799 |
+
+All within 1 second; Collector's slowest date leaves about 200 ms.
+
+With `presets` off, the normal build (`49cf5e5`) lists only "Easy, found 0 of 1" and "Practice, found 0 of 2".
+
+**Part 3 whole suite** (`49cf5e5`): 441 unit tests (lines 98.65%, branches 91.84%), 57 engine and 359 phone and catalogue scenarios,
+no exceptions expired, no existing test changed. JS + CSS 15.8 KB gzipped.
