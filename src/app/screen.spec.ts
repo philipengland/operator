@@ -174,4 +174,13 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
   it('prompts in the strip on Medium until a cell is tapped (FR-718)', () => {
     expect(opened('medium').strip).toEqual({ text: 'Tap a cell to see its row and column.' });
   });
+
+  it("shows the selected cell's row working, then its column working, in the strip (FR-718)", () => {
+    const medium = startSession(dailyPuzzle('2026-11-10', 'medium').puzzle);
+    const emptyCell = medium.puzzle.givens.flatMap((digits, row) => digits.flatMap((digit, column) => (digit === null ? [{ row, column }] : [])))[0] ?? { row: 0, column: 0 };
+
+    const props = playScreenProps(applyAction(medium, { type: 'tapCell', ...emptyCell }), CLASSIC);
+
+    expect(props.strip).toEqual({ workings: [props.grid.rowWorkings[emptyCell.row], props.grid.columnWorkings[emptyCell.column]] });
+  });
 });

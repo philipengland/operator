@@ -104,6 +104,19 @@ export function puzzleTheme({ puzzle }: SessionState): Theme {
   return themeForSeed(puzzle.seed);
 }
 
+/** spec-007 FR-718: on a grid wider than 3 columns, the selected cell's row and column workings, or a prompt to tap one. */
+function stripOf(state: SessionState): Pick<PlayScreenProps, 'strip'> {
+  if (!isWiderThanThreeColumns(state.puzzle)) {
+    return {};
+  }
+  const { selected } = state;
+  if (selected === null) {
+    return { strip: { text: TAP_A_CELL } };
+  }
+  const workingOf = (axis: LinePosition['axis'], index: number) => lines(state, axis).filter((working) => working.line.index === index).map(workingProps);
+  return { strip: { workings: [...workingOf('row', selected.row), ...workingOf('column', selected.column)] } };
+}
+
 export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {
   return {
     header: { title: TITLE, message: bubbleLine(state.message, theme) },
@@ -114,6 +127,6 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     announcement: announcement(state.message, theme, counterText(state)),
     isSnug: isThreeByThree(state.puzzle),
     isCompact: isBiggerThanThreeByThree(state.puzzle),
-    ...(isWiderThanThreeColumns(state.puzzle) ? { strip: { text: TAP_A_CELL } } : {}),
+    ...stripOf(state),
   };
 }
