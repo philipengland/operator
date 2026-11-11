@@ -5,9 +5,11 @@
 export interface Features {
   /** spec-007 User Story 1: today's Easy puzzle, the Today screen and Practice. */
   readonly daily: boolean;
+  /** spec-007 User Story 2: today's Medium and Collector puzzles. */
+  readonly presets: boolean;
 }
 
-export const RELEASED: Features = { daily: true };
+export const RELEASED: Features = { daily: true, presets: false };
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';

@@ -109,7 +109,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `514187c`.
 
 **Independent Test**: set the phone's date, open today's Medium and Collector puzzles, and check each against its preset.
 
-- [ ] T034 [US2] Create `007-seeded-generator-part-3` from `main`; bring `test/acceptance/play/medium-and-collector.acceptance-spec.ts` from `514187c` (confirm by blob), then apply only the approved operator amendment in `acceptance.md` (2026-11-10); add the `presets` flag, off, in `src/app/features.ts` and `playwright.config.ts`
+- [X] T034 [US2] Create `007-seeded-generator-part-3` from `main`; bring `test/acceptance/play/medium-and-collector.acceptance-spec.ts` from `514187c` (confirm by blob), then apply only the approved operator amendment in `acceptance.md` (2026-11-10); add the `presets` flag, off, in `src/app/features.ts` and `playwright.config.ts`
 - [ ] T035 [P] [US2] TDD in `src/engine/presets.spec.ts`: `PRESETS.medium`: 5 × 4, `+ − × ÷`, open lines 4 to 5, given cells 10, targets 1 to 100 "never 0", band 2 to 20; `PRESETS.collector`: 4 × 3, `+ − × ÷`, all 7 open, no given cells, targets −29 to 29 "never 0", band 21 to 101. Negative targets allowed only for Collector (and Hard later), in `src/engine/daily-puzzle.ts`
 - [ ] T036 [US2] Measure Medium's and Collector's work budgets over every date of 2027, fix them, and record them in `research.md` R4
 - [ ] T037 [P] [US2] AC-11: `src/engine/sweep-medium.spec.ts` and `sweep-collector.spec.ts`, titles `(spec-007 AC-11)`: every date of 2027 matches its preset and AC-3 holds; pin Medium's and Collector's golden dates in `src/engine/golden-dates.spec.ts`
