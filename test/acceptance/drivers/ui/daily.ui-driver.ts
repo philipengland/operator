@@ -16,7 +16,8 @@ import { COUNTER_PATTERN } from './screen-names';
 
 const DAILY_PUZZLE = /^(Easy|Medium|Hard|Collector) puzzle, (\d+) by (\d+)$/;
 const CELL = /^Row (\d+) column (\d+) cell, (.+)$/;
-const PILL = /^(Row|Column) (\d+) target (-?−?\d+), (.*?)(?:, target reached)?$/;
+// An open pill's name begins with what it shows ("? 28, Column 3 target 28, operator not chosen"; play-screen contract).
+const PILL = /^(?:[^,]*, )?(Row|Column) (\d+) target (-?−?\d+), (.*?)(?:, target reached)?$/;
 const OPERATOR_WORDS: Readonly<Record<string, LineOperator>> = { plus: '+', minus: '−', times: '×', divide: '÷', 'operator not chosen': 'open' };
 const PRESET_NAMES: Readonly<Record<Preset, PresetName>> = { Easy: 'easy', Medium: 'medium', Hard: 'hard', Collector: 'collector' };
 // The phone's clock at midday, so the date is the same in every time zone the tests run in.
