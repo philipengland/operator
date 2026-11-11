@@ -26,6 +26,9 @@ const REFERENCE_4G = {
   cpuSlowdown: 4,
 } as const;
 
+// A daily puzzle as heard (play-screen contract): "Medium puzzle, 5 by 4".
+const DAILY_PUZZLE_NAME = /^(Easy|Medium|Hard|Collector) puzzle, \d+ by \d+$/;
+
 // Unknown positions: NaN compares false, so nothing unread can count as on screen.
 const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
 
@@ -177,9 +180,20 @@ export class UiPhoneDriver implements PhoneDriver {
 
   // spec-007: stubs until the stories that need them (tasks T038, T056).
 
+  /** Where today's puzzle, the keypad and the main button sit, and everything a player taps to play (spec-007 AC-12). */
   async dailyLayout(): Promise<DailyLayout> {
-    const nothing = { width: 0, height: 0 };
-    return { screen: nothing, tapTargets: [], puzzle: NO_BOX, keypad: NO_BOX, mainButton: NO_BOX, page: nothing };
+    const puzzle = this.page.getByRole('group', { name: DAILY_PUZZLE_NAME });
+    const keypad = this.page.getByRole('group', { name: 'Keypad' });
+    const mainButton = this.page.getByRole('button', { name: 'Check' });
+    const tapTargets = [];
+    for (const button of [...(await puzzle.getByRole('button').all()), ...(await keypad.getByRole('button').all()), mainButton]) {
+      tapTargets.push(await boxOf(button));
+    }
+    // The workings strip is drawn for sighted players only (aria-hidden), so it has no role to find it by.
+    const strip = this.page.locator('.workings-strip');
+    const puzzleBox = (await strip.count()) === 1 ? around(await boxOf(puzzle), await boxOf(strip)) : await boxOf(puzzle);
+    const page = await this.page.evaluate(() => ({ width: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight }));
+    return { screen: this.page.viewportSize() ?? page, tapTargets, puzzle: puzzleBox, keypad: await boxOf(keypad), mainButton: await boxOf(mainButton), page };
   }
 
   async leaveUnreadableRecordOfLastPuzzle(): Promise<void> {}
@@ -293,6 +307,11 @@ export class UiPhoneDriver implements PhoneDriver {
 }
 
 /** Where an element sits; an element that is missing or hidden has an unknown position. */
+/** The smallest box holding both. */
+function around(first: Box, second: Box): Box {
+  return { left: Math.min(first.left, second.left), top: Math.min(first.top, second.top), right: Math.max(first.right, second.right), bottom: Math.max(first.bottom, second.bottom) };
+}
+
 async function boxOf(element: Locator): Promise<Box> {
   const box = (await element.count()) === 1 ? await element.boundingBox() : null;
   if (!box) {

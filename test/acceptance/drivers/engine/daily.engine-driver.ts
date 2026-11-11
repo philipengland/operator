@@ -8,6 +8,7 @@ import { dailyPuzzle, type Entry, type Puzzle } from '../../../../src/engine';
 import { solutionsCounterModel } from '../../../../src/ui/combined/solutions-counter.model';
 import type { CalendarDay, DailyPuzzle, Preset, TodayChoice, TodayRow } from '../../dsl/daily-vocabulary';
 import { dateText } from '../calendar';
+import { firstSolutions } from '../daily-solutions';
 import { puzzleView } from '../daily-view';
 import type { DailyDriver } from '../daily.driver';
 import { EngineGame } from './engine-game';
@@ -77,8 +78,13 @@ export class EngineDailyDriver implements DailyDriver {
     this.dispatch({ type: 'submit' });
   }
 
-  // spec-007 User Story 2 (task T038).
-  async enterSolutionsAndCheck(): Promise<void> {}
+  /** Each of the first solutions the drivers' own search finds, entered as a player would and checked. */
+  async enterSolutionsAndCheck(count: number): Promise<void> {
+    for (const solution of firstSolutions(await this.puzzle(), count)) {
+      this.enter(solution);
+      this.dispatch({ type: 'submit' });
+    }
+  }
 
   async madeByTheEngineAlone(day: CalendarDay, preset: Preset): Promise<DailyPuzzle> {
     const { puzzle } = dailyPuzzle(dateText(day), PRESET_NAMES[preset]);

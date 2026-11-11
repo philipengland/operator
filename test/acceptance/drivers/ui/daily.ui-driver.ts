@@ -9,6 +9,7 @@ import { scanForAccessibilityProblems } from '../../support/axe';
 import type { CalendarDay, DailyCell, DailyLine, DailyPuzzle, LineOperator, Preset, TodayChoice, TodayRow } from '../../dsl/daily-vocabulary';
 import type { Digit } from '../../dsl/vocabulary';
 import { dateText, dayParts } from '../calendar';
+import { firstSolutions } from '../daily-solutions';
 import type { DailyDriver } from '../daily.driver';
 import { puzzleView } from '../daily-view';
 import { COUNTER_PATTERN } from './screen-names';
@@ -118,8 +119,13 @@ export class UiDailyDriver implements DailyDriver {
     await this.page.getByRole('button', { name: 'Check' }).tap();
   }
 
-  // spec-007 User Story 2 (task T038).
-  async enterSolutionsAndCheck(): Promise<void> {}
+  /** Each of the first solutions the drivers' own search finds in the puzzle shown, entered as a player would and checked. */
+  async enterSolutionsAndCheck(count: number): Promise<void> {
+    for (const solution of firstSolutions(await this.puzzle(), count)) {
+      await this.enter(solution);
+      await this.page.getByRole('button', { name: 'Check' }).tap();
+    }
+  }
 
   async madeByTheEngineAlone(day: CalendarDay, preset: Preset): Promise<DailyPuzzle> {
     const { puzzle } = dailyPuzzle(dateText(day), PRESET_NAMES[preset]);
