@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { GENERATOR_VERSION, PRESETS } from './presets';
 
 describe('PRESETS', () => {
-  it('Easy is 3 × 3, + and − shown on every line, 4 or 5 cells given, targets 1 to 29, 1 to 10 solutions', () => {
+  it('Easy is 3 × 3, + − × ÷ shown on every line, 4 or 5 cells given, targets 1 to 100, 1 to 10 solutions', () => {
     expect(PRESETS.easy).toMatchObject({
       rows: 3,
       columns: 3,
-      operators: ['+', '−'],
+      operators: ['+', '−', '×', '÷'],
       openLines: { fewest: 0, most: 0 },
       givenCells: { fewest: 4, most: 5 },
-      targets: { lowest: 1, highest: 29 },
+      targets: { lowest: 1, highest: 100 },
       band: { fewest: 1, most: 10 },
     });
   });

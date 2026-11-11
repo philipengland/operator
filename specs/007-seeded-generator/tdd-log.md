@@ -221,6 +221,25 @@ inside the band of 1 to 10. On Easy, the three column pills touch and read as on
   Making Easy itself takes under 0.5 ms in Node on its slowest date, so nearly all of the time is drawing the screen. Easy is well
   within 1 second.
 
+## Every operator on every difficulty (owner, 2026-11-10)
+
+Asked before `daily` went on: Easy and Medium allow + − × ÷, Easy's targets become 1 to 100, its band stays 1 to 10, and a puzzle
+need not use all four. Measured first over every date of 2027 with a scratch run of the generator: every date makes an Easy
+within the band (slowest 1.2 ms); lines drawn: + 1,483, × 585, − 87, ÷ 35 (a 3-digit difference or quotient is rarely
+positive and whole); 342 of 365 dates have exactly 1 solution (319 with + and − alone).
+
+- **Locked change, approved** (`714dd80`, `acceptance.md` amendment): AC-1 reads "from +, −, × and ÷" and "targets 1 to 100".
+  AC-8's change is recorded for part 3.
+- **Acceptance RED**: none possible. The amended AC-1 only widens what it accepts, so it passed on the old Easy. The preset's unit
+  test drove the change.
+- **Cycle** (`70e80b2`): RED, `presets.spec.ts` › Easy amended to `+ − × ÷` and 1 to 100, failed with "expected { rows: 3, …(6) } to
+  match object". GREEN, `PRESETS.easy` changed. As predicted, the sweep's operator check (307 dates) and target check
+  (252 dates) failed, and so did Easy's golden dates. Each was amended with the owner's approval (`test-changes.md`); the golden dates were
+  regenerated (given cells unchanged, operators and targets redrawn; 10 November 2026 unchanged, all + lines).
+  The amended target check was proved by a reverted break (targets up to 200: it failed on 171 dates).
+- **Acceptance GREEN**: 421 unit tests (branches 91.19%), 53 engine and 343 phone scenarios; the flagged Easy scenarios run again
+  on a fresh server: 14 passed.
+
 ## Column pills stacked on grids of 3 or more columns (owner, 2026-11-10)
 
 Easy's column pills overlapped by 33–36 px at 375 × 667 (each 87–94 px wide in a column about 54 px wide). The owner
@@ -245,3 +264,15 @@ chose mock-up C from three made on the real page (stacked, smaller text), for ev
   The worked example has no stacked pill.
 - **Catalogue**: stacked Badge, dashed Button and Target pill samples (`a4e8104`).
 - **GREEN**: 424 unit tests, 53 engine and 343 phone and catalogue scenarios.
+
+### Both together (main merged into the operators branch, 2026-11-11)
+
+PR #47 (stacked pills) was merged first, so `main` was merged into this branch; the spec and this log kept both additions.
+Easy with + − × ÷ and stacked column pills, measured on 11 November 2026 and 1 March and 1 September 2027: column pills
+40–49 × 34 px at 375 × 667 and 33–41 × 30 px at 320 × 568, 9–16 px apart, the page fitting without scrolling at both, the
+row pill "× 96" included. 424 unit tests, 53 engine and 342 phone and catalogue scenarios passed, with the speed budget run alone.
+One scenario, spec-006 AC-3 on the iPhone, timed out once in the full run (a tap waited 60 s); run again 5 times alone, it
+passed every time in about 8 s.
+
+Unit tests must run from `C:\…`: in a session opened at `c:\…` (lower-case drive), Vitest loaded itself twice and every
+file failed with "Cannot read properties of undefined (reading 'config')".

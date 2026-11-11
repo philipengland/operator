@@ -20,9 +20,9 @@ describe('Easy on every date of 2027', () => {
       const given = puzzle.givens.flat().filter((digit) => digit !== null).length;
       const checks = {
         '3 × 3': puzzle.rows === 3 && puzzle.columns === 3,
-        'every operator shown, + or −': lines.every((line) => line.operator === '+' || line.operator === '−'),
+        'every operator shown, one of + − × ÷': lines.every((line) => (['+', '−', '×', '÷'] as const).some((operator) => line.operator === operator)),
         '4 or 5 given': given >= 4 && given <= 5,
-        'targets whole, 1 to 29': lines.every(({ target }) => Number.isInteger(target) && target >= 1 && target <= 29),
+        'targets whole, 1 to 100': lines.every(({ target }) => Number.isInteger(target) && target >= 1 && target <= 100),
         '1 to 10 solutions': puzzle.solutionCount >= 1 && puzzle.solutionCount <= 10,
         'solved by its filling': checkEntry(puzzle, builtFrom, defaultRules).kind === 'solved',
       };

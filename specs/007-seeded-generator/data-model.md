@@ -18,7 +18,7 @@ One of `easy`, `medium`, `hard`, `collector`.
 | Field | Easy | Medium | Hard | Collector |
 | --- | --- | --- | --- | --- |
 | `rows` × `columns` | 3 × 3 | 5 × 4 | 7 × 5 | 4 × 3 |
-| `operators` | + − | + − × | + − × ÷ | + − × ÷ |
+| `operators` | + − × ÷ | + − × ÷ | + − × ÷ | + − × ÷ |
 | `openLines` (fewest, most) | 0, 0 | 4, 5 | 1, 2 | 7, 7 (all) |
 | `givenCells` (fewest, most) | 4, 5 | 10, 10 | 21, 22 | 0, 0 |
 | `targets` (lowest, highest; never 0) | 1, 29 | 1, 100 | −500, 500 | −29, 29 |

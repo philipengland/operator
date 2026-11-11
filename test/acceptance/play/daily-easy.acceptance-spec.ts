@@ -8,7 +8,7 @@ import { solutionA } from './examples';
 const PHONES = { tag: '@ui' };
 
 test.describe("[spec-007 AC-1] today's Easy puzzle", () => {
-  test('3 × 3, every operator shown, only + and −, 4 or 5 cells given, targets 1 to 29, 1 to 10 solutions', async ({ game, daily }) => {
+  test('3 × 3, every operator shown, from +, −, × and ÷, 4 or 5 cells given, targets 1 to 100, 1 to 10 solutions', async ({ game, daily }) => {
     await daily.setPhoneDate(tenthOfNovember);
     await game.open();
     await daily.expectWorkedExampleShowing();
@@ -17,9 +17,9 @@ test.describe("[spec-007 AC-1] today's Easy puzzle", () => {
 
     await daily.expectPuzzle('Easy', 3, 3);
     await daily.expectEveryOperatorShown();
-    await daily.expectOperatorsOnlyFrom(['+', '−']);
+    await daily.expectOperatorsOnlyFrom(['+', '−', '×', '÷']);
     await daily.expectGivenCells(4, 5);
-    await daily.expectTargetsFrom(1, 29);
+    await daily.expectTargetsFrom(1, 100);
     await daily.expectFound(0);
     await daily.expectSolutionTotalFrom(1, 10);
     await daily.expectEmptyGrid();
