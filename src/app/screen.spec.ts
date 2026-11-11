@@ -170,4 +170,8 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
       'beside',
     ]);
   });
+
+  it('prompts in the strip on Medium until a cell is tapped (FR-718)', () => {
+    expect(opened('medium').strip).toEqual({ text: 'Tap a cell to see its row and column.' });
+  });
 });

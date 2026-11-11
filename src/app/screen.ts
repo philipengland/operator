@@ -3,7 +3,7 @@
 
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import { themeForSeed, type Theme } from '../ui/foundations/themes';
-import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, workingName, workingSlot } from './labels';
+import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, TAP_A_CELL, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
@@ -114,5 +114,6 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     announcement: announcement(state.message, theme, counterText(state)),
     isSnug: isThreeByThree(state.puzzle),
     isCompact: isBiggerThanThreeByThree(state.puzzle),
+    ...(isWiderThanThreeColumns(state.puzzle) ? { strip: { text: TAP_A_CELL } } : {}),
   };
 }
