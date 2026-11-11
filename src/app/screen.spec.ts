@@ -162,4 +162,12 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
   it('is used by Medium and Collector; Easy and the worked example keep the full header', () => {
     expect([opened('medium').isCompact, opened('collector').isCompact, opened('easy').isCompact, justOpened().isCompact]).toEqual([true, true, false, false]);
   });
+
+  it('shows the workings of a grid wider than 3 columns elsewhere (Medium); Collector, at 3, keeps them beside each line (FR-718)', () => {
+    expect([opened('medium').grid.workings, opened('collector').grid.workings ?? 'beside', opened('easy').grid.workings ?? 'beside']).toEqual([
+      'elsewhere',
+      'beside',
+      'beside',
+    ]);
+  });
 });

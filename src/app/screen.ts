@@ -70,6 +70,11 @@ function isBiggerThanThreeByThree({ rows, columns }: SessionState['puzzle']): bo
   return rows * columns > EASY_SIZE * EASY_SIZE;
 }
 
+/** spec-007 FR-718: a grid wider than 3 columns shows its workings in the strip, not beside each line. */
+function isWiderThanThreeColumns({ columns }: SessionState['puzzle']): boolean {
+  return columns > EASY_SIZE;
+}
+
 /** The helper line is about swapping an operator; a puzzle with none to swap has no helper line. */
 function hasOpenLine({ rowLines, columnLines }: SessionState['puzzle']): boolean {
   return [...rowLines, ...columnLines].some((line) => line.operator === 'open');
@@ -85,6 +90,7 @@ export function puzzleGridProps(state: SessionState): PuzzleGridProps {
     rowWorkings: lines(state, 'row').map(workingProps),
     columnWorkings: lines(state, 'column').map(workingProps),
     helper: hasOpenLine(state.puzzle) ? HELPER_LINE : '',
+    ...(isWiderThanThreeColumns(state.puzzle) ? { workings: 'elsewhere' } : {}),
   };
 }
 
