@@ -364,3 +364,33 @@ With `presets` off, the normal build (`49cf5e5`) lists only "Easy, found 0 of 1"
 
 **Part 3 whole suite** (`49cf5e5`): 441 unit tests (lines 98.65%, branches 91.84%), 57 engine and 359 phone and catalogue scenarios,
 no exceptions expired, no existing test changed. JS + CSS 15.8 KB gzipped.
+
+## Part 4: User Story 3, Hard (T046 to T054)
+
+**Baseline** (`main` at `d081506`, `presets` released): 441 unit tests, 57 engine scenarios and 359 phone and catalogue
+scenarios pass. With `hard.acceptance-spec.ts` brought unchanged from `514187c` (blob `d97b42b`), AC-14 fails on the engine:
+"rows on the Today screen, in order", Hard not listed. The behaviour is missing, not the driver.
+
+### T046: the `hard` flag
+
+`hard` is off. Its file runs on the flags-on phones; AC-17 (`@budget`) runs on `android-speed-flagged`, against the flags-on
+build, alone and after `android-speed`, which no longer runs an unreleased file (checked with `playwright test --list`).
+`presetsOffered` now takes only the `daily` and `presets` flags it reads, so `today-list.spec.ts` is unchanged.
+
+### T047: Hard's preset
+
+- **RED** `presets.spec.ts` › "Hard is 7 × 5, + − × ÷, 1 or 2 of its 12 lines open, 21 or 22 cells given, targets −500 to 500,
+  1 to 3 solutions": `expected undefined to match object { rows: 7, columns: 5, …(5) }`.
+- **GREEN** `PRESETS.hard`, between Medium and Collector (`3626c4d`). 442 tests pass. REFACTOR: nothing to change.
+
+### T048: Hard's work budget
+
+200,000 steps, measured over every date of 2027 (research R4): no date changes with the budget; the kept count needing
+most steps took 138,717; the slowest date took 321 ms to make on this PC. Counts: 122 dates with 1 solution, 127 with 2, 116 with 3.
+
+### AC-15: Hard on every date of 2027
+
+- `sweep-hard.spec.ts` **passed at its first run** (12.9 s): the generator already keeps only puzzles that fit the preset.
+  **Proved** by a deliberate, reverted break: letting Hard keep up to 8 solutions failed it, starting "2027-10-01: solutions
+  within the band".
+- Hard's golden dates pinned in `golden-dates.spec.ts`, as a new test; no existing line changed (`tests:guard`: 0 changed).
