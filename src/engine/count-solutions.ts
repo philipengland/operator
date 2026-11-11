@@ -28,6 +28,16 @@ interface Line {
 }
 
 export function countSolutions(puzzle: Puzzle, workBudget: number): Count {
+  return countUpTo(puzzle, workBudget, MORE_THAN_100);
+}
+
+/**
+ * The count, stopping once it reaches `enough` (at most 101). A daily puzzle with more than its band
+ * allows is dropped whatever the exact count, so the generator stops at one past the band: within the
+ * band the search, its steps and its count are exactly those of `countSolutions` (research R12).
+ */
+export function countUpTo(puzzle: Puzzle, workBudget: number, enough: number): Count {
+  const limit = Math.min(enough, MORE_THAN_100);
   const grid: Grid = puzzle.givens.map((row) => [...row]);
   const lines = linesOf(puzzle);
   const empties = grid.flatMap((row, rowIndex) => row.flatMap((digit, column) => (digit === null ? [{ row: rowIndex, column }] : [])));
@@ -38,12 +48,12 @@ export function countSolutions(puzzle: Puzzle, workBudget: number): Count {
   const visit = (next: number): void => {
     const cell = empties[next];
     if (cell === undefined) {
-      count = Math.min(MORE_THAN_100, count + waysToReachEveryTarget(grid, lines));
+      count = Math.min(limit, count + waysToReachEveryTarget(grid, lines));
       return;
     }
     const affected = linesThrough[next] ?? [];
     for (const digit of DIGITS) {
-      if (count >= MORE_THAN_100 || ++steps > workBudget) {
+      if (count >= limit || ++steps > workBudget) {
         break;
       }
       setDigit(grid, cell, digit);
