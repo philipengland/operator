@@ -406,3 +406,12 @@ most steps took 138,717; the slowest date took 321 ms to make on this PC. Counts
 - **Full suite**: with 16 browsers at once, every phone run lost one to four iPhone scenarios from earlier specs to tap timeouts
   (a different one each time, each passing alone). The owner chose 4 browsers at once for local runs (`LOCAL_WORKERS`); then 58
   engine and 365 phone and catalogue scenarios pass. Only Hard's AC-17 budget fails, as expected: its driver is still a stub (T052).
+
+### AC-16: Hard fits the phone
+
+- **Passed at RED** on both flags-on phones, at 375 × 667 and 320 × 568: Hard uses the compact screen and strip built for
+  Medium and Collector (FR-718, FR-719). **Proved** by deliberate, reverted breaks:
+  - Hard drawn without the compact screen: both phones failed at 375 × 667, "the puzzle is on screen without scrolling".
+  - The wide grid made 400 px wide: both phones failed at 320 × 568, "the page is no wider than the screen". (A first try made the
+    whole page 400 px wide; Chromium then zoomed the Today screen out, its tap missed, and Android ran out of time before the check.)
+- The 44 × 44 and accessibility checks are the driver code AC-12 proved in part 3.

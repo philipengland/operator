@@ -135,7 +135,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `514187c`.
 - [X] T048 [US3] Measure Hard's work budget and generation time over every date of 2027; fix the budget and record it in `research.md` R4. If the sweep takes over 60 seconds, speed up the search in `src/engine/count-solutions.ts` (no change to any count); if it still does, stop and tell the owner (research R12)
 - [X] T049 [US3] AC-15: `src/engine/sweep-hard.spec.ts`, titles `(spec-007 AC-15)`; pin Hard's golden dates in `src/engine/golden-dates.spec.ts`
 - [X] T050 [US3] AC-14: Hard on the Today screen with `hard` on, between Medium and Collector, in `src/app/today-list.ts`; the puzzle opens as the preset says
-- [ ] T051 [US3] AC-16: Hard fits 375 × 667 without scrolling; at 320 × 568 it scrolls up and down only (FR-713); every target at least 44 × 44; the accessibility scan passes
+- [X] T051 [US3] AC-16: Hard fits 375 × 667 without scrolling; at 320 × 568 it scrolls up and down only (FR-713); every target at least 44 × 44; the accessibility scan passes
 - [ ] T052 [US3] AC-17: `secondsToOpen` in `ui/daily.ui-driver.ts`; Hard ready within 1 second on the reference throttling. If not, make puzzles in a Web Worker so the screen never freezes, within the 30 KB budget, and record it in `research.md` R5
 - [ ] T053 [US3] Confirm `npm run build` does not list Hard with `hard` off, and the flags-on build passes, including the speed project. Update `tdd-log.md`. Push and open "spec-007 part 4 of 5: Hard (flag off)", noting that Hard's puzzles become fixed for good when `hard` goes on. The owner merges
 - [ ] T054 [US3] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `hard` true in `src/app/features.ts`
