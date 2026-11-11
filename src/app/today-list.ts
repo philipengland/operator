@@ -13,7 +13,7 @@ export function todayListProps(state: DailyState): TodayListProps {
 }
 
 /** Today's presets each released story offers, in the Today screen's order (research R11). */
-export function presetsOffered({ daily, presets }: Features): readonly PresetName[] {
+export function presetsOffered({ daily, presets }: Pick<Features, 'daily' | 'presets'>): readonly PresetName[] {
   if (!daily) {
     return [];
   }
