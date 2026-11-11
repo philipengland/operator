@@ -432,3 +432,17 @@ With `hard` off, the normal build (`720dd7c`) lists "Easy, found 0 of 1", "Mediu
 
 **Part 4 whole suite** (4 browsers at once): 445 unit tests (lines 98.65%, branches 91.84%), 58 engine and 366 phone and catalogue
 scenarios, Hard's AC-17 on the flags-on speed project among them; no exceptions expired, no existing test changed. JS + CSS 15.85 KB gzipped.
+
+### CI: the year sweeps past their minute, and the search sped up (research R12)
+
+`verify` on #51 failed: with coverage and alongside each other, Collector's sweep took 70.6 s and Hard's 90.3 s (Collector alone
+had taken 49.8 s in part 3's CI). Locally with coverage, Hard's also failed (60.3 s). As R12 says, the search was sped up with no
+count changed, in two `perf` commits, each checked by all 445 unit tests, the golden dates among them:
+
+- `ac9ebfb`: only the lines through the cell tried are checked, and each line's digits are read once. Hard 39.7 s, Collector 27.1 s.
+- `6f49d3d`: a daily puzzle's count stops one past its band (`countUpTo`; `countSolutions` and the engine contract unchanged).
+  A candidate over its band is dropped whatever its exact count; within the band the search and its steps are as before.
+  Hard 15.1 s, Collector 26.1 s; the four sweeps 26.5 s instead of 60.7 s.
+
+It also removed the slow Today screen the owner had accepted at AC-17: on the reference phone it now opens within 650 ms on the
+slowest date of 2027 (1,766 ms before on 20 October 2027, now 610 ms). Choosing Hard stays about 0.12 s (research R5).
