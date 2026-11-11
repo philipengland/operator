@@ -5,6 +5,7 @@ import { applyAction, startSession } from './session';
 import { dailyPuzzle } from '../engine';
 import { themeForSeed } from '../ui/foundations/themes';
 import { puzzleTheme } from './screen';
+import { bubbleLine } from './labels';
 import { choose, openToday, startDaily } from './daily';
 
 const justOpened = () => playScreenProps(startSession(), CLASSIC);
@@ -182,5 +183,13 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
     const props = playScreenProps(applyAction(medium, { type: 'tapCell', ...emptyCell }), CLASSIC);
 
     expect(props.strip).toEqual({ workings: [props.grid.rowWorkings[emptyCell.row], props.grid.columnWorkings[emptyCell.column]] });
+  });
+
+  it("shows the operator's line after a Check in the strip, on Medium and on Collector, which has no strip otherwise (FR-719)", () => {
+    const checked = (preset: 'medium' | 'collector') =>
+      playScreenProps(applyAction(startSession(dailyPuzzle('2026-11-10', preset).puzzle), { type: 'submit' }), CLASSIC);
+    const operatorsLine = { text: bubbleLine('incomplete', CLASSIC) };
+
+    expect([checked('medium').strip, checked('collector').strip, opened('collector').strip]).toEqual([operatorsLine, operatorsLine, undefined]);
   });
 });

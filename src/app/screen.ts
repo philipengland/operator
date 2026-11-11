@@ -104,8 +104,14 @@ export function puzzleTheme({ puzzle }: SessionState): Theme {
   return themeForSeed(puzzle.seed);
 }
 
-/** spec-007 FR-718: on a grid wider than 3 columns, the selected cell's row and column workings, or a prompt to tap one. */
-function stripOf(state: SessionState): Pick<PlayScreenProps, 'strip'> {
+/**
+ * The compact screen's strip: the operator's line after a Check, until a cell is tapped (FR-719); otherwise, on a
+ * grid wider than 3 columns, the selected cell's row and column workings, or a prompt to tap one (FR-718).
+ */
+function stripOf(state: SessionState, theme: Theme): Pick<PlayScreenProps, 'strip'> {
+  if (state.message !== null && isBiggerThanThreeByThree(state.puzzle)) {
+    return { strip: { text: bubbleLine(state.message, theme) } };
+  }
   if (!isWiderThanThreeColumns(state.puzzle)) {
     return {};
   }
@@ -127,6 +133,6 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     announcement: announcement(state.message, theme, counterText(state)),
     isSnug: isThreeByThree(state.puzzle),
     isCompact: isBiggerThanThreeByThree(state.puzzle),
-    ...stripOf(state),
+    ...stripOf(state, theme),
   };
 }
