@@ -364,3 +364,85 @@ With `presets` off, the normal build (`49cf5e5`) lists only "Easy, found 0 of 1"
 
 **Part 3 whole suite** (`49cf5e5`): 441 unit tests (lines 98.65%, branches 91.84%), 57 engine and 359 phone and catalogue scenarios,
 no exceptions expired, no existing test changed. JS + CSS 15.8 KB gzipped.
+
+## Part 4: User Story 3, Hard (T046 to T054)
+
+**Baseline** (`main` at `d081506`, `presets` released): 441 unit tests, 57 engine scenarios and 359 phone and catalogue
+scenarios pass. With `hard.acceptance-spec.ts` brought unchanged from `514187c` (blob `d97b42b`), AC-14 fails on the engine:
+"rows on the Today screen, in order", Hard not listed. The behaviour is missing, not the driver.
+
+### T046: the `hard` flag
+
+`hard` is off. Its file runs on the flags-on phones; AC-17 (`@budget`) runs on `android-speed-flagged`, against the flags-on
+build, alone and after `android-speed`, which no longer runs an unreleased file (checked with `playwright test --list`).
+`presetsOffered` now takes only the `daily` and `presets` flags it reads, so `today-list.spec.ts` is unchanged.
+
+### T047: Hard's preset
+
+- **RED** `presets.spec.ts` › "Hard is 7 × 5, + − × ÷, 1 or 2 of its 12 lines open, 21 or 22 cells given, targets −500 to 500,
+  1 to 3 solutions": `expected undefined to match object { rows: 7, columns: 5, …(5) }`.
+- **GREEN** `PRESETS.hard`, between Medium and Collector (`3626c4d`). 442 tests pass. REFACTOR: nothing to change.
+
+### T048: Hard's work budget
+
+200,000 steps, measured over every date of 2027 (research R4): no date changes with the budget; the kept count needing
+most steps took 138,717; the slowest date took 321 ms to make on this PC. Counts: 122 dates with 1 solution, 127 with 2, 116 with 3.
+
+### AC-15: Hard on every date of 2027
+
+- `sweep-hard.spec.ts` **passed at its first run** (12.9 s): the generator already keeps only puzzles that fit the preset.
+  **Proved** by a deliberate, reverted break: letting Hard keep up to 8 solutions failed it, starting "2027-10-01: solutions
+  within the band".
+- Hard's golden dates pinned in `golden-dates.spec.ts`, as a new test; no existing line changed (`tests:guard`: 0 changed).
+
+### AC-14: Hard on the Today screen
+
+- **Acceptance RED** on the flags-on phones: "rows on the Today screen, in order", Hard missing. The engine driver passed once
+  T047 added the preset: it offers every preset in `PRESETS`, and the game offers only those its flags allow.
+- **RED** `today-list.spec.ts` › "offers Hard between Medium and Collector with hard (spec-007 AC-14)", a new test:
+  `expected [ 'easy', 'medium', 'collector' ] to deeply equal [ 'easy', 'medium', 'hard', …(1) ]`.
+- **GREEN** `presetsOffered` reads `hard`, optional and off when missing, so the existing test stands unchanged (`5102f83`).
+  445 unit tests; AC-14 passes on the engine and both flags-on phones. REFACTOR: nothing to change.
+- **Full suite**: with 16 browsers at once, every phone run lost one to four iPhone scenarios from earlier specs to tap timeouts
+  (a different one each time, each passing alone). The owner chose 4 browsers at once for local runs (`LOCAL_WORKERS`); then 58
+  engine and 365 phone and catalogue scenarios pass. Only Hard's AC-17 budget fails, as expected: its driver is still a stub (T052).
+
+### AC-16: Hard fits the phone
+
+- **Passed at RED** on both flags-on phones, at 375 × 667 and 320 × 568: Hard uses the compact screen and strip built for
+  Medium and Collector (FR-718, FR-719). **Proved** by deliberate, reverted breaks:
+  - Hard drawn without the compact screen: both phones failed at 375 × 667, "the puzzle is on screen without scrolling".
+  - The wide grid made 400 px wide: both phones failed at 320 × 568, "the page is no wider than the screen". (A first try made the
+    whole page 400 px wide; Chromium then zoomed the Today screen out, its tap missed, and Android ran out of time before the check.)
+- The 44 × 44 and accessibility checks are the driver code AC-12 proved in part 3.
+
+### AC-17: Hard on the reference phone
+
+- **Acceptance RED**: the phone driver's `secondsToOpen` was a stub returning NaN, so the scenario could not pass. Built in the
+  driver: from the tap on the choice's Today row until its puzzle is on screen, browser round trips included (`e181d23`).
+- **GREEN with no product change**: today's puzzles are made when the Today screen opens, so choosing Hard only switches to it;
+  0.13 seconds at worst. **Proved** by a deliberate, reverted break: 1.5 seconds of work on choosing Hard failed it with
+  "seconds to open Hard, Expected: <= 1, Received: 1.616".
+- **Found**: the scenario does not time opening the Today screen, where the puzzles are made. On the reference phone that takes
+  up to 1.8 seconds on Hard's slowest date (20 October 2027), and over 1 second on about 6 to 12 dates of 2027 (research R5).
+  The owner chose to accept and record it, not a worker, idle-time making or a faster count.
+
+With `hard` off, the normal build (`720dd7c`) lists "Easy, found 0 of 1", "Medium, found 0 of 12", "Collector, found 0" and
+"Practice, found 0 of 2": no Hard. Its flags are `{daily: true, presets: true, hard: false}`; the flags-on build's `hard` is true.
+
+**Part 4 whole suite** (4 browsers at once): 445 unit tests (lines 98.65%, branches 91.84%), 58 engine and 366 phone and catalogue
+scenarios, Hard's AC-17 on the flags-on speed project among them; no exceptions expired, no existing test changed. JS + CSS 15.85 KB gzipped.
+
+### CI: the year sweeps past their minute, and the search sped up (research R12)
+
+`verify` on #51 failed: with coverage and alongside each other, Collector's sweep took 70.6 s and Hard's 90.3 s (Collector alone
+had taken 49.8 s in part 3's CI). Locally with coverage, Hard's also failed (60.3 s). As R12 says, the search was sped up with no
+count changed, in two `perf` commits, each checked by all 445 unit tests, the golden dates among them:
+
+- `ac9ebfb`: only the lines through the cell tried are checked, and each line's digits are read once. Hard 39.7 s, Collector 27.1 s.
+- `6f49d3d`: a daily puzzle's count stops one past its band (`countUpTo`; `countSolutions` and the engine contract unchanged).
+  A candidate over its band is dropped whatever its exact count; within the band the search and its steps are as before.
+  Hard 15.1 s, Collector 26.1 s; the four sweeps 26.5 s instead of 60.7 s.
+
+It also removed the slow Today screen the owner had accepted at AC-17: on the reference phone it now opens within 650 ms on the
+slowest date of 2027 (1,766 ms before on 20 October 2027, now 610 ms). Choosing Hard stays about 0.12 s (research R5).

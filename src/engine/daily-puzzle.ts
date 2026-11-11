@@ -2,7 +2,7 @@
 // Every draw comes from one stream seeded by the date and preset, in a fixed order, so the same date
 // gives the same puzzle on every phone and in every later v1 build.
 
-import { countSolutions } from './count-solutions';
+import { countUpTo } from './count-solutions';
 import { defaultRules, evaluateLine } from './evaluate-line';
 import { GENERATOR_VERSION, PRESETS, type Between, type Preset } from './presets';
 import { randomFrom, seedNumber, type Random } from './random';
@@ -95,7 +95,7 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
     solutionCount: 0,
   };
   // Step 5: keep it only if its count is within the band, counted within the preset's work (FR-706, FR-707).
-  const { count, isWithinBudget } = countSolutions(unsolved, preset.workBudget);
+  const { count, isWithinBudget } = countUpTo(unsolved, preset.workBudget, preset.band.most + 1);
   if (!isWithinBudget || count < preset.band.fewest || count > preset.band.most) {
     return null;
   }

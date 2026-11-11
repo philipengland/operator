@@ -26,6 +26,7 @@ const SCENARIO_TIME_LIMIT_MS = 60_000;
 const SCENARIOS_BEHIND_A_FLAG: Readonly<Record<keyof Features, string>> = {
   daily: '**/play/daily-easy.acceptance-spec.ts',
   presets: '**/play/medium-and-collector.acceptance-spec.ts',
+  hard: '**/play/hard.acceptance-spec.ts',
 };
 const unreleasedScenarios = (Object.keys(SCENARIOS_BEHIND_A_FLAG) as (keyof Features)[])
   .filter((flag) => !RELEASED[flag])
@@ -33,10 +34,17 @@ const unreleasedScenarios = (Object.keys(SCENARIOS_BEHIND_A_FLAG) as (keyof Feat
 const FLAGS_ON_PORT = 4175;
 const flagsOnURL = `http://localhost:${FLAGS_ON_PORT}/`;
 const onTheGamesPhones = ['**/delivery/**', ...unreleasedScenarios];
+const flaggedProjects = unreleasedScenarios.length === 0 ? [] : ['iphone-flagged', 'android-flagged'];
+
+// Browsers at once on a developer's machine. Playwright's default (half the cores: 16 here) left the
+// iPhone's WebKit too slow to settle a tap within the time limit, a different scenario each full run
+// (2026-11-11; owner's choice). CI keeps Playwright's default, 2 on its 4-core runner.
+const LOCAL_WORKERS = 4;
 
 export default defineConfig({
   testDir: 'test/acceptance',
   timeout: SCENARIO_TIME_LIMIT_MS,
+  workers: isCi ? undefined : LOCAL_WORKERS,
   testMatch: '**/*.acceptance-spec.ts',
   forbidOnly: isCi,
   // Retries only collect traces for diagnosis; a scenario that passes on retry is flaky
@@ -85,11 +93,23 @@ export default defineConfig({
           // trace recording: run alongside them, they measured the machine's load (a tap of
           // 112.5 ms in one full run in four, 2026-11-08). Android only: see AGENTS.md.
           name: 'android-speed',
-          testIgnore: '**/delivery/**',
+          testIgnore: onTheGamesPhones,
           grep: /@budget/,
-          dependencies: ['iphone', 'android', 'catalogue-iphone', 'catalogue-android'],
+          dependencies: ['iphone', 'android', 'catalogue-iphone', 'catalogue-android', ...flaggedProjects],
           use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN, trace: 'off' },
         },
+        ...(unreleasedScenarios.length === 0
+          ? []
+          : [
+              {
+                // The budgets of a story behind a flag, on the flags-on build: alone, after every other run.
+                name: 'android-speed-flagged',
+                testMatch: unreleasedScenarios,
+                grep: /@budget/,
+                dependencies: ['android-speed'],
+                use: { ...devices['Pixel 5'], viewport: PHONE_SCREEN, trace: 'off' as const, baseURL: flagsOnURL },
+              },
+            ]),
         {
           name: 'catalogue-iphone',
           grep: /@catalogue/,

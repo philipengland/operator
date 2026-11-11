@@ -28,23 +28,36 @@ interface Line {
 }
 
 export function countSolutions(puzzle: Puzzle, workBudget: number): Count {
+  return countUpTo(puzzle, workBudget, MORE_THAN_100);
+}
+
+/**
+ * The count, stopping once it reaches `enough` (at most 101). A daily puzzle with more than its band
+ * allows is dropped whatever the exact count, so the generator stops at one past the band: within the
+ * band the search, its steps and its count are exactly those of `countSolutions` (research R12).
+ */
+export function countUpTo(puzzle: Puzzle, workBudget: number, enough: number): Count {
+  const limit = Math.min(enough, MORE_THAN_100);
   const grid: Grid = puzzle.givens.map((row) => [...row]);
   const lines = linesOf(puzzle);
   const empties = grid.flatMap((row, rowIndex) => row.flatMap((digit, column) => (digit === null ? [{ row: rowIndex, column }] : [])));
+  // Worked out once: only the lines through a cell can stop being reachable when it changes.
+  const linesThrough = empties.map((cell) => lines.filter((line) => passesThrough(line, cell)));
   let count = 0;
   let steps = 0;
   const visit = (next: number): void => {
     const cell = empties[next];
     if (cell === undefined) {
-      count = Math.min(MORE_THAN_100, count + waysToReachEveryTarget(grid, lines));
+      count = Math.min(limit, count + waysToReachEveryTarget(grid, lines));
       return;
     }
+    const affected = linesThrough[next] ?? [];
     for (const digit of DIGITS) {
-      if (count >= MORE_THAN_100 || ++steps > workBudget) {
+      if (count >= limit || ++steps > workBudget) {
         break;
       }
       setDigit(grid, cell, digit);
-      if (lines.every((line) => !passesThrough(line, cell) || canStillReach(grid, line))) {
+      if (affected.every((line) => canStillReach(grid, line))) {
         visit(next + 1);
       }
     }
@@ -66,8 +79,8 @@ function passesThrough({ cells }: Line, { row, column }: CellPosition): boolean 
 
 /** Whether some allowed operator can still reach the target, whatever digits the empty cells take (research R4). */
 function canStillReach(grid: Grid, line: Line): boolean {
-  const digits = line.cells.map(({ row, column }) => grid[row]?.[column] ?? null);
-  if (digits.every((digit) => digit !== null)) {
+  const digits = known(line.cells.map(({ row, column }) => grid[row]?.[column] ?? null));
+  if (digits.first !== null && digits.restEmpty === 0) {
     return operatorsReaching(grid, line) > 0;
   }
   const choices = line.spec.operator === 'open' ? OPERATORS : [line.spec.operator];
@@ -82,14 +95,21 @@ interface Known {
   readonly restEmpty: number;
 }
 
-function known([first = null, ...rest]: readonly (Digit | null)[]): Known {
-  const filled = rest.filter((digit): digit is Digit => digit !== null);
-  return {
-    first,
-    restSum: filled.reduce<number>((sum, digit) => sum + digit, 0),
-    restProduct: filled.reduce<number>((product, digit) => product * digit, 1),
-    restEmpty: rest.length - filled.length,
-  };
+function known(digits: readonly (Digit | null)[]): Known {
+  let restSum = 0;
+  let restProduct = 1;
+  let restEmpty = 0;
+  // One pass, with no new arrays: this runs for every line through every digit tried.
+  for (let index = 1; index < digits.length; index++) {
+    const digit = digits[index] ?? null;
+    if (digit === null) {
+      restEmpty++;
+    } else {
+      restSum += digit;
+      restProduct *= digit;
+    }
+  }
+  return { first: digits[0] ?? null, restSum, restProduct, restEmpty };
 }
 
 /** The largest product of `empty` digits. */
@@ -98,27 +118,27 @@ function mostFrom(empty: number): number {
 }
 
 /** Each operator's exact test: can the line still reach the target? */
-const REACH: Readonly<Record<Operator, (digits: readonly (Digit | null)[], target: number) => boolean>> = {
+const REACH: Readonly<Record<Operator, (digits: Known, target: number) => boolean>> = {
   '+': (digits, target) => {
-    const { first, restSum, restEmpty } = known(digits);
+    const { first, restSum, restEmpty } = digits;
     const empty = restEmpty + (first === null ? 1 : 0);
     const sum = restSum + (first ?? 0);
     return target >= sum + empty && target <= sum + LARGEST_DIGIT * empty;
   },
   '−': (digits, target) => {
-    const { first, restSum, restEmpty } = known(digits);
+    const { first, restSum, restEmpty } = digits;
     const lowest = (first ?? 1) - restSum - LARGEST_DIGIT * restEmpty;
     const highest = (first ?? LARGEST_DIGIT) - restSum - restEmpty;
     return target >= lowest && target <= highest;
   },
   '×': (digits, target) => {
-    const { first, restProduct, restEmpty } = known(digits);
+    const { first, restProduct, restEmpty } = digits;
     const product = restProduct * (first ?? 1);
     const empty = restEmpty + (first === null ? 1 : 0);
     return target > 0 && target % product === 0 && target / product <= mostFrom(empty);
   },
   '÷': (digits, target) => {
-    const { first, restProduct, restEmpty } = known(digits);
+    const { first, restProduct, restEmpty } = digits;
     if (target <= 0) {
       return false;
     }

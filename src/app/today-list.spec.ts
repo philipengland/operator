@@ -20,4 +20,8 @@ describe('presetsOffered (spec-007 research R11)', () => {
       presetsOffered({ daily: true, presets: true }),
     ]).toEqual([[], ['easy'], ['easy', 'medium', 'collector']]);
   });
+
+  it('offers Hard between Medium and Collector with hard (spec-007 AC-14)', () => {
+    expect(presetsOffered({ daily: true, presets: true, hard: true })).toEqual(['easy', 'medium', 'hard', 'collector']);
+  });
 });

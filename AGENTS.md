@@ -178,13 +178,15 @@ npm run build:flags-on          # the game with every feature flag on, in dist-f
 - **User stories ship behind build-time feature flags** (`src/app/features.ts`; constitution VII).
   `playwright.config.ts` says which scenario file needs which flag: while a flag is off, that file
   runs on `iphone-flagged` and `android-flagged` against `dist-flags-on/`, and releasing a story
-  changes no locked file. Behind a flag at present: `daily` (spec-007 User Story 1, today's Easy puzzle) and `presets` (User Story 2, Medium and Collector), both released on 2026-11-11; to be removed once signed off. Why: every merge deploys, so `main` must always be fit for players.
+  changes no locked file. Behind a flag at present: `daily` (spec-007 User Story 1, today's Easy puzzle) and `presets` (User Story 2, Medium and Collector), both released on 2026-11-11, to be removed once signed off; and `hard` (User Story 3, Hard), off. Why: every merge deploys, so `main` must always be fit for players.
 - **Existing unit tests are protected.** Amend or delete one only when a specific change in functionality makes it
   obsolete, and record it in `specs/<feature>/test-changes.md`: `| File | Test | Requirement (FR-, AC-, SC- or task) | Why the test is obsolete |`.
   `verify` fails a pull request that removes or changes a line of an existing `*.spec.ts` without a new row for that file. Adding tests is
   always allowed. Why: a script overwrote an existing test during spec-006, and neither `verify` nor coverage noticed (2026-11-09).
 - **Run TypeScript tools with** `node --experimental-strip-types` (see `exceptions:check`).
   Why: no extra dependency is needed to run a `.ts` tool on Node 22.
+- **Local acceptance runs use 4 browsers at once** (`LOCAL_WORKERS` in `playwright.config.ts`); CI keeps Playwright's default.
+  Why: with 16, the iPhone's WebKit fell too far behind to settle a tap within the time limit, a different scenario each run (2026-11-11).
 - **Upgrading Playwright also changes the image in `ci-deploy.yml`**: `verify` runs in
   `mcr.microsoft.com/playwright`, pinned by tag and digest, which must match `@playwright/test`. Why: the image
   holds the browsers and their libraries; installing them took up to 5m 44s of a 20-minute ceiling (2026-11-09).
