@@ -27,7 +27,7 @@ export interface Preset {
 /** Part of every seed and daily puzzle identity; a deliberate change to how puzzles are made is v2 (research R2). */
 export const GENERATOR_VERSION = 'v1';
 
-// The spike's suggestion (research R4); measured over every date of 2027 and fixed at task T021.
+// The spike's suggestion (research R4); measured over every date of 2027 and fixed for each preset (T021, T034, T048).
 const SUGGESTED_WORK_BUDGET = 200_000;
 
 export const PRESETS: Readonly<Partial<Record<PresetName, Preset>>> = {

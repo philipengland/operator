@@ -99,6 +99,15 @@ every operator allowed (owner, 2026-11-10):
 
 Collector's counts: 358 of 365 dates have more than 100 solutions (shown as "Found N", FR-710); the rest have 27 to 90.
 
+**Hard (measured 2026-11-11, User Story 3)**: 200,000 steps, over every date of 2027:
+
+| Preset | Kept count needing most steps | 95th percentile | Median | Dates where the budget changes the puzzle | Slowest date to make (this PC) |
+|---|---|---|---|---|---|
+| Hard | 138,717 | 19,305 | 1,989 | 0 | 321 ms (349 ms with no budget) |
+
+Hard's counts: 122 dates have 1 solution, 127 have 2, 116 have 3. Measuring the year took 36 seconds, under R12's minute,
+so the search was not changed.
+
 **Rationale**: constitution III forbids time limits, as a slow phone would then skip a candidate a fast one
 kept. The bounds prune a line as soon as it can no longer reach its target, which is what made the spike's
 counts fast. The same search answers AC-5, compared with trying every filling.
