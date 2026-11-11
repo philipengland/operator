@@ -84,14 +84,14 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
   if (!isEveryLineMade(rowLines) || !isEveryLineMade(columnLines)) {
     return null;
   }
+  const lines = withOpenLines(random, preset, { rowLines, columnLines });
   const given = new Set(chooseSome(random, everyCell(preset), howMany(random, preset.givenCells)).map(({ row, column }) => `${row},${column}`));
   const unsolved: Puzzle = {
     ...identity,
     rows: preset.rows,
     columns: preset.columns,
     givens: filling.map((digits, row) => digits.map((digit, column) => (given.has(`${row},${column}`) ? digit : null))),
-    rowLines,
-    columnLines,
+    ...lines,
     solutionCount: 0,
   };
   // Step 5: keep it only if its count is within the band, counted within the preset's work (FR-706, FR-707).
@@ -102,6 +102,19 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
   const puzzle: Puzzle = { ...unsolved, solutionCount: count };
   const noOperatorsChosen = (lines: readonly LineSpec[]) => lines.map(() => null);
   return { puzzle, builtFrom: { cells: filling, rowOperators: noOperatorsChosen(rowLines), columnOperators: noOperatorsChosen(columnLines) } };
+}
+
+interface Lines {
+  readonly rowLines: readonly LineSpec[];
+  readonly columnLines: readonly LineSpec[];
+}
+
+/** Step 3: as many lines as the preset says, rows then columns counted together, opened for the player to choose (R3). */
+function withOpenLines(random: Random, preset: Preset, { rowLines, columnLines }: Lines): Lines {
+  const everyLine = Array.from({ length: rowLines.length + columnLines.length }, (_, index) => index);
+  const opened = new Set(chooseSome(random, everyLine, howMany(random, preset.openLines)));
+  const open = (line: LineSpec, index: number): LineSpec => (opened.has(index) ? { ...line, operator: 'open' } : line);
+  return { rowLines: rowLines.map(open), columnLines: columnLines.map((line, index) => open(line, rowLines.length + index)) };
 }
 
 /** Step 1: every cell a digit from 1 to 9, row by row. */
