@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { dailyPuzzle, type Digit, type LinePosition, type Puzzle } from '../engine';
 import { choose, openToday, startDaily, todayRows } from './daily';
+import { onDate } from './daily';
 import { applyAction, startSession, type SessionAction, type SessionState } from './session';
 
 const TENTH_OF_NOVEMBER = '2026-11-10';
@@ -81,3 +82,19 @@ function enter(row: number, column: number, digit: Digit): SessionAction[] {
     { type: 'key', digit },
   ];
 }
+
+describe('onDate (spec-007 FR-716, research R6)', () => {
+  const ELEVENTH_OF_NOVEMBER = '2026-11-11';
+
+  it("on a new date offers that date's puzzles; the puzzle on screen stays, and Practice keeps what it found", () => {
+    const practice = withSolutionAFound();
+    const playingCollector = choose(openToday(startDaily(TENTH_OF_NOVEMBER, practice, ['easy', 'collector'])), 'collector');
+
+    const nextDay = openToday(onDate(playingCollector, ELEVENTH_OF_NOVEMBER));
+
+    expect(nextDay.session.puzzle).toBe(playingCollector.session.puzzle);
+    expect(choose(nextDay, 'collector').session.puzzle).toEqual(dailyPuzzle(ELEVENTH_OF_NOVEMBER, 'collector').puzzle);
+    expect(choose(nextDay, 'easy').session.puzzle).toEqual(dailyPuzzle(ELEVENTH_OF_NOVEMBER, 'easy').puzzle);
+    expect(choose(nextDay, 'practice').session.found).toEqual(practice.found);
+  });
+});

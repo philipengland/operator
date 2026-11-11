@@ -1,7 +1,7 @@
 // Layer 3 — today's puzzles in-process, with no browser (spec-007): the app's daily state and labels,
 // played through the same game as the engine's game driver.
 
-import { choose, openToday, todayRows, type Choice } from '../../../../src/app/daily';
+import { choose, onDate, openToday, todayRows, type Choice } from '../../../../src/app/daily';
 import { puzzleName } from '../../../../src/app/labels';
 import { applyAction, counterText, totalToShow, type SessionAction, type SessionState } from '../../../../src/app/session';
 import { dailyPuzzle, type Entry, type Puzzle } from '../../../../src/engine';
@@ -37,8 +37,9 @@ export class EngineDailyDriver implements DailyDriver {
     this.game.date = dateText(day);
   }
 
+  /** The game reads the phone's date again as the Today screen opens (research R6). */
   async tapToday(): Promise<void> {
-    this.game.daily = openToday(this.daily());
+    this.game.daily = openToday(onDate(this.daily(), this.game.date));
   }
 
   async todayRows(): Promise<readonly TodayRow[]> {

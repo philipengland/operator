@@ -18,7 +18,7 @@ import { solutionListProps } from './solution-list';
 import { solutionViewProps } from './solution-view';
 import { createBrowserStore } from './browser-store';
 import { readSolutions, rememberChange } from './solution-store';
-import { choose, openToday, startDaily, todayChoices, type DailyState, type SavedSolutions } from './daily';
+import { choose, onDate, openToday, startDaily, todayChoices, type DailyState, type SavedSolutions } from './daily';
 import { dateOnThePhone } from './today';
 import { presetsOffered, todayListProps } from './today-list';
 import type { Features } from './features';
@@ -107,7 +107,9 @@ function openTodayScreen(): void {
 }
 
 function showToday(): void {
-  daily = openToday(daily, saved);
+  // With presets, the phone's date is read again here, so a new day's puzzles are offered (research R6).
+  const onThisDate = features.presets ? onDate(daily, dateOnThePhone(new Date())) : daily;
+  daily = openToday(onThisDate, saved);
   render();
 }
 
