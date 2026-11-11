@@ -318,7 +318,9 @@ phone's date to 11 November 2026 and reopen.
   counter MUST be replaced by one bar holding the counter and the Today button. The operator's line
   after a Check MUST show in the workings strip until the player taps a cell, and MUST be announced as
   spec-004 requires. Collector, at 3 columns, gains the strip for this line only, keeping each working
-  beside its line. The worked example and Easy keep the full header.
+  beside its line. The compact screen has no helper line about swapping operators: its dashed pills and
+  the strip's prompt stand in for it (owner, 2026-11-11, so Medium fits 320 × 568). The worked example
+  and Easy keep the full header.
 
 ### Key Entities
 
