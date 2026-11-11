@@ -46,6 +46,15 @@ function readDailyScreen(pattern: string): DailyScreen | null {
   return { name: puzzle.getAttribute('aria-label') ?? '', buttons, texts };
 }
 
+/** Runs in the page: the counter's first piece of shown text, its title; the heard name is visually hidden. */
+function readCounterTitle(counter: Element): string {
+  const isShown = (part: Element) => {
+    const box = part.getBoundingClientRect();
+    return part.children.length === 0 && (part.textContent ?? '').trim() !== '' && box.width > 1 && box.height > 1;
+  };
+  return (Array.from(counter.querySelectorAll('*')).find(isShown)?.textContent ?? '').trim();
+}
+
 /** Runs in the page: the theme colours the page is drawn in. */
 function readThemeColours(): Record<string, string> {
   const style = document.documentElement.style;
@@ -106,9 +115,10 @@ export class UiDailyDriver implements DailyDriver {
     return this.page.getByRole('group', { name: 'Puzzle', exact: true }).isVisible();
   }
 
+  /** The counter's title as shown ("Solutions found" or "All found!"); its heard name is left out. */
   async counterTitle(): Promise<string> {
     const heard = this.page.getByText(COUNTER_PATTERN);
-    return ((await heard.locator('xpath=..').innerText()).split('\n')[0] ?? '').trim();
+    return heard.locator('xpath=..').evaluate(readCounterTitle);
   }
 
   async counter(): Promise<string> {
@@ -165,7 +175,8 @@ export class UiDailyDriver implements DailyDriver {
 
   private async chooseOperators(axis: 'Row' | 'Column', operators: Entry['rowOperators']): Promise<void> {
     for (const [index, operator] of operators.entries()) {
-      const pill = this.dailyPuzzleGroup().getByRole('button', { name: new RegExp(`^${axis} ${index + 1} target `) });
+      // An open pill's name begins with what it shows: "? 23, Row 1 target 23, operator not chosen".
+      const pill = this.dailyPuzzleGroup().getByRole('button', { name: new RegExp(`(^|, )${axis} ${index + 1} target `) });
       for (let taps = 0; operator !== null && taps < OPERATOR_TAPS_TO_GO_ROUND; taps++) {
         const name = (await pill.getAttribute('aria-label')) ?? '';
         if (OPERATOR_WORDS[PILL.exec(name)?.[4] ?? ''] === operator) {

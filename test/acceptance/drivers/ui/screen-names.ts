@@ -79,8 +79,11 @@ function asShown(spoken: string): Working {
   return spoken.replace(/= minus (\d+)$/, '= −$1');
 }
 
-/** The counter's heard name, alone in its element. The status can hold the same words after others. */
-export const COUNTER_PATTERN = /^Found \d+ of \d+$/;
+/**
+ * The counter's heard name, alone in its element: "Found 1 of 2", or "Found 3" when a puzzle has more than 100
+ * (spec-007 FR-710). The status can hold the same words after others.
+ */
+export const COUNTER_PATTERN = /^Found \d+( of \d+)?$/;
 
 // The visible messages (labels.ts), longest first so "every solution" wins over "new solution".
 const MESSAGES: readonly (readonly [string, Result])[] = [
