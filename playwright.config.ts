@@ -36,9 +36,15 @@ const flagsOnURL = `http://localhost:${FLAGS_ON_PORT}/`;
 const onTheGamesPhones = ['**/delivery/**', ...unreleasedScenarios];
 const flaggedProjects = unreleasedScenarios.length === 0 ? [] : ['iphone-flagged', 'android-flagged'];
 
+// Browsers at once on a developer's machine. Playwright's default (half the cores: 16 here) left the
+// iPhone's WebKit too slow to settle a tap within the time limit, a different scenario each full run
+// (2026-11-11; owner's choice). CI keeps Playwright's default, 2 on its 4-core runner.
+const LOCAL_WORKERS = 4;
+
 export default defineConfig({
   testDir: 'test/acceptance',
   timeout: SCENARIO_TIME_LIMIT_MS,
+  workers: isCi ? undefined : LOCAL_WORKERS,
   testMatch: '**/*.acceptance-spec.ts',
   forbidOnly: isCi,
   // Retries only collect traces for diagnosis; a scenario that passes on retry is flaky
