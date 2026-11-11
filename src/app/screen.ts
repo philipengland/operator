@@ -75,7 +75,7 @@ function isWiderThanThreeColumns({ columns }: SessionState['puzzle']): boolean {
   return columns > EASY_SIZE;
 }
 
-/** The helper line is about swapping an operator; a puzzle with none to swap has no helper line. */
+/** The helper line is about swapping an operator; a puzzle with none to swap, or on the compact screen (FR-719), has none. */
 function hasOpenLine({ rowLines, columnLines }: SessionState['puzzle']): boolean {
   return [...rowLines, ...columnLines].some((line) => line.operator === 'open');
 }
@@ -89,7 +89,7 @@ export function puzzleGridProps(state: SessionState): PuzzleGridProps {
     cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
     rowWorkings: lines(state, 'row').map(workingProps),
     columnWorkings: lines(state, 'column').map(workingProps),
-    helper: hasOpenLine(state.puzzle) ? HELPER_LINE : '',
+    helper: hasOpenLine(state.puzzle) && !isBiggerThanThreeByThree(state.puzzle) ? HELPER_LINE : '',
     ...(isWiderThanThreeColumns(state.puzzle) ? { workings: 'elsewhere' } : {}),
   };
 }

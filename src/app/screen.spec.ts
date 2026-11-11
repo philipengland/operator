@@ -192,4 +192,8 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
 
     expect([checked('medium').strip, checked('collector').strip, opened('collector').strip]).toEqual([operatorsLine, operatorsLine, undefined]);
   });
+
+  it('has no helper line about swapping operators, though Medium and Collector have open lines (FR-719)', () => {
+    expect([opened('medium').grid.helper, opened('collector').grid.helper]).toEqual(['', '']);
+  });
 });
