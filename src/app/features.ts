@@ -7,7 +7,7 @@ export interface Features {
   readonly daily: boolean;
 }
 
-export const RELEASED: Features = { daily: false };
+export const RELEASED: Features = { daily: true };
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';

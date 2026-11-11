@@ -98,8 +98,8 @@ the approved Layer 1 file it makes pass, brought unchanged from `514187c`.
 - [X] T029 [US1] AC-7: 10 and 11 November differ. ⚠️ May pass from AC-1: report, and prove with a reverted break
 - [X] T030 [US1] AC-22: TDD in `src/app/session.spec.ts`: each puzzle keeps its own found solutions when switching (by puzzle identity, as spec-006 saves them); "Practice" opens the worked example at "Found 1 of 2" with Solution A listed
 - [X] T031 [US1] FR-711: TDD in `src/app/labels.spec.ts` or `screen.spec.ts`: nothing shown or announced contains `builtFrom` before it is found. Measure Easy's opening time on the reference throttling and record it in `tdd-log.md` (SC-701)
-- [ ] T032 [US1] Confirm `npm run build` shows no Today button with `daily` off, and the flags-on build passes `daily-easy.acceptance-spec.ts`. Update `tdd-log.md`. Push and open "spec-007 part 2 of 5: today's Easy puzzle (flag off)", noting that Easy's puzzles become fixed for good when `daily` goes on. The owner merges
-- [ ] T033 [US1] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, at the Wi-Fi address). Then a one-line pull request sets `daily` true in `src/app/features.ts`
+- [X] T032 [US1] Confirm `npm run build` shows no Today button with `daily` off, and the flags-on build passes `daily-easy.acceptance-spec.ts`. Update `tdd-log.md`. Push and open "spec-007 part 2 of 5: today's Easy puzzle (flag off)", noting that Easy's puzzles become fixed for good when `daily` goes on. The owner merges
+- [X] T033 [US1] **The owner reviews the flags-on build on a phone** (`npm run build:flags-on`, served by `npx vite preview --outDir dist-flags-on --host`, at the Wi-Fi address). Then a one-line pull request sets `daily` true in `src/app/features.ts`
 
 ---
 
