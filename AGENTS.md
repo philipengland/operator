@@ -23,7 +23,7 @@ development-only catalogue; spec-004 (`specs/004-themed-play-screen/`) applies i
 with a keypad and the operator's voice after each check. Spec-006 (`specs/006-solution-log/`) lists the solutions found,
 reopens them read-only, clears them with "Start again", and remembers them on the phone. Spec-007
 (`specs/007-seeded-generator/`) makes new puzzles each day from the date alone, the same on every phone, chosen from a
-Today screen, with the worked example kept as "Practice"; so far today's Easy puzzle, behind the `daily` flag. Sources: `docs/brief/project-brief.md`, the constitution.
+Today screen, with the worked example kept as "Practice"; so far today's Easy, Medium and Collector puzzles (flags `daily` and `presets`). Sources: `docs/brief/project-brief.md`, the constitution.
 
 ## Architecture and Key Decisions
 
@@ -178,7 +178,7 @@ npm run build:flags-on          # the game with every feature flag on, in dist-f
 - **User stories ship behind build-time feature flags** (`src/app/features.ts`; constitution VII).
   `playwright.config.ts` says which scenario file needs which flag: while a flag is off, that file
   runs on `iphone-flagged` and `android-flagged` against `dist-flags-on/`, and releasing a story
-  changes no locked file. Behind a flag at present: `daily` (spec-007 User Story 1, today's Easy puzzle), released on 2026-11-11; to be removed once signed off. Why: every merge deploys, so `main` must always be fit for players.
+  changes no locked file. Behind a flag at present: `daily` (spec-007 User Story 1, today's Easy puzzle) and `presets` (User Story 2, Medium and Collector), both released on 2026-11-11; to be removed once signed off. Why: every merge deploys, so `main` must always be fit for players.
 - **Existing unit tests are protected.** Amend or delete one only when a specific change in functionality makes it
   obsolete, and record it in `specs/<feature>/test-changes.md`: `| File | Test | Requirement (FR-, AC-, SC- or task) | Why the test is obsolete |`.
   `verify` fails a pull request that removes or changes a line of an existing `*.spec.ts` without a new row for that file. Adding tests is
