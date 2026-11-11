@@ -415,3 +415,14 @@ most steps took 138,717; the slowest date took 321 ms to make on this PC. Counts
   - The wide grid made 400 px wide: both phones failed at 320 × 568, "the page is no wider than the screen". (A first try made the
     whole page 400 px wide; Chromium then zoomed the Today screen out, its tap missed, and Android ran out of time before the check.)
 - The 44 × 44 and accessibility checks are the driver code AC-12 proved in part 3.
+
+### AC-17: Hard on the reference phone
+
+- **Acceptance RED**: the phone driver's `secondsToOpen` was a stub returning NaN, so the scenario could not pass. Built in the
+  driver: from the tap on the choice's Today row until its puzzle is on screen, browser round trips included (`e181d23`).
+- **GREEN with no product change**: today's puzzles are made when the Today screen opens, so choosing Hard only switches to it;
+  0.13 seconds at worst. **Proved** by a deliberate, reverted break: 1.5 seconds of work on choosing Hard failed it with
+  "seconds to open Hard, Expected: <= 1, Received: 1.616".
+- **Found**: the scenario does not time opening the Today screen, where the puzzles are made. On the reference phone that takes
+  up to 1.8 seconds on Hard's slowest date (20 October 2027), and over 1 second on about 6 to 12 dates of 2027 (research R5).
+  The owner chose to accept and record it, not a worker, idle-time making or a faster count.

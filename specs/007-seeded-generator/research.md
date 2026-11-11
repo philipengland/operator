@@ -132,6 +132,23 @@ for evidence.
 data would outgrow 30 KB); saving made puzzles on the phone (a stored copy that a later version must keep
 reading, for little gain once they are made in memory).
 
+**Measured with Hard (2026-11-11, User Story 3; owner's choice: accepted as it is)**: as built, today's puzzles
+are made when the Today screen opens (`openToday`), not in idle time, so choosing a row only switches to a
+puzzle already made. On the reference phone (Pixel 5, CPU 4× slower), five runs each:
+
+| Date | Tapping "Today's puzzles" until the Today screen shows (worst) | Tapping Hard's row until it is on screen (worst) |
+|---|---|---|
+| 10 November 2026 (AC-17's date) | 304 ms | 129 ms |
+| 20 October 2027 (Hard's slowest of 2027) | 1,766 ms | 131 ms |
+| 19 October 2027 (Hard's count needing most steps) | 847 ms | 120 ms |
+| 16 August 2027 (Collector's slowest of 2027) | 704 ms | 118 ms |
+
+The reference phone is about 5.5 times slower than this PC at making puzzles, so its 1 second is about 180 ms
+here. Making all four over every date of 2027 on this PC: 6 dates take over 180 ms and 12 over 150 ms, so on
+about 6 to 12 dates a year the Today screen takes 1 to 1.8 seconds to appear on the reference phone, and the
+screen does not respond meanwhile. Choosing any puzzle stays within SC-701. AC-17 times the choice, as approved.
+The owner accepted this rather than a worker, making puzzles ahead in idle time, or a faster count.
+
 ## R6. Today's date in the game and in tests
 
 **Decision**: `src/app/today.ts` turns the phone's clock into the local date text (R2), reading the clock
