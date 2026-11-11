@@ -426,3 +426,9 @@ most steps took 138,717; the slowest date took 321 ms to make on this PC. Counts
 - **Found**: the scenario does not time opening the Today screen, where the puzzles are made. On the reference phone that takes
   up to 1.8 seconds on Hard's slowest date (20 October 2027), and over 1 second on about 6 to 12 dates of 2027 (research R5).
   The owner chose to accept and record it, not a worker, idle-time making or a faster count.
+
+With `hard` off, the normal build (`720dd7c`) lists "Easy, found 0 of 1", "Medium, found 0 of 12", "Collector, found 0" and
+"Practice, found 0 of 2": no Hard. Its flags are `{daily: true, presets: true, hard: false}`; the flags-on build's `hard` is true.
+
+**Part 4 whole suite** (4 browsers at once): 445 unit tests (lines 98.65%, branches 91.84%), 58 engine and 366 phone and catalogue
+scenarios, Hard's AC-17 on the flags-on speed project among them; no exceptions expired, no existing test changed. JS + CSS 15.85 KB gzipped.
