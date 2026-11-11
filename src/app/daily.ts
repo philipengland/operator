@@ -24,12 +24,12 @@ export function startDaily(date: CalendarDate, practice: SessionState, offered: 
   return { date, current: 'practice', session: practice, kept: {}, offered };
 }
 
-/** The Today screen over the puzzle; today's puzzles not yet made are made, so each row has its count. */
 /** What the phone has saved for a puzzle (spec-006); nothing, unless the app says otherwise. */
 export type SavedSolutions = (puzzle: Puzzle) => readonly Entry[];
 
 const NOTHING_SAVED: SavedSolutions = () => [];
 
+/** The Today screen over the puzzle; today's puzzles not yet made are made, so each row has its count. */
 export function openToday(state: DailyState, saved: SavedSolutions = NOTHING_SAVED): DailyState {
   const made = state.offered.filter((preset) => preset !== state.current && state.kept[preset] === undefined);
   const kept = { ...state.kept, ...Object.fromEntries(made.map((preset) => [preset, freshSession(state.date, preset, saved)])) };
