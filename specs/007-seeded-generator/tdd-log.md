@@ -276,3 +276,49 @@ passed every time in about 8 s.
 
 Unit tests must run from `C:\…`: in a session opened at `c:\…` (lower-case drive), Vitest loaded itself twice and every
 file failed with "Cannot read properties of undefined (reading 'config')".
+
+## Part 3: User Story 2, Medium and Collector (T034 to T045)
+
+**T034** (`48f31c8`): `medium-and-collector.acceptance-spec.ts` from `514187c` (same blob), with only the operator amendment
+approved on 2026-11-10; behind the new `presets` flag, off. Its scenarios run on `iphone-flagged` and `android-flagged` (8 each).
+
+### AC-11: Medium and Collector on every date of 2027
+
+- **Cycles**: `PRESETS.medium` and `PRESETS.collector` (each RED on "expected undefined to match object");
+  R3 step 3, opening as many lines as the preset says (RED: "expected 0 to be greater than or equal to 4"); the filling a puzzle was
+  built from includes each open line's operator (RED: "expected 'incomplete' to be 'solved'"). Easy draws nothing for 0 open
+  lines, so its golden dates are unchanged.
+- **Work budgets (T036)**: 200,000 steps each, measured over 2027 (research R4). Collector: 22 dates where a candidate is
+  dropped for work; slowest 134 ms on this PC. 358 of 365 Collector dates have more than 100 solutions.
+- **Sweeps (T037)**: `sweep-medium.spec.ts`, `sweep-collector.spec.ts` through `test-support/preset-sweep.ts`. They passed at RED.
+  **Proved** by a deliberate, reverted break (one line fewer opened): both failed on hundreds of dates. Golden dates pinned.
+
+### AC-8 and AC-9: Medium and Collector on the Today screen
+
+- **Acceptance RED** on the phones: no "Medium" row ("waiting for … getByRole('button', { name: /^Medium, found / })"). The engine
+  passed already: its driver plays every preset the engine has (by design in part 2), so it went green with the presets.
+- **Driver (T038)**: the drivers' own search for a puzzle's first solutions (`drivers/daily-solutions.ts`): rows top to bottom, the
+  game's arithmetic, never the engine's. Checked against the engine: all 39 solutions of Collector on 10 November 2026 in 261 ms,
+  each solved by the engine's check. `dailyLayout` in the phone driver.
+- **Cycle**: `presetsOffered(features)` (RED: "expected [ [], [], [] ] to deeply equal [ [], [ 'easy' ], …(1) ]"), used by `main.ts`.
+- **Driver fix**: an open pill's name begins with what it shows ("? 28, Column 3 target 28, operator not chosen").
+- **Found on the way**: Collector's pills showed negative targets with a hyphen ("? -3"). Fixed test-first: "? −3" (`53cafe1`).
+- **GREEN** on the engine and both phones, with the accessibility scan.
+
+### AC-10: a Collector puzzle with more than 100 solutions
+
+- **Acceptance RED** on the engine: "No Collector puzzle with more than 100 solutions in the 31 days from 10 November 2026". The game
+  read the date only when it opened, so a new phone date never reached the Today screen.
+- **Brought forward from part 5 (owner, 2026-11-11)**: with `presets`, opening the Today screen reads the date again (research R6).
+  `onDate(state, date)`: a new date offers that date's puzzles; the puzzle on screen stays open (`current` is null); Practice keeps
+  what it found. RED: Collector after the new date was still 10 November's. Clearing an earlier day's saved solutions stays in part 5.
+- **On the phones the scenario opens the game before setting the date**, so it starts on the real day. On 11 November 2026 the
+  first Collector already has more than 100 solutions, and a break removing the new-date reading from `main.ts` left the phones
+  passing. The engine, which starts on 10 November (39), is the proof; on the 7 days a year with 100 or fewer, the phones need it too.
+- **"Found 3", never "All found!" (T040)** passed from spec-006 (`totalToShow`). **Proved** by a deliberate, reverted break
+  (a total left out counts as complete at 3 found). It first failed only on the engine: the phone driver read the counter's whole
+  shown text ("All found! 3 ✓") as its title, so it could never equal "All found!". Fixed to read the title alone; then both phones
+  failed with "the counter title … Expected: not 'All found!'", and passed after the revert. Two more driver gaps closed for
+  "Found N" with no total and for tapping open pills.
+- **GREEN**: 435 unit tests (branches 91.66%); engine 57; phones all but AC-12 (not yet built). In the full run, two iPhone taps
+  timed out at 60 s (spec-006 AC-17 and AC-10); each passed 3 times out of 3 alone. AC-10 takes about 25 s on the iPhone alone.
