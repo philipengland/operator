@@ -13,9 +13,12 @@ export function todayListProps(state: DailyState): TodayListProps {
 }
 
 /** Today's presets each released story offers, in the Today screen's order (research R11). */
-export function presetsOffered({ daily, presets }: Pick<Features, 'daily' | 'presets'>): readonly PresetName[] {
+export function presetsOffered({ daily, presets, hard = false }: Pick<Features, 'daily' | 'presets'> & Partial<Pick<Features, 'hard'>>): readonly PresetName[] {
   if (!daily) {
     return [];
   }
-  return presets ? ['easy', 'medium', 'collector'] : ['easy'];
+  if (!presets) {
+    return ['easy'];
+  }
+  return hard ? ['easy', 'medium', 'hard', 'collector'] : ['easy', 'medium', 'collector'];
 }
