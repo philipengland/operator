@@ -8,7 +8,7 @@ import { createSurface } from '../simple/surface';
 import { createText } from '../simple/text';
 import { createGridCell, type GridCellProps } from './grid-cell';
 import { createLineWorking, type LineWorkingProps } from './line-working';
-import { puzzleGridPlaces, type GridPlace, type WorkingsPlace } from './puzzle-grid.model';
+import { areColumnPillsStacked, puzzleGridPlaces, type GridPlace, type WorkingsPlace } from './puzzle-grid.model';
 import { createTargetPill, type TargetPillProps } from './target-pill';
 
 /** The components this one is laid out from (spec-003 AC-7). */
@@ -46,11 +46,10 @@ export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActi
   // Workings shown elsewhere are heard here, from one visually hidden holder that takes no room.
   const heardOnly = document.createElement('div');
   heardOnly.className = 'visually-hidden';
-  const columnPills = props.columnPills.map((pill, column) => {
-    const part = createTargetPill(pill, () => actions.onPill?.('column', column));
-    part.element.classList.add('puzzle-grid__column-pill');
-    return placed(grid, part, places.columnPill(column));
-  });
+  const isStacked = areColumnPillsStacked(props.columnPills.length);
+  const columnPills = props.columnPills.map((pill, column) =>
+    placed(grid, createTargetPill({ ...pill, isStacked }, () => actions.onPill?.('column', column)), places.columnPill(column)),
+  );
   const rowPills = props.rowPills.map((pill, row) => placed(grid, createTargetPill(pill, () => actions.onPill?.('row', row)), places.rowPill(row)));
   const cells = props.cells.map((cellsInRow, row) =>
     cellsInRow.map((cell, column) => placed(grid, createGridCell(cell, () => actions.onCell?.(row, column)), places.cell(row, column))),
@@ -67,7 +66,7 @@ export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActi
   surface.element.setAttribute('role', 'group');
   surface.element.setAttribute('aria-label', props.name ?? 'Puzzle');
   const update = (next: PuzzleGridProps): void => {
-    next.columnPills.forEach((pill, column) => columnPills[column]?.update(pill));
+    next.columnPills.forEach((pill, column) => columnPills[column]?.update({ ...pill, isStacked }));
     next.rowPills.forEach((pill, row) => rowPills[row]?.update(pill));
     next.cells.forEach((cellsInRow, row) => cellsInRow.forEach((cell, column) => cells[row]?.[column]?.update(cell)));
     next.rowWorkings.forEach((working, row) => rowWorkings[row]?.update(working));

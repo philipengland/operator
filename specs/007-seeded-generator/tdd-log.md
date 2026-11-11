@@ -239,3 +239,28 @@ positive and whole); 342 of 365 dates have exactly 1 solution (319 with + and �
   The amended target check was proved by a reverted break (targets up to 200: it failed on 171 dates).
 - **Acceptance GREEN**: 421 unit tests (branches 91.19%), 53 engine and 343 phone scenarios; the flagged Easy scenarios run again
   on a fresh server: 14 passed.
+
+## Column pills stacked on grids of 3 or more columns (owner, 2026-11-10)
+
+Easy's column pills overlapped by 33–36 px at 375 × 667 (each 87–94 px wide in a column about 54 px wide). The owner
+chose mock-up C from three made on the real page (stacked, smaller text), for every grid of 3 or more columns.
+
+- **Found on the way**: part 1's `puzzle-grid__column-pill` class was added after creating each pill, but Badge and Button
+  set their whole class list on `update`, so it was gone after the first render and never took effect in the game.
+  The catalogue showed it only because its samples are never updated. Replaced by a variant each component carries.
+- **Cycles**: Badge `isStacked` → `badge--stacked` (`423a3b8`); dashed Button `isStacked` → `button--stacked`
+  (`2933ab1`); `areColumnPillsStacked(columns)`, true from 3 columns (`c1f9ee4`). Each RED failed on its assertion
+  (e.g. "expected [ false, false, false, false ] to deeply equal [ false, true, true, true ]"). The Puzzle grid passes
+  `isStacked` to its column pills on create and on every update; the Target pill passes it to its Badge or Button. The Target pill
+  model is unchanged (two existing tests compare it whole).
+- **Look**: the text is four-fifths of body text (12.8 px at 375 wide, as in mock-up C). Four-fifths of a pill's text made the pills
+  43 px tall, and the screen scrolled at 375 × 667. Measured on Easy for 10 and 11 November 2026 and 1 September 2027:
+
+  | Phone | Column pills | Gap between pills | Fits without scrolling |
+  |---|---|---|---|
+  | 375 × 667 | 44–48 × 34 px | 11–14 px | yes |
+  | 320 × 568 | 36–41 × 30 px | 12–15 px | yes |
+
+  The worked example has no stacked pill.
+- **Catalogue**: stacked Badge, dashed Button and Target pill samples (`a4e8104`).
+- **GREEN**: 424 unit tests, 53 engine and 343 phone and catalogue scenarios.

@@ -105,6 +105,9 @@ first.
   Easy and Medium allow + − × ÷ like Hard and Collector. Each line picks from the operators whose result is whole
   and in range, so a puzzle may not use all four. Easy's targets become 1 to 100 so × lines can appear; its band stays
   1 to 10 (FR-705).
+- Q: Easy's column pills overlap on a phone (each wider than its column). How should they fit? → A: Stacked: the
+  operator above the target, in smaller text (owner, 2026-11-10, from three mock-ups). Every column pill in a grid of 3
+  or more columns is stacked, so a row of pills is consistent; the worked example keeps one-line pills (FR-713).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -295,7 +298,9 @@ phone's date to 11 November 2026 and reopen.
 - **FR-713**: Every preset's puzzle MUST fit a phone at 375 × 667 and 320 × 568 without scrolling, as
   spec-004 requires of the worked example, except Hard at 320 × 568, which MAY scroll up and down but
   never sideways. Every cell, pill and key MUST be at least 44 × 44 pixels (spec-003). The rest of the
-  screen may be arranged more compactly for a large grid to make room.
+  screen may be arranged more compactly for a large grid to make room. On a grid of 3 or more columns,
+  each column's pill MUST show its operator above its target, in smaller text, so neighbouring pills
+  never touch; the worked example's pills stay on one line.
 - **FR-714**: Found solutions MUST be kept per puzzle, as spec-006 does. When a new day's puzzles
   are first opened, the earlier days' found solutions MUST be removed from the phone, as they cannot
   be reached again. The worked example's are kept, as it can always be played as "Practice".

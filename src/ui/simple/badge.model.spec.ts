@@ -13,4 +13,8 @@ describe('badgeModel', () => {
   it('can be heard as something other than its text', () => {
     expect(badgeModel({ text: '+ 16', spokenAs: 'Row 1 target 16, plus' }).heardAs).toBe('Row 1 target 16, plus');
   });
+
+  it('can be stacked, its two words on two lines in smaller text, for a column pill (spec-007 FR-713)', () => {
+    expect(badgeModel({ text: '× 60', isStacked: true }).classes).toEqual(['badge', 'badge--stacked']);
+  });
 });

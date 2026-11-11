@@ -44,6 +44,7 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Key', render: () => createButton({ label: '5', style: 'key' }).element },
     { label: 'Solid', render: () => createButton({ label: 'Oops', style: 'solid', action: 'clear cell' }).element },
     { label: 'Dashed', render: () => createButton({ label: '? 12', style: 'dashed' }).element },
+    { label: 'Dashed, stacked', render: () => createButton({ label: '? 60', style: 'dashed', isStacked: true }).element },
     { label: 'Unavailable', render: () => createButton({ label: 'Check', style: 'key', isUnavailable: true }).element },
     { label: 'Read-only', render: () => createButton({ label: '2', style: 'cell', name: 'Top-right cell, 2', isReadOnly: true }).element },
   ],
@@ -57,7 +58,10 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Panel', render: () => createSurface({ variant: 'panel' }, [sampleText('Panels hold the grid and the keypad.')]).element },
     { label: 'Bubble', render: () => createSurface({ variant: 'bubble' }, [sampleText('Hello, Operator!')]).element },
   ],
-  Badge: [{ label: 'Badge', render: () => createBadge({ text: '× 12' }).element }],
+  Badge: [
+    { label: 'Badge', render: () => createBadge({ text: '× 12' }).element },
+    { label: 'Stacked', render: () => createBadge({ text: '× 60', isStacked: true }).element },
+  ],
   Mascot: [{ label: 'Mascot', render: () => createMascot().element }],
   Dialog: [{ label: 'Dialog', render: () => shownInPlace(createDialog({ name: 'A dialog' }, [sampleText('Dialogs hold a question.')]).element) }],
   'Speech bubble': [
@@ -83,6 +87,14 @@ export const SAMPLES: Readonly<Record<string, readonly Sample[]>> = {
     { label: 'Multiply', render: () => createTargetPill({ target: 12, operator: '×', isOpen: false, name: 'Column 1 target 12, times' }).element },
     { label: 'Divide', render: () => createTargetPill({ target: 2, operator: '÷', isOpen: false, name: 'Column 2 target 2, divide' }).element },
     { label: 'Open', render: () => createTargetPill({ target: 12, operator: null, isOpen: true, name: 'Row 2 target 12, operator not chosen' }).element },
+    {
+      label: 'Stacked, for a column of a 3-column grid',
+      render: () => createTargetPill({ target: 60, operator: '×', isOpen: false, name: 'Column 2 target 60, times', isStacked: true }).element,
+    },
+    {
+      label: 'Open, stacked',
+      render: () => createTargetPill({ target: 60, operator: null, isOpen: true, name: 'Column 2 target 60, operator not chosen', isStacked: true }).element,
+    },
     {
       label: 'Open, line correct',
       render: () => createTargetPill({ target: 6, operator: '+', isOpen: true, name: 'Row 2 target 6, plus', reachesTarget: true }).element,

@@ -125,3 +125,15 @@
 .button--read-only {
   cursor: default;
 }
+
+/* spec-007 FR-713: an open column pill on a grid of 3 or more columns, "?" above its target, in
+   text four-fifths of body text; still at least a touch target. */
+.button--stacked {
+  inline-size: min-content;
+  min-inline-size: var(--touch-target);
+  padding-inline: 4px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1;
+  font-size: calc(var(--text-body) * 0.8);
+}

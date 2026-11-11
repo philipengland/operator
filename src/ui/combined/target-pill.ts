@@ -24,7 +24,7 @@ function shownPill(props: TargetPillProps): Component<TargetPillProps> {
   const badge = createBadge({ text: '', spokenAs: '' }, [tick.element]);
   const update = (next: TargetPillProps): void => {
     const model = targetPillModel(next);
-    badge.update({ text: model.text, spokenAs: model.heardAs });
+    badge.update({ text: model.text, spokenAs: model.heardAs, isStacked: next.isStacked ?? false });
     showKeepingItsPlace(tick.element, model.hasTick);
   };
   update(props);
@@ -36,7 +36,7 @@ function openPill(props: TargetPillProps, onChoose?: () => void): Component<Targ
   const button = createButton({ label: '', style: 'dashed' }, onChoose, [tick.element]);
   const update = (next: TargetPillProps): void => {
     const model = targetPillModel(next);
-    button.update({ label: model.text, style: 'dashed', action: model.heardAs });
+    button.update({ label: model.text, style: 'dashed', action: model.heardAs, isStacked: next.isStacked ?? false });
     showKeepingItsPlace(tick.element, model.hasTick);
   };
   update(props);

@@ -17,15 +17,6 @@
   grid-template-columns: minmax(64px, auto) repeat(var(--columns), minmax(var(--touch-target), 84px));
 }
 
-/* A column pill wider than its column (Hard's "− −500") puts its target under its operator. */
-.puzzle-grid__grid--workings-elsewhere > .puzzle-grid__column-pill {
-  max-width: 100%;
-  padding-inline: 4px;
-  white-space: normal;
-  text-align: center;
-  line-height: 1;
-}
-
 /* Cells fill their column, shrinking on narrow phones but never below a touch target. */
 .puzzle-grid__grid > .button {
   width: 100%;
