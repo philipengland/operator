@@ -120,7 +120,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `514187c`.
 - [X] T042 [US2] AC-13: switching from Easy to Medium and back keeps "Found 1" and "Solution 1", with an empty grid. ⚠️ May pass from AC-22: report, and prove with a reverted break
 - [X] T043 [US2] Measure Medium's and Collector's opening times on the reference throttling and record them in `tdd-log.md` (SC-701)
 - [X] T044 [US2] Confirm `npm run build` lists only Easy and Practice with `presets` off, and the flags-on build passes. Update `tdd-log.md`. Push and open "spec-007 part 3 of 5: Medium and Collector (flag off)", noting that their puzzles become fixed for good when `presets` goes on. The owner merges
-- [ ] T045 [US2] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `presets` true in `src/app/features.ts`
+- [X] T045 [US2] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `presets` true in `src/app/features.ts`
 
 ---
 

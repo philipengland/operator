@@ -158,12 +158,17 @@ export class UiDailyDriver implements DailyDriver {
     return Number.NaN;
   }
 
-  /** As a player would: each empty cell tapped and its digit keyed, each open operator tapped round to the filling's. */
+  /**
+   * As a player would: each cell that is not given and does not already show its digit tapped and the digit
+   * keyed, each open operator tapped round to the filling's. Cells already right are left alone, so a second
+   * solution costs only the taps it differs by (spec-007 AC-10 ran past its time limit on the iPhone).
+   */
   private async enter(filling: Entry): Promise<void> {
     const shown = await this.puzzle();
     for (const [row, digits] of filling.cells.entries()) {
       for (const [column, digit] of digits.entries()) {
-        if (digit !== null && shown.cells[row]?.[column]?.given === null) {
+        const cell = shown.cells[row]?.[column];
+        if (digit !== null && cell?.given === null && cell.value !== digit) {
           await this.cellButton(row + 1, column + 1).tap();
           await this.page.getByRole('group', { name: 'Keypad' }).getByRole('button', { name: String(digit), exact: true }).tap();
         }
