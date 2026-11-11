@@ -394,3 +394,15 @@ most steps took 138,717; the slowest date took 321 ms to make on this PC. Counts
   **Proved** by a deliberate, reverted break: letting Hard keep up to 8 solutions failed it, starting "2027-10-01: solutions
   within the band".
 - Hard's golden dates pinned in `golden-dates.spec.ts`, as a new test; no existing line changed (`tests:guard`: 0 changed).
+
+### AC-14: Hard on the Today screen
+
+- **Acceptance RED** on the flags-on phones: "rows on the Today screen, in order", Hard missing. The engine driver passed once
+  T047 added the preset: it offers every preset in `PRESETS`, and the game offers only those its flags allow.
+- **RED** `today-list.spec.ts` › "offers Hard between Medium and Collector with hard (spec-007 AC-14)", a new test:
+  `expected [ 'easy', 'medium', 'collector' ] to deeply equal [ 'easy', 'medium', 'hard', …(1) ]`.
+- **GREEN** `presetsOffered` reads `hard`, optional and off when missing, so the existing test stands unchanged (`5102f83`).
+  445 unit tests; AC-14 passes on the engine and both flags-on phones. REFACTOR: nothing to change.
+- **Full suite**: with 16 browsers at once, every phone run lost one to four iPhone scenarios from earlier specs to tap timeouts
+  (a different one each time, each passing alone). The owner chose 4 browsers at once for local runs (`LOCAL_WORKERS`); then 58
+  engine and 365 phone and catalogue scenarios pass. Only Hard's AC-17 budget fails, as expected: its driver is still a stub (T052).
