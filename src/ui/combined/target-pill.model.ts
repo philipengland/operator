@@ -26,13 +26,19 @@ export interface TargetPillModel {
 }
 
 const NOT_CHOSEN = '?';
+const MINUS = '−';
 // Same wording as a line working that reaches its target (play-screen contract, spec-002).
 const TARGET_REACHED = ', target reached';
+
+/** A target as written: a negative one with the minus sign the operators use (U+2212), never a hyphen. */
+function shown(target: number): string {
+  return target < 0 ? `${MINUS}${-target}` : String(target);
+}
 
 export function targetPillModel({ target, operator, isOpen, name, reachesTarget = false }: TargetPillProps): TargetPillModel {
   return {
     kind: isOpen ? 'button' : 'badge',
-    text: `${operator ?? NOT_CHOSEN} ${target}`,
+    text: `${operator ?? NOT_CHOSEN} ${shown(target)}`,
     heardAs: reachesTarget ? `${name}${TARGET_REACHED}` : name,
     hasTick: reachesTarget,
   };
