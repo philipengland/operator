@@ -38,6 +38,18 @@ describe('PRESETS', () => {
     });
   });
 
+  it('Hard is 7 × 5, + − × ÷, 1 or 2 of its 12 lines open, 21 or 22 cells given, targets −500 to 500, 1 to 3 solutions', () => {
+    expect(PRESETS.hard).toMatchObject({
+      rows: 7,
+      columns: 5,
+      operators: ['+', '−', '×', '÷'],
+      openLines: { fewest: 1, most: 2 },
+      givenCells: { fewest: 21, most: 22 },
+      targets: { lowest: -500, highest: 500 },
+      band: { fewest: 1, most: 3 },
+    });
+  });
+
   it('makes puzzles as version 1 of the generator', () => {
     expect(GENERATOR_VERSION).toBe('v1');
   });
