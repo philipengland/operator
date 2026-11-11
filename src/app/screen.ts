@@ -3,7 +3,7 @@
 
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import { themeForSeed, type Theme } from '../ui/foundations/themes';
-import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, workingName, workingSlot } from './labels';
+import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, TAP_A_CELL, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
@@ -65,7 +65,17 @@ function isThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
   return rows === EASY_SIZE && columns === EASY_SIZE;
 }
 
-/** The helper line is about swapping an operator; a puzzle with none to swap has no helper line. */
+/** spec-007 FR-719: a grid bigger than 3 × 3 (Medium, Hard, Collector) has the compact screen. */
+function isBiggerThanThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
+  return rows * columns > EASY_SIZE * EASY_SIZE;
+}
+
+/** spec-007 FR-718: a grid wider than 3 columns shows its workings in the strip, not beside each line. */
+function isWiderThanThreeColumns({ columns }: SessionState['puzzle']): boolean {
+  return columns > EASY_SIZE;
+}
+
+/** The helper line is about swapping an operator; a puzzle with none to swap, or on the compact screen (FR-719), has none. */
 function hasOpenLine({ rowLines, columnLines }: SessionState['puzzle']): boolean {
   return [...rowLines, ...columnLines].some((line) => line.operator === 'open');
 }
@@ -79,7 +89,8 @@ export function puzzleGridProps(state: SessionState): PuzzleGridProps {
     cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
     rowWorkings: lines(state, 'row').map(workingProps),
     columnWorkings: lines(state, 'column').map(workingProps),
-    helper: hasOpenLine(state.puzzle) ? HELPER_LINE : '',
+    helper: hasOpenLine(state.puzzle) && !isBiggerThanThreeByThree(state.puzzle) ? HELPER_LINE : '',
+    ...(isWiderThanThreeColumns(state.puzzle) ? { workings: 'elsewhere' } : {}),
   };
 }
 
@@ -93,6 +104,25 @@ export function puzzleTheme({ puzzle }: SessionState): Theme {
   return themeForSeed(puzzle.seed);
 }
 
+/**
+ * The compact screen's strip: the operator's line after a Check, until a cell is tapped (FR-719); otherwise, on a
+ * grid wider than 3 columns, the selected cell's row and column workings, or a prompt to tap one (FR-718).
+ */
+function stripOf(state: SessionState, theme: Theme): Pick<PlayScreenProps, 'strip'> {
+  if (state.message !== null && isBiggerThanThreeByThree(state.puzzle)) {
+    return { strip: { text: bubbleLine(state.message, theme) } };
+  }
+  if (!isWiderThanThreeColumns(state.puzzle)) {
+    return {};
+  }
+  const { selected } = state;
+  if (selected === null) {
+    return { strip: { text: TAP_A_CELL } };
+  }
+  const workingOf = (axis: LinePosition['axis'], index: number) => lines(state, axis).filter((working) => working.line.index === index).map(workingProps);
+  return { strip: { workings: [...workingOf('row', selected.row), ...workingOf('column', selected.column)] } };
+}
+
 export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {
   return {
     header: { title: TITLE, message: bubbleLine(state.message, theme) },
@@ -102,5 +132,7 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     keysAvailable: state.selected !== null,
     announcement: announcement(state.message, theme, counterText(state)),
     isSnug: isThreeByThree(state.puzzle),
+    isCompact: isBiggerThanThreeByThree(state.puzzle),
+    ...stripOf(state, theme),
   };
 }

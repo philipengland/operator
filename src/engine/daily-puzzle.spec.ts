@@ -47,6 +47,21 @@ describe('dailyPuzzle', () => {
     expect(() => dailyPuzzle(date, 'easy')).toThrow(/date/);
   });
 
+  it('opens as many lines as the preset says, each heard as open: Medium 4 or 5 of 9 (FR-705)', () => {
+    const { puzzle } = dailyPuzzle('2026-11-10', 'medium');
+
+    const open = [...puzzle.rowLines, ...puzzle.columnLines].filter((line) => line.operator === 'open').length;
+
+    expect(open).toBeGreaterThanOrEqual(4);
+    expect(open).toBeLessThanOrEqual(5);
+  });
+
+  it("is solved by its filling with each open line's operator, as built (FR-703)", () => {
+    const { puzzle, builtFrom } = dailyPuzzle('2026-11-10', 'medium');
+
+    expect(checkEntry(puzzle, builtFrom, defaultRules).kind).toBe('solved');
+  });
+
   it('accepts 29 February in a leap year', () => {
     expect(dailyPuzzle('2028-02-29', 'easy').puzzle.id).toBe('daily-v1-2028-02-29-easy');
   });

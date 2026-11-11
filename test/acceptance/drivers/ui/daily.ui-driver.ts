@@ -9,13 +9,15 @@ import { scanForAccessibilityProblems } from '../../support/axe';
 import type { CalendarDay, DailyCell, DailyLine, DailyPuzzle, LineOperator, Preset, TodayChoice, TodayRow } from '../../dsl/daily-vocabulary';
 import type { Digit } from '../../dsl/vocabulary';
 import { dateText, dayParts } from '../calendar';
+import { firstSolutions } from '../daily-solutions';
 import type { DailyDriver } from '../daily.driver';
 import { puzzleView } from '../daily-view';
 import { COUNTER_PATTERN } from './screen-names';
 
 const DAILY_PUZZLE = /^(Easy|Medium|Hard|Collector) puzzle, (\d+) by (\d+)$/;
 const CELL = /^Row (\d+) column (\d+) cell, (.+)$/;
-const PILL = /^(Row|Column) (\d+) target (-?−?\d+), (.*?)(?:, target reached)?$/;
+// An open pill's name begins with what it shows ("? 28, Column 3 target 28, operator not chosen"; play-screen contract).
+const PILL = /^(?:[^,]*, )?(Row|Column) (\d+) target (-?−?\d+), (.*?)(?:, target reached)?$/;
 const OPERATOR_WORDS: Readonly<Record<string, LineOperator>> = { plus: '+', minus: '−', times: '×', divide: '÷', 'operator not chosen': 'open' };
 const PRESET_NAMES: Readonly<Record<Preset, PresetName>> = { Easy: 'easy', Medium: 'medium', Hard: 'hard', Collector: 'collector' };
 // The phone's clock at midday, so the date is the same in every time zone the tests run in.
@@ -42,6 +44,15 @@ function readDailyScreen(pattern: string): DailyScreen | null {
     .map((element) => element.textContent ?? '')
     .filter((text) => text !== '');
   return { name: puzzle.getAttribute('aria-label') ?? '', buttons, texts };
+}
+
+/** Runs in the page: the counter's first piece of shown text, its title; the heard name is visually hidden. */
+function readCounterTitle(counter: Element): string {
+  const isShown = (part: Element) => {
+    const box = part.getBoundingClientRect();
+    return part.children.length === 0 && (part.textContent ?? '').trim() !== '' && box.width > 1 && box.height > 1;
+  };
+  return (Array.from(counter.querySelectorAll('*')).find(isShown)?.textContent ?? '').trim();
 }
 
 /** Runs in the page: the theme colours the page is drawn in. */
@@ -104,9 +115,10 @@ export class UiDailyDriver implements DailyDriver {
     return this.page.getByRole('group', { name: 'Puzzle', exact: true }).isVisible();
   }
 
+  /** The counter's title as shown ("Solutions found" or "All found!"); its heard name is left out. */
   async counterTitle(): Promise<string> {
     const heard = this.page.getByText(COUNTER_PATTERN);
-    return ((await heard.locator('xpath=..').innerText()).split('\n')[0] ?? '').trim();
+    return heard.locator('xpath=..').evaluate(readCounterTitle);
   }
 
   async counter(): Promise<string> {
@@ -118,8 +130,13 @@ export class UiDailyDriver implements DailyDriver {
     await this.page.getByRole('button', { name: 'Check' }).tap();
   }
 
-  // spec-007 User Story 2 (task T038).
-  async enterSolutionsAndCheck(): Promise<void> {}
+  /** Each of the first solutions the drivers' own search finds in the puzzle shown, entered as a player would and checked. */
+  async enterSolutionsAndCheck(count: number): Promise<void> {
+    for (const solution of firstSolutions(await this.puzzle(), count)) {
+      await this.enter(solution);
+      await this.page.getByRole('button', { name: 'Check' }).tap();
+    }
+  }
 
   async madeByTheEngineAlone(day: CalendarDay, preset: Preset): Promise<DailyPuzzle> {
     const { puzzle } = dailyPuzzle(dateText(day), PRESET_NAMES[preset]);
@@ -158,7 +175,8 @@ export class UiDailyDriver implements DailyDriver {
 
   private async chooseOperators(axis: 'Row' | 'Column', operators: Entry['rowOperators']): Promise<void> {
     for (const [index, operator] of operators.entries()) {
-      const pill = this.dailyPuzzleGroup().getByRole('button', { name: new RegExp(`^${axis} ${index + 1} target `) });
+      // An open pill's name begins with what it shows: "? 23, Row 1 target 23, operator not chosen".
+      const pill = this.dailyPuzzleGroup().getByRole('button', { name: new RegExp(`(^|, )${axis} ${index + 1} target `) });
       for (let taps = 0; operator !== null && taps < OPERATOR_TAPS_TO_GO_ROUND; taps++) {
         const name = (await pill.getAttribute('aria-label')) ?? '';
         if (OPERATOR_WORDS[PILL.exec(name)?.[4] ?? ''] === operator) {

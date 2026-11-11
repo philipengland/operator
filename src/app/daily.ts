@@ -9,7 +9,8 @@ export type Choice = PresetName | 'practice';
 
 export interface DailyState {
   readonly date: CalendarDate;
-  readonly current: Choice;
+  /** Which of today's choices is on the play screen; null for a puzzle of an earlier day, still open. */
+  readonly current: Choice | null;
   /** The puzzle on the play screen. */
   readonly session: SessionState;
   /** Every other puzzle opened today, as the player left it. */
@@ -23,21 +24,36 @@ export function startDaily(date: CalendarDate, practice: SessionState, offered: 
   return { date, current: 'practice', session: practice, kept: {}, offered };
 }
 
-/** The Today screen over the puzzle; today's puzzles not yet made are made, so each row has its count. */
 /** What the phone has saved for a puzzle (spec-006); nothing, unless the app says otherwise. */
 export type SavedSolutions = (puzzle: Puzzle) => readonly Entry[];
 
 const NOTHING_SAVED: SavedSolutions = () => [];
 
+/** The Today screen over the puzzle; today's puzzles not yet made are made, so each row has its count. */
 export function openToday(state: DailyState, saved: SavedSolutions = NOTHING_SAVED): DailyState {
   const made = state.offered.filter((preset) => preset !== state.current && state.kept[preset] === undefined);
   const kept = { ...state.kept, ...Object.fromEntries(made.map((preset) => [preset, freshSession(state.date, preset, saved)])) };
   return { ...state, kept, session: { ...state.session, place: { kind: 'today' } } };
 }
 
+/** The phone's date when the Today screen opens (research R6). */
+export function onDate(state: DailyState, date: CalendarDate): DailyState {
+  if (date === state.date) {
+    return state;
+  }
+  // A new day: its puzzles are made afresh. The puzzle on screen stays open; Practice keeps what it found.
+  const practice = state.current === 'practice' ? {} : pick(state.kept, 'practice');
+  return { ...state, date, current: state.current === 'practice' ? 'practice' : null, kept: practice };
+}
+
+function pick(kept: DailyState['kept'], choice: Choice): DailyState['kept'] {
+  const session = kept[choice];
+  return session === undefined ? {} : { [choice]: session };
+}
+
 /** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
 export function choose(state: DailyState, choice: Choice, saved: SavedSolutions = NOTHING_SAVED): DailyState {
-  const everyKept: DailyState['kept'] = { ...state.kept, [state.current]: state.session };
+  const everyKept: DailyState['kept'] = state.current === null ? state.kept : { ...state.kept, [state.current]: state.session };
   const session = openedAgain(everyKept[choice] ?? freshSession(state.date, choice, saved));
   const kept = Object.fromEntries(Object.entries(everyKept).filter(([each]) => each !== choice));
   return { ...state, current: choice, session, kept };

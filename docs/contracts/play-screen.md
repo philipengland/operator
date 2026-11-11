@@ -161,6 +161,7 @@ Each addition takes effect with its flag. Every existing name is unchanged for t
 | Row and column workings | text, labelled | unchanged | Visually hidden on grids wider than 3 columns; still read by name |
 | Workings strip | hidden from screen readers | none | Shows the selected cell's row and column workings, or the operator's line after a Check |
 | Result | `status` | unchanged | The operator's line is still announced (spec-004) |
+| Helper line | text | none | Not shown on the compact screen (FR-719) |
 
 The worked example and Easy keep the full header, counter and workings beside each line. Medium and Hard fit 375 × 667
 and Medium 320 × 568 without scrolling; Hard scrolls up and down only at 320 × 568 (FR-713).

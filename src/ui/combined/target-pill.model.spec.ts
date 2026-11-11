@@ -26,4 +26,10 @@ describe('targetPillModel', () => {
     expect(model.hasTick).toBe(true);
     expect(model.heardAs).toBe('Row 2 target 6, plus, target reached');
   });
+
+  it('shows a negative target with the minus sign the operators use, not a hyphen (spec-007 Collector)', () => {
+    const model = targetPillModel({ target: -3, operator: null, isOpen: true, name: 'Column 1 target -3, operator not chosen' });
+
+    expect(model.text).toBe('? −3');
+  });
 });

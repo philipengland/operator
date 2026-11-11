@@ -6,7 +6,7 @@ import { countSolutions } from './count-solutions';
 import { defaultRules, evaluateLine } from './evaluate-line';
 import { GENERATOR_VERSION, PRESETS, type Between, type Preset } from './presets';
 import { randomFrom, seedNumber, type Random } from './random';
-import type { CalendarDate, CellPosition, DailyPuzzle, Digit, LineSpec, PresetName, Puzzle } from './types';
+import type { CalendarDate, CellPosition, DailyPuzzle, Digit, LineSpec, Operator, PresetName, Puzzle } from './types';
 
 /** No date tested needs anywhere near this many; the sweep of 2027 proves it (research R3, R12). */
 const MOST_CANDIDATES = 2_000;
@@ -84,14 +84,14 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
   if (!isEveryLineMade(rowLines) || !isEveryLineMade(columnLines)) {
     return null;
   }
+  const lines = withOpenLines(random, preset, { rowLines, columnLines });
   const given = new Set(chooseSome(random, everyCell(preset), howMany(random, preset.givenCells)).map(({ row, column }) => `${row},${column}`));
   const unsolved: Puzzle = {
     ...identity,
     rows: preset.rows,
     columns: preset.columns,
     givens: filling.map((digits, row) => digits.map((digit, column) => (given.has(`${row},${column}`) ? digit : null))),
-    rowLines,
-    columnLines,
+    ...lines,
     solutionCount: 0,
   };
   // Step 5: keep it only if its count is within the band, counted within the preset's work (FR-706, FR-707).
@@ -100,8 +100,31 @@ function candidateFrom(random: Random, preset: Preset, identity: Identity): Dail
     return null;
   }
   const puzzle: Puzzle = { ...unsolved, solutionCount: count };
-  const noOperatorsChosen = (lines: readonly LineSpec[]) => lines.map(() => null);
-  return { puzzle, builtFrom: { cells: filling, rowOperators: noOperatorsChosen(rowLines), columnOperators: noOperatorsChosen(columnLines) } };
+  return {
+    puzzle,
+    builtFrom: { cells: filling, rowOperators: operatorsChosen(lines.rowLines, rowLines), columnOperators: operatorsChosen(lines.columnLines, columnLines) },
+  };
+}
+
+interface Lines {
+  readonly rowLines: readonly LineSpec[];
+  readonly columnLines: readonly LineSpec[];
+}
+
+/** Step 3: as many lines as the preset says, rows then columns counted together, opened for the player to choose (R3). */
+function withOpenLines(random: Random, preset: Preset, { rowLines, columnLines }: Lines): Lines {
+  const everyLine = Array.from({ length: rowLines.length + columnLines.length }, (_, index) => index);
+  const opened = new Set(chooseSome(random, everyLine, howMany(random, preset.openLines)));
+  const open = (line: LineSpec, index: number): LineSpec => (opened.has(index) ? { ...line, operator: 'open' } : line);
+  return { rowLines: rowLines.map(open), columnLines: columnLines.map((line, index) => open(line, rowLines.length + index)) };
+}
+
+/** What the player would choose to match the filling: each open line's operator as drawn; nothing for a shown line. */
+function operatorsChosen(shown: readonly LineSpec[], drawn: readonly LineSpec[]): (Operator | null)[] {
+  return shown.map((line, index) => {
+    const operator = drawn[index]?.operator;
+    return line.operator === 'open' && operator !== undefined && operator !== 'open' ? operator : null;
+  });
 }
 
 /** Step 1: every cell a digit from 1 to 9, row by row. */

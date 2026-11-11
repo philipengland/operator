@@ -41,4 +41,25 @@ export const PRESETS: Readonly<Partial<Record<PresetName, Preset>>> = {
     band: { fewest: 1, most: 10 },
     workBudget: SUGGESTED_WORK_BUDGET,
   },
+  medium: {
+    rows: 5,
+    columns: 4,
+    operators: ['+', '−', '×', '÷'],
+    openLines: { fewest: 4, most: 5 },
+    givenCells: { fewest: 10, most: 10 },
+    targets: { lowest: 1, highest: 100 },
+    band: { fewest: 2, most: 20 },
+    workBudget: SUGGESTED_WORK_BUDGET,
+  },
+  collector: {
+    rows: 4,
+    columns: 3,
+    operators: ['+', '−', '×', '÷'],
+    openLines: { fewest: 7, most: 7 },
+    givenCells: { fewest: 0, most: 0 },
+    targets: { lowest: -29, highest: 29 },
+    // 101 is the count's "more than 100" (FR-710).
+    band: { fewest: 21, most: 101 },
+    workBudget: SUGGESTED_WORK_BUDGET,
+  },
 };

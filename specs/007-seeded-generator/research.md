@@ -89,6 +89,16 @@ the sweep (R12) and records the number.
 **Easy (measured 2026-11-10, User Story 1)**: 200,000 steps. Easy has at most 5 empty cells, so even an unpruned
 search takes at most 66,429 steps: the budget can never drop an Easy candidate.
 
+**Medium and Collector (measured 2026-11-11, User Story 2)**: 200,000 steps each, over every date of 2027 with
+every operator allowed (owner, 2026-11-10):
+
+| Preset | Kept count needing most steps | 95th percentile | Median | Dates where the budget changes the puzzle | Slowest date to make (this PC) |
+|---|---|---|---|---|---|
+| Medium | 23,967 | 5,724 | 1,161 | 0 | 14.6 ms |
+| Collector | 194,713 | 149,203 | 41,574 | 22 (a candidate is dropped and the next kept) | 134 ms (492 ms with no budget) |
+
+Collector's counts: 358 of 365 dates have more than 100 solutions (shown as "Found N", FR-710); the rest have 27 to 90.
+
 **Rationale**: constitution III forbids time limits, as a slow phone would then skip a candidate a fast one
 kept. The bounds prune a line as soon as it can no longer reach its target, which is what made the spike's
 counts fast. The same search answers AC-5, compared with trying every filling.
