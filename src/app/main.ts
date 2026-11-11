@@ -9,7 +9,7 @@ import { createPlayScreen, type PlayScreenComponent } from '../ui/screens/play-s
 import { createSolutionList } from '../ui/screens/solution-list';
 import { createSolutionView, type SolutionViewScreen } from '../ui/screens/solution-view';
 import { createTodayList } from '../ui/screens/today-list';
-import type { Digit, PresetName } from '../engine';
+import type { Digit } from '../engine';
 import { START_AGAIN_QUESTION } from './labels';
 import { playScreenProps, puzzleTheme } from './screen';
 import { applyAction, startSession, type Place, type SessionAction } from './session';
@@ -20,7 +20,7 @@ import { createBrowserStore } from './browser-store';
 import { readSolutions, rememberChange } from './solution-store';
 import { choose, openToday, startDaily, todayChoices, type DailyState, type SavedSolutions } from './daily';
 import { dateOnThePhone } from './today';
-import { todayListProps } from './today-list';
+import { presetsOffered, todayListProps } from './today-list';
 import type { Features } from './features';
 
 // Fixed at build time (vite.config.ts; constitution VII).
@@ -34,7 +34,7 @@ const game = root;
 
 const features = __OPERATOR_FEATURES__;
 // Today's presets each story releases (spec-007 research R11).
-const OFFERED: readonly PresetName[] = features.daily ? ['easy'] : [];
+const OFFERED = presetsOffered(features);
 const store = createBrowserStore(() => window.localStorage);
 const saved: SavedSolutions = (puzzle) => readSolutions(store, puzzle);
 const practice = startSession();
