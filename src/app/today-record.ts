@@ -28,11 +28,17 @@ export function readTodayRecord(store: SolutionStore): LastPlayed {
     return 'none';
   }
   try {
-    const { date, preset } = JSON.parse(raw) as Partial<TodayRecord>;
-    return CALENDAR_DATE.test(String(date)) && EVERY_PRESET.includes(preset as PresetName) ? { date: date as CalendarDate, preset: preset as PresetName } : 'unreadable';
+    const record: unknown = JSON.parse(raw);
+    return isTodayRecord(record) ? { date: record.date, preset: record.preset } : 'unreadable';
   } catch {
     return 'unreadable';
   }
+}
+
+/** Read as untrusted (spec-006 research R3): this format, a calendar date and one of the four presets. */
+function isTodayRecord(record: unknown): record is TodayRecord & { readonly format: number } {
+  const { format, date, preset } = (record ?? {}) as Partial<Record<'format' | 'date' | 'preset', unknown>>;
+  return format === FORMAT && CALENDAR_DATE.test(String(date)) && EVERY_PRESET.includes(preset as PresetName);
 }
 
 /** On a new day: the last day's found solutions are removed, as they cannot be reached again (FR-714). */
