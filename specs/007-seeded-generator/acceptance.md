@@ -150,3 +150,13 @@ the pull request that builds its drivers.
 - **Not in a scenario**: the header on Medium and Hard (FR-719), the space between panels and cells (FR-713) and the
   given cells' shadow (FR-720) are reviewed by the owner on a phone. spec-001's check that a given cell is marked
   by more than colour still runs on every phone.
+
+### Amendment 2026-11-12: AC-19 remembers Medium before it is filled in
+
+- **Approved by**: Philip England, 2026-11-12 (found at AC-19's acceptance RED, part 5).
+- **Changes**:
+  - `test/acceptance/play/new-day.acceptance-spec.ts`, AC-19: `daily.rememberThisPuzzle()` now comes before
+    `daily.enterTheFillingItWasMadeFromAndCheck()`, not after. Remembered after the filling, the puzzle included the
+    player's entries, so "the same Medium as before" could never match the empty grid a puzzle opens with when it is
+    come back to (FR-709, checked by AC-18), and the check that 10 November's solution is gone was never reached.
+    The steps and checks are otherwise unchanged.

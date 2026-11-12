@@ -32,8 +32,8 @@ test.describe('[spec-007 AC-19] coming back the next day', PHONES, () => {
     await game.open();
     await game.fillInAndCheck(solutionA);
     await daily.open('Medium');
-    await daily.enterTheFillingItWasMadeFromAndCheck();
     await daily.rememberThisPuzzle();
+    await daily.enterTheFillingItWasMadeFromAndCheck();
 
     await daily.setPhoneDate(eleventhOfNovember);
     await phone.closeAndReopen();
