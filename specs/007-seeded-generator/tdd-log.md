@@ -492,3 +492,12 @@ touch, and a result of 27216 reaches the panel's edge (raised with the owner).
 **Whole suite**: no exceptions expired; no existing test changed without a recorded reason (the guard caught an
 edited import line, put back in `refactor` commit); lint and typecheck clean; 446 unit tests; JS + CSS 16.07 KB
 gzipped; 58 engine and 368 phone and catalogue scenarios.
+
+**Owner's phone review, first pass**: "the numbers at the top and bottom are not centred". Measured: column pills
+and column results were centred as boxes, but their text sat 9 and 10 px left, beside the room kept for a hidden
+tick. Cycle: `target-pill.model.spec.ts` "keeps the tick's place in a one-line pill, but not in a stacked column
+pill" (new; a whole-model field would have changed two existing tests, so it is its own function) failed on the
+stub, `[true, true]`; `isTickPlaceKept` passes it. A column's result keeps its tick's place, but the tick hangs to
+its right and takes no width. Measured after: every column pill's and column result's text 0.0 px from its
+column's centre; a reached pill shows its tick inside, beside the target. 447 unit tests; 368 phone and catalogue
+scenarios.
