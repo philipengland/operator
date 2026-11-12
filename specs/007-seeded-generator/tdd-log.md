@@ -576,3 +576,30 @@ always opened the worked example, and AC-18's cycle 4 keeps "no record" as `'non
 Reported to the owner. **Proved by a reverted break**: `openLastPlayed` made to open today's Easy when there is no
 record; AC-20 failed on both phones, "the worked example is on the play screen — Expected: true, Received: false".
 Reverted; AC-20 passes again. No code or test added.
+
+### AC-21: the record of the last puzzle cannot be read
+
+**Driver (T056)**: `leaveUnreadableRecordOfLastPuzzle` leaves "this is not a saved game" under `operator.today`
+before the page loads, as `leaveUnreadableSavedData` does for a solution record (`0814ed2`).
+
+**Acceptance RED** (flags-on phones): the page threw on the record while starting, so no puzzle appeared: "waiting
+for getByRole('group', { name: 'Puzzle' }) to be visible" timed out at `game.open()`.
+
+| Cycle | Test | Failure at RED | Change | Commit |
+|---|---|---|---|---|
+| 1 | `today-record.spec.ts` "reads "unreadable" when the record is not JSON" | `SyntaxError: Unexpected token 'h'…` (the code itself, as on the phones) | a record that does not parse is `'unreadable'` | `31beef0` |
+| 2 | `daily.spec.ts` "opens today's Easy puzzle when the record cannot be read" (new) | `expected 'practice' to be 'easy'` | `openLastPlayed`: unreadable opens Easy | `821360a` |
+| 3 | "…when the record has the wrong shape" | `expected { date: '2026-11-10', … } to be 'unreadable'` | a preset must be named | `7cbfc6b` |
+| 4 | "…when the preset is unknown" | `expected { date, preset } to be 'unreadable'` | one of the four presets | `38b9412` |
+| 5 | "…when the date is not YYYY-MM-DD" | `expected { date: '10 November 2026', … } to be 'unreadable'` | `YYYY-MM-DD` | `72cdd99` |
+| 6 | "…when the record is of a later format" | `expected { date: '2026-11-10', preset: 'easy' } to be 'unreadable'` | format 1 only; the checks named `isTodayRecord` | `9b7c4a5` |
+| 7 | "never overwrites a record of a later format" | `expected '{"format":1,…' to be '{"format":2,…'` | `writeTodayRecord` leaves a later format alone (ADR 0004) | `e0b770f` |
+
+The scenario plants only text that is not JSON; cycles 3 to 7 are the other cases T060 names.
+
+**Acceptance GREEN**: AC-18 to AC-21 on both flags-on phones.
+
+**Slice refactor**: the two `JSON.parse` guards became one `fieldsOf` (`4bdcdcc`).
+
+**Whole suite**: no exception expired; lint and typecheck clean; no existing test changed; 461 unit tests; JS + CSS
+16.54 KB gzipped; 59 engine scenarios; 376 phone and catalogue scenarios. Nothing failing.
