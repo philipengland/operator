@@ -568,3 +568,11 @@ screen, the record read 11 November, and 10 November's solution record was gone.
 
 **Whole suite**: lint clean; no existing test changed; 454 unit tests; 59 engine scenarios; 372 phone and catalogue
 scenarios. Still failing, as expected: AC-21, not yet built.
+
+### AC-20: a phone that has never played
+
+**Passed at RED** on the engine driver and both flags-on phones, as T059 expected: a phone with no record has
+always opened the worked example, and AC-18's cycle 4 keeps "no record" as `'none'`, which opens nothing else.
+Reported to the owner. **Proved by a reverted break**: `openLastPlayed` made to open today's Easy when there is no
+record; AC-20 failed on both phones, "the worked example is on the play screen — Expected: true, Received: false".
+Reverted; AC-20 passes again. No code or test added.
