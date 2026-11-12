@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { dailyPuzzle, type Digit, type LinePosition, type Puzzle } from '../engine';
 import { choose, openToday, startDaily, todayRows } from './daily';
 import { onDate } from './daily';
+import { openLastPlayed } from './daily';
 import { applyAction, startSession, type SessionAction, type SessionState } from './session';
 
 const TENTH_OF_NOVEMBER = '2026-11-10';
@@ -96,5 +97,29 @@ describe('onDate (spec-007 FR-716, research R6)', () => {
     expect(choose(nextDay, 'collector').session.puzzle).toEqual(dailyPuzzle(ELEVENTH_OF_NOVEMBER, 'collector').puzzle);
     expect(choose(nextDay, 'easy').session.puzzle).toEqual(dailyPuzzle(ELEVENTH_OF_NOVEMBER, 'easy').puzzle);
     expect(choose(nextDay, 'practice').session.found).toEqual(practice.found);
+  });
+});
+
+describe('openLastPlayed (spec-007 FR-701, AC-18)', () => {
+  it("opens today's puzzle for the preset last played today, on the play screen, with its saved solutions", () => {
+    const medium = dailyPuzzle(TENTH_OF_NOVEMBER, 'medium');
+    const saved = (puzzle: Puzzle) => (puzzle.id === medium.puzzle.id ? [medium.builtFrom] : []);
+    const daily = startDaily(TENTH_OF_NOVEMBER, startSession(), ['easy', 'medium']);
+
+    const opened = openLastPlayed(daily, { date: TENTH_OF_NOVEMBER, preset: 'medium' }, saved);
+
+    expect(opened.current).toBe('medium');
+    expect(opened.session.puzzle).toEqual(medium.puzzle);
+    expect(opened.session.place).toEqual({ kind: 'play' });
+    expect(opened.session.solutions).toEqual([medium.builtFrom]);
+  });
+
+  it("opens today's Easy puzzle when the record cannot be read (FR-715, AC-21)", () => {
+    const daily = startDaily(TENTH_OF_NOVEMBER, startSession(), ['easy', 'medium']);
+
+    const opened = openLastPlayed(daily, 'unreadable');
+
+    expect(opened.current).toBe('easy');
+    expect(opened.session.puzzle).toEqual(dailyPuzzle(TENTH_OF_NOVEMBER, 'easy').puzzle);
   });
 });

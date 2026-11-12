@@ -501,3 +501,113 @@ stub, `[true, true]`; `isTickPlaceKept` passes it. A column's result keeps its t
 its right and takes no width. Measured after: every column pill's and column result's text 0.0 px from its
 column's centre; a reached pill shows its tick inside, beside the target. 447 unit tests; 368 phone and catalogue
 scenarios.
+
+## Part 5: User Story 4, a new day (T055 to T062)
+
+### T055: the `newDay` flag
+
+Branch `007-seeded-generator-part-5` from `main` (`9e2af2b`). `test/acceptance/play/new-day.acceptance-spec.ts`
+brought unchanged from `514187c` (blob `7f7907e`, confirmed). `newDay: false` in `src/app/features.ts`, and the file
+behind it in `playwright.config.ts`. `e02fd52`.
+
+**Baseline**: 447 unit tests; 59 engine scenarios; 368 phone and catalogue scenarios pass. Failing, as expected:
+the new file's AC-18, AC-19 and AC-21 on the flags-on phones. AC-20 passes already (T059 expected it; to be proved
+by a reverted break).
+
+### AC-18: coming back the same day
+
+**Acceptance RED** (flags-on phones): after the reload the worked example opened, not Medium: "No daily puzzle is
+on the play screen" at `expectPuzzle('Medium', 5, 4)`. The drivers needed nothing new: the phone's fixed date
+holds across a reload and a fresh load.
+
+| Cycle | Test | Failure at RED | Change | Commit |
+|---|---|---|---|---|
+| 1 | `today-record.spec.ts` "keeps the day and preset in the agreed format, under operator.today" | `expected null to deeply equal { format: 1, … }` | `writeTodayRecord` | `f07be3e` |
+| 2 | "reads back the day and preset written" | `expected 'none' to deeply equal { date, preset }` | `readTodayRecord` | `191d744` |
+| 3 | `daily.spec.ts` "opens today's puzzle for the preset last played today, on the play screen, with its saved solutions" (new; import on its own line) | `expected 'practice' to be 'medium'` | `openLastPlayed`, through `choose` (FR-709) | `f5957d1` |
+| 4 | `today-record.spec.ts` "reads "none" on a phone that has never played" | `expected { date: undefined, preset: undefined } to be 'none'` | no record is `'none'`, so the wiring keeps AC-20 | `54c7f3f` |
+| 5 | (entry point; the scenario) | | `main.ts`, behind `newDay`: read on opening, written when one of today's puzzles is chosen | `6089823` |
+
+**Acceptance GREEN**: AC-18 on both flags-on phones; AC-20 still passes.
+
+**Slice refactor**: nothing changed. `today-record.spec.ts` repeats `solution-store.spec.ts`'s in-memory store;
+sharing it would change a protected file.
+
+**Whole suite**: lint clean; no existing test changed; 451 unit tests; 59 engine scenarios; 370 phone and catalogue
+scenarios. Still failing, as expected: AC-19 and AC-21, not yet built.
+
+### AC-19: coming back the next day
+
+**Acceptance RED, first run** (flags-on phones): the opening on 11 November already passed (AC-18's
+`openLastPlayed` opens the new date's Medium), and Practice kept "Found 1 of 2". The scenario then failed at
+`expectSamePuzzleAsRemembered()`: it remembered 10 November's Medium after the filling was entered, so the
+remembered puzzle held the player's entries, and an empty grid on coming back (FR-709) could never match. Stopped
+and asked; the owner approved moving `rememberThisPuzzle()` before the filling (acceptance.md, Amendment
+2026-11-12, `6696751`).
+
+**Acceptance RED, after the amendment**: back on 10 November, Medium showed "Found 1 of 2", not "Found 0": the
+solution had not been removed.
+
+| Cycle | Test | Failure at RED | Change | Commit |
+|---|---|---|---|---|
+| 1 | `today-record.spec.ts` "removes an earlier day's four solution records, never the worked example's" | `expected [ …(5) ] to deeply equal [ 'operator.solutions.worked-example' ]` | `clearEarlierDay` removes `operator.solutions.daily-v1-<date>-<preset>` for all four presets | `5f87de1` |
+| 2 | "removes nothing when the record is of today" | `expected [] to deeply equal [ …(4) ]` | no clearing on the same date (a guard written early in cycle 1 was taken out so this test could fail first) | `99ddf76` |
+| 3 | "rewrites the record for today, with the same preset, so the next new day clears this one" | `expected { date: '2026-11-10', … } to deeply equal { date: '2026-11-11', … }` | the record rewritten; cycle 1's test now looks at solution records only, as the record sits beside them | `f605407` |
+| 4 | (entry point; the scenario) | | `main.ts`, behind `newDay`: the date read again on opening, on the Today screen, and when the page comes back into view; an earlier day cleared; a puzzle already open stays open | `0c9224f` |
+
+Cycle 2's first commit held its test failing (an edit did not apply, unseen behind a lint check); the code was
+fixed and folded into the same unpushed commit before anything else.
+
+**Acceptance GREEN**: AC-18, AC-19 and AC-20 on both flags-on phones.
+
+**Coming back into view** (no scenario covers it; checked with a throwaway script on the flags-on build): opened on
+10 November at Medium, the clock moved to 00:05 on 11 November and the page made visible again: Medium stayed on
+screen, the record read 11 November, and 10 November's solution record was gone.
+
+**Slice refactor**: nothing changed.
+
+**Whole suite**: lint clean; no existing test changed; 454 unit tests; 59 engine scenarios; 372 phone and catalogue
+scenarios. Still failing, as expected: AC-21, not yet built.
+
+### AC-20: a phone that has never played
+
+**Passed at RED** on the engine driver and both flags-on phones, as T059 expected: a phone with no record has
+always opened the worked example, and AC-18's cycle 4 keeps "no record" as `'none'`, which opens nothing else.
+Reported to the owner. **Proved by a reverted break**: `openLastPlayed` made to open today's Easy when there is no
+record; AC-20 failed on both phones, "the worked example is on the play screen — Expected: true, Received: false".
+Reverted; AC-20 passes again. No code or test added.
+
+### AC-21: the record of the last puzzle cannot be read
+
+**Driver (T056)**: `leaveUnreadableRecordOfLastPuzzle` leaves "this is not a saved game" under `operator.today`
+before the page loads, as `leaveUnreadableSavedData` does for a solution record (`0814ed2`).
+
+**Acceptance RED** (flags-on phones): the page threw on the record while starting, so no puzzle appeared: "waiting
+for getByRole('group', { name: 'Puzzle' }) to be visible" timed out at `game.open()`.
+
+| Cycle | Test | Failure at RED | Change | Commit |
+|---|---|---|---|---|
+| 1 | `today-record.spec.ts` "reads "unreadable" when the record is not JSON" | `SyntaxError: Unexpected token 'h'…` (the code itself, as on the phones) | a record that does not parse is `'unreadable'` | `31beef0` |
+| 2 | `daily.spec.ts` "opens today's Easy puzzle when the record cannot be read" (new) | `expected 'practice' to be 'easy'` | `openLastPlayed`: unreadable opens Easy | `821360a` |
+| 3 | "…when the record has the wrong shape" | `expected { date: '2026-11-10', … } to be 'unreadable'` | a preset must be named | `7cbfc6b` |
+| 4 | "…when the preset is unknown" | `expected { date, preset } to be 'unreadable'` | one of the four presets | `38b9412` |
+| 5 | "…when the date is not YYYY-MM-DD" | `expected { date: '10 November 2026', … } to be 'unreadable'` | `YYYY-MM-DD` | `72cdd99` |
+| 6 | "…when the record is of a later format" | `expected { date: '2026-11-10', preset: 'easy' } to be 'unreadable'` | format 1 only; the checks named `isTodayRecord` | `9b7c4a5` |
+| 7 | "never overwrites a record of a later format" | `expected '{"format":1,…' to be '{"format":2,…'` | `writeTodayRecord` leaves a later format alone (ADR 0004) | `e0b770f` |
+
+The scenario plants only text that is not JSON; cycles 3 to 7 are the other cases T060 names.
+
+**Acceptance GREEN**: AC-18 to AC-21 on both flags-on phones.
+
+**Slice refactor**: the two `JSON.parse` guards became one `fieldsOf` (`4bdcdcc`).
+
+**Whole suite**: no exception expired; lint and typecheck clean; no existing test changed; 461 unit tests; JS + CSS
+16.54 KB gzipped; 59 engine scenarios; 376 phone and catalogue scenarios. Nothing failing.
+
+### T061: the game with `newDay` off
+
+Checked with a throwaway script on `npm run build`: a phone holding a record of 10 November's Medium and that
+day's solution record, opened on 11 November, shows the worked example; choosing Medium leaves the record as it
+was, and 10 November's solution record is kept. The flags-on build passes AC-18 to AC-21 on both phones. The
+date is read again in `main.ts`, through `today.ts`'s `dateOnThePhone` (T058 named `today.ts`; it stays the
+clock's only reader). `docs/contracts/saved-solutions.md` and `AGENTS.md` updated.

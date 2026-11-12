@@ -45,6 +45,8 @@ const EMPTY_LAYOUT: ScreenLayout = {
 
 // docs/contracts/saved-solutions.md: where the fixed puzzle's solutions are kept.
 const SAVED_SOLUTIONS_KEY = 'operator.solutions.worked-example';
+// The record of the day and preset last played (docs/contracts/saved-solutions.md; spec-007).
+const LAST_PUZZLE_KEY = 'operator.today';
 
 /** A scenario's filling in the saved format: given cells and shown operators are null. */
 function savedEntry({ topRight, bottomLeft, bottomRight, row2, column1 }: Entry) {
@@ -209,16 +211,18 @@ export class UiPhoneDriver implements PhoneDriver {
     };
   }
 
-  async leaveUnreadableRecordOfLastPuzzle(): Promise<void> {}
+  async leaveUnreadableRecordOfLastPuzzle(): Promise<void> {
+    await this.leaveSaved('this is not a saved game', LAST_PUZZLE_KEY);
+  }
 
-  private async leaveSaved(record: string): Promise<void> {
+  private async leaveSaved(record: string, key: string = SAVED_SOLUTIONS_KEY): Promise<void> {
     await this.page.addInitScript(
       ([key, value]) => {
         if (window.location.protocol.startsWith('http')) {
           localStorage.setItem(key as string, value as string);
         }
       },
-      [SAVED_SOLUTIONS_KEY, record],
+      [key, record],
     );
   }
 

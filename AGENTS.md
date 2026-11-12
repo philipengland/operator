@@ -35,7 +35,7 @@ Today screen, with the worked example kept as "Practice"; so far today's Easy, M
   - Play screen — `src/app/` — session state (`session.ts`), wording and accessible names
     (`labels.ts`), the mapping from state to what the library shows (`screen.ts`, `solution-list.ts`,
     `solution-view.ts`, `today-list.ts`), today's puzzles and switching between them (`daily.ts`), the phone's date
-    (`today.ts`), history (`navigation.ts`), the saved format (`solution-store.ts`), the only code touching
+    (`today.ts`), history (`navigation.ts`), the saved format (`solution-store.ts`), the record of the puzzle last played (`today-record.ts`), the only code touching
     `localStorage` (`browser-store.ts`), build-time feature flags (`features.ts`), wiring (`main.ts`). The game adds no styling of its own.
   - Component library — `src/ui/` — in tiers: `foundations/` (themes, `themeForSeed`,
     `contrastRatio`, `blend`, `tokens.css`, and `page.css`: the page's paper with Ben-Day dots), `simple/`, `combined/`, `screens/`. Each component has a pure
@@ -178,7 +178,7 @@ npm run build:flags-on          # the game with every feature flag on, in dist-f
 - **User stories ship behind build-time feature flags** (`src/app/features.ts`; constitution VII).
   `playwright.config.ts` says which scenario file needs which flag: while a flag is off, that file
   runs on `iphone-flagged` and `android-flagged` against `dist-flags-on/`, and releasing a story
-  changes no locked file. Behind a flag at present: `daily` (spec-007 User Story 1, today's Easy puzzle) and `presets` (User Story 2, Medium and Collector), both released on 2026-11-11, and `hard` (User Story 3, Hard), released on 2026-11-12, all to be removed once signed off. Why: every merge deploys, so `main` must always be fit for players.
+  changes no locked file. Behind a flag at present: `daily` (spec-007 User Story 1, today's Easy puzzle) and `presets` (User Story 2, Medium and Collector), both released on 2026-11-11, and `hard` (User Story 3, Hard), released on 2026-11-12, all to be removed once signed off; and `newDay` (User Story 4: reopening on the puzzle last played, and clearing earlier days), off until the owner's phone review. Why: every merge deploys, so `main` must always be fit for players.
 - **Existing unit tests are protected.** Amend or delete one only when a specific change in functionality makes it
   obsolete, and record it in `specs/<feature>/test-changes.md`: `| File | Test | Requirement (FR-, AC-, SC- or task) | Why the test is obsolete |`.
   `verify` fails a pull request that removes or changes a line of an existing `*.spec.ts` without a new row for that file. Adding tests is
