@@ -25,8 +25,12 @@ export function readTodayRecord(store: SolutionStore): LastPlayed {
   if (raw === null) {
     return 'none';
   }
-  const { date, preset } = JSON.parse(raw) as TodayRecord;
-  return { date, preset };
+  try {
+    const { date, preset } = JSON.parse(raw) as TodayRecord;
+    return { date, preset };
+  } catch {
+    return 'unreadable';
+  }
 }
 
 /** On a new day: the last day's found solutions are removed, as they cannot be reached again (FR-714). */

@@ -40,6 +40,12 @@ describe('readTodayRecord', () => {
     expect(lastPlayed).toEqual({ date: '2026-11-10', preset: 'medium' });
   });
 
+  it('reads "unreadable" when the record is not JSON (AC-21)', () => {
+    const lastPlayed = readTodayRecord(storeWith({ [KEY]: 'this is not a saved game' }));
+
+    expect(lastPlayed).toBe('unreadable');
+  });
+
   it('reads "none" on a phone that has never played', () => {
     const lastPlayed = readTodayRecord(storeWith());
 
