@@ -9,9 +9,17 @@ export interface TodayRecord {
   readonly preset: PresetName;
 }
 
+/** What the phone says was last played: a record, none (a phone that has never played), or one that cannot be read. */
+export type LastPlayed = TodayRecord | 'none' | 'unreadable';
+
 const KEY = 'operator.today';
 const FORMAT = 1;
 
 export function writeTodayRecord(store: SolutionStore, { date, preset }: TodayRecord): void {
   store.write(KEY, JSON.stringify({ format: FORMAT, date, preset }));
+}
+
+export function readTodayRecord(store: SolutionStore): LastPlayed {
+  const { date, preset } = JSON.parse(store.read(KEY) ?? '{}') as TodayRecord;
+  return { date, preset };
 }
