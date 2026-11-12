@@ -138,7 +138,7 @@ the approved Layer 1 file it makes pass, brought unchanged from `514187c`.
 - [X] T051 [US3] AC-16: Hard fits 375 × 667 without scrolling; at 320 × 568 it scrolls up and down only (FR-713); every target at least 44 × 44; the accessibility scan passes
 - [X] T052 [US3] AC-17: `secondsToOpen` in `ui/daily.ui-driver.ts`; Hard ready within 1 second on the reference throttling. If not, make puzzles in a Web Worker so the screen never freezes, within the 30 KB budget, and record it in `research.md` R5
 - [X] T053 [US3] Confirm `npm run build` does not list Hard with `hard` off, and the flags-on build passes, including the speed project. Update `tdd-log.md`. Push and open "spec-007 part 4 of 5: Hard (flag off)", noting that Hard's puzzles become fixed for good when `hard` goes on. The owner merges
-- [ ] T054 [US3] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `hard` true in `src/app/features.ts`
+- [X] T054 [US3] **The owner reviews the flags-on build on a phone**; then a one-line pull request sets `hard` true in `src/app/features.ts`
 
 ---
 
@@ -156,7 +156,7 @@ Medium is released, so the change reaches players on merge: the owner reviews it
 - [X] T069 FR-719: TDD in `src/app/screen.spec.ts`: Medium and Hard have the full header (not the compact screen), Collector keeps it; a smaller mascot on large grids in `src/ui/`
 - [X] T070 AC-12, AC-16: cells at least 36 × 36 on Medium and Hard, space between panels and cells, smaller shadows, in `src/ui/foundations/tokens.css` and the grid's CSS; Hard fits 375 × 667 and Medium scrolls only up and down at 320 × 568
 - [X] T071 FR-720: every given cell has a shadow in a blend of ink and paper, in `src/ui/simple/button.css`; spec-001's given-cell scenario still passes, and the catalogue shows it
-- [ ] T072 Run the whole suite; update `docs/contracts/component-library.md`, `docs/contracts/play-screen.md` and `tdd-log.md`. Push and open the pull request. **The owner reviews it on a phone before merging**, as Medium changes for players on merge
+- [X] T072 Run the whole suite; update `docs/contracts/component-library.md`, `docs/contracts/play-screen.md` and `tdd-log.md`. Push and open the pull request. **The owner reviews it on a phone before merging**, as Medium changes for players on merge
 
 ---
 
