@@ -79,9 +79,14 @@ function isThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
   return rows === EASY_SIZE && columns === EASY_SIZE;
 }
 
-/** spec-007 FR-719: a grid bigger than 3 × 3 (Medium, Hard, Collector) has the compact screen. */
+/** spec-007: a grid bigger than 3 × 3 (Medium, Hard, Collector) has no helper line (FR-719). */
 function isBiggerThanThreeByThree({ rows, columns }: SessionState['puzzle']): boolean {
   return rows * columns > EASY_SIZE * EASY_SIZE;
+}
+
+/** spec-007 FR-719 (owner, 2026-11-12): Collector, bigger than 3 × 3 but 3 columns wide, has the compact screen. */
+function hasCompactScreen(puzzle: SessionState['puzzle']): boolean {
+  return isBiggerThanThreeByThree(puzzle) && !isWiderThanThreeColumns(puzzle);
 }
 
 /** spec-007 FR-718: a grid wider than 3 columns shows its workings in the strip, not beside each line. */
@@ -145,7 +150,7 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     keysAvailable: state.selected !== null,
     announcement: announcement(state.message, theme, counterText(state)),
     isSnug: isThreeByThree(state.puzzle),
-    isCompact: isBiggerThanThreeByThree(state.puzzle),
+    isCompact: hasCompactScreen(state.puzzle),
     ...stripOf(state, theme),
   };
 }
