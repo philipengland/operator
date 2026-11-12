@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { headerWithAnnouncement } from './play-screen.model';
-import { playScreenClasses, playScreenParts } from './play-screen.model';
+import { playScreenParts } from './play-screen.model';
+import { playScreenClasses } from './play-screen.model';
 
 describe('headerWithAnnouncement', () => {
   const header = { title: 'Hello, Operator!', message: 'Wrong number, pal!' };
