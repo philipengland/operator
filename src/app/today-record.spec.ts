@@ -39,4 +39,10 @@ describe('readTodayRecord', () => {
 
     expect(lastPlayed).toEqual({ date: '2026-11-10', preset: 'medium' });
   });
+
+  it('reads "none" on a phone that has never played', () => {
+    const lastPlayed = readTodayRecord(storeWith());
+
+    expect(lastPlayed).toBe('none');
+  });
 });

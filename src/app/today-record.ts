@@ -20,6 +20,10 @@ export function writeTodayRecord(store: SolutionStore, { date, preset }: TodayRe
 }
 
 export function readTodayRecord(store: SolutionStore): LastPlayed {
-  const { date, preset } = JSON.parse(store.read(KEY) ?? '{}') as TodayRecord;
+  const raw = store.read(KEY);
+  if (raw === null) {
+    return 'none';
+  }
+  const { date, preset } = JSON.parse(raw) as TodayRecord;
   return { date, preset };
 }
