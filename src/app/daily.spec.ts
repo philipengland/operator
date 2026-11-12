@@ -113,4 +113,13 @@ describe('openLastPlayed (spec-007 FR-701, AC-18)', () => {
     expect(opened.session.place).toEqual({ kind: 'play' });
     expect(opened.session.solutions).toEqual([medium.builtFrom]);
   });
+
+  it("opens today's Easy puzzle when the record cannot be read (FR-715, AC-21)", () => {
+    const daily = startDaily(TENTH_OF_NOVEMBER, startSession(), ['easy', 'medium']);
+
+    const opened = openLastPlayed(daily, 'unreadable');
+
+    expect(opened.current).toBe('easy');
+    expect(opened.session.puzzle).toEqual(dailyPuzzle(TENTH_OF_NOVEMBER, 'easy').puzzle);
+  });
 });

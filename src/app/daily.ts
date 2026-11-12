@@ -54,10 +54,11 @@ function pick(kept: DailyState['kept'], choice: Choice): DailyState['kept'] {
 
 /** On opening the game: the puzzle last played, if the phone says so (FR-701, FR-715). */
 export function openLastPlayed(state: DailyState, lastPlayed: LastPlayed, saved: SavedSolutions = NOTHING_SAVED): DailyState {
-  if (typeof lastPlayed === 'string') {
+  if (lastPlayed === 'none') {
     return state;
   }
-  return choose(state, lastPlayed.preset, saved);
+  // A record that cannot be read still says the phone has played: today's Easy (AC-21).
+  return choose(state, lastPlayed === 'unreadable' ? 'easy' : lastPlayed.preset, saved);
 }
 
 /** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
