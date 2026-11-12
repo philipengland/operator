@@ -446,3 +446,49 @@ count changed, in two `perf` commits, each checked by all 445 unit tests, the go
 
 It also removed the slow Today screen the owner had accepted at AC-17: on the reference phone it now opens within 650 ms on the
 slowest date of 2027 (1,766 ms before on 20 October 2027, now 610 ms). Choosing Hard stays about 0.12 s (research R5).
+
+## Amendment 2026-11-12: results beside each line, the header back, smaller cells (Medium and Hard)
+
+Branch `007-seeded-generator-workings-beside` from `main` at `471b3c4` (PR #51's merge; `ci-deploy` passed and the
+public address serves `471b3c4`). The owner's decisions, from mock-ups on 11 and 12 November, are in the spec's
+Clarifications; approved scenarios `99391d0`; exception EXC-007 (cells of Medium and Hard at least 36 × 36).
+
+**Baseline**: 445 unit tests, 58 engine scenarios, all passing; `main`'s `verify` passed in CI.
+
+### Acceptance RED (T067)
+
+Drivers: `resultsBesideLines` reads each line's shown result, its mark and whether it is at its row's right or below
+its column; `dailyLayout` gains `cells`. AC-23 failed for the reason expected: every line's result was "not beside
+its line" (they were in the strip). AC-12 and AC-16 **passed at RED**: they now ask 36 × 36 of cells, less than the
+44 the old layout gave. Proved by a reverted break after the layout (cells held to 30 px): both failed, "width of
+cell — Expected: >= 36, Received: 30".
+
+### Cycles
+
+| Cycle | Test | Change | Commit |
+|---|---|---|---|
+| 1 | `screen.spec.ts` "keeps every grid's workings beside its lines, Medium's too" (amended, agreed) | no `workings: 'elsewhere'` | `fb42acc` |
+| 2 | "shows a wide grid's results in short form…" (new) | `besideItsLine` drops "= "; the agreed strip test deleted | `b5d9453` |
+| 3 | "is used by Collector only…" (amended, agreed) | `hasCompactScreen`: bigger than 3 × 3, at most 3 columns | `58a05f6` |
+| 4 | "shows the operator's line after a Check in the strip on Collector only…" (amended, agreed) | the strip only on the compact screen; the prompt test deleted, `TAP_A_CELL` removed | `2c3a6ef` |
+| 5 | "gives Medium and Hard the large grid's layout, and Hard's 7 rows the tall one…" (new) | `isLargeGrid`, `isTallGrid` | `dc23215` |
+| 6 | `play-screen.model.spec.ts` `playScreenClasses` (new) | the densities as classes | `bbc40d1` |
+
+**Layout (T070)**, checked by AC-12 and AC-16: `.density-large-grid` and `.density-tall-grid`; `--size-mascot`,
+`--space-bubble-block`, `--size-cell-least`, `--size-row-pills`. The first run found the open column pills of Medium
+at 320 px held only to 36 px (the cells' least width was set on every grid button): it now applies to cells only, and
+narrow phones give the cells room so neighbouring 44 px pills do not touch. Hard was 669 px tall at 375 × 667: the
+tall grid's screen edge is 7 px. Measured: Medium 375 × 667 and Hard 375 × 667 fit; Medium 320 × 599 and Hard
+320 × 655 at 320 × 568 scroll down only. `a8cd495` / `71f58cd`.
+
+**Given cells (T071)**: a shadow on every given cell failed spec-001 AC-4 on both phones, as the shadow had been the
+given cell's only marking besides colour. The owner chose to read a solid disc against an outlined ring as a
+difference of shape (spec-007, Changes to earlier specs). The phone driver reports a cell's fill, solid or ringed;
+no locked file changed. Proved by a reverted break (given cells drawn as rings): AC-4 failed on both phones.
+
+**Worst case** (catalogue, widest pills): Hard fits 375 × 667 with no tap target under 44 px; "× −500" and "× 432"
+touch, and a result of 27216 reaches the panel's edge (raised with the owner).
+
+**Whole suite**: no exceptions expired; no existing test changed without a recorded reason (the guard caught an
+edited import line, put back in `refactor` commit); lint and typecheck clean; 446 unit tests; JS + CSS 16.07 KB
+gzipped; 58 engine and 368 phone and catalogue scenarios.
