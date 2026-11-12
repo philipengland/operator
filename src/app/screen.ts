@@ -3,7 +3,7 @@
 
 import type { PlayScreenProps } from '../ui/screens/play-screen';
 import { themeForSeed, type Theme } from '../ui/foundations/themes';
-import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, TAP_A_CELL, workingName, workingSlot } from './labels';
+import { announcement, bubbleLine, cellTitleIn, pillName, puzzleName, workingName, workingSlot } from './labels';
 import { lineOperator, lineSpec, type CellPosition, type LinePosition, type LineWorking } from '../engine';
 import type { GridCellProps } from '../ui/combined/grid-cell';
 import type { PuzzleGridProps } from '../ui/combined/puzzle-grid';
@@ -122,23 +122,9 @@ export function puzzleTheme({ puzzle }: SessionState): Theme {
   return themeForSeed(puzzle.seed);
 }
 
-/**
- * The compact screen's strip: the operator's line after a Check, until a cell is tapped (FR-719); otherwise, on a
- * grid wider than 3 columns, the selected cell's row and column workings, or a prompt to tap one (FR-718).
- */
+/** The compact screen's strip (Collector): the operator's line after a Check, until a cell is tapped (FR-719). */
 function stripOf(state: SessionState, theme: Theme): Pick<PlayScreenProps, 'strip'> {
-  if (state.message !== null && isBiggerThanThreeByThree(state.puzzle)) {
-    return { strip: { text: bubbleLine(state.message, theme) } };
-  }
-  if (!isWiderThanThreeColumns(state.puzzle)) {
-    return {};
-  }
-  const { selected } = state;
-  if (selected === null) {
-    return { strip: { text: TAP_A_CELL } };
-  }
-  const workingOf = (axis: LinePosition['axis'], index: number) => lines(state, axis).filter((working) => working.line.index === index).map(workingProps);
-  return { strip: { workings: [...workingOf('row', selected.row), ...workingOf('column', selected.column)] } };
+  return state.message !== null && hasCompactScreen(state.puzzle) ? { strip: { text: bubbleLine(state.message, theme) } } : {};
 }
 
 export function playScreenProps(state: SessionState, theme: Theme): PlayScreenProps {

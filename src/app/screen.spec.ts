@@ -182,16 +182,12 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
     ]);
   });
 
-  it('prompts in the strip on Medium until a cell is tapped (FR-718)', () => {
-    expect(opened('medium').strip).toEqual({ text: 'Tap a cell to see its row and column.' });
-  });
-
-  it("shows the operator's line after a Check in the strip, on Medium and on Collector, which has no strip otherwise (FR-719)", () => {
+  it("shows the operator's line after a Check in the strip on Collector only; Medium has none (FR-719)", () => {
     const checked = (preset: 'medium' | 'collector') =>
       playScreenProps(applyAction(startSession(dailyPuzzle('2026-11-10', preset).puzzle), { type: 'submit' }), CLASSIC);
     const operatorsLine = { text: bubbleLine('incomplete', CLASSIC) };
 
-    expect([checked('medium').strip, checked('collector').strip, opened('collector').strip]).toEqual([operatorsLine, operatorsLine, undefined]);
+    expect([checked('medium').strip, checked('collector').strip, opened('collector').strip]).toEqual([undefined, operatorsLine, undefined]);
   });
 
   it('has no helper line about swapping operators, though Medium and Collector have open lines (FR-719)', () => {

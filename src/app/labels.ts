@@ -169,6 +169,3 @@ export function announcement(kind: MessageKind | null, theme: Theme, counter: st
   const changedCount = kind === 'new-solution' || kind === 'all-found' ? counter : '';
   return [MESSAGES[kind], operatorLine(kind, theme), changedCount].filter((part) => part !== '').join(' ');
 }
-
-/** spec-007 FR-718: the workings strip before a cell is tapped. */
-export const TAP_A_CELL = 'Tap a cell to see its row and column.';
