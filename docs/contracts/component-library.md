@@ -117,17 +117,21 @@ Combined components and screens still only lay out (`tools/ui-tiers.spec.ts`).
 | Component | Tier | Addition | Accessible behaviour |
 | --- | --- | --- | --- |
 | Puzzle grid | combined | `name`: what a screen reader calls it, "Puzzle" by default. `workings: 'beside' \| 'elsewhere'`. Elsewhere: no column or row for workings; each working is kept, visually hidden, in one holder. A column pill wider than its column puts its target under its operator | Every working heard by its name, as before |
-| Workings strip | combined, **new** | Built from Surface, Line working and Text: the selected cell's row and column workings in full, or one line of text. Wraps to two lines | Hidden from screen readers |
+| Workings strip | combined, **new** | Built from Surface, Line working and Text: the selected cell's row and column workings in full, or one line of text. Wraps to two lines. The game uses it on Collector's compact screen only, for the operator's line (2026-11-12) | Hidden from screen readers |
 | Status bar | combined, **new** | Built from Solutions counter and Button: the counter, then a Today button | `region` "Status bar"; the button reads "Today", named "Today's puzzles" |
-| Play screen | screen | Built from Operator header, Solutions counter, Status bar, Puzzle grid, Workings strip, Keypad and Button. `onToday` adds the Status bar under the header; `isSnug` uses the snug density; `isCompact` shows the Status bar and the strip in place of the header and counter, with the compact density | Unchanged; the operator's line is still announced |
+| Play screen | screen | Built from Operator header, Solutions counter, Status bar, Puzzle grid, Workings strip, Keypad and Button. `onToday` adds the Status bar under the header; `isSnug` uses the snug density; `isCompact` shows the Status bar and the strip in place of the header and counter, with the compact density; `isLargeGrid` and `isTallGrid` use the large-grid and tall-grid densities | Unchanged; the operator's line is still announced |
 | Today list | screen, **new** | Built from Operator header and Button: heading in the bubble, Back, one row per choice, shown as heard ("Easy, found 1 of 4") | `region` named by its heading; rows are buttons |
 
 **Foundations**: `.density-snug` gives a 3 × 3 grid on the full screen 50 px cells on phones 601 to 700 px high, so
 Easy fits beside the Today button (owner, 2026-11-10). `.density-compact` is a token set for the compact screen: 44 px cells, keys and main button, with
 smaller spacing and text (14 px at 320 px wide). Nothing a player taps goes below 44 × 44 px.
+`.density-large-grid` (Medium and Hard, owner 2026-11-12) has a 52 px mascot (`--size-mascot`), a slimmer bubble
+(`--space-bubble-block`), cells down to 36 px (`--size-cell-least`; EXC-007), smaller shadows, and 10 px between
+panels and 6 px between cells; `.density-tall-grid` (Hard's 7 rows) tightens that to 6 and 4 px. Pills, keys and the
+main button stay 44 × 44 px. A given grid cell casts a shadow in a blend of ink and paper (FR-720).
 
-**Catalogue**: lists each new part with samples, and shows the compact screen alone with a 5 × 4 and a 7 × 5 grid at
-`catalogue.html#play-screen-medium` and `#play-screen-hard`.
+**Catalogue**: lists each new part with samples, and shows the large-grid play screen alone with a 5 × 4 and a 7 × 5
+grid, with the widest pills each can show, at `catalogue.html#play-screen-medium` and `#play-screen-hard`.
 
 **Locked scenarios affected**: spec-003 `[AC-1]` gains Status bar and Workings strip (combined) and Today list
 (screens), approved by the owner (`specs/007-seeded-generator/acceptance.md`).

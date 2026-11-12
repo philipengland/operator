@@ -33,6 +33,8 @@ export interface DailyLayout {
   readonly screen: ScreenSize;
   /** Every cell, pill and key, and the main button: everything a player taps to play. */
   readonly tapTargets: readonly Box[];
+  /** The puzzle's cells alone; each is also among the tap targets. */
+  readonly cells: readonly Box[];
   /** The whole puzzle (pills, cells and any workings), the keypad and the main button. */
   readonly puzzle: Box;
   readonly keypad: Box;

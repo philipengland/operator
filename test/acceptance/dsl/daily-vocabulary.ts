@@ -51,6 +51,18 @@ export interface DailyPuzzle {
   readonly columnLines: readonly DailyLine[];
 }
 
+/** Where a line's result is shown on the grid (FR-718): at a row's right, below a column, or not beside its line. */
+export type ResultPlace = 'right of its row' | 'below its column' | 'not beside its line';
+
+/** A line's result as shown beside it (FR-718): "Row 1" shows "14" with a tick at the right of its row. */
+export interface ResultBesideLine {
+  readonly line: string;
+  /** The result in short form: "?", "14", "−3"; empty when a cross says it all. */
+  readonly shown: string;
+  readonly mark: 'tick' | 'cross' | 'none';
+  readonly place: ResultPlace;
+}
+
 /** A row on the Today screen, as shown and as heard ("Easy, found 1 of 4"). */
 export interface TodayRow {
   readonly choice: TodayChoice;

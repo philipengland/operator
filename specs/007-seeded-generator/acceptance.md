@@ -43,11 +43,12 @@ in 20 Collector puzzles do, research R3). Every other scenario uses 10 or 11 Nov
 | AC-8: Medium | 5 × 4, only +, −, × and ÷, 4 or 5 lines open, 10 given, targets 1 to 100, M 2 to 20 | `test/acceptance/play/medium-and-collector.acceptance-spec.ts` |
 | AC-9: Collector | 4 × 3, all 7 lines open, none given, targets −29 to 29 and not 0, M 21 or more | same |
 | AC-10: more than 100 | On the first day from 10 November with more than 100: after 3 found, "Found 3", and never "All found!" | same |
-| AC-12: fitting the screen | Medium and Collector, each at 375 × 667 and 320 × 568: puzzle, keypad and button on screen with no scrolling; everything to tap at least 44 × 44; no accessibility problems (`@ui`, four scenarios) | same |
+| AC-12: fitting the screen | Collector at 375 × 667 and 320 × 568, and Medium at 375 × 667: puzzle, keypad and button on screen with no scrolling. Medium at 320 × 568: scrolls up and down only. Collector: everything to tap at least 44 × 44. Medium: cells at least 36 × 36, everything else 44 × 44. No accessibility problems (`@ui`, four scenarios; amended 2026-11-12) | same |
 | AC-13: switching | Easy keeps "Found 1" and "Solution 1" after a visit to Medium (which is at "Found 0"), with an empty grid | same |
 | AC-14: Hard | The Today screen lists Easy, Medium, Hard, Collector, Practice; Hard is 7 × 5, 1 or 2 lines open, 21 or 22 given, targets −500 to 500 and not 0, M 1 to 3 | `test/acceptance/play/hard.acceptance-spec.ts` |
-| AC-16: Hard at 375 × 667 | Fits with no scrolling; everything to tap at least 44 × 44; no accessibility problems (`@ui`) | same |
-| AC-16: Hard at 320 × 568 | Scrolls up and down only, never sideways; everything to tap at least 44 × 44; no accessibility problems (`@ui`) | same |
+| AC-16: Hard at 375 × 667 | Fits with no scrolling; cells at least 36 × 36, everything else to tap 44 × 44; no accessibility problems (`@ui`; amended 2026-11-12) | same |
+| AC-16: Hard at 320 × 568 | Scrolls up and down only, never sideways; cells at least 36 × 36, everything else to tap 44 × 44; no accessibility problems (`@ui`; amended 2026-11-12) | same |
+| AC-23: results beside lines | Medium for 10 November: "?" at every row's right and below every column; after its own filling is checked, each line's target with a tick (`@ui`; added 2026-11-12) | `test/acceptance/play/medium-and-collector.acceptance-spec.ts` |
 | AC-17: Hard's speed | On the reference phone, ready within 1 second of choosing it (`@ui`, `@budget`, Android) | same |
 | AC-18: the same day | After a reload, and after closing and coming back, Medium opens at "Found 1" with an empty grid (`@ui`) | `test/acceptance/play/new-day.acceptance-spec.ts` |
 | AC-19: the next day | On 11 November, a different Medium at "Found 0"; Practice keeps "Found 1 of 2"; back on 10 November, the same Medium as before at "Found 0" (`@ui`) | same |
@@ -124,3 +125,28 @@ the pull request that builds its drivers.
   - `test/acceptance/play/medium-and-collector.acceptance-spec.ts`, AC-8: the title reads "only +, −, × and ÷";
     `expectOperatorsOnlyFrom(['+', '−', '×', '÷'])`. Applied when part 3 brings the file in from `514187c` (task T034).
 - The DSL is unchanged.
+
+### Amendment 2026-11-12: results beside each line, the header back, and smaller cells on Medium and Hard
+
+- **Approved by**: Philip England, 2026-11-12 (spec Clarifications, Sessions 2026-11-11 and 2026-11-12; FR-713, FR-718,
+  FR-719, FR-720, AC-12, AC-16, AC-23; exception EXC-007).
+- **Changes**:
+  - `test/acceptance/play/medium-and-collector.acceptance-spec.ts`, AC-12: Collector's two scenarios are unchanged.
+    Medium at 375 × 667 still fits with no scrolling; Medium at 320 × 568 now scrolls up and down only, never
+    sideways. Medium's cells are checked at 36 × 36, everything else to tap at 44 × 44.
+  - `test/acceptance/play/hard.acceptance-spec.ts`, AC-16: at both sizes, cells are checked at 36 × 36 and
+    everything else to tap at 44 × 44. Fitting and scrolling are unchanged.
+  - `test/acceptance/dsl/phone.dsl.ts`: `phone.expectEveryCellAtLeast(pixels)` and
+    `phone.expectEveryTapTargetOtherThanCellsAtLeast(pixels)`. `expectEveryTapTargetAtLeast` stays, for Collector.
+  - `test/acceptance/play/medium-and-collector.acceptance-spec.ts`: a new scenario, `[spec-007 AC-23]` (`@ui`). On
+    10 November 2026's Medium puzzle, every row shows "?" at its right and every column "?" below it, with no mark;
+    after the filling it was made from is entered and checked, each shows its line's target with a tick.
+  - `test/acceptance/dsl/daily.dsl.ts`: `daily.expectEachLineShowsBesideIt(shown)` and
+    `daily.expectEachLineShowsItsTargetTickedBesideIt()`. Both also check that each row's result is at the right of
+    its row and each column's below its column.
+  - `test/acceptance/dsl/daily-vocabulary.ts`: `ResultBesideLine` and `ResultPlace`.
+- **Driver interface**: `resultsBesideLines()` joins `test/acceptance/drivers/daily.driver.ts`. It is read on the
+  phones only, like the theme. `DailyLayout` in `test/acceptance/drivers/phone.driver.ts` gains `cells`.
+- **Not in a scenario**: the header on Medium and Hard (FR-719), the space between panels and cells (FR-713) and the
+  given cells' shadow (FR-720) are reviewed by the owner on a phone. spec-001's check that a given cell is marked
+  by more than colour still runs on every phone.

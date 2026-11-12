@@ -46,6 +46,10 @@
 
   --gap: 8px;
   --touch-target: 44px; /* constitution IV */
+  /* The smallest a cell may be: the touch target, except on Medium and Hard (EXC-007). */
+  --size-cell-least: var(--touch-target);
+  /* The least width of the column of row pills. */
+  --size-row-pills: 64px;
 
   /* Sizes that give way on small phones so the play screen fits without scrolling (spec-003
      AC-16). Nothing a player taps goes below the touch target. */
@@ -59,6 +63,8 @@
   --size-pill-tick: 20px;
   --space-pill: 14px;
   --text-body: 16px;
+  --size-mascot: 76px;
+  --space-bubble-block: 8px;
   --space-surface: 16px;
   --space-grid: var(--gap);
   --space-screen: 16px;
@@ -161,5 +167,50 @@
     --text-pill: 14px;
     --text-display: 14px;
     --space-pill: 4px;
+  }
+}
+
+/* spec-007 FR-713, FR-719 (owner, 2026-11-12): Medium and Hard, with the full header. A smaller
+   mascot, cells down to 36 px (EXC-007), smaller shadows, and space between panels and cells.
+   Pills, keys and the main button stay touch targets. */
+.density-large-grid {
+  --size-mascot: 52px;
+  --space-bubble-block: 4px;
+  --size-cell: 36px;
+  --size-cell-least: 36px;
+  --size-key: var(--touch-target);
+  --size-main: var(--touch-target);
+  --text-cell: 32px;
+  --text-pill: 16px;
+  --space-pill: 6px;
+  --size-pill-tick: 12px;
+  --text-display: 16px;
+  --space-surface: 8px;
+  --space-screen: 8px;
+  --space-between: 10px;
+  --space-grid: 6px;
+  --shadow-small: 2px;
+  --shadow-medium: 3px;
+  --shadow-large: 4px;
+}
+
+/* Hard's 7 rows: less space, so it still fits a 375 x 667 phone. */
+.density-tall-grid {
+  --space-screen: 7px;
+  --space-surface: 4px;
+  --space-between: 6px;
+  --space-grid: 4px;
+}
+
+/* A large grid on a 320 px wide phone: pills and results at the design guide's smallest text. */
+@media (max-width: 359px) {
+  .density-large-grid {
+    --text-pill: 14px;
+    --text-display: 14px;
+    --space-pill: 4px;
+    /* Room for the cells, so neighbouring open column pills, each a touch target, never touch. */
+    --size-row-pills: 56px;
+    --space-surface: 4px;
+    --space-grid: 4px;
   }
 }

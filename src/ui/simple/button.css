@@ -87,14 +87,16 @@
   box-shadow: var(--shadow-medium) var(--shadow-medium) 0 var(--accent);
 }
 
-/* Given: solid ink, no outline or shadow, so it reads as part of the puzzle. */
+/* Given: a solid ink disc, so it reads as part of the puzzle and differs in shape from the player's
+   outlined ring (spec-001 AC-4), with a shadow like every cell's in a softer shade of ink, which
+   shows against its ink fill (spec-007 FR-720; owner, 2026-11-12). */
 .button--cell[aria-disabled='true'],
 .button--cell-correct[aria-disabled='true'],
 .button--read-only-given {
   border-color: var(--ink);
   background: var(--ink);
   color: var(--paper);
-  box-shadow: none;
+  box-shadow: var(--shadow-medium) var(--shadow-medium) 0 color-mix(in srgb, var(--ink) 45%, var(--paper));
 }
 
 /* Selected: the accent fill, and a caret when there is no digit yet. */

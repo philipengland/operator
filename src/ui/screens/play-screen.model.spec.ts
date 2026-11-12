@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { headerWithAnnouncement } from './play-screen.model';
 import { playScreenParts } from './play-screen.model';
+import { playScreenClasses } from './play-screen.model';
 
 describe('headerWithAnnouncement', () => {
   const header = { title: 'Hello, Operator!', message: 'Wrong number, pal!' };
@@ -40,5 +41,15 @@ describe('playScreenParts (spec-007 FR-719)', () => {
       statusBar: false,
       strip: false,
     });
+  });
+});
+
+describe('playScreenClasses', () => {
+  it('names the play screen, then each density it is drawn at: compact, large grid, tall grid, snug', () => {
+    expect(playScreenClasses({})).toEqual(['play-screen']);
+    expect(playScreenClasses({ isCompact: true })).toEqual(['play-screen', 'play-screen--compact', 'density-compact']);
+    expect(playScreenClasses({ isLargeGrid: true })).toEqual(['play-screen', 'density-large-grid']);
+    expect(playScreenClasses({ isLargeGrid: true, isTallGrid: true })).toEqual(['play-screen', 'density-large-grid', 'density-tall-grid']);
+    expect(playScreenClasses({ isSnug: true })).toEqual(['play-screen', 'density-snug']);
   });
 });

@@ -28,6 +28,7 @@ const REFERENCE_4G = {
 
 // A daily puzzle as heard (play-screen contract): "Medium puzzle, 5 by 4".
 const DAILY_PUZZLE_NAME = /^(Easy|Medium|Hard|Collector) puzzle, \d+ by \d+$/;
+const DAILY_CELL_NAME = /^Row \d+ column \d+ cell, /;
 
 // Unknown positions: NaN compares false, so nothing unread can count as on screen.
 const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
@@ -192,8 +193,20 @@ export class UiPhoneDriver implements PhoneDriver {
     // The workings strip is drawn for sighted players only (aria-hidden), so it has no role to find it by.
     const strip = this.page.locator('.workings-strip');
     const puzzleBox = (await strip.count()) === 1 ? around(await boxOf(puzzle), await boxOf(strip)) : await boxOf(puzzle);
+    const cells = [];
+    for (const cell of await puzzle.getByRole('button', { name: DAILY_CELL_NAME }).all()) {
+      cells.push(await boxOf(cell));
+    }
     const page = await this.page.evaluate(() => ({ width: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight }));
-    return { screen: this.page.viewportSize() ?? page, tapTargets, puzzle: puzzleBox, keypad: await boxOf(keypad), mainButton: await boxOf(mainButton), page };
+    return {
+      screen: this.page.viewportSize() ?? page,
+      tapTargets,
+      cells,
+      puzzle: puzzleBox,
+      keypad: await boxOf(keypad),
+      mainButton: await boxOf(mainButton),
+      page,
+    };
   }
 
   async leaveUnreadableRecordOfLastPuzzle(): Promise<void> {}
@@ -255,6 +268,9 @@ export class UiPhoneDriver implements PhoneDriver {
           `decoration ${style.textDecorationLine}`,
           // A raised shadow is a shape, not a colour: the themed cells differ by it (spec-003 AC-10).
           `shadow ${style.boxShadow === 'none' ? 'none' : 'raised'}`,
+          // A solid disc, filled to its outline, or an outlined ring: a shape that holds in greyscale
+          // (spec-007 changes to spec-001 AC-4; owner, 2026-11-12).
+          `fill ${style.backgroundColor === style.borderTopColor ? 'solid' : 'ringed'}`,
         ].join(' | '),
       };
     });

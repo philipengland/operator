@@ -15,7 +15,7 @@
 
 /* A speech bubble: accent shadow, and a near-square corner where the tail points at the mascot. */
 .surface--bubble {
-  padding: 8px 14px;
+  padding: var(--space-bubble-block) 14px;
   border-radius: var(--radius-bubble) var(--radius-bubble) var(--radius-bubble) var(--radius-tail);
   box-shadow: var(--shadow-large) var(--shadow-large) 0 var(--accent);
 }

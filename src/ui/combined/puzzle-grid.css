@@ -4,7 +4,7 @@
 .puzzle-grid__grid {
   display: grid;
   /* The workings column has room for "= 13 ✓" from the start, so a result never moves the cells. */
-  grid-template-columns: minmax(64px, auto) repeat(var(--columns), minmax(var(--touch-target), 84px)) minmax(calc(var(--text-display) * 2.5), auto);
+  grid-template-columns: minmax(var(--size-row-pills), auto) repeat(var(--columns), minmax(var(--size-cell-least), 84px)) minmax(calc(var(--text-display) * 2.5), auto);
   gap: var(--space-grid);
   align-items: center;
   justify-items: center;
@@ -14,21 +14,35 @@
 
 /* spec-007 FR-718: with the workings in a strip, the grid has no column for them. */
 .puzzle-grid__grid--workings-elsewhere {
-  grid-template-columns: minmax(64px, auto) repeat(var(--columns), minmax(var(--touch-target), 84px));
+  grid-template-columns: minmax(var(--size-row-pills), auto) repeat(var(--columns), minmax(var(--size-cell-least), 84px));
 }
 
-/* Cells fill their column, shrinking on narrow phones but never below a touch target. */
+/* Cells and pills fill their column, shrinking on narrow phones but never below a touch target. */
 .puzzle-grid__grid > .button {
   width: 100%;
   min-width: var(--touch-target);
 }
 
-/* A cell fills its row, so an empty cell is as tall as a filled one and never jumps. */
+/* A cell fills its row, so an empty cell is as tall as a filled one and never jumps. On Medium
+   and Hard a cell may be smaller than a touch target (spec-007 FR-713, EXC-007); a pill may not. */
 .puzzle-grid__grid > .button--cell,
 .puzzle-grid__grid > .button--cell-correct {
   align-self: stretch;
+  min-width: var(--size-cell-least);
 }
 
 .puzzle-grid__helper {
   margin: var(--space-grid) 0 0;
+}
+
+/* A column's result is centred on the column: the tick, kept in place for when the line reaches its
+   target, takes no width and hangs just to the right (owner, 2026-11-12). */
+.puzzle-grid__column-working .line-working__shown {
+  position: relative;
+}
+
+.puzzle-grid__column-working .line-working__shown > .icon {
+  position: absolute;
+  left: 100%;
+  margin-left: 2px;
 }

@@ -3,7 +3,7 @@
 
 import { expect } from '@playwright/test';
 import type { DailyDriver } from '../drivers/daily.driver';
-import type { CalendarDay, DailyPuzzle, Preset, TodayChoice } from './daily-vocabulary';
+import type { CalendarDay, DailyPuzzle, Preset, ResultBesideLine, TodayChoice } from './daily-vocabulary';
 import type { Operator } from './vocabulary';
 
 /** spec-006 FR-616 and spec-007 FR-710: a total over 100 is not shown, and is counted as 101. */
@@ -129,6 +129,29 @@ export class DailyDsl {
     expect(await this.solutionTotal(), 'solutions in the puzzle').toBe(MORE_THAN_100);
   }
 
+  // Each line's result beside it (FR-718).
+
+  /** Every row's result at its right and every column's below it, each showing this and no mark. */
+  async expectEachLineShowsBesideIt(shown: string): Promise<void> {
+    const puzzle = await this.driver().puzzle();
+    const results = await this.resultsBesideEachLine(puzzle);
+    for (const result of results) {
+      expect(result.shown, `${result.line}'s result`).toBe(shown);
+      expect(result.mark, `${result.line}'s mark`).toBe('none');
+    }
+  }
+
+  /** Every row's result at its right and every column's below it, each its line's target with a tick. */
+  async expectEachLineShowsItsTargetTickedBesideIt(): Promise<void> {
+    const puzzle = await this.driver().puzzle();
+    const results = await this.resultsBesideEachLine(puzzle);
+    const targets = [...puzzle.rowLines, ...puzzle.columnLines].map(({ target }) => target);
+    results.forEach((result, index) => {
+      expect(Number(result.shown.replace('−', '-')), `${result.line}'s result`).toBe(targets[index]);
+      expect(result.mark, `${result.line}'s mark`).toBe('tick');
+    });
+  }
+
   async expectEmptyGrid(): Promise<void> {
     for (const cell of (await this.driver().puzzle()).cells.flat()) {
       if (cell.given === null) {
@@ -209,6 +232,20 @@ export class DailyDsl {
   private async lines() {
     const puzzle = await this.driver().puzzle();
     return [...puzzle.rowLines, ...puzzle.columnLines];
+  }
+
+  /** Each row's result, then each column's, checked to be in its place beside its line. */
+  private async resultsBesideEachLine(puzzle: DailyPuzzle): Promise<readonly ResultBesideLine[]> {
+    const results = await this.driver().resultsBesideLines();
+    const expected = [
+      ...puzzle.rowLines.map((_, index) => ({ line: `Row ${index + 1}`, place: 'right of its row' })),
+      ...puzzle.columnLines.map((_, index) => ({ line: `Column ${index + 1}`, place: 'below its column' })),
+    ];
+    expect(
+      results.map(({ line, place }) => ({ line, place })),
+      'where each line shows its result',
+    ).toEqual(expected);
+    return results;
   }
 
   private async openLines(): Promise<number> {

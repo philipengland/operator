@@ -58,7 +58,7 @@ Today screen, with the worked example kept as "Practice"; so far today's Easy, M
   `docs/adr/0002-component-library.md` — a tiered component library in plain TypeScript (no
   framework), themes as data, self-hosted fonts, and a catalogue that is never published.
   `docs/adr/0004-saved-solutions.md` — one versioned `localStorage` record per puzzle; a newer format is never overwritten.
-- **Active exceptions**: see `docs/exceptions/` (EXC-001, -002, -005, -006).
+- **Active exceptions**: see `docs/exceptions/` (EXC-001, -002, -005, -006, -007).
 
 ## Build, Test and Run
 

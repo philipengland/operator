@@ -136,6 +136,14 @@ describe('room on the screen for a daily puzzle (spec-007 FR-713)', () => {
 
     expect([easy.isSnug, justOpened().isSnug]).toEqual([true, false]);
   });
+
+  it("gives Medium and Hard the large grid's layout, and Hard's 7 rows the tall one; Collector and Easy neither (owner, 2026-11-12)", () => {
+    const opened = (preset: 'easy' | 'medium' | 'hard' | 'collector') => playScreenProps(startSession(dailyPuzzle('2026-11-10', preset).puzzle), CLASSIC);
+    const presets = ['medium', 'hard', 'collector', 'easy'] as const;
+
+    expect(presets.map((preset) => opened(preset).isLargeGrid ?? false)).toEqual([true, true, false, false]);
+    expect(presets.map((preset) => opened(preset).isTallGrid ?? false)).toEqual([false, true, false, false]);
+  });
 });
 
 describe('puzzleTheme (spec-007 FR-712)', () => {
@@ -160,37 +168,34 @@ describe('the filling a daily puzzle was made from (spec-007 FR-711)', () => {
 describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', () => {
   const opened = (preset: 'easy' | 'medium' | 'collector') => playScreenProps(startSession(dailyPuzzle('2026-11-10', preset).puzzle), CLASSIC);
 
-  it('is used by Medium and Collector; Easy and the worked example keep the full header', () => {
-    expect([opened('medium').isCompact, opened('collector').isCompact, opened('easy').isCompact, justOpened().isCompact]).toEqual([true, true, false, false]);
+  it('is used by Collector only; Medium, Easy and the worked example keep the full header', () => {
+    expect([opened('medium').isCompact, opened('collector').isCompact, opened('easy').isCompact, justOpened().isCompact]).toEqual([false, true, false, false]);
   });
 
-  it('shows the workings of a grid wider than 3 columns elsewhere (Medium); Collector, at 3, keeps them beside each line (FR-718)', () => {
-    expect([opened('medium').grid.workings, opened('collector').grid.workings ?? 'beside', opened('easy').grid.workings ?? 'beside']).toEqual([
-      'elsewhere',
+  it('shows a wide grid\'s results in short form, "?" or the number with no "= "; Easy keeps "= ?" (FR-718)', () => {
+    const results = (preset: 'easy' | 'medium') => {
+      const { grid } = opened(preset);
+      return [...grid.rowWorkings, ...grid.columnWorkings].map(({ result }) => result);
+    };
+
+    expect(results('medium').every((result) => /^(\?|−?\d+)$/.test(result))).toBe(true);
+    expect(results('easy').every((result) => result.startsWith('= '))).toBe(true);
+  });
+
+  it("keeps every grid's workings beside its lines, Medium's too (FR-718)", () => {
+    expect([opened('medium').grid.workings ?? 'beside', opened('collector').grid.workings ?? 'beside', opened('easy').grid.workings ?? 'beside']).toEqual([
+      'beside',
       'beside',
       'beside',
     ]);
   });
 
-  it('prompts in the strip on Medium until a cell is tapped (FR-718)', () => {
-    expect(opened('medium').strip).toEqual({ text: 'Tap a cell to see its row and column.' });
-  });
-
-  it("shows the selected cell's row working, then its column working, in the strip (FR-718)", () => {
-    const medium = startSession(dailyPuzzle('2026-11-10', 'medium').puzzle);
-    const emptyCell = medium.puzzle.givens.flatMap((digits, row) => digits.flatMap((digit, column) => (digit === null ? [{ row, column }] : [])))[0] ?? { row: 0, column: 0 };
-
-    const props = playScreenProps(applyAction(medium, { type: 'tapCell', ...emptyCell }), CLASSIC);
-
-    expect(props.strip).toEqual({ workings: [props.grid.rowWorkings[emptyCell.row], props.grid.columnWorkings[emptyCell.column]] });
-  });
-
-  it("shows the operator's line after a Check in the strip, on Medium and on Collector, which has no strip otherwise (FR-719)", () => {
+  it("shows the operator's line after a Check in the strip on Collector only; Medium has none (FR-719)", () => {
     const checked = (preset: 'medium' | 'collector') =>
       playScreenProps(applyAction(startSession(dailyPuzzle('2026-11-10', preset).puzzle), { type: 'submit' }), CLASSIC);
     const operatorsLine = { text: bubbleLine('incomplete', CLASSIC) };
 
-    expect([checked('medium').strip, checked('collector').strip, opened('collector').strip]).toEqual([operatorsLine, operatorsLine, undefined]);
+    expect([checked('medium').strip, checked('collector').strip, opened('collector').strip]).toEqual([undefined, operatorsLine, undefined]);
   });
 
   it('has no helper line about swapping operators, though Medium and Collector have open lines (FR-719)', () => {

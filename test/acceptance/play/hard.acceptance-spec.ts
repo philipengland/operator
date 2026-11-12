@@ -29,7 +29,7 @@ test.describe("[spec-007 AC-14] today's Hard puzzle", () => {
 });
 
 test.describe('[spec-007 AC-16] Hard at 375 × 667', PHONES, () => {
-  test('the whole puzzle, the keypad and the main button fit without scrolling, everything to tap at least 44 × 44', async ({
+  test('the whole puzzle, the keypad and the main button fit without scrolling, cells at least 36 × 36, everything else to tap 44 × 44', async ({
     game,
     daily,
     phone,
@@ -41,13 +41,14 @@ test.describe('[spec-007 AC-16] Hard at 375 × 667', PHONES, () => {
     await daily.open('Hard');
 
     await phone.expectDailyPuzzleFitsWithoutScrolling();
-    await phone.expectEveryTapTargetAtLeast(44);
+    await phone.expectEveryCellAtLeast(36);
+    await phone.expectEveryTapTargetOtherThanCellsAtLeast(44);
     await phone.expectNoAccessibilityProblems();
   });
 });
 
 test.describe('[spec-007 AC-16] Hard at 320 × 568', PHONES, () => {
-  test('everything is reached by scrolling up and down, never sideways, everything to tap at least 44 × 44', async ({
+  test('everything is reached by scrolling up and down, never sideways, cells at least 36 × 36, everything else to tap 44 × 44', async ({
     game,
     daily,
     phone,
@@ -59,7 +60,8 @@ test.describe('[spec-007 AC-16] Hard at 320 × 568', PHONES, () => {
     await daily.open('Hard');
 
     await phone.expectDailyPuzzleScrollsOnlyUpAndDown();
-    await phone.expectEveryTapTargetAtLeast(44);
+    await phone.expectEveryCellAtLeast(36);
+    await phone.expectEveryTapTargetOtherThanCellsAtLeast(44);
     await phone.expectNoAccessibilityProblems();
   });
 });

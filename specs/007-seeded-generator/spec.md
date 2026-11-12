@@ -64,12 +64,15 @@ first.
 | Brief F11 "Daily puzzle and share" (Phase 3) | **Daily puzzles brought forward** into the MVP by the owner. Sharing by seed stays in Phase 3. |
 | Brief, Puzzle generation, step 3 (results of 0 or more) | **Changed**: Hard and Collector may have negative targets (owner, 2026-11-10). |
 | Brief, Presets: Medium "about a quarter" given, Hard "about 10%" | **Changed**: Medium gives 10 of 20 cells and Hard 21 or 22 of 35, as the brief's givens leave far too many answers to reach the bands (owner, 2026-11-10; research R3). |
-| spec-002 FR-201 (each line's working is shown beside it) | **Changed for grids wider than 3 columns**: one strip shows the working of the selected cell's row and column (FR-718). Screen readers still hear every line's working. |
+| spec-002 FR-201 (each line's working is shown beside it) | **Changed for grids wider than 3 columns**: each line shows its result and mark beside it in short form ("14 ✓"), not its whole working (FR-718). Screen readers still hear every line's working. |
 | spec-001 Out of Scope "generated puzzles (F7) and presets (F6)" | **Delivered here.** |
 | spec-001 "plays one fixed 2 × 2 puzzle" | **Changed**: the worked example is the first puzzle on a new phone, and the daily puzzles follow it (FR-701). |
 | spec-003 AC-25 (the fixed puzzle is shown in Classic) | **Still holds.** A daily puzzle is shown in its seed's theme (FR-712). |
-| spec-004 the operator header (mascot and speech bubble) | **Changed for grids bigger than 3 × 3**: a compact bar, with the operator's line in the workings strip (FR-719). The worked example and Easy are unchanged. |
-| spec-004 (the play screen fits 375 × 667 and 320 × 568 without scrolling) | **Extended** to every preset's grid, except Hard at 320 × 568, which may scroll up and down (FR-713). |
+| spec-004 the operator header (mascot and speech bubble) | **Changed for Collector**: a compact bar, with the operator's line in a strip under the grid. Medium and Hard keep the header with a smaller mascot (FR-719). |
+| spec-004 (the play screen fits 375 × 667 and 320 × 568 without scrolling) | **Extended** to every preset's grid, except Medium and Hard at 320 × 568, which may scroll up and down (FR-713). |
+| spec-003 FR-316 and the design guide (a given cell has no shadow) | **Changed**: every cell has a shadow; a given cell's is a softer shade of ink (FR-720). |
+| spec-001 AC-4 and its assumption "given cells do not rely on colour alone" | **Interpreted** (owner, 2026-11-12): a given cell is a solid disc and the player's cell an outlined ring, a difference of shape that holds in greyscale (spec-003 AC-10). Given cells now have a shadow like every cell (FR-720), so the shadow no longer marks them. |
+| Constitution IV (touch targets at least 44 × 44) | **Exception** for the cells of Medium and Hard, at least 36 × 36 (EXC-007). |
 | spec-006 FR-616 ("Found N" over 100) | **Now reachable**, in Collector. "All found!" is never shown for a capped total (FR-710). |
 | spec-006 the solution log, per puzzle | **Still holds** for each daily puzzle (FR-714). |
 
@@ -108,6 +111,27 @@ first.
 - Q: Easy's column pills overlap on a phone (each wider than its column). How should they fit? → A: Stacked: the
   operator above the target, in smaller text (owner, 2026-11-10, from three mock-ups). Every column pill in a grid of 3
   or more columns is stacked, so a row of pills is consistent; the worked example keeps one-line pills (FR-713).
+
+### Session 2026-11-11
+
+- Q: On Medium and Hard, nothing shows at the right of each row or below each column: the workings are only in the
+  strip. Should each line's result show beside it? → A: Yes (owner, from two mock-ups): each line's result and mark,
+  short ("14 ✓", "?"), at the right of each row and below each column. Easy and Collector are unchanged (FR-718,
+  AC-23).
+
+### Session 2026-11-12
+
+- Q: With results beside each line, what should the workings strip between the grid and the keys do on Medium and
+  Hard? → A: Remove it (owner, from a mock-up). Collector keeps its strip for the operator's line (FR-718, FR-719).
+- Q: Should Medium and Hard show the operator again? → A: Yes: the full header, mascot and speech bubble, as on Easy,
+  with the mascot a little smaller; the operator's line after a Check shows in the bubble again (FR-719).
+- Q: The header leaves Hard 52 px too tall at 375 × 667. What gives? → A: Smaller cells: on Medium and Hard each cell
+  MUST be at least 36 × 36 pixels, below the constitution's 44 (exception EXC-007); pills, keys and the main button
+  stay at 44. On 320 × 568, Medium and Hard may scroll up and down, never sideways (FR-713, AC-12, AC-16).
+- Q: Panels and cells look cramped. → A: Some space between panels and between cells, as much as still fits, and
+  smaller shadows on Medium and Hard to help (FR-713).
+- Q: Given cells have no shadow and the player's cells do, so cells look uneven. → A: Every cell has a shadow, on
+  every puzzle: a given cell's is a softer shade of ink, so it shows against its ink fill (FR-720).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -175,7 +199,9 @@ against its preset.
     made, **Then** it matches its preset and AC-3 holds for it.
 12. **AC-12** — **Given** a Medium puzzle and a Collector puzzle, **When** each is shown on a phone at
     375 × 667 and at 320 × 568, **Then** the whole puzzle, the keypad and the main button fit without
-    scrolling, and every cell, pill and key is at least 44 × 44 pixels.
+    scrolling, except Medium at 320 × 568, which scrolls up and down only, never sideways; every pill,
+    key and the main button is at least 44 × 44 pixels, and every cell at least 44 × 44 on Collector and
+    36 × 36 on Medium (owner, 2026-11-12).
 13. **AC-13** — **Given** the player has found 1 solution of today's Easy puzzle, **When** they open
     today's Medium puzzle and then go back to Easy, **Then** Easy shows "Found 1 of M" and its
     solution is in its list, with an empty grid.
@@ -201,8 +227,10 @@ and time it on the reference phone.
 15. **AC-15** — **Given** every date in 2027 with Hard, **When** each puzzle is made, **Then** it
     matches its preset and AC-3 holds for it.
 16. **AC-16** — **Given** a Hard puzzle, **When** it is shown on a phone at 375 × 667, **Then**
-    AC-12 holds for it; and at 320 × 568, everything can be reached by scrolling up and down, nothing
-    needs scrolling sideways, and every cell, pill and key is at least 44 × 44 pixels.
+    the whole puzzle, the keypad and the main button fit without scrolling; and at 320 × 568,
+    everything can be reached by scrolling up and down, nothing needs scrolling sideways. At both, every
+    pill, key and the main button is at least 44 × 44 pixels, and every cell at least 36 × 36 (owner,
+    2026-11-12).
 17. **AC-17** — **Given** the reference phone, **When** the player opens today's Hard puzzle,
     **Then** it is ready to play within 1 second.
 
@@ -231,6 +259,9 @@ phone's date to 11 November 2026 and reopen.
     worked example opens at "Found 0 of 2".
 21. **AC-21** — **Given** the record of the last puzzle played cannot be read, **When** the game
     opens on 10 November 2026, **Then** that day's Easy puzzle opens and no error is shown.
+23. **AC-23** — **Given** today's Medium puzzle, **When** the player fills a row, **Then** that row's
+    result and mark show at its right, and each column's result shows below it (FR-718; owner,
+    2026-11-11).
 
 ---
 
@@ -249,8 +280,6 @@ phone's date to 11 November 2026 and reopen.
 - **Hard on the smallest phone**: at 320 × 568, Hard needs about 640 pixels of height with 44 × 44
   pixel targets, so its screen scrolls up and down there (FR-713). At 375 × 667 it must fit, which is
   the tightest layout in the feature and is proved first (AC-16).
-- **No cell selected on a large grid**: the workings strip says which line it would show, and fills
-  in when a cell is tapped (FR-718).
 - **Large × targets**: a × line on Hard is limited by the 500 cap, so long × lines may be rare.
 - **Negative targets**: only on − lines in Hard and Collector, as the other operators cannot go below
   zero with digits 1–9.
@@ -296,9 +325,11 @@ phone's date to 11 November 2026 and reopen.
 - **FR-712**: A daily puzzle MUST be shown in the colour theme worked out from its seed (spec-003).
   The worked example stays in Classic.
 - **FR-713**: Every preset's puzzle MUST fit a phone at 375 × 667 and 320 × 568 without scrolling, as
-  spec-004 requires of the worked example, except Hard at 320 × 568, which MAY scroll up and down but
-  never sideways. Every cell, pill and key MUST be at least 44 × 44 pixels (spec-003). The rest of the
-  screen may be arranged more compactly for a large grid to make room. On a grid of 3 or more columns,
+  spec-004 requires of the worked example, except Medium and Hard at 320 × 568, which MAY scroll up and
+  down but never sideways (owner, 2026-11-12). Every cell, pill and key MUST be at least 44 × 44 pixels
+  (spec-003), except the cells of Medium and Hard, which MUST be at least 36 × 36 (owner, 2026-11-12;
+  EXC-007). The rest of the screen may be arranged more compactly for a large grid to make room, with
+  smaller shadows, but panels and cells MUST keep some space between them. On a grid of 3 or more columns,
   each column's pill MUST show its operator above its target, in smaller text, so neighbouring pills
   never touch; the worked example's pills stay on one line.
 - **FR-714**: Found solutions MUST be kept per puzzle, as spec-006 does. When a new day's puzzles
@@ -310,17 +341,22 @@ phone's date to 11 November 2026 and reopen.
   puzzle MUST need no network and no other service (constitution I).
 - **FR-717**: Screen readers MUST hear the new controls and each preset by name, and the puzzle's
   preset and shape (for example "Easy, 3 by 3") when it opens.
-- **FR-718**: On a grid wider than 3 columns, the workings MUST be shown in one strip under the grid,
-  for the selected cell's row and column, in spec-002's form ("6 + 2 = 8 ✓"). Each pill MUST still
-  show when its line reaches its target, and screen readers MUST still be able to hear every line's
-  working. Grids of 3 columns or fewer keep each working beside its line.
-- **FR-719**: On a grid bigger than 3 × 3 (Medium, Hard, Collector), the mascot, speech bubble and
-  counter MUST be replaced by one bar holding the counter and the Today button. The operator's line
-  after a Check MUST show in the workings strip until the player taps a cell, and MUST be announced as
-  spec-004 requires. Collector, at 3 columns, gains the strip for this line only, keeping each working
-  beside its line. The compact screen has no helper line about swapping operators: its dashed pills and
-  the strip's prompt stand in for it (owner, 2026-11-11, so Medium fits 320 × 568). The worked example
-  and Easy keep the full header.
+- **FR-718**: On a grid wider than 3 columns, each line's result and mark MUST be shown beside it, at
+  the right of each row and below each column, in short form ("14 ✓", "−3", "?", "✗"), without
+  spec-002's "= " (owner, 2026-11-11). There is no workings strip (owner, 2026-11-12). Each pill MUST
+  still show when its line reaches its target, and screen readers MUST still hear every line's working
+  where it belongs. Grids of 3 columns or fewer keep each working beside its line in spec-002's form.
+- **FR-719**: Medium and Hard MUST show the full header of the worked example and Easy, the mascot and
+  speech bubble, with the mascot smaller to make room, above one bar holding the counter and the Today
+  button; the operator's line after a Check shows in the bubble (owner, 2026-11-12). Collector, at
+  4 × 3, MUST keep the compact screen: the bar alone, and the operator's line after a Check in a strip
+  under its grid until the player taps a cell, each working staying beside its line. Either way the
+  line MUST be announced as spec-004 requires. Medium, Hard and Collector have no helper line about
+  swapping operators: their dashed pills stand in for it (owner, 2026-11-11).
+- **FR-720**: Every grid cell MUST have a shadow, on every puzzle: a given cell's in a softer shade of
+  ink, blended with paper, so it shows against the cell's ink fill. A given cell stays marked by its
+  solid fill against the player's outlined ring (spec-001 AC-4; owner, 2026-11-12). The player's cells
+  keep theirs.
 
 ### Key Entities
 
@@ -333,7 +369,7 @@ phone's date to 11 November 2026 and reopen.
 
 ## Acceptance Criteria as Examples *(org baseline)*
 
-AC-1 to AC-22 above use concrete examples: the dates 10 and 11 November 2026, every date in 2027,
+AC-1 to AC-23 above use concrete examples: the dates 10 and 11 November 2026, every date in 2027,
 and the phone sizes 375 × 667 and 320 × 568.
 
 ## Non-Functional Requirements *(mandatory — org baseline)*

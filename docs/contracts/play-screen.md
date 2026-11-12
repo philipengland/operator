@@ -152,16 +152,28 @@ Each addition takes effect with its flag. Every existing name is unchanged for t
 | Cell | `button` | "Row 2 column 3 cell, empty" / "…, given 6" / "…, 4" | The worked example keeps "Top-right cell" and the other corner names |
 | Pill, working | as today | "Row 2 target 14, plus" / "Row 2 working, 6 + ?" | Unchanged form, for every row and column |
 
-### The compact screen and workings strip (`presets`, grids bigger than 3 × 3)
+### Large grids: Medium and Hard (`presets`, `hard`; amended 2026-11-12)
+
+| Element | Role | Accessible name | Behaviour |
+| --- | --- | --- | --- |
+| Header | as spec-004 | unchanged | The full header, with a smaller mascot; the operator's line after a Check shows in the bubble (FR-719) |
+| Row and column workings | text, labelled | unchanged | Beside each line in short form: "14", "?", with the mark (FR-718). Heard in full, as spec-002 |
+| Cell | `button` | unchanged | At least 36 × 36 (FR-713, EXC-007); pills, keys and the main button stay 44 × 44 |
+| Helper line | text | none | Not shown (FR-719) |
+
+Medium and Hard have no workings strip. They fit 375 × 667 without scrolling, and scroll up and down only, never
+sideways, at 320 × 568 (FR-713).
+
+### The compact screen and workings strip (Collector, 4 × 3)
 
 | Element | Role | Accessible name | Behaviour |
 | --- | --- | --- | --- |
 | Status bar | `region` | "Status bar" | Holds the counter and the Today button |
 | Counter | `button` | "Found N of M" / "Found N" | In the Status bar; opens the list, as spec-006 |
-| Row and column workings | text, labelled | unchanged | Visually hidden on grids wider than 3 columns; still read by name |
-| Workings strip | hidden from screen readers | none | Shows the selected cell's row and column workings, or the operator's line after a Check |
+| Workings strip | hidden from screen readers | none | Shows the operator's line after a Check, until a cell is tapped |
 | Result | `status` | unchanged | The operator's line is still announced (spec-004) |
 | Helper line | text | none | Not shown on the compact screen (FR-719) |
 
-The worked example and Easy keep the full header, counter and workings beside each line. Medium and Hard fit 375 × 667
-and Medium 320 × 568 without scrolling; Hard scrolls up and down only at 320 × 568 (FR-713).
+Collector keeps each working beside its line, and fits 375 × 667 and 320 × 568 without scrolling (FR-713). The
+worked example and Easy keep the full header, counter and workings beside each line. Every grid cell has a shadow; a
+given cell is a solid disc, the player's an outlined ring (FR-720).

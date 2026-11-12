@@ -2,8 +2,8 @@
 
 .mascot {
   display: inline-flex;
-  width: 76px;
-  height: 76px;
+  width: var(--size-mascot);
+  height: var(--size-mascot);
 }
 
 .mascot svg {

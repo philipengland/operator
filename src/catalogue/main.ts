@@ -1,7 +1,7 @@
 // The component catalogue (spec-003, development only): every component of the library in every
 // state and theme. Built by `npm run build:catalogue`; never part of the game's build.
 // `catalogue.html#play-screen` shows the play screen alone at full size, its switches below it;
-// `#play-screen-medium` and `#play-screen-hard` show the compact screen with large grids (spec-007).
+// `#play-screen-medium` and `#play-screen-hard` show the large grids with the full header (spec-007).
 
 import '../ui/foundations/tokens.css';
 import '../ui/foundations/page.css';
