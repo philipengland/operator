@@ -22,6 +22,20 @@ function workingProps(working: LineWorking): LineWorkingProps {
   return { ...workingSlot(working), name: workingName(working) };
 }
 
+/** spec-002's result slot begins "= "; a wide grid's result beside its line leaves it out (spec-007 FR-718). */
+const RESULT_LEAD = '= ';
+
+/** A line's working beside it: spec-002's slot, or on a grid wider than 3 columns its short form ("14", "?"). */
+function besideItsLine(state: SessionState): (working: LineWorking) => LineWorkingProps {
+  if (!isWiderThanThreeColumns(state.puzzle)) {
+    return workingProps;
+  }
+  return (working) => {
+    const props = workingProps(working);
+    return { ...props, result: props.result.startsWith(RESULT_LEAD) ? props.result.slice(RESULT_LEAD.length) : props.result };
+  };
+}
+
 function isInLineReachingTarget(state: SessionState, { row, column }: CellPosition): boolean {
   return lineWorkings(state).some(
     (working) => reachesTarget(working) && (working.line.axis === 'row' ? working.line.index === row : working.line.index === column),
@@ -87,8 +101,8 @@ export function puzzleGridProps(state: SessionState): PuzzleGridProps {
     columnPills: lines(state, 'column').map((working) => pill(state, working)),
     rowPills: lines(state, 'row').map((working) => pill(state, working)),
     cells: state.puzzle.givens.map((_, row) => state.puzzle.givens[row]?.map((__, column) => cell(state, { row, column })) ?? []),
-    rowWorkings: lines(state, 'row').map(workingProps),
-    columnWorkings: lines(state, 'column').map(workingProps),
+    rowWorkings: lines(state, 'row').map(besideItsLine(state)),
+    columnWorkings: lines(state, 'column').map(besideItsLine(state)),
     helper: hasOpenLine(state.puzzle) && !isBiggerThanThreeByThree(state.puzzle) ? HELPER_LINE : '',
   };
 }

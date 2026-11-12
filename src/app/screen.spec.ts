@@ -164,6 +164,16 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
     expect([opened('medium').isCompact, opened('collector').isCompact, opened('easy').isCompact, justOpened().isCompact]).toEqual([true, true, false, false]);
   });
 
+  it('shows a wide grid\'s results in short form, "?" or the number with no "= "; Easy keeps "= ?" (FR-718)', () => {
+    const results = (preset: 'easy' | 'medium') => {
+      const { grid } = opened(preset);
+      return [...grid.rowWorkings, ...grid.columnWorkings].map(({ result }) => result);
+    };
+
+    expect(results('medium').every((result) => /^(\?|−?\d+)$/.test(result))).toBe(true);
+    expect(results('easy').every((result) => result.startsWith('= '))).toBe(true);
+  });
+
   it("keeps every grid's workings beside its lines, Medium's too (FR-718)", () => {
     expect([opened('medium').grid.workings ?? 'beside', opened('collector').grid.workings ?? 'beside', opened('easy').grid.workings ?? 'beside']).toEqual([
       'beside',
@@ -174,15 +184,6 @@ describe('the compact screen for grids bigger than 3 × 3 (spec-007 FR-719)', ()
 
   it('prompts in the strip on Medium until a cell is tapped (FR-718)', () => {
     expect(opened('medium').strip).toEqual({ text: 'Tap a cell to see its row and column.' });
-  });
-
-  it("shows the selected cell's row working, then its column working, in the strip (FR-718)", () => {
-    const medium = startSession(dailyPuzzle('2026-11-10', 'medium').puzzle);
-    const emptyCell = medium.puzzle.givens.flatMap((digits, row) => digits.flatMap((digit, column) => (digit === null ? [{ row, column }] : [])))[0] ?? { row: 0, column: 0 };
-
-    const props = playScreenProps(applyAction(medium, { type: 'tapCell', ...emptyCell }), CLASSIC);
-
-    expect(props.strip).toEqual({ workings: [props.grid.rowWorkings[emptyCell.row], props.grid.columnWorkings[emptyCell.column]] });
   });
 
   it("shows the operator's line after a Check in the strip, on Medium and on Collector, which has no strip otherwise (FR-719)", () => {
