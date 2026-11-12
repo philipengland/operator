@@ -19,7 +19,20 @@ const CALENDAR_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const EVERY_PRESET: readonly PresetName[] = ['easy', 'medium', 'hard', 'collector'];
 
 export function writeTodayRecord(store: SolutionStore, { date, preset }: TodayRecord): void {
+  if (isOfLaterFormat(store.read(KEY))) {
+    return;
+  }
   store.write(KEY, JSON.stringify({ format: FORMAT, date, preset }));
+}
+
+/** A later version of the game wrote this record: it is never overwritten (ADR 0004). */
+function isOfLaterFormat(raw: string | null): boolean {
+  try {
+    const { format } = (JSON.parse(raw ?? 'null') ?? {}) as { readonly format?: unknown };
+    return typeof format === 'number' && format > FORMAT;
+  } catch {
+    return false;
+  }
 }
 
 export function readTodayRecord(store: SolutionStore): LastPlayed {

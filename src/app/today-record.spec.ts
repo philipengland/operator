@@ -28,6 +28,15 @@ describe('writeTodayRecord', () => {
 
     expect(JSON.parse(store.records.get(KEY) ?? 'null')).toEqual({ format: 1, date: '2026-11-10', preset: 'medium' });
   });
+
+  it('never overwrites a record of a later format (ADR 0004)', () => {
+    const later = JSON.stringify({ format: 2, date: '2026-11-10', preset: 'easy', streak: 3 });
+    const store = storeWith({ [KEY]: later });
+
+    writeTodayRecord(store, { date: '2026-11-11', preset: 'medium' });
+
+    expect(store.records.get(KEY)).toBe(later);
+  });
 });
 
 describe('readTodayRecord', () => {
