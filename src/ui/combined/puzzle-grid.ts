@@ -55,9 +55,11 @@ export function createPuzzleGrid(props: PuzzleGridProps, actions: PuzzleGridActi
     cellsInRow.map((cell, column) => placed(grid, createGridCell(cell, () => actions.onCell?.(row, column)), places.cell(row, column))),
   );
   const rowWorkings = props.rowWorkings.map((working, row) => placed(grid, createLineWorking(working), places.rowWorking(row), heardOnly));
-  const columnWorkings = props.columnWorkings.map((working, column) =>
-    placed(grid, createLineWorking(working), places.columnWorking(column), heardOnly),
-  );
+  const columnWorkings = props.columnWorkings.map((working, column) => {
+    const part = createLineWorking(working);
+    part.element.classList.add('puzzle-grid__column-working');
+    return placed(grid, part, places.columnWorking(column), heardOnly);
+  });
   if (heardOnly.childElementCount > 0) {
     grid.append(heardOnly);
   }

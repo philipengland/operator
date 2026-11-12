@@ -7,7 +7,7 @@ import { showKeepingItsPlace, type Component } from '../component';
 import { createBadge } from '../simple/badge';
 import { createButton } from '../simple/button';
 import { createIcon } from '../simple/icon';
-import { targetPillModel, type TargetPillProps } from './target-pill.model';
+import { isTickPlaceKept, targetPillModel, type TargetPillProps } from './target-pill.model';
 
 export { targetPillModel, type TargetOperator, type TargetPillProps } from './target-pill.model';
 
@@ -25,7 +25,7 @@ function shownPill(props: TargetPillProps): Component<TargetPillProps> {
   const update = (next: TargetPillProps): void => {
     const model = targetPillModel(next);
     badge.update({ text: model.text, spokenAs: model.heardAs, isStacked: next.isStacked ?? false });
-    showKeepingItsPlace(tick.element, model.hasTick);
+    showTick(tick.element, model.hasTick, isTickPlaceKept(next));
   };
   update(props);
   return { element: badge.element, update };
@@ -37,8 +37,14 @@ function openPill(props: TargetPillProps, onChoose?: () => void): Component<Targ
   const update = (next: TargetPillProps): void => {
     const model = targetPillModel(next);
     button.update({ label: model.text, style: 'dashed', action: model.heardAs, isStacked: next.isStacked ?? false });
-    showKeepingItsPlace(tick.element, model.hasTick);
+    showTick(tick.element, model.hasTick, isTickPlaceKept(next));
   };
   update(props);
   return { element: button.element, update };
+}
+
+/** A tick shown, or hidden keeping its room, or left out so the text alone is centred. */
+function showTick(tick: HTMLElement, isShown: boolean, isPlaceKept: boolean): void {
+  showKeepingItsPlace(tick, isShown);
+  tick.style.display = isShown || isPlaceKept ? '' : 'none';
 }

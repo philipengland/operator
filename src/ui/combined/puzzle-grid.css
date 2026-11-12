@@ -34,3 +34,15 @@
 .puzzle-grid__helper {
   margin: var(--space-grid) 0 0;
 }
+
+/* A column's result is centred on the column: the tick, kept in place for when the line reaches its
+   target, takes no width and hangs just to the right (owner, 2026-11-12). */
+.puzzle-grid__column-working .line-working__shown {
+  position: relative;
+}
+
+.puzzle-grid__column-working .line-working__shown > .icon {
+  position: absolute;
+  left: 100%;
+  margin-left: 2px;
+}

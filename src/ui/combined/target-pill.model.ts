@@ -43,3 +43,11 @@ export function targetPillModel({ target, operator, isOpen, name, reachesTarget 
     hasTick: reachesTarget,
   };
 }
+
+/**
+ * Whether a hidden tick still takes its room, so the pill never changes size. A stacked column pill leaves it
+ * out, so its text is centred on the column; its tick appears beside the text (owner, 2026-11-12).
+ */
+export function isTickPlaceKept({ isStacked = false }: TargetPillProps): boolean {
+  return !isStacked;
+}

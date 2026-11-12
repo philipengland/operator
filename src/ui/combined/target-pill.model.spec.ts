@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { targetPillModel } from './target-pill.model';
+import { isTickPlaceKept } from './target-pill.model';
 
 describe('targetPillModel', () => {
   it('a shown operator is a badge showing "+ 16", heard by its line\'s name', () => {
@@ -31,5 +32,13 @@ describe('targetPillModel', () => {
     const model = targetPillModel({ target: -3, operator: null, isOpen: true, name: 'Column 1 target -3, operator not chosen' });
 
     expect(model.text).toBe('? −3');
+  });
+});
+
+describe('isTickPlaceKept', () => {
+  it('keeps the tick\'s place in a one-line pill, but not in a stacked column pill, so its text is centred (owner, 2026-11-12)', () => {
+    const pill = { target: 26, operator: '+', isOpen: false, name: 'Column 1 target 26, plus' } as const;
+
+    expect([isTickPlaceKept(pill), isTickPlaceKept({ ...pill, isStacked: true })]).toEqual([true, false]);
   });
 });
