@@ -11,7 +11,7 @@ import type { SpeechBubbleProps } from '../combined/speech-bubble';
 import { createStatusBar } from '../combined/status-bar';
 import { createWorkingsStrip, type WorkingsStripProps } from '../combined/workings-strip';
 import { createButton } from '../simple/button';
-import { headerWithAnnouncement, playScreenParts } from './play-screen.model';
+import { headerWithAnnouncement, playScreenClasses, playScreenParts } from './play-screen.model';
 
 /** The components this screen is laid out from (spec-003 AC-7). */
 export const builtFrom: readonly string[] = [
@@ -78,7 +78,7 @@ export function createPlayScreen(props: PlayScreenProps, actions: PlayScreenActi
   const keypad = createKeypad(actions.onKey, props.keysAvailable);
   const mainButton = createButton(mainButtonProps(props.mainButtonLabel), actions.onCheck);
   const element = document.createElement('div');
-  element.className = ['play-screen', ...(props.isCompact ? ['play-screen--compact', 'density-compact'] : []), ...(props.isSnug ? ['density-snug'] : [])].join(' ');
+  element.className = playScreenClasses(props).join(' ');
   // One polite region for what a check says; it exists from the start so new text is announced.
   const status = document.createElement('div');
   status.setAttribute('role', 'status');

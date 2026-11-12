@@ -28,3 +28,21 @@ export function playScreenParts({ isCompact, hasToday }: PlayScreenLayout): Play
   }
   return { header: true, counterAlone: !hasToday, statusBar: hasToday, strip: false };
 }
+
+/** The densities a play screen can be drawn at (spec-007 FR-713, FR-719). */
+export interface PlayScreenDensity {
+  readonly isCompact?: boolean;
+  readonly isLargeGrid?: boolean;
+  readonly isTallGrid?: boolean;
+  readonly isSnug?: boolean;
+}
+
+export function playScreenClasses({ isCompact, isLargeGrid, isTallGrid, isSnug }: PlayScreenDensity): readonly string[] {
+  return [
+    'play-screen',
+    ...(isCompact ? ['play-screen--compact', 'density-compact'] : []),
+    ...(isLargeGrid ? ['density-large-grid'] : []),
+    ...(isTallGrid ? ['density-tall-grid'] : []),
+    ...(isSnug ? ['density-snug'] : []),
+  ];
+}
