@@ -26,8 +26,8 @@ export function readTodayRecord(store: SolutionStore): LastPlayed {
     return 'none';
   }
   try {
-    const { date, preset } = JSON.parse(raw) as TodayRecord;
-    return { date, preset };
+    const { date, preset } = JSON.parse(raw) as Partial<TodayRecord>;
+    return date !== undefined && typeof preset === 'string' ? { date, preset } : 'unreadable';
   } catch {
     return 'unreadable';
   }

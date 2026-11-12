@@ -46,6 +46,12 @@ describe('readTodayRecord', () => {
     expect(lastPlayed).toBe('unreadable');
   });
 
+  it('reads "unreadable" when the record has the wrong shape (AC-21)', () => {
+    const lastPlayed = readTodayRecord(storeWith({ [KEY]: JSON.stringify({ format: 1, date: '2026-11-10' }) }));
+
+    expect(lastPlayed).toBe('unreadable');
+  });
+
   it('reads "none" on a phone that has never played', () => {
     const lastPlayed = readTodayRecord(storeWith());
 
