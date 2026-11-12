@@ -603,3 +603,11 @@ The scenario plants only text that is not JSON; cycles 3 to 7 are the other case
 
 **Whole suite**: no exception expired; lint and typecheck clean; no existing test changed; 461 unit tests; JS + CSS
 16.54 KB gzipped; 59 engine scenarios; 376 phone and catalogue scenarios. Nothing failing.
+
+### T061: the game with `newDay` off
+
+Checked with a throwaway script on `npm run build`: a phone holding a record of 10 November's Medium and that
+day's solution record, opened on 11 November, shows the worked example; choosing Medium leaves the record as it
+was, and 10 November's solution record is kept. The flags-on build passes AC-18 to AC-21 on both phones. The
+date is read again in `main.ts`, through `today.ts`'s `dateOnThePhone` (T058 named `today.ts`; it stays the
+clock's only reader). `docs/contracts/saved-solutions.md` and `AGENTS.md` updated.

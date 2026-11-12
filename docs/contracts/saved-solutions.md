@@ -41,6 +41,13 @@ One more record says which day and preset were last played:
 ```
 
 - Key `operator.today`. `preset` is `easy`, `medium`, `hard` or `collector`; `date` is `YYYY-MM-DD`.
-- Read as untrusted, as above: anything that does not match is treated as unreadable, and today's Easy opens.
-- On the first opening of a new day, the four solution records of the record's `date` are removed. The worked
-  example's record is never removed by a new day.
+- Written whenever one of today's puzzles is chosen; choosing Practice leaves it as it is. A record whose `format`
+  is newer than 1 is never overwritten (rule 2).
+- On opening, the game opens today's puzzle for `preset`. No record (a phone that has never played) opens the
+  worked example.
+- Read as untrusted, as above: text that is not JSON, the wrong shape, a `format` other than 1, an unknown preset
+  or a date not written `YYYY-MM-DD` is unreadable, and today's Easy opens, with no error.
+- Whenever the phone's date is read (on opening, when the Today screen opens, and when the game comes back into
+  view) and the record's `date` is earlier, the four solution records of that `date` are removed and the record
+  is rewritten with today's date and the same `preset`. The worked example's record is never removed by a new day.
+  A puzzle already open stays open.
