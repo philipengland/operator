@@ -58,4 +58,12 @@ describe('clearEarlierDay (FR-714)', () => {
 
     expect([...store.records.keys()]).toEqual(['operator.solutions.worked-example']);
   });
+
+  it("removes nothing when the record is of today", () => {
+    const store = storeWith(Object.fromEntries(TENTH_OF_NOVEMBERS.map((key) => [key, SAVED])));
+
+    clearEarlierDay(store, { date: '2026-11-10', preset: 'medium' }, '2026-11-10');
+
+    expect([...store.records.keys()]).toEqual(TENTH_OF_NOVEMBERS);
+  });
 });

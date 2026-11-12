@@ -31,8 +31,7 @@ export function readTodayRecord(store: SolutionStore): LastPlayed {
 
 /** On a new day: the last day's found solutions are removed, as they cannot be reached again (FR-714). */
 export function clearEarlierDay(store: SolutionStore, lastPlayed: LastPlayed, today: CalendarDate): void {
-  void today;
-  if (typeof lastPlayed === 'string') {
+  if (typeof lastPlayed === 'string' || lastPlayed.date === today) {
     return;
   }
   for (const preset of EVERY_PRESET) {
