@@ -11,7 +11,7 @@ export interface Features {
   readonly hard: boolean;
 }
 
-export const RELEASED: Features = { daily: true, presets: true, hard: false };
+export const RELEASED: Features = { daily: true, presets: true, hard: true };
 
 // The Vite mode of the build that tests every story with its flag on (`npm run build:flags-on`).
 export const FLAGS_ON_MODE = 'flags-on';
