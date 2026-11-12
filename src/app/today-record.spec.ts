@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SolutionStore } from './solution-store';
-import { readTodayRecord, writeTodayRecord } from './today-record';
+import { clearEarlierDay, readTodayRecord, writeTodayRecord } from './today-record';
 
 const KEY = 'operator.today';
 
@@ -44,5 +44,18 @@ describe('readTodayRecord', () => {
     const lastPlayed = readTodayRecord(storeWith());
 
     expect(lastPlayed).toBe('none');
+  });
+});
+
+describe('clearEarlierDay (FR-714)', () => {
+  const SAVED = JSON.stringify({ format: 1, solutions: [] });
+  const TENTH_OF_NOVEMBERS = ['easy', 'medium', 'hard', 'collector'].map((preset) => `operator.solutions.daily-v1-2026-11-10-${preset}`);
+
+  it("removes an earlier day's four solution records, never the worked example's", () => {
+    const store = storeWith(Object.fromEntries([...TENTH_OF_NOVEMBERS, 'operator.solutions.worked-example'].map((key) => [key, SAVED])));
+
+    clearEarlierDay(store, { date: '2026-11-10', preset: 'medium' }, '2026-11-11');
+
+    expect([...store.records.keys()]).toEqual(['operator.solutions.worked-example']);
   });
 });
