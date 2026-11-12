@@ -27,6 +27,7 @@ const SCENARIOS_BEHIND_A_FLAG: Readonly<Record<keyof Features, string>> = {
   daily: '**/play/daily-easy.acceptance-spec.ts',
   presets: '**/play/medium-and-collector.acceptance-spec.ts',
   hard: '**/play/hard.acceptance-spec.ts',
+  newDay: '**/play/new-day.acceptance-spec.ts',
 };
 const unreleasedScenarios = (Object.keys(SCENARIOS_BEHIND_A_FLAG) as (keyof Features)[])
   .filter((flag) => !RELEASED[flag])
