@@ -56,7 +56,7 @@ describe('clearEarlierDay (FR-714)', () => {
 
     clearEarlierDay(store, { date: '2026-11-10', preset: 'medium' }, '2026-11-11');
 
-    expect([...store.records.keys()]).toEqual(['operator.solutions.worked-example']);
+    expect([...store.records.keys()].filter((key) => key.startsWith('operator.solutions.'))).toEqual(['operator.solutions.worked-example']);
   });
 
   it("removes nothing when the record is of today", () => {
@@ -65,5 +65,14 @@ describe('clearEarlierDay (FR-714)', () => {
     clearEarlierDay(store, { date: '2026-11-10', preset: 'medium' }, '2026-11-10');
 
     expect([...store.records.keys()]).toEqual(TENTH_OF_NOVEMBERS);
+  });
+
+  it('rewrites the record for today, with the same preset, so the next new day clears this one', () => {
+    const store = storeWith();
+    writeTodayRecord(store, { date: '2026-11-10', preset: 'medium' });
+
+    clearEarlierDay(store, readTodayRecord(store), '2026-11-11');
+
+    expect(readTodayRecord(store)).toEqual({ date: '2026-11-11', preset: 'medium' });
   });
 });

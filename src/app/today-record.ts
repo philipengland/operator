@@ -38,4 +38,5 @@ export function clearEarlierDay(store: SolutionStore, lastPlayed: LastPlayed, to
     // The same key spec-006 saves a daily puzzle's solutions under (docs/contracts/saved-solutions.md).
     store.write(`operator.solutions.daily-${GENERATOR_VERSION}-${lastPlayed.date}-${preset}`, null);
   }
+  writeTodayRecord(store, { date: today, preset: lastPlayed.preset });
 }
