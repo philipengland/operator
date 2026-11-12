@@ -71,6 +71,7 @@ first.
 | spec-004 the operator header (mascot and speech bubble) | **Changed for Collector**: a compact bar, with the operator's line in a strip under the grid. Medium and Hard keep the header with a smaller mascot (FR-719). |
 | spec-004 (the play screen fits 375 × 667 and 320 × 568 without scrolling) | **Extended** to every preset's grid, except Medium and Hard at 320 × 568, which may scroll up and down (FR-713). |
 | spec-003 FR-316 and the design guide (a given cell has no shadow) | **Changed**: every cell has a shadow; a given cell's is a softer shade of ink (FR-720). |
+| spec-001 AC-4 and its assumption "given cells do not rely on colour alone" | **Interpreted** (owner, 2026-11-12): a given cell is a solid disc and the player's cell an outlined ring, a difference of shape that holds in greyscale (spec-003 AC-10). Given cells now have a shadow like every cell (FR-720), so the shadow no longer marks them. |
 | Constitution IV (touch targets at least 44 × 44) | **Exception** for the cells of Medium and Hard, at least 36 × 36 (EXC-007). |
 | spec-006 FR-616 ("Found N" over 100) | **Now reachable**, in Collector. "All found!" is never shown for a capped total (FR-710). |
 | spec-006 the solution log, per puzzle | **Still holds** for each daily puzzle (FR-714). |
@@ -353,8 +354,9 @@ phone's date to 11 November 2026 and reopen.
   line MUST be announced as spec-004 requires. Medium, Hard and Collector have no helper line about
   swapping operators: their dashed pills stand in for it (owner, 2026-11-11).
 - **FR-720**: Every grid cell MUST have a shadow, on every puzzle: a given cell's in a softer shade of
-  ink, blended with paper, so it shows against the cell's ink fill, and still marked as given by more
-  than colour (spec-001). The player's cells keep theirs (owner, 2026-11-12).
+  ink, blended with paper, so it shows against the cell's ink fill. A given cell stays marked by its
+  solid fill against the player's outlined ring (spec-001 AC-4; owner, 2026-11-12). The player's cells
+  keep theirs.
 
 ### Key Entities
 

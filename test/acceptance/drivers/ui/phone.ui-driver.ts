@@ -268,6 +268,9 @@ export class UiPhoneDriver implements PhoneDriver {
           `decoration ${style.textDecorationLine}`,
           // A raised shadow is a shape, not a colour: the themed cells differ by it (spec-003 AC-10).
           `shadow ${style.boxShadow === 'none' ? 'none' : 'raised'}`,
+          // A solid disc, filled to its outline, or an outlined ring: a shape that holds in greyscale
+          // (spec-007 changes to spec-001 AC-4; owner, 2026-11-12).
+          `fill ${style.backgroundColor === style.borderTopColor ? 'solid' : 'ringed'}`,
         ].join(' | '),
       };
     });
