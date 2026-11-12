@@ -3,6 +3,7 @@
 
 import { dailyPuzzle, emptyEntry, type CalendarDate, type Entry, type PresetName, type Puzzle } from '../engine';
 import { applyAction, counterText, startSession, type SessionState } from './session';
+import type { LastPlayed } from './today-record';
 
 /** A row on the Today screen: one of today's puzzles, or the worked example as Practice. */
 export type Choice = PresetName | 'practice';
@@ -49,6 +50,14 @@ export function onDate(state: DailyState, date: CalendarDate): DailyState {
 function pick(kept: DailyState['kept'], choice: Choice): DailyState['kept'] {
   const session = kept[choice];
   return session === undefined ? {} : { [choice]: session };
+}
+
+/** On opening the game: the puzzle last played, if the phone says so (FR-701, FR-715). */
+export function openLastPlayed(state: DailyState, lastPlayed: LastPlayed, saved: SavedSolutions = NOTHING_SAVED): DailyState {
+  if (typeof lastPlayed === 'string') {
+    return state;
+  }
+  return choose(state, lastPlayed.preset, saved);
 }
 
 /** The chosen puzzle goes on the play screen; the one left is kept as the player left it (FR-708). */
