@@ -9,7 +9,7 @@ import { createPlayScreen, type PlayScreenComponent } from '../ui/screens/play-s
 import { createSolutionList } from '../ui/screens/solution-list';
 import { createSolutionView, type SolutionViewScreen } from '../ui/screens/solution-view';
 import { createTodayList } from '../ui/screens/today-list';
-import type { Digit } from '../engine';
+import type { CalendarDate, Digit } from '../engine';
 import { START_AGAIN_QUESTION } from './labels';
 import { playScreenProps, puzzleTheme } from './screen';
 import { applyAction, startSession, type Place, type SessionAction } from './session';
@@ -20,7 +20,7 @@ import { createBrowserStore } from './browser-store';
 import { readSolutions, rememberChange } from './solution-store';
 import { choose, onDate, openLastPlayed, openToday, startDaily, todayChoices, type DailyState, type SavedSolutions } from './daily';
 import { dateOnThePhone } from './today';
-import { readTodayRecord, writeTodayRecord } from './today-record';
+import { clearEarlierDay, readTodayRecord, writeTodayRecord, type LastPlayed } from './today-record';
 import { presetsOffered, todayListProps } from './today-list';
 import type { Features } from './features';
 
@@ -41,7 +41,7 @@ const saved: SavedSolutions = (puzzle) => readSolutions(store, puzzle);
 const practice = startSession();
 const started = startDaily(dateOnThePhone(new Date()), applyAction(practice, { type: 'restoreFound', solutions: saved(practice.puzzle) }), OFFERED);
 // With a new day, the game opens on the puzzle last played (spec-007 FR-701, research R10).
-let daily: DailyState = features.newDay ? openLastPlayed(started, readTodayRecord(store), saved) : started;
+let daily: DailyState = features.newDay ? openLastPlayed(started, lastPlayedClearingAnEarlierDay(started.date), saved) : started;
 // The worked example has no seed, so it is shown in Classic (spec-003 AC-25); a daily puzzle in its seed's (FR-712).
 let theme = puzzleTheme(daily.session);
 applyTheme(document.documentElement, theme);
@@ -77,6 +77,32 @@ window.addEventListener('popstate', (event) => {
   act({ type: 'showPlace', place });
 });
 
+// Coming back to the game after midnight offers the new day; the puzzle on screen stays open (FR-716).
+if (features.newDay) {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      daily = onTodaysDate();
+      render();
+    }
+  });
+}
+
+/** What the phone says was last played; an earlier day's solutions are removed first (FR-714). */
+function lastPlayedClearingAnEarlierDay(date: CalendarDate): LastPlayed {
+  const lastPlayed = readTodayRecord(store);
+  if (features.newDay) {
+    clearEarlierDay(store, lastPlayed, date);
+  }
+  return lastPlayed;
+}
+
+/** The phone's date, read again: on a new day, its puzzles are offered. */
+function onTodaysDate(): DailyState {
+  const date = dateOnThePhone(new Date());
+  lastPlayedClearingAnEarlierDay(date);
+  return onDate(daily, date);
+}
+
 /** The play screen for the puzzle now on it; a grid's size is fixed once shown, so each puzzle has its own. */
 function createScreen(): PlayScreenComponent {
   return createPlayScreen(playScreenProps(daily.session, theme), {
@@ -111,8 +137,7 @@ function openTodayScreen(): void {
 
 function showToday(): void {
   // With presets, the phone's date is read again here, so a new day's puzzles are offered (research R6).
-  const onThisDate = features.presets ? onDate(daily, dateOnThePhone(new Date())) : daily;
-  daily = openToday(onThisDate, saved);
+  daily = openToday(features.presets ? onTodaysDate() : daily, saved);
   render();
 }
 
