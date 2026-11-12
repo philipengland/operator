@@ -27,12 +27,8 @@ export function writeTodayRecord(store: SolutionStore, { date, preset }: TodayRe
 
 /** A later version of the game wrote this record: it is never overwritten (ADR 0004). */
 function isOfLaterFormat(raw: string | null): boolean {
-  try {
-    const { format } = (JSON.parse(raw ?? 'null') ?? {}) as { readonly format?: unknown };
-    return typeof format === 'number' && format > FORMAT;
-  } catch {
-    return false;
-  }
+  const { format } = fieldsOf(raw);
+  return typeof format === 'number' && format > FORMAT;
 }
 
 export function readTodayRecord(store: SolutionStore): LastPlayed {
@@ -40,18 +36,20 @@ export function readTodayRecord(store: SolutionStore): LastPlayed {
   if (raw === null) {
     return 'none';
   }
-  try {
-    const record: unknown = JSON.parse(raw);
-    return isTodayRecord(record) ? { date: record.date, preset: record.preset } : 'unreadable';
-  } catch {
-    return 'unreadable';
-  }
+  const { format, date, preset } = fieldsOf(raw);
+  // Read as untrusted (spec-006 research R3): this format, a calendar date and one of the four presets.
+  return format === FORMAT && CALENDAR_DATE.test(String(date)) && EVERY_PRESET.includes(preset as PresetName)
+    ? { date: date as CalendarDate, preset: preset as PresetName }
+    : 'unreadable';
 }
 
-/** Read as untrusted (spec-006 research R3): this format, a calendar date and one of the four presets. */
-function isTodayRecord(record: unknown): record is TodayRecord & { readonly format: number } {
-  const { format, date, preset } = (record ?? {}) as Partial<Record<'format' | 'date' | 'preset', unknown>>;
-  return format === FORMAT && CALENDAR_DATE.test(String(date)) && EVERY_PRESET.includes(preset as PresetName);
+/** The record's fields, each still unknown; none when it is missing or not JSON. */
+function fieldsOf(raw: string | null): Partial<Record<'format' | 'date' | 'preset', unknown>> {
+  try {
+    return (JSON.parse(raw ?? 'null') ?? {}) as Partial<Record<'format' | 'date' | 'preset', unknown>>;
+  } catch {
+    return {};
+  }
 }
 
 /** On a new day: the last day's found solutions are removed, as they cannot be reached again (FR-714). */
