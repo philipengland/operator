@@ -27,7 +27,7 @@ export function readTodayRecord(store: SolutionStore): LastPlayed {
   }
   try {
     const { date, preset } = JSON.parse(raw) as Partial<TodayRecord>;
-    return date !== undefined && typeof preset === 'string' ? { date, preset } : 'unreadable';
+    return date !== undefined && EVERY_PRESET.includes(preset as PresetName) ? { date, preset: preset as PresetName } : 'unreadable';
   } catch {
     return 'unreadable';
   }
