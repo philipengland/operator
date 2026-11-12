@@ -6,7 +6,18 @@ import type { Locator, Page } from '@playwright/test';
 import { dailyPuzzle, type Entry, type PresetName } from '../../../../src/engine';
 import { THEMES, themeForSeed } from '../../../../src/ui/foundations/themes';
 import { scanForAccessibilityProblems } from '../../support/axe';
-import type { CalendarDay, DailyCell, DailyLine, DailyPuzzle, LineOperator, Preset, TodayChoice, TodayRow } from '../../dsl/daily-vocabulary';
+import type {
+  CalendarDay,
+  DailyCell,
+  DailyLine,
+  DailyPuzzle,
+  LineOperator,
+  Preset,
+  ResultBesideLine,
+  ResultPlace,
+  TodayChoice,
+  TodayRow,
+} from '../../dsl/daily-vocabulary';
 import type { Digit } from '../../dsl/vocabulary';
 import { dateText, dayParts } from '../calendar';
 import { firstSolutions } from '../daily-solutions';
@@ -54,6 +65,79 @@ function readCounterTitle(counter: Element): string {
     return part.children.length === 0 && (part.textContent ?? '').trim() !== '' && box.width > 1 && box.height > 1;
   };
   return (Array.from(counter.querySelectorAll('*')).find(isShown)?.textContent ?? '').trim();
+}
+
+/** Where something is drawn on the page, in CSS pixels. */
+interface Edges {
+  readonly left: number;
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+}
+
+/** A line's working as drawn: what it shows beside the line, and the boxes it is placed against. */
+interface DrawnWorking {
+  readonly line: string;
+  readonly shown: string;
+  /** The icon's hidden "✓" or "✗"; empty when no mark is shown. */
+  readonly glyph: string;
+  readonly box: Edges;
+  readonly cells: readonly Edges[];
+}
+
+/**
+ * Runs in the page: every row's then every column's working in the daily puzzle. Its line comes from its heard
+ * name ("Row 1 working, …"); what it shows and its mark from the part drawn for sighted players (spec-002 contract).
+ */
+function readDrawnWorkings(pattern: string): DrawnWorking[] {
+  const puzzle = Array.from(document.querySelectorAll('[role="group"]')).find((group) => new RegExp(pattern).test(group.getAttribute('aria-label') ?? ''));
+  const edges = (element: Element) => {
+    const { left, top, right, bottom } = element.getBoundingClientRect();
+    return { left, top, right, bottom };
+  };
+  const cells = Array.from(puzzle?.querySelectorAll('button') ?? []).flatMap((button) => {
+    const [, row, column] = /^Row (\d+) column (\d+) cell, /.exec(button.getAttribute('aria-label') ?? '') ?? [];
+    return row === undefined ? [] : [{ row: `Row ${row}`, column: `Column ${column}`, box: edges(button) }];
+  });
+  const cellsOf = (line: string) => cells.filter((cell) => cell.row === line || cell.column === line).map((cell) => cell.box);
+  const textOf = (element: Element | null | undefined) => (element?.textContent ?? '').trim();
+  const glyphOf = (icon: HTMLElement | null) => (icon === null || icon.style.visibility === 'hidden' ? '' : textOf(icon));
+  return Array.from(puzzle?.querySelectorAll('.line-working') ?? []).map((working) => {
+    const line = textOf(working.querySelector('.visually-hidden')).split(' working')[0] ?? '';
+    const shownPart = working.querySelector('.line-working__shown') ?? working;
+    const glyph = glyphOf(shownPart.querySelector<HTMLElement>('.icon'));
+    return { line, shown: textOf(shownPart.firstElementChild), glyph, box: edges(shownPart), cells: cellsOf(line) };
+  });
+}
+
+/** A working's mark from the glyph its icon keeps as hidden text: none when the icon is not shown. */
+function markOf({ glyph }: DrawnWorking): ResultBesideLine['mark'] {
+  if (glyph.includes('✓')) {
+    return 'tick';
+  }
+  return glyph.includes('✗') ? 'cross' : 'none';
+}
+
+/** Rows first, then columns, each by number. */
+function byLine(first: DrawnWorking, second: DrawnWorking): number {
+  const [firstAxis = '', firstIndex = ''] = first.line.split(' ');
+  const [secondAxis = '', secondIndex = ''] = second.line.split(' ');
+  return secondAxis.localeCompare(firstAxis) || Number(firstIndex) - Number(secondIndex);
+}
+
+/** At its row's right and level with it, below its column and in line with it, or neither (spec-007 FR-718). */
+function placeOf({ line, box, cells }: DrawnWorking): ResultPlace {
+  const isDrawn = box.right - box.left > 1 && box.bottom - box.top > 1;
+  const middle = { across: (box.left + box.right) / 2, down: (box.top + box.bottom) / 2 };
+  const isRightOf = (cell: Edges) => box.left >= cell.right && middle.down > cell.top && middle.down < cell.bottom;
+  const isBelow = (cell: Edges) => box.top >= cell.bottom && middle.across > cell.left && middle.across < cell.right;
+  if (isDrawn && line.startsWith('Row') && cells.every(isRightOf)) {
+    return 'right of its row';
+  }
+  if (isDrawn && line.startsWith('Column') && cells.every(isBelow)) {
+    return 'below its column';
+  }
+  return 'not beside its line';
 }
 
 /** Runs in the page: the theme colours the page is drawn in. */
@@ -160,6 +244,11 @@ export class UiDailyDriver implements DailyDriver {
     await this.todayScreen().getByRole('button', { name: new RegExp(`^${choice}, found `) }).tap();
     await this.page.getByRole('group', { name: choice === 'Practice' ? /^Puzzle$/ : new RegExp(`^${choice} puzzle, `) }).waitFor();
     return (Date.now() - started) / MILLISECONDS_PER_SECOND;
+  }
+
+  async resultsBesideLines(): Promise<readonly ResultBesideLine[]> {
+    const drawn = await this.page.evaluate(readDrawnWorkings, DAILY_PUZZLE.source);
+    return [...drawn].sort(byLine).map((working) => ({ line: working.line, shown: working.shown, mark: markOf(working), place: placeOf(working) }));
   }
 
   /**

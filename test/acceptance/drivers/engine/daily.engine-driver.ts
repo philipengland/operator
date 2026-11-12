@@ -95,6 +95,7 @@ export class EngineDailyDriver implements DailyDriver {
   themeShown = readOnlyOnThePhones;
   themeForThePuzzlesSeed = readOnlyOnThePhones;
   secondsToOpen = readOnlyOnThePhones;
+  resultsBesideLines = readOnlyOnThePhones;
 
   /** As a player would: each empty cell tapped and its digit keyed, each open operator tapped round to the filling's. */
   private enter(filling: Entry): void {

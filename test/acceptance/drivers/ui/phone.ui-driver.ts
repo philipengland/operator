@@ -28,6 +28,7 @@ const REFERENCE_4G = {
 
 // A daily puzzle as heard (play-screen contract): "Medium puzzle, 5 by 4".
 const DAILY_PUZZLE_NAME = /^(Easy|Medium|Hard|Collector) puzzle, \d+ by \d+$/;
+const DAILY_CELL_NAME = /^Row \d+ column \d+ cell, /;
 
 // Unknown positions: NaN compares false, so nothing unread can count as on screen.
 const NO_BOX: Box = { left: Number.NaN, top: Number.NaN, right: Number.NaN, bottom: Number.NaN };
@@ -192,8 +193,20 @@ export class UiPhoneDriver implements PhoneDriver {
     // The workings strip is drawn for sighted players only (aria-hidden), so it has no role to find it by.
     const strip = this.page.locator('.workings-strip');
     const puzzleBox = (await strip.count()) === 1 ? around(await boxOf(puzzle), await boxOf(strip)) : await boxOf(puzzle);
+    const cells = [];
+    for (const cell of await puzzle.getByRole('button', { name: DAILY_CELL_NAME }).all()) {
+      cells.push(await boxOf(cell));
+    }
     const page = await this.page.evaluate(() => ({ width: document.documentElement.scrollWidth, height: document.documentElement.scrollHeight }));
-    return { screen: this.page.viewportSize() ?? page, tapTargets, puzzle: puzzleBox, keypad: await boxOf(keypad), mainButton: await boxOf(mainButton), page };
+    return {
+      screen: this.page.viewportSize() ?? page,
+      tapTargets,
+      cells,
+      puzzle: puzzleBox,
+      keypad: await boxOf(keypad),
+      mainButton: await boxOf(mainButton),
+      page,
+    };
   }
 
   async leaveUnreadableRecordOfLastPuzzle(): Promise<void> {}

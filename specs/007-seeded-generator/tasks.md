@@ -142,6 +142,24 @@ the approved Layer 1 file it makes pass, brought unchanged from `514187c`.
 
 ---
 
+## Phase 5a: Amendment 2026-11-12 — results beside each line, the header back, smaller cells (Medium and Hard)
+
+**Goal**: on Medium and Hard, each line's result beside it and no workings strip (FR-718); the operator's header with a smaller
+mascot (FR-719); cells at least 36 × 36 (FR-713, EXC-007), with space between panels and cells; every cell shadowed (FR-720).
+Medium is released, so the change reaches players on merge: the owner reviews it on a phone first.
+
+**Independent Test**: on 10 November 2026, open Medium and Hard on 375 × 667 and 320 × 568 and fill a row.
+
+- [ ] T066 Create `007-seeded-generator-workings-beside` from `main`; run the whole suite as the baseline in `tdd-log.md`
+- [ ] T067 Drivers: `resultsBesideLines` in `ui/daily.ui-driver.ts` (each row's and column's shown result, its mark, and whether it is at its row's right or below its column) and read-only on the phones in `engine/daily.engine-driver.ts`; `cells` in `dailyLayout` in `ui/phone.ui-driver.ts`
+- [ ] T068 AC-23: TDD in `src/app/screen.spec.ts` and the line working's model: on a grid wider than 3 columns each working is placed beside its line in short form ("14", "?", no "= "), and there is no strip
+- [ ] T069 FR-719: TDD in `src/app/screen.spec.ts`: Medium and Hard have the full header (not the compact screen), Collector keeps it; a smaller mascot on large grids in `src/ui/`
+- [ ] T070 AC-12, AC-16: cells at least 36 × 36 on Medium and Hard, space between panels and cells, smaller shadows, in `src/ui/foundations/tokens.css` and the grid's CSS; Hard fits 375 × 667 and Medium scrolls only up and down at 320 × 568
+- [ ] T071 FR-720: every given cell has a shadow in a blend of ink and paper, in `src/ui/simple/button.css`; spec-001's given-cell scenario still passes, and the catalogue shows it
+- [ ] T072 Run the whole suite; update `docs/contracts/component-library.md`, `docs/contracts/play-screen.md` and `tdd-log.md`. Push and open the pull request. **The owner reviews it on a phone before merging**, as Medium changes for players on merge
+
+---
+
 ## Phase 6: User Story 4 — A new day (Priority: P2)
 
 **Goal**: the game reopens on the puzzle last played; the next day brings new puzzles and clears the last day's solutions.
