@@ -90,7 +90,6 @@ export function puzzleGridProps(state: SessionState): PuzzleGridProps {
     rowWorkings: lines(state, 'row').map(workingProps),
     columnWorkings: lines(state, 'column').map(workingProps),
     helper: hasOpenLine(state.puzzle) && !isBiggerThanThreeByThree(state.puzzle) ? HELPER_LINE : '',
-    ...(isWiderThanThreeColumns(state.puzzle) ? { workings: 'elsewhere' } : {}),
   };
 }
 
