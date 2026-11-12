@@ -18,8 +18,9 @@ import { solutionListProps } from './solution-list';
 import { solutionViewProps } from './solution-view';
 import { createBrowserStore } from './browser-store';
 import { readSolutions, rememberChange } from './solution-store';
-import { choose, onDate, openToday, startDaily, todayChoices, type DailyState, type SavedSolutions } from './daily';
+import { choose, onDate, openLastPlayed, openToday, startDaily, todayChoices, type DailyState, type SavedSolutions } from './daily';
 import { dateOnThePhone } from './today';
+import { readTodayRecord, writeTodayRecord } from './today-record';
 import { presetsOffered, todayListProps } from './today-list';
 import type { Features } from './features';
 
@@ -38,7 +39,9 @@ const OFFERED = presetsOffered(features);
 const store = createBrowserStore(() => window.localStorage);
 const saved: SavedSolutions = (puzzle) => readSolutions(store, puzzle);
 const practice = startSession();
-let daily: DailyState = startDaily(dateOnThePhone(new Date()), applyAction(practice, { type: 'restoreFound', solutions: saved(practice.puzzle) }), OFFERED);
+const started = startDaily(dateOnThePhone(new Date()), applyAction(practice, { type: 'restoreFound', solutions: saved(practice.puzzle) }), OFFERED);
+// With a new day, the game opens on the puzzle last played (spec-007 FR-701, research R10).
+let daily: DailyState = features.newDay ? openLastPlayed(started, readTodayRecord(store), saved) : started;
 // The worked example has no seed, so it is shown in Classic (spec-003 AC-25); a daily puzzle in its seed's (FR-712).
 let theme = puzzleTheme(daily.session);
 applyTheme(document.documentElement, theme);
@@ -121,6 +124,9 @@ function chooseRow(index: number): void {
   }
   const previousPuzzle = daily.session.puzzle;
   daily = choose(daily, choice, saved);
+  if (features.newDay && choice !== 'practice') {
+    writeTodayRecord(store, { date: daily.date, preset: choice });
+  }
   history.replaceState(historyEntryFor(daily.session.place), '');
   if (daily.session.puzzle !== previousPuzzle) {
     showNewPuzzle();
