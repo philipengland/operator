@@ -56,26 +56,62 @@ for (const [width, height] of [
   [375, 667],
   [320, 568],
 ] as const) {
-  for (const preset of ['Medium', 'Collector'] as const) {
-    test.describe(`[spec-007 AC-12] ${preset} at ${width} × ${height}`, PHONES, () => {
-      test('the whole puzzle, the keypad and the main button fit without scrolling, everything to tap at least 44 × 44', async ({
-        game,
-        daily,
-        phone,
-      }) => {
-        await phone.useScreen(width, height);
-        await daily.setPhoneDate(tenthOfNovember);
-        await game.open();
+  test.describe(`[spec-007 AC-12] Collector at ${width} × ${height}`, PHONES, () => {
+    test('the whole puzzle, the keypad and the main button fit without scrolling, everything to tap at least 44 × 44', async ({
+      game,
+      daily,
+      phone,
+    }) => {
+      await phone.useScreen(width, height);
+      await daily.setPhoneDate(tenthOfNovember);
+      await game.open();
 
-        await daily.open(preset);
+      await daily.open('Collector');
 
-        await phone.expectDailyPuzzleFitsWithoutScrolling();
-        await phone.expectEveryTapTargetAtLeast(44);
-        await phone.expectNoAccessibilityProblems();
-      });
+      await phone.expectDailyPuzzleFitsWithoutScrolling();
+      await phone.expectEveryTapTargetAtLeast(44);
+      await phone.expectNoAccessibilityProblems();
     });
-  }
+  });
 }
+
+test.describe('[spec-007 AC-12] Medium at 375 × 667', PHONES, () => {
+  test('the whole puzzle, the keypad and the main button fit without scrolling, cells at least 36 × 36, everything else to tap 44 × 44', async ({
+    game,
+    daily,
+    phone,
+  }) => {
+    await phone.useScreen(375, 667);
+    await daily.setPhoneDate(tenthOfNovember);
+    await game.open();
+
+    await daily.open('Medium');
+
+    await phone.expectDailyPuzzleFitsWithoutScrolling();
+    await phone.expectEveryCellAtLeast(36);
+    await phone.expectEveryTapTargetOtherThanCellsAtLeast(44);
+    await phone.expectNoAccessibilityProblems();
+  });
+});
+
+test.describe('[spec-007 AC-12] Medium at 320 × 568', PHONES, () => {
+  test('everything is reached by scrolling up and down, never sideways, cells at least 36 × 36, everything else to tap 44 × 44', async ({
+    game,
+    daily,
+    phone,
+  }) => {
+    await phone.useScreen(320, 568);
+    await daily.setPhoneDate(tenthOfNovember);
+    await game.open();
+
+    await daily.open('Medium');
+
+    await phone.expectDailyPuzzleScrollsOnlyUpAndDown();
+    await phone.expectEveryCellAtLeast(36);
+    await phone.expectEveryTapTargetOtherThanCellsAtLeast(44);
+    await phone.expectNoAccessibilityProblems();
+  });
+});
 
 test.describe("[spec-007 AC-13] switching between today's puzzles", () => {
   test('Easy keeps "Found 1" and its solution after a visit to Medium, with an empty grid', async ({ game, daily }) => {
@@ -92,5 +128,22 @@ test.describe("[spec-007 AC-13] switching between today's puzzles", () => {
     await daily.expectEmptyGrid();
     await game.openSolutionList();
     await game.expectSolutionsListed(['Solution 1']);
+  });
+});
+
+test.describe("[spec-007 AC-23] each line's result beside it on Medium", PHONES, () => {
+  test('"?" beside every line at first; once filled, each row shows its result and a tick at its right, each column below it', async ({
+    game,
+    daily,
+  }) => {
+    await daily.setPhoneDate(tenthOfNovember);
+    await game.open();
+    await daily.open('Medium');
+
+    await daily.expectEachLineShowsBesideIt('?');
+
+    await daily.enterTheFillingItWasMadeFromAndCheck();
+
+    await daily.expectEachLineShowsItsTargetTickedBesideIt();
   });
 });

@@ -1,7 +1,7 @@
 // Layer 3 contract — what every daily-puzzle driver (in-process or Playwright) must provide (spec-007).
 // Signatures only. Drivers report what the player would see; they never judge it.
 
-import type { CalendarDay, DailyPuzzle, Preset, TodayChoice, TodayRow } from '../dsl/daily-vocabulary';
+import type { CalendarDay, DailyPuzzle, Preset, ResultBesideLine, TodayChoice, TodayRow } from '../dsl/daily-vocabulary';
 
 export interface DailyDriver {
   /** Sets the phone's own calendar date before the game opens or reopens. */
@@ -27,4 +27,6 @@ export interface DailyDriver {
   themeForThePuzzlesSeed(): Promise<string>;
   /** Seconds from tapping a row on the Today screen until that puzzle is ready to play. */
   secondsToOpen(choice: TodayChoice): Promise<number>;
+  /** Each row's shown result, then each column's: what it shows, its mark, and where it sits (FR-718). */
+  resultsBesideLines(): Promise<readonly ResultBesideLine[]>;
 }

@@ -216,7 +216,7 @@ export class PhoneDsl {
     expect(layout.page, 'the page is no larger than the screen').toEqual(layout.screen);
   }
 
-  /** Hard at 320 × 568 (FR-713): the page may scroll up and down, never sideways. */
+  /** Medium and Hard at 320 × 568 (FR-713): the page may scroll up and down, never sideways. */
   async expectDailyPuzzleScrollsOnlyUpAndDown(): Promise<void> {
     const layout = await this.driver().dailyLayout();
     expect(layout.page.width, 'the page is no wider than the screen').toBeLessThanOrEqual(layout.screen.width);
@@ -233,6 +233,21 @@ export class PhoneDsl {
       expect(Math.round(box.right - box.left), 'width of something to tap').toBeGreaterThanOrEqual(pixels);
       expect(Math.round(box.bottom - box.top), 'height of something to tap').toBeGreaterThanOrEqual(pixels);
     }
+  }
+
+  /** spec-007 FR-713: every cell of the puzzle at least this many pixels each way (36 on Medium and Hard; EXC-007). */
+  async expectEveryCellAtLeast(pixels: number): Promise<void> {
+    const { cells } = await this.driver().dailyLayout();
+    expect(cells.length, 'cells').toBeGreaterThan(0);
+    expectEachAtLeast(cells, pixels, 'cell');
+  }
+
+  /** Every pill and key, and the main button, at least this many pixels each way (spec-003). */
+  async expectEveryTapTargetOtherThanCellsAtLeast(pixels: number): Promise<void> {
+    const { tapTargets, cells } = await this.driver().dailyLayout();
+    const others = tapTargets.filter((box) => !cells.some((cell) => isSameBox(cell, box)));
+    expect(others.length, 'things to tap other than cells').toBeGreaterThan(0);
+    expectEachAtLeast(others, pixels, 'something to tap');
   }
 
   async expectNoAccessibilityProblems(): Promise<void> {
@@ -265,6 +280,17 @@ function everythingIn(layout: ScreenLayout): [string, Box][] {
     ['counter', layout.counter],
     ['Check button', layout.checkButton],
   ];
+}
+
+function expectEachAtLeast(boxes: readonly Box[], pixels: number, what: string): void {
+  for (const box of boxes) {
+    expect(Math.round(box.right - box.left), `width of ${what}`).toBeGreaterThanOrEqual(pixels);
+    expect(Math.round(box.bottom - box.top), `height of ${what}`).toBeGreaterThanOrEqual(pixels);
+  }
+}
+
+function isSameBox(first: Box, second: Box): boolean {
+  return first.left === second.left && first.top === second.top && first.right === second.right && first.bottom === second.bottom;
 }
 
 function dailyParts(layout: DailyLayout): [string, Box][] {
