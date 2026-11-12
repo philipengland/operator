@@ -14,6 +14,8 @@ export type LastPlayed = TodayRecord | 'none' | 'unreadable';
 
 const KEY = 'operator.today';
 const FORMAT = 1;
+// A calendar date as the engine takes it, "2026-11-10".
+const CALENDAR_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const EVERY_PRESET: readonly PresetName[] = ['easy', 'medium', 'hard', 'collector'];
 
 export function writeTodayRecord(store: SolutionStore, { date, preset }: TodayRecord): void {
@@ -27,7 +29,7 @@ export function readTodayRecord(store: SolutionStore): LastPlayed {
   }
   try {
     const { date, preset } = JSON.parse(raw) as Partial<TodayRecord>;
-    return date !== undefined && EVERY_PRESET.includes(preset as PresetName) ? { date, preset: preset as PresetName } : 'unreadable';
+    return CALENDAR_DATE.test(String(date)) && EVERY_PRESET.includes(preset as PresetName) ? { date: date as CalendarDate, preset: preset as PresetName } : 'unreadable';
   } catch {
     return 'unreadable';
   }

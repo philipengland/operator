@@ -58,6 +58,12 @@ describe('readTodayRecord', () => {
     expect(lastPlayed).toBe('unreadable');
   });
 
+  it('reads "unreadable" when the date is not YYYY-MM-DD (AC-21)', () => {
+    const lastPlayed = readTodayRecord(storeWith({ [KEY]: JSON.stringify({ format: 1, date: '10 November 2026', preset: 'easy' }) }));
+
+    expect(lastPlayed).toBe('unreadable');
+  });
+
   it('reads "none" on a phone that has never played', () => {
     const lastPlayed = readTodayRecord(storeWith());
 
