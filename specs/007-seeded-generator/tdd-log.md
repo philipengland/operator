@@ -501,3 +501,37 @@ stub, `[true, true]`; `isTickPlaceKept` passes it. A column's result keeps its t
 its right and takes no width. Measured after: every column pill's and column result's text 0.0 px from its
 column's centre; a reached pill shows its tick inside, beside the target. 447 unit tests; 368 phone and catalogue
 scenarios.
+
+## Part 5: User Story 4, a new day (T055 to T062)
+
+### T055: the `newDay` flag
+
+Branch `007-seeded-generator-part-5` from `main` (`9e2af2b`). `test/acceptance/play/new-day.acceptance-spec.ts`
+brought unchanged from `514187c` (blob `7f7907e`, confirmed). `newDay: false` in `src/app/features.ts`, and the file
+behind it in `playwright.config.ts`. `e02fd52`.
+
+**Baseline**: 447 unit tests; 59 engine scenarios; 368 phone and catalogue scenarios pass. Failing, as expected:
+the new file's AC-18, AC-19 and AC-21 on the flags-on phones. AC-20 passes already (T059 expected it; to be proved
+by a reverted break).
+
+### AC-18: coming back the same day
+
+**Acceptance RED** (flags-on phones): after the reload the worked example opened, not Medium: "No daily puzzle is
+on the play screen" at `expectPuzzle('Medium', 5, 4)`. The drivers needed nothing new: the phone's fixed date
+holds across a reload and a fresh load.
+
+| Cycle | Test | Failure at RED | Change | Commit |
+|---|---|---|---|---|
+| 1 | `today-record.spec.ts` "keeps the day and preset in the agreed format, under operator.today" | `expected null to deeply equal { format: 1, … }` | `writeTodayRecord` | `f07be3e` |
+| 2 | "reads back the day and preset written" | `expected 'none' to deeply equal { date, preset }` | `readTodayRecord` | `191d744` |
+| 3 | `daily.spec.ts` "opens today's puzzle for the preset last played today, on the play screen, with its saved solutions" (new; import on its own line) | `expected 'practice' to be 'medium'` | `openLastPlayed`, through `choose` (FR-709) | `f5957d1` |
+| 4 | `today-record.spec.ts` "reads "none" on a phone that has never played" | `expected { date: undefined, preset: undefined } to be 'none'` | no record is `'none'`, so the wiring keeps AC-20 | `54c7f3f` |
+| 5 | (entry point; the scenario) | | `main.ts`, behind `newDay`: read on opening, written when one of today's puzzles is chosen | `6089823` |
+
+**Acceptance GREEN**: AC-18 on both flags-on phones; AC-20 still passes.
+
+**Slice refactor**: nothing changed. `today-record.spec.ts` repeats `solution-store.spec.ts`'s in-memory store;
+sharing it would change a protected file.
+
+**Whole suite**: lint clean; no existing test changed; 451 unit tests; 59 engine scenarios; 370 phone and catalogue
+scenarios. Still failing, as expected: AC-19 and AC-21, not yet built.
