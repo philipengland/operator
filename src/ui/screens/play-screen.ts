@@ -45,6 +45,10 @@ export interface PlayScreenProps {
   readonly isSnug?: boolean;
   /** spec-007 FR-719: the compact screen, for grids bigger than 3 × 3. Fixed once shown. */
   readonly isCompact?: boolean;
+  /** spec-007 FR-713 (owner, 2026-11-12): a grid wider than 3 columns, with the full header. Fixed once shown. */
+  readonly isLargeGrid?: boolean;
+  /** A large grid of more than 5 rows (Hard), with tighter spacing to fit. Fixed once shown. */
+  readonly isTallGrid?: boolean;
   /** What the compact screen's Workings strip shows. */
   readonly strip?: WorkingsStripProps;
 }

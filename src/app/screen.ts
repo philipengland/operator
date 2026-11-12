@@ -84,6 +84,13 @@ function isBiggerThanThreeByThree({ rows, columns }: SessionState['puzzle']): bo
   return rows * columns > EASY_SIZE * EASY_SIZE;
 }
 
+/** Medium's 5 rows fit with room to spare; more rows (Hard's 7) need tighter spacing (owner, 2026-11-12). */
+const MEDIUM_ROWS = 5;
+
+function isTallerThanMedium({ rows }: SessionState['puzzle']): boolean {
+  return rows > MEDIUM_ROWS;
+}
+
 /** spec-007 FR-719 (owner, 2026-11-12): Collector, bigger than 3 × 3 but 3 columns wide, has the compact screen. */
 function hasCompactScreen(puzzle: SessionState['puzzle']): boolean {
   return isBiggerThanThreeByThree(puzzle) && !isWiderThanThreeColumns(puzzle);
@@ -137,6 +144,8 @@ export function playScreenProps(state: SessionState, theme: Theme): PlayScreenPr
     announcement: announcement(state.message, theme, counterText(state)),
     isSnug: isThreeByThree(state.puzzle),
     isCompact: hasCompactScreen(state.puzzle),
+    isLargeGrid: isWiderThanThreeColumns(state.puzzle),
+    isTallGrid: isWiderThanThreeColumns(state.puzzle) && isTallerThanMedium(state.puzzle),
     ...stripOf(state, theme),
   };
 }

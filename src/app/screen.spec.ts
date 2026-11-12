@@ -136,6 +136,14 @@ describe('room on the screen for a daily puzzle (spec-007 FR-713)', () => {
 
     expect([easy.isSnug, justOpened().isSnug]).toEqual([true, false]);
   });
+
+  it("gives Medium and Hard the large grid's layout, and Hard's 7 rows the tall one; Collector and Easy neither (owner, 2026-11-12)", () => {
+    const opened = (preset: 'easy' | 'medium' | 'hard' | 'collector') => playScreenProps(startSession(dailyPuzzle('2026-11-10', preset).puzzle), CLASSIC);
+    const presets = ['medium', 'hard', 'collector', 'easy'] as const;
+
+    expect(presets.map((preset) => opened(preset).isLargeGrid ?? false)).toEqual([true, true, false, false]);
+    expect(presets.map((preset) => opened(preset).isTallGrid ?? false)).toEqual([false, true, false, false]);
+  });
 });
 
 describe('puzzleTheme (spec-007 FR-712)', () => {
