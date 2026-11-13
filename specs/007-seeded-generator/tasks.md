@@ -173,7 +173,7 @@ Medium is released, so the change reaches players on merge: the owner reviews it
 - [x] T059 [US4] AC-20: no record opens the worked example at "Found 0 of 2". ⚠️ May pass already: report, and prove with a reverted break
 - [x] T060 [US4] AC-21: TDD in `src/app/today-record.spec.ts`: not JSON, the wrong shape, a higher `format`, an unknown preset or a bad date is "unreadable", which opens today's Easy with no error; a higher `format` is never overwritten (ADR 0004)
 - [x] T061 [US4] Confirm `npm run build` opens the worked example and removes nothing with `newDay` off, and the flags-on build passes. Update `docs/contracts/saved-solutions.md` and `tdd-log.md`. Push and open "spec-007 part 5 of 5: a new day (flag off)". The owner merges
-- [ ] T062 [US4] **The owner reviews the flags-on build on a phone**, including changing the phone's date; then a one-line pull request sets `newDay` true in `src/app/features.ts`
+- [x] T062 [US4] **The owner reviews the flags-on build on a phone**, including changing the phone's date; then a one-line pull request sets `newDay` true in `src/app/features.ts`
 
 ---
 
