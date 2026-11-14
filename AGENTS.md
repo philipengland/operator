@@ -58,6 +58,8 @@ Today screen, with the worked example kept as "Practice"; today's Easy, Medium, 
   `docs/adr/0002-component-library.md` — a tiered component library in plain TypeScript (no
   framework), themes as data, self-hosted fonts, and a catalogue that is never published.
   `docs/adr/0004-saved-solutions.md` — one versioned `localStorage` record per puzzle; a newer format is never overwritten.
+  `docs/adr/0005-daily-puzzles.md` — daily puzzles made on the phone from the seed `v1:<date>:<preset>`, bounded by a
+  work budget, never a clock; once released, a version's puzzles are fixed for good.
 - **Active exceptions**: see `docs/exceptions/` (EXC-001, -002, -005, -006, -007).
 
 ## Build, Test and Run

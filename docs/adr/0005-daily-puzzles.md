@@ -1,6 +1,6 @@
 # 0005. Daily puzzles from a seed
 
-- **Status:** Proposed
+- **Status:** Accepted (by Philip England, 2026-11-14, once all four presets were released)
 - **Date:** 2026-11-10
 - **Revisits:** the brief's F11 (daily puzzle, Phase 3), brought into the MVP by the owner
 
