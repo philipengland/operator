@@ -181,7 +181,7 @@ Medium is released, so the change reaches players on merge: the owner reviews it
 
 - [ ] T063 Remove the `daily`, `presets`, `hard` and `newDay` flags once released and signed off (constitution VII), in `src/app/features.ts`, `src/app/today-list.ts`, `src/app/main.ts` and `playwright.config.ts`, and the flags-on speed project, in small pull requests
 - [ ] T064 Run `specs/007-seeded-generator/quickstart.md` in full. The owner signs off each story on a real phone (SC-706) and runs five hallway playtests (SC-703, SC-704); record both in `specs/007-seeded-generator/tdd-log.md`
-- [ ] T065 `npm run test-results -- 007-seeded-generator`: `specs/007-seeded-generator/test-results.md` must end `OVERALL status: PASS`, with AC-1 to AC-22 covered and specs 001 to 006 still passing (SC-705). Update `AGENTS.md`: spec-007, the generator, `operator.today` and `docs/adr/0005-daily-puzzles.md`
+- [x] T065 `npm run test-results -- 007-seeded-generator`: `specs/007-seeded-generator/test-results.md` must end `OVERALL status: PASS`, with AC-1 to AC-22 covered and specs 001 to 006 still passing (SC-705). Update `AGENTS.md`: spec-007, the generator, `operator.today` and `docs/adr/0005-daily-puzzles.md`
 
 ---
 

@@ -51,7 +51,8 @@ Today screen, with the worked example kept as "Practice"; today's Easy, Medium, 
   `docs/contracts/engine-api.md` (engine), `docs/contracts/play-screen.md`
   (accessible names and wording the UI driver reads) and `docs/contracts/component-library.md`
   (the component library's tiers, roles and names; spec-003), and `docs/contracts/saved-solutions.md`
-  (what is saved on the phone; every released version's format must stay readable, SC-604).
+  (what is saved on the phone: each puzzle's found solutions, and `operator.today`, the day and preset last played;
+  every released version's format must stay readable, SC-604).
 - **Key ADRs**: `docs/adr/0001-web-stack-and-hosting.md` — TypeScript and Vite (Capacitor-ready),
   Vitest, Playwright as the UI driver, GitHub Pages deployed by GitHub Actions; TypeScript is
   pinned to 6.0.x because typescript-eslint does not yet support 6.1+.
